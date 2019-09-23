@@ -101,7 +101,7 @@ ggplot(groupedByRoomLevel, aes(x=as.factor(roomLevel), y=averageProficiency)) + 
 ### Computing a difficulty "budget" per enemy
 When generating a room one approach could be to compute a difficulty "budget" per enemy, which would translate to enemy difficulty and enemy level.
 
-This (post)[https://www.reddit.com/r/harrypotterwu/comments/csgsdd/all_about_combat_damage_what_i_know_or_i_think_i/?st=k0gijz3i&sh=acd204fd] suggests the following might hold:
+This [post](https://www.reddit.com/r/harrypotterwu/comments/csgsdd/all_about_combat_damage_what_i_know_or_i_think_i/?st=k0gijz3i&sh=acd204fd) suggests the following might hold:
 
 $difficulty \approx 2 * \sum enemyDifficulty * enemyLevel (1+isElite)$
 
