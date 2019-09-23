@@ -1,0 +1,39 @@
+{
+
+    "initialEnemySpawnAnimation": 3000,
+    "enemySpawn": 0,
+
+    "secondEnemySpawnTime": 18000,
+    "thirdEnemySpawnTime": 34000, 
+
+    "wizardSpawnAfterReviveCharm": 0,
+    "strategicSpellDragAndCastAnimation": 1500,
+    "potionMenuAndSelectAndDrink": 3000,
+
+    "enterCombat": 3000,
+    "combatBeginAnimation_acromantula": 1500,
+    "combatBeginAnimation_darkWizard": 2000,
+    "combatBeginAnimation_deathEater": 2000,
+    "combatBeginAnimation_erkling": 3000,
+    "combatBeginAnimation_pixie": 3000,
+    "combatBeginAnimation_werewolf": 2000,
+
+    "spellCircle_acromantula": 1000,
+    "spellCircle_darkWizard": 1000,
+    "spellCircle_deathEater": 1000,
+    "spellCircle_erkling": 1500,
+    "spellCircle_pixie": 3000,
+    "spellCircle_werewolf": 1000,
+
+    "spellTrace": 500,
+    
+    "spellCast_wizard": 500,
+    "spellCast_enemy": 4000,
+
+    "enemyDeathAnimation": 2000,
+
+    "rewardsAnimation": 500,
+
+    "dynamicDuration": -1
+
+}
