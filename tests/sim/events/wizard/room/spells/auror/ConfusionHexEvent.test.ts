@@ -24,7 +24,7 @@ describe("ConfusionHexEvent", function() {
     });
 
     it("confusionHex_lessDamage", function() {
-        let wizard = TestData.buildDefaultProfessor();
+        let wizard = TestData.buildDefaultAuror();
         wizard.stats.defenceBreach = 0;
         wizard.stats.proficiencyPower = 0;
         let enemy = TestData.buildDefaultEnemy();

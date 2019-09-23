@@ -1,6 +1,7 @@
 import { StrategicSpellEvent } from "../StrategicSpellEvent";
 import { Wizard } from "../../../../../../model/player/Wizard";
 import { Enemy } from "../../../../../../model/env/enemies/Enemy";
+import { Auror } from "../../../../../../model/player/Auror";
 
 export class FocusCharmEvent extends StrategicSpellEvent {
 
@@ -10,6 +11,10 @@ export class FocusCharmEvent extends StrategicSpellEvent {
     constructor(timestampBegin: number, targetWizard: Wizard, caster: Wizard) {
         super(timestampBegin, caster);
         this.targetWizard = targetWizard;
+
+        if ((caster as Auror).hasStudiedFocusCharm() === false) {
+            throw new Error("Wizard id=" + caster.playerIndex + " has not studied focus charm but tried casting it!");
+        }
     }
 
     onFinish() {

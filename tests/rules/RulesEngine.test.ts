@@ -15,6 +15,7 @@ describe("RulesEngine", function() {
 
     it("professor_notEnoughFocusDefenceCharm", function()  {
         let wizard = TestData.buildDefaultProfessor();
+        let enemy = TestData.buildDefaultEnemy();
         wizard.setTrigger("defenceCharm", 1);
         let rulesEngine = new RulesEngine(wizard.nameClass);
 
@@ -22,7 +23,8 @@ describe("RulesEngine", function() {
         wizard.removeFocus(wizard.getFocus());
 
         let facts = {
-            wizard: wizard
+            wizard: wizard,
+            highestPriorityEnemyTarget: enemy
         };
 
         return rulesEngine.engine.run(facts).then(results => {
@@ -31,6 +33,7 @@ describe("RulesEngine", function() {
     });
     it("professor_castDefenceCharm", function()  {
         let wizard = TestData.buildDefaultProfessor();
+        let enemy = TestData.buildDefaultEnemy();
         wizard.setTrigger("defenceCharm", 1);
         let rulesEngine = new RulesEngine(wizard.nameClass);
 
@@ -38,7 +41,8 @@ describe("RulesEngine", function() {
         wizard.addFocus(3);
 
         let facts = {
-            wizard: wizard
+            wizard: wizard,
+            highestPriorityEnemyTarget: enemy
         };
 
         return rulesEngine.engine.run(facts).then(results => {

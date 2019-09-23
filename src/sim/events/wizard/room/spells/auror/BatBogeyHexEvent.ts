@@ -1,6 +1,7 @@
 import { StrategicSpellEvent } from "../StrategicSpellEvent";
 import { Wizard } from "../../../../../../model/player/Wizard";
 import { Enemy } from "../../../../../../model/env/enemies/Enemy";
+import { Auror } from "../../../../../../model/player/Auror";
 
 export class BatBogeyHexEvent extends StrategicSpellEvent {
 
@@ -11,6 +12,10 @@ export class BatBogeyHexEvent extends StrategicSpellEvent {
         super(timestampBegin, caster);
         this.damage = damage;
         this.targetEnemy = targetEnemy;
+
+        if ((caster as Auror).hasStudiedBatBogeyHex() === false) {
+            throw new Error("Wizard id=" + caster.playerIndex + " has not studied bat bogey hex but tried casting it!");
+        }
     }
 
     onFinish() {

@@ -43,6 +43,9 @@ export abstract class Combatant {
     getMaxStamina(): number {
         return this.maxStamina;
     }
+    getCurrentStaminaPercent(): number {
+        return this.getCurrentStamina() / this.getMaxStamina();
+    }
 
     //abstract getDefenceAfterModifications(): number;
     //abstract getPowerAfterModifications(): number;

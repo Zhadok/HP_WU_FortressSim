@@ -65,7 +65,10 @@ export class TestData {
         return result; 
     }
     static buildDefaultSkillTreeAuror(): SkillTree {
-        return this.buildDefaultSkillTree("auror");
+        let skillTree = this.buildDefaultSkillTree("auror");
+        skillTree.setNodeLevelByTriggerName("batBogeyHex", 1);
+        return skillTree;
+        
     }
     static buildDefaultSkillTreeMagizoologist(): SkillTree {
         let skillTree = this.buildDefaultSkillTree("magizoologist");

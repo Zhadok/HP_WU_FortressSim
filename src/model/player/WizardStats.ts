@@ -11,6 +11,11 @@ export class WizardStats extends CombatantStats {
     criticalPower: number;
     accuracy: number; 
 
+    // Auror
+    weakeningHexValue: number = 0; // (positive value here, will be subtracted later)
+    confusionHexValue: number = 0;
+    batBogeyHexDamage: number = 0;
+
     // Professor
     deteriorationHexDamage: number = 0; 
     mendingCharmStaminaRestore: number = 0; 

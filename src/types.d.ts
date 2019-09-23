@@ -16,6 +16,12 @@ import skillTreePofessorData from "./data/skillTreeProfessor.json";
 import { WizardStats } from "./model/player/WizardStats.js";
 import { Professor } from "./model/player/Professor.js";
 declare type triggerNameType = 
+            // Auror triggers
+            "aurorAdvantage" | "playingDirty" | "dancingWithDummies" | "trickWithDeathEaters" |
+            "firstStrike" | "mundungusAmongUs" | 
+            // Auror spells
+            "weakeningHex" | "batBogeyHex" | "focusCharm" | "confusionHex" |
+
             // Professor triggers
             "idealExchange" | "strengthInNumbers" | "sparringSpecifics" | "teamworkMakesTheDreamWork" | "confidence" |
             "teamTeaching" | "onSabbatical" | "peskyPixies" | "fullMoonHunter" |

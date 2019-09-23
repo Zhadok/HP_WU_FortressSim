@@ -3,6 +3,8 @@ import { WizardStats } from "../WizardStats";
 import { Logger } from "../../../util/Logger";
 
 import skillTreeProfessorData from "../../../data/skillTreeProfessor.json";
+import skillTreeAurorData from "../../../data/skillTreeAuror.json";
+import skillTreeMagizoologistData from "../../../data/skillTreeMagizoologist.json";
 import { nameClassType, triggerNameType, triggerMapType } from "../../../types";
 import { PersistedSkillTreeNode } from "./PersistedSkillTreeNode";
 import { PersistedSkillTree } from "./PersistedSkillTree";
@@ -19,12 +21,17 @@ export class SkillTree {
         this.nodesStudied = new Map<SkillTreeNode, number>();
 
         // Initialize with no lessons learned
-        if (nameClass === "professor") {
-            for (let jsonNode of skillTreeProfessorData.data) {
-                let node: SkillTreeNode = jsonNode as SkillTreeNode;
-                this.nodesStudied.set(node, 0);
-            }  
+        let data: Array<SkillTreeNode>; 
+        switch (nameClass) {
+            case "auror": data = skillTreeAurorData.data as Array<SkillTreeNode>; break; 
+            case "professor": data = skillTreeProfessorData.data as Array<SkillTreeNode>; break;
+            case "magizoologist": data = skillTreeMagizoologistData.data as Array<SkillTreeNode>; break; 
         }
+        for (let jsonNode of data!) {
+            let node: SkillTreeNode = jsonNode as SkillTreeNode;
+            this.nodesStudied.set(node, 0);
+        }  
+        
     }   
 
     static fromPersisted(persistedSkillTree: PersistedSkillTree): SkillTree {

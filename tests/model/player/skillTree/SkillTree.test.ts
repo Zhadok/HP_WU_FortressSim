@@ -11,12 +11,19 @@ import { Professor } from "../../../../src/model/player/Professor";
 
 describe("SkillTree", function() {
 
+    it("shouldInitialize_auror", function() {
+        let skillTree = new SkillTree("auror");
+
+        //expect(skillTree.nodesStudied.size).to.equal(55);
+        //expect(skillTree.getNumberOfLessons()).to.equal(134);
+    });
     it("shouldInitialize_professor", function() {
         let skillTree = new SkillTree("professor");
 
         expect(skillTree.nodesStudied.size).to.equal(55);
         expect(skillTree.getNumberOfLessons()).to.equal(134);
     });
+
 
     it("setStudiedLevels_invalidNodeID", function() {
         let skillTree = new SkillTree("professor");
@@ -40,7 +47,6 @@ describe("SkillTree", function() {
         catch (e) {}
 
     });
-
     it("toWizardStats_noStudiedLessons", function() {
         let skillTree = new SkillTree("professor");
         let stats = skillTree.toWizardStats();

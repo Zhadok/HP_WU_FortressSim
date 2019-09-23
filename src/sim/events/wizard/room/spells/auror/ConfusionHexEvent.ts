@@ -1,6 +1,7 @@
 import { StrategicSpellEvent } from "../StrategicSpellEvent";
 import { Wizard } from "../../../../../../model/player/Wizard";
 import { Enemy } from "../../../../../../model/env/enemies/Enemy";
+import { Auror } from "../../../../../../model/player/Auror";
 
 export class ConfusionHexEvent extends StrategicSpellEvent {
 
@@ -11,6 +12,10 @@ export class ConfusionHexEvent extends StrategicSpellEvent {
         super(timestampBegin, caster);
         this.confusionHexValue = confusionHexValue;
         this.targetEnemy = targetEnemy;
+
+        if ((caster as Auror).hasStudiedConfusionHex() === false) {
+            throw new Error("Wizard id=" + caster.playerIndex + " has not studied confusion hex but tried casting it!");
+        }
     }
 
     onFinish() {

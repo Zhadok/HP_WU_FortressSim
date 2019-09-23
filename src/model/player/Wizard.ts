@@ -65,6 +65,19 @@ export abstract class Wizard extends Combatant {
         //this.triggers = new Map<triggerNameType, number>();
         
         this.triggers = {
+            // Auror
+            aurorAdvantage: null,
+            weakeningHex: null,
+            batBogeyHex: null,
+            playingDirty: null,
+            focusCharm: null,
+            dancingWithDummies: null,
+            confusionHex: null,
+            trickWithDeathEaters: null,
+            firstStrike: null,
+            mundungusAmongUs: null,
+
+            // Professor
             confidence: null, 
             defenceCharm: null, 
             deteriorationHex: null,

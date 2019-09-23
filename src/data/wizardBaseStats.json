@@ -15,6 +15,10 @@
         "criticalPower": 0.50,
         "accuracy": 0.00,
 
+        "weakeningHexValue": 0,
+        "confusionHexValue": 0,
+        "batBogeyHexDamage": 0,
+
         "deteriorationHexDamage": 0,
         "mendingCharmStaminaRestore": 0,
         "defenceCharmIncrease": 0,
