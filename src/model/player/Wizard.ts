@@ -10,7 +10,7 @@ import { SkillTreeNode } from "./SkillTree/SkillTreeNode";
 
 export abstract class Wizard extends Combatant {
 
-    static focusCastData = focusCostData;
+    readonly focusCostData = focusCostData;
 
     readonly stats: WizardStats;
     readonly nameClass: nameClassType;

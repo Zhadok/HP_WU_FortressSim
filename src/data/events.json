@@ -11,6 +11,7 @@
     "potionMenuAndSelectAndDrink": 3000,
 
     "enterCombat": 3000,
+    "exitCombat": 1000, 
     "combatBeginAnimation_acromantula": 1500,
     "combatBeginAnimation_darkWizard": 2000,
     "combatBeginAnimation_deathEater": 2000,

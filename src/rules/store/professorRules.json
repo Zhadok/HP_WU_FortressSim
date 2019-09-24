@@ -1,94 +1,175 @@
-[{
-    "conditions": {
-        "all": [
-            {
-                "fact": "wizard",
-                "path": ".inCombat",
-                "operator": "equal",
-                "value": false
-            }, {
-                "fact": "wizard",
-                "path": ".focus",
-                "operator": "greaterThanInclusive",
-                "value": ".focusCastData.defenceCharm"
-            }, {
-                "fact": "wizard",
-                "path": ".hasDefenceCharm",
-                "operator": "equal",
-                "value": false
-            }, {
-                "fact": "wizard",
-                "path": ".triggers.defenceCharm",
-                "operator": "notEqual",
-                "value": null
+[
+    {
+        "event": {
+            "type": "defenceCharm",
+            "params": {
+                "targetWizardIndex": 0
             }
-        ]
-    },
-    "event": {
-        "type": "defenceCharm",
-        "params": {
-            "target": 0
+        },
+        "priority": 0,
+        "conditions": {
+            "all": [
+                {
+                    "fact": "wizard",
+                    "path": ".inCombat",
+                    "operator": "equal",
+                    "value": false
+                }, {
+                    "fact": "wizard",
+                    "path": ".focus",
+                    "operator": "greaterThanInclusive",
+                    "value": {
+                        "fact": "wizard",
+                        "path": ".focusCostData.defenceCharm"
+                    }
+                }, {
+                    "fact": "wizard",
+                    "path": ".hasDefenceCharm",
+                    "operator": "equal",
+                    "value": false
+                }, {
+                    "fact": "wizard",
+                    "path": ".triggers.defenceCharm",
+                    "operator": "equal",
+                    "value": 1
+                }
+            ]
         }
-    },
-    "priority": 1
-}, {
-    "conditions": {
-        "all": [
-            {
-                "fact": "wizard",
-                "path": ".inCombat",
-                "operator": "equal",
-                "value": false
-            }, {
-                "fact": "wizard",
-                "path": ".focus",
-                "operator": "greaterThanInclusive",
-                "value": ".focusCastData.proficiencyPowerCharm"
-            }, {
-                "fact": "wizard",
-                "path": ".hasProficiencyPowerCharm",
-                "operator": "equal",
-                "value": false
-            }, {
-                "fact": "wizard",
-                "path": ".triggers.proficiencyPowerCharm",
-                "operator": "notEqual",
-                "value": null
+    }, {
+        "event": {
+            "type": "proficiencyPowerCharm"
+        },
+        "priority": 0,
+        "conditions": {
+            "all": [
+                {
+                    "fact": "wizard",
+                    "path": ".inCombat",
+                    "operator": "equal",
+                    "value": false
+                }, {
+                    "fact": "wizard",
+                    "path": ".focus",
+                    "operator": "greaterThanInclusive",
+                    "value": {
+                        "fact": "wizard",
+                        "path": ".focusCostData.proficiencyPowerCharm"
+                    }
+                }, {
+                    "fact": "wizard",
+                    "path": ".hasProficiencyPowerCharm",
+                    "operator": "equal",
+                    "value": false
+                }, {
+                    "fact": "wizard",
+                    "path": ".triggers.proficiencyPowerCharm",
+                    "operator": "notEqual",
+                    "value": null
+                }
+            ]
+        }
+    }, {
+        "event": {
+            "type": "deteriorationHex"
+        },
+        "priority": 0,
+        "conditions": {
+            "all": [
+                {
+                    "fact": "wizard",
+                    "path": ".inCombat",
+                    "operator": "equal",
+                    "value": false
+                }, {
+                    "fact": "wizard",
+                    "path": ".focus",
+                    "operator": "greaterThanInclusive",
+                    "value": {
+                        "fact": "wizard",
+                        "path": ".focusCostData.deteriorationHex"
+                    }
+                }, {
+                    "fact": "highestPriorityAvailableEnemy",
+                    "path": ".hasDeteriorationHex",
+                    "operator": "equal",
+                    "value": false
+                }, {
+                    "fact": "wizard",
+                    "path": ".triggers.deteriorationHex",
+                    "operator": "notEqual",
+                    "value": null
+                }
+            ]
+        }
+    }, {
+        "event": {
+            "type": "enterCombatWithHighestPriorityAvailableEnemy"
+        },
+        "priority": 0,
+        "conditions": {
+            "all": [
+                {
+                    "fact": "wizard",
+                    "path": ".inCombat",
+                    "operator": "equal",
+                    "value": false
+                }, {
+                    "fact": "highestPriorityAvailableEnemy",
+                    "path": ".inCombat",
+                    "operator": "equal",
+                    "value": false
+                }
+            ]
+        }
+    }, 
+
+    {
+        "event": {
+            "type": "exitCombat",
+            "params": {
+                "description": "Professor should exit and check for better enemies available (disabled for now)"
             }
-        ]
-    },
-    "event": {
-        "type": "proficiencyPowerCharm"
-    },
-    "priority": 2
-}, {
-    "conditions": {
-        "all": [
-            {
-                "fact": "wizard",
-                "path": ".inCombat",
-                "operator": "equal",
-                "value": false
-            }, {
-                "fact": "wizard",
-                "path": ".focus",
-                "operator": "greaterThanInclusive",
-                "value": ".focusCastData.deteriorationHex"
-            }, {
-                "fact": "highestPriorityEnemyTarget",
-                "path": ".hasDeteriorationHex",
-                "operator": "equal",
-                "value": false
-            }, {
-                "fact": "wizard",
-                "path": ".triggers.deteriorationHex",
-                "operator": "notEqual",
-                "value": null
-            }
-        ]
-    },
-    "event": {
-        "type": "deteriorationHex"
-    },
-    "priority": 3
-}]
+        },
+        "priority": 0,
+        "conditions": {
+            "all": [
+                {
+                    "fact": "wizard",
+                    "path": ".inCombat",
+                    "operator": "equal",
+                    "value": true
+                }, {
+                    "fact": "wizard",
+                    "path": ".inCombatWith.inCombat",
+                    "operator": "equal",
+                    "value": true
+                }, {
+                    "fact": "wizard", 
+                    "path": ".inCombat",
+                    "operator": "equal",
+                    "value": null
+                }
+            ]
+        }
+    }, {
+        "event": {
+            "type": "combatSpellCastWizard"
+        },
+        "priority": 0,
+        "conditions": {
+            "all": [
+                {
+                    "fact": "wizard",
+                    "path": ".inCombat",
+                    "operator": "equal",
+                    "value": true
+                }, {
+                    "fact": "wizard",
+                    "path": ".inCombatWith",
+                    "operator": "notEqual",
+                    "value": null
+                }
+            ]
+        }
+    }
+]

@@ -13,8 +13,10 @@ declare type invigorationPotionType = "weak" | "strong";
 
 
 import skillTreePofessorData from "./data/skillTreeProfessor.json";
-import { WizardStats } from "./model/player/WizardStats.js";
-import { Professor } from "./model/player/Professor.js";
+import { WizardStats } from "./model/player/WizardStats";
+import { Professor } from "./model/player/Professor";
+import { Wizard } from "./model/player/Wizard";
+import { Enemy } from "./model/env/enemies/Enemy";
 declare type triggerNameType = 
             // Auror triggers
             "aurorAdvantage" | "playingDirty" | "dancingWithDummies" | "trickWithDeathEaters" |
@@ -32,4 +34,14 @@ declare type triggerMapType = { [key in triggerNameType]: number | null };
 
 
 declare type statNameType = keyof WizardStats;
+
+// Rule engine
+declare type ruleFactType = {
+    wizard: Wizard,
+    allWizards: Array<Wizard>,
+    highestPriorityAvailableEnemy: Enemy
+}
+declare type actionNameType = strategicSpellNameType | 
+                              "enterCombatWithHighestPriorityAvailableEnemy" | "exitCombat" | 
+                              "combatSpellCastWizard";
 

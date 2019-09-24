@@ -259,7 +259,7 @@ export class CombatSimulation {
                             this.addEvent(new ProficiencyPowerCharmEvemt(timestampBegin, 0.4, this.wizards, professor));
                             return;
                         }
-                        let strategicSpellTarget: Enemy = this.getHighestPriorityTarget(professor);
+                        let strategicSpellTarget: Enemy = this.getHighestPriorityAvailableEnemy(professor);
                         if (professor.hasEnoughFocusForStrategicSpell("deteriorationHex") && ! strategicSpellTarget.hasDeteriorationHex) {
                             this.addEvent(new DeteriorationHexEvent(timestampBegin, 40, strategicSpellTarget, professor));
                             return; 
@@ -310,8 +310,9 @@ export class CombatSimulation {
         );;
     }
 
-    getHighestPriorityTarget(wizard: Wizard): Enemy {
-        let sortedActiveEnemies = this.sortEnemyTargetsByPriority(wizard, this.fortressRoom.enemiesActive);
+    getHighestPriorityAvailableEnemy(wizard: Wizard): Enemy {
+        let sortedActiveEnemies = this.sortEnemyTargetsByPriority(wizard, 
+            this.fortressRoom.enemiesActive.filter(enemy => enemy.inCombat===false));
         return sortedActiveEnemies[0];
     }
 
