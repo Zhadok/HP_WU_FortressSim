@@ -16,6 +16,7 @@
         "accuracy": 0.00,
 
         "weakeningHexValue": 0,
+        "focusCharmValue": 0,
         "confusionHexValue": 0,
         "batBogeyHexDamage": 0,
 

@@ -40,6 +40,13 @@ export class Auror extends Wizard {
         }
         return super.getPowerAfterModifications(enemy) + powerBuffs;
     }
+    getCritChanceAfterModifications(enemy: Enemy): number {
+        let critChanceBuffs = 0;
+        if (this.getTriggers().dancingWithDummies !== null && enemy.getCurrentStaminaPercent() === 1) {
+            critChanceBuffs += this.getTriggers().dancingWithDummies!;
+        }
+        return super.getCritChanceAfterModifications(enemy) + critChanceBuffs;
+    }
 
 
 }

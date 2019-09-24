@@ -263,7 +263,333 @@
             "costRedBooks": 4
         }],
         "dependencies": ["4/4"]
+    }, 
+
+    {
+        "rowIndex": 6,
+        "columnIndex": 0,
+        "name": "Improved Weakness Hex",
+        "statChangeDescription": "",
+        "statChanged": "weakeningHexValue",
+        "levels":[{
+            "statChange": 0.05,
+            "costScrolls": 8,
+            "costRSB": 4
+        }, {
+            "statChange": 0.05,
+            "costScrolls": 8,
+            "costRSB": 4
+        }],
+        "dependencies": ["5/1"]
+    }, {
+        "rowIndex": 6,
+        "columnIndex": 2,
+        "name": "The Focus Charm",
+        "triggerName": "focusCharm",
+        "statChangeDescription": "Transfer focus to a teammate",
+        "statChanged": "focusCharmValue",
+        "levels":[{
+            "statChange": 1,
+            "costScrolls": 8
+        }],
+        "dependencies": ["5/1", "5/3"]
+    }, {
+        "rowIndex": 6,
+        "columnIndex": 3,
+        "name": "The Duelists",
+        "statChangeDescription": "Power",
+        "statChanged": "power",
+        "levels":[{
+            "statChange": 2,
+            "costScrolls": 8
+        }, {
+            "statChange": 2,
+            "costScrolls": 8
+        }, {
+            "statChange": 2,
+            "costScrolls": 8,
+            "costRedBooks": 2
+        }, {
+            "statChange": 3,
+            "costScrolls": 8,
+            "costRedBooks": 5
+        }],
+        "dependencies": ["5/3"]
+    },
+
+    {
+        "rowIndex": 7,
+        "columnIndex": 0,
+        "name": "Duelling in the Dark",
+        "statChangeDescription": "Initial Focus",
+        "statChanged": "initialFocus",
+        "levels":[{
+            "statChange": 1,
+            "costScrolls": 10
+        }],
+        "dependencies": ["6/0"]
+    }, {
+        "rowIndex": 7,
+        "columnIndex": 1,
+        "name": "Somatic Casting",
+        "statChangeDescription": "Power",
+        "statChanged": "power",
+        "levels":[{
+            "statChange": 2,
+            "costScrolls": 10
+        }, {
+            "statChange": 2,
+            "costScrolls": 10
+        }, {
+            "statChange": 3,
+            "costScrolls": 10,
+            "costRedBooks": 3
+        }],
+        "dependencies": ["6/1"]
+    }, {
+        "rowIndex": 7,
+        "columnIndex": 3,
+        "name": "Full Body Fitness",
+        "statChangeDescription": "Stamina",
+        "statChanged": "stamina",
+        "levels":[{
+            "statChange": 9,
+            "costScrolls": 10
+        }, {
+            "statChange": 10,
+            "costScrolls": 10
+        }, {
+            "statChange": 12,
+            "costScrolls": 10,
+            "costRedBooks": 3
+        }],
+        "dependencies": ["6/2"]
+    }, {
+        "rowIndex": 7,
+        "columnIndex": 4,
+        "name": "Punishment Principle",
+        "statChangeDescription": "Power",
+        "statChanged": "power",
+        "levels":[{
+            "statChange": 2,
+            "costScrolls": 10
+        }, {
+            "statChange": 2,
+            "costScrolls": 10
+        }, {
+            "statChange": 3,
+            "costScrolls": 10,
+            "costRedBooks": 3
+        }, {
+            "statChange": 3,
+            "costScrolls": 10,
+            "costRedBooks": 7
+        }],
+        "dependencies": ["6/3"]
+    },
+
+    {
+        "rowIndex": 8,
+        "columnIndex": 2,
+        "name": "Duelling Dummy",
+        "statChangeDescription": "Power",
+        "statChanged": "power",
+        "levels":[{
+            "statChange": 3,
+            "costScrolls": 12
+        }, {
+            "statChange": 3,
+            "costScrolls": 12
+        }],
+        "dependencies": ["6/2"]
+    }, {
+        "rowIndex": 8,
+        "columnIndex": 3,
+        "name": "An Unforgivable",
+        "statChangeDescription": "Stamina",
+        "statChanged": "stamina",
+        "levels":[{
+            "statChange": 9,
+            "costScrolls": 12
+        }, {
+            "statChange": 10,
+            "costScrolls": 12
+        }, {
+            "statChange": 12,
+            "costScrolls": 12,
+            "costRedBooks": 4
+        }, {
+            "statChange": 15,
+            "costScrolls": 12,
+            "costRedBooks": 8
+        }],
+        "dependencies": ["7/3"]
+    }, {
+        "rowIndex": 8,
+        "columnIndex": 4,
+        "name": "Walden Macnair",
+        "statChangeDescription": "Power",
+        "statChanged": "power",
+        "levels":[{
+            "statChange": 3,
+            "costScrolls": 12
+        }, {
+            "statChange": 3,
+            "costScrolls": 12
+        }, {
+            "statChange": 3,
+            "costScrolls": 12,
+            "costRedBooks": 4
+        }],
+        "dependencies": ["7/4"]
+    },
+
+    {
+        "rowIndex": 9,
+        "columnIndex": 0,
+        "name": "Constant Vigilance",
+        "statChangeDescription": "Maximum Focus",
+        "statChanged": "maxFocus",
+        "levels":[{
+            "statChange": 1,
+            "costScrolls": 15
+        }, {
+            "statChange": 1,
+            "costScrolls": 15
+        }, {
+            "statChange": 1,
+            "costScrolls": 15,
+            "costRedBooks": 5
+        }],
+        "dependencies": ["7/0"]
+    }, {
+        "rowIndex": 9,
+        "columnIndex": 1,
+        "name": "To Protect and Serve",
+        "statChangeDescription": "Proficiency Power",
+        "statChanged": "proficiencyPower",
+        "levels":[{
+            "statChange": 0.05,
+            "costScrolls": 15
+        }, {
+            "statChange": 0.06,
+            "costScrolls": 15
+        }, {
+            "statChange": 0.08,
+            "costScrolls": 15,
+            "costRedBooks": 5
+        }, {
+            "statChange": 0.10,
+            "costScrolls": 15,
+            "costRedBooks": 10
+        }],
+        "dependencies": ["7/1"]
+    }, {
+        "rowIndex": 9,
+        "columnIndex": 2,
+        "name": "Dancing With Dummies",
+        "triggerName": "dancingWithDummies",
+        "statChangeDescription": "Precision vs foes with 100% stamina",
+        "levels":[{
+            "statChange": 0.35,
+            "costScrolls": 15,
+            "costRSB": 15
+        }],
+        "dependencies": ["8/2"]
+    }, {
+        "rowIndex": 9,
+        "columnIndex": 3,
+        "name": "Hidden Gem",
+        "statChangeDescription": "Defence",
+        "statChanged": "defence",
+        "levels":[{
+            "statChange": 0.06,
+            "costScrolls": 15
+        }, {
+            "statChange": 0.09,
+            "costScrolls": 15
+        }],
+        "dependencies": ["8/3"]
+    },
+
+    {
+        "rowIndex": 10,
+        "columnIndex": 0,
+        "name": "Practice Range",
+        "statChangeDescription": "Accuracy",
+        "statChanged": "accuracy",
+        "levels":[{
+            "statChange": 0.03,
+            "costScrolls": 18
+        }, {
+            "statChange": 0.05,
+            "costScrolls": 18
+        }, {
+            "statChange": 0.07,
+            "costScrolls": 18,
+            "costRedBooks": 6
+        }],
+        "dependencies": ["9/0"]
+    }, {
+        "rowIndex": 10,
+        "columnIndex": 1,
+        "name": "Weakness Hex Maxima",
+        "statChangeDescription": "Impair Foe Power",
+        "statChanged": "weakeningHexValue",
+        "levels":[{
+            "statChange": 0.05,
+            "costScrolls": 18,
+            "costRSB": 4
+        }, {
+            "statChange": 0.05,
+            "costScrolls": 18,
+            "costRSB": 4
+        }, {
+            "statChange": 0.05,
+            "costScrolls": 18,
+            "costRSB": 4
+        }],
+        "dependencies": ["10/2"]
+    }, {
+        "rowIndex": 10,
+        "columnIndex": 2,
+        "name": "The Confusion Hex",
+        "triggerName": "confusionHex",
+        "statChangeDescription": "",
+        "statChanged": "confusionHexValue",
+        "levels":[{
+            "statChange": 0.2,
+            "costScrolls": 18
+        }],
+        "dependencies": ["9/1", "9/3"]
+    }, {
+        "rowIndex": 10,
+        "columnIndex": 4,
+        "name": "Diggles' Discriminating Discourse",
+        "statChangeDescription": "Defence Breach",
+        "statChanged": "defenceBreach",
+        "levels":[{
+            "statChange": 0.03,
+            "costScrolls": 18
+        }, {
+            "statChange": 0.04,
+            "costScrolls": 18
+        }, {
+            "statChange": 0.05,
+            "costScrolls": 18,
+            "costRedBooks": 6
+        }, {
+            "statChange": 0.08,
+            "costScrolls": 18,
+            "costRedBooks": 12
+        }, {
+            "statChange": 0.12,
+            "costScrolls": 18,
+            "costRedBooks": 12
+        }],
+        "dependencies": ["8/4"]
     }
+
 
 
 

@@ -29,6 +29,16 @@ describe("Auror", function() {
         auror.setTrigger("aurorAdvantage", 10);
         expect(auror.getPowerAfterModifications(enemy)).to.equal(auror.stats.power + 10);
     });
+
+    it("dancingWithDummies_notTriggered", function() {
+        enemy.removeStamina(1);
+        auror.setTrigger("dancingWithDummies", 0.35);
+        expect(auror.getCritChanceAfterModifications(enemy)).to.equal(auror.stats.critChance);
+    });
+    it("dancingWithDummies_triggered", function() {
+        auror.setTrigger("dancingWithDummies", 0.35);
+        expect(auror.getCritChanceAfterModifications(enemy)).to.equal(auror.stats.critChance + 0.35);
+    });
     
 
 });

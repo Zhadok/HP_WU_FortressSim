@@ -15,6 +15,7 @@ export class WizardStats extends CombatantStats {
     weakeningHexValue: number = 0; // (positive value here, will be subtracted later)
     confusionHexValue: number = 0;
     batBogeyHexDamage: number = 0;
+    focusCharmValue: number = 0;
 
     // Professor
     deteriorationHexDamage: number = 0; 

@@ -67,6 +67,9 @@ export class TestData {
     static buildDefaultSkillTreeAuror(): SkillTree {
         let skillTree = this.buildDefaultSkillTree("auror");
         skillTree.setNodeLevelByTriggerName("batBogeyHex", 1);
+        skillTree.setNodeLevelByTriggerName("weakeningHex", 1);
+        skillTree.setNodeLevelByTriggerName("focusCharm", 1);
+        skillTree.setNodeLevelByTriggerName("confusionHex", 1);
         return skillTree;
         
     }
