@@ -24,6 +24,8 @@ import { CombatSpellCircleEvent } from "./events/wizard/combat/CombatSpellCircle
 import { SecondEnemySpawnEvent } from "./events/env/SecondEnemySpawnEvent";
 import { ProficiencyPowerCharmEvemt } from "./events/wizard/room/spells/professor/ProficiencyPowerCharmEvent";
 import { SkillTree } from "../model/player/SkillTree/SkillTree";
+import { RulesEngine } from "../rules/RulesEngine";
+import { nameClassType, ruleFactType } from "../types.js";
 
 
 export class CombatSimulation {
@@ -33,6 +35,10 @@ export class CombatSimulation {
     readonly fortressRoom: FortressRoom;
     readonly rng: Prando
     
+    readonly rulesEngineAuror: RulesEngine;
+    readonly rulesEngineMagizoologist: RulesEngine;
+    readonly rulesEngineProfessor: RulesEngine;
+
     currentTime: number;
 
     // Events are index by their END timestamp
@@ -61,7 +67,9 @@ export class CombatSimulation {
             this.wizards.push(wizard);
         }
 
-        
+        this.rulesEngineAuror = new RulesEngine("auror", rng);
+        this.rulesEngineMagizoologist = new RulesEngine("magizoologist", rng);
+        this.rulesEngineProfessor = new RulesEngine("professor", rng);
     }
 
     init() {
@@ -129,10 +137,10 @@ export class CombatSimulation {
 
 
 
-    simulate() {
+    async simulate() {
         let done = false;
         while (this.eventQueue.length > 0) {
-            this.processNextEvent();
+            await this.processNextEvent();
         }
     }
     
@@ -140,26 +148,26 @@ export class CombatSimulation {
         return this.eventQueue[ this.eventQueue.length-1 ];
     }
 
-    processNextEvent(): SimEvent {
+    async processNextEvent() {
         let currentEvent = this.eventQueue.pop()!; // Get last element of array and remove it from array
         if (this.currentTime > currentEvent.timestampEnd) {
             throw new Error("Tried to go back in time! currentTime=" + this.currentTime + ", event.timestampEnd=" + currentEvent.timestampEnd);
         }
         this.currentTime = currentEvent.timestampEnd
-        this.processEvent(currentEvent);
+        await this.processEvent(currentEvent);
         return currentEvent;
     }
 
     // Event is always called at END of event (e.g. at END of animation)
     // timestampBegin of next event is equal to timestampEnd of this event
-    processEvent(event: SimEvent) {
+    async processEvent(event: SimEvent) {
         this.log(2, "Processing event: " + event.constructor.name);
         event.onFinish();
 
         if (event instanceof EnvEvent) {
             if (event instanceof InitialEnemySpawnEvent) {
                 // Special case because all wizards are allowed to perform actions
-                this.triggerIdleWizards();
+                await this.triggerIdleWizards();
             }
             else if (event instanceof SecondEnemySpawnEvent) {
                 // Enemies will continue spawning after 18s/34s
@@ -168,13 +176,13 @@ export class CombatSimulation {
                         this.addEvent(new EnemySpawnEvent(this.currentTime, this.fortressRoom.getNextActiveEnemy()));
                     }
                 }
-                this.triggerIdleWizards();
+                await this.triggerIdleWizards();
             }
             else if (event instanceof EnemySpawnEvent) {
                 this.log(2, "Spawning enemy id=" + event.enemy.enemyIndex + " (" + event.enemy.nameUserFriendly + ")");
                 this.addEnemyToActive(event.enemy);
                 if (this.eventQueue.filter(e => e instanceof InitialEnemySpawnEvent).length === 0) {
-                    this.triggerIdleWizards();
+                    await this.triggerIdleWizards();
                 }   
             }
             else if (event instanceof EnemyDefeatEvent) {
@@ -193,7 +201,7 @@ export class CombatSimulation {
         }
         if (event.allowWizardFollowupAction()) {
             // Wizard is allowed to perform action
-            this.addNextWizardEvent((event as WizardEvent).wizard);
+            await this.addNextWizardEvent((event as WizardEvent).wizard);
         }
     }
 
@@ -228,69 +236,41 @@ export class CombatSimulation {
                hasBlockingEvent === false; 
     }
 
-     triggerIdleWizards(): void {
+    async triggerIdleWizards() {
         for (let wizard of this.wizards) {
             if (this.isWizardIdle(wizard)) {
-                this.addNextWizardEvent(wizard);
+                await this.addNextWizardEvent(wizard);
             }
         }
     }    
 
+    getRulesEngine(nameClass: nameClassType) {
+        switch (nameClass){
+            case "auror": return this.rulesEngineAuror;
+            case "magizoologist": return this.rulesEngineMagizoologist;
+            case "professor": return this.rulesEngineProfessor;
+        }
+    }
+
     // Priority based next action
     // Possible actions:
     // Outside combat: Drink potion, cast strategic spell, enter combat
-    addNextWizardEvent(wizard: Wizard) {
+    async addNextWizardEvent(wizard: Wizard) {
         let timestampBegin = this.currentTime;
         let potions = this.params.potions[wizard.playerIndex];
 
-        if (wizard.inCombat === false) {
-            switch (wizard.nameClass) {
-                case "professor":
-                    let professor: Professor = wizard as Professor;
-    
-                    if (professor.inCombat === false) {
-                        // In room
-                        // Cast strategic spells
-                        if (professor.hasEnoughFocusForStrategicSpell("defenceCharm") && ! professor.hasDefenceCharm) {
-                            this.addEvent(new DefenceCharmEvent(timestampBegin, professor.stats.defenceCharmIncrease, professor, professor)); // Cast defence charm on self
-                            return; 
-                        }
-                        if (professor.hasEnoughFocusForStrategicSpell("proficiencyPowerCharm") && ! professor.hasProficiencyPowerCharm) {
-                            this.addEvent(new ProficiencyPowerCharmEvemt(timestampBegin, 0.4, this.wizards, professor));
-                            return;
-                        }
-                        let strategicSpellTarget: Enemy = this.getHighestPriorityAvailableEnemy(professor);
-                        if (professor.hasEnoughFocusForStrategicSpell("deteriorationHex") && ! strategicSpellTarget.hasDeteriorationHex) {
-                            this.addEvent(new DeteriorationHexEvent(timestampBegin, 40, strategicSpellTarget, professor));
-                            return; 
-                        }
-                        
-                        if (strategicSpellTarget === undefined) {
-                            throw new Error("Error during finding next enemy target, none available! Something went wrong")
-                        }
-
-                        // Enter combat (=click on enemy, wait for black screen)
-                        if (strategicSpellTarget.inCombat === false) {
-                            this.addEvent(new EnterCombatEvent(timestampBegin, strategicSpellTarget, professor, this.rng));
-                            return;
-                        }
-                    }
-    
-                    // Spam mending charm
-                    break;
-            }
+        let highestPriorityAvailableEnemy: Enemy | null = this.getHighestPriorityAvailableEnemy(wizard);
+        if (highestPriorityAvailableEnemy === undefined) {
+            highestPriorityAvailableEnemy = null; 
         }
-        else {
-            // In combat
-            // Potion usage
-            // health potion: use if enemy next damage would kill me AND health potion remaining AND next damage < my HP
-            
-            
-            // Start normal attack event sequence
-            this.addEvent(new CombatSpellCircleEvent(timestampBegin, wizard.inCombatWith!, wizard, this.rng));
 
+        let facts: ruleFactType = {
+            wizard: wizard,
+            highestPriorityAvailableEnemy: highestPriorityAvailableEnemy,  
+            allWizards: this.wizards
         }
-        
+        let nextEvent: SimEvent = await this.getRulesEngine(wizard.nameClass).getNextAction(timestampBegin, facts);
+        this.addEvent(nextEvent);
     }   
 
 
@@ -307,7 +287,7 @@ export class CombatSimulation {
             firstBy(function(v1, v2) { return v1.inCombat === v2.inCombat ? 0 : v1.inCombat ? 1 : -1 })
             .thenBy(function(v1, v2) { return wizard.isProficientAgainst(v1) === wizard.isProficientAgainst(v2) ? 0 : wizard.isProficientAgainst(v1) ? -1 : 1})
             .thenBy(function(v1, v2) { return v2.focusReward - v1.focusReward })
-        );;
+        );
     }
 
     getHighestPriorityAvailableEnemy(wizard: Wizard): Enemy {

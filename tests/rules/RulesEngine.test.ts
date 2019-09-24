@@ -11,6 +11,7 @@ import { EnterCombatEvent } from "../../src/sim/events/wizard/combat/EnterCombat
 import { DefenceCharmEvent } from "../../src/sim/events/wizard/room/spells/professor/DefenceCharmEvent";
 import { SimEvent } from "../../src/sim/events/SimEvent";
 import { CombatSpellCircleEvent } from "../../src/sim/events/wizard/combat/CombatSpellCircleEvent";
+import { MendingCharmEvent } from "../../src/sim/events/wizard/room/spells/professor/MendingCharmEvent";
 
 // https://github.com/domenic/chai-as-promised/issues/192
 before(() => {
@@ -86,6 +87,16 @@ describe("RulesEngine", function() {
             expect((simEvent as CombatSpellCircleEvent).enemy).to.equal(enemy);
         }); 
     });
-    
+    it("professor_shouldCastMendingCharm", function() {
+        wizard.inCombat = false;
+        wizard.removeFocus(wizard.getFocus());
+        facts.highestPriorityAvailableEnemy = null;
+
+        return rulesEngine.getNextAction(0, facts).then(simEvent => {
+            expect(simEvent instanceof MendingCharmEvent).to.be.true; 
+            expect((simEvent as MendingCharmEvent).wizard).to.equal(wizard);
+            expect((simEvent as MendingCharmEvent).targetWizard).to.equal(wizard);
+        }); 
+    });
 
 });

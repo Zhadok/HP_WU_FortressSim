@@ -39,7 +39,7 @@ declare type statNameType = keyof WizardStats;
 declare type ruleFactType = {
     wizard: Wizard,
     allWizards: Array<Wizard>,
-    highestPriorityAvailableEnemy: Enemy
+    highestPriorityAvailableEnemy: Enemy | null
 }
 declare type actionNameType = strategicSpellNameType | 
                               "enterCombatWithHighestPriorityAvailableEnemy" | "exitCombat" | 

@@ -1,7 +1,5 @@
-import { SimEvent } from "../../SimEvent";
-import { WizardEvent } from "../WizardEvent";
-import { Wizard } from "../../../../model/player/Wizard";
-
+import { WizardEvent } from "../wizard/WizardEvent";
+import { Wizard } from "../../../model/player/Wizard";
 
 export abstract class PotionEvent extends WizardEvent {
     

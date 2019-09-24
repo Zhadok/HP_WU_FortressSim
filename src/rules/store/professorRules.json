@@ -171,5 +171,28 @@
                 }
             ]
         }
+    }, {
+        "event": {
+            "type": "mendingCharm",
+            "params": {
+                "targetWizard": "lowestHP"
+            }
+        },
+        "priority": 0,
+        "conditions": {
+            "all": [
+                {
+                    "fact": "wizard",
+                    "path": ".inCombat",
+                    "operator": "equal",
+                    "value": false
+                },
+                {
+                    "fact": "highestPriorityAvailableEnemy",
+                    "operator": "equal",
+                    "value": null
+                }
+            ]
+        }
     }
 ]

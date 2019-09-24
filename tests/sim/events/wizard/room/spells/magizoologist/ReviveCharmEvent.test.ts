@@ -2,10 +2,10 @@
 import { expect } from "chai";
 import { TestData } from "../../../../../../TestData";
 import { ReviveCharmEvent } from "../../../../../../../src/sim/events/wizard/room/spells/magizoologist/ReviveCharmEvent";
-import focusCostData from "../../../../../../../src/data/focusCosts.json";
 import { CombatSimulation } from "../../../../../../../src/sim/CombatSimulation";
 import { WizardDefeatEvent } from "../../../../../../../src/sim/events/wizard/combat/WizardDefeatEvent";
 import { WizardReviveEvent } from "../../../../../../../src/sim/events/wizard/room/WizardReviveEvent";
+import focusCostData from "../../../../../../../src/data/focusCosts.json";
 
 
 describe("ReviveCharmEvent", function() {
@@ -23,7 +23,7 @@ describe("ReviveCharmEvent", function() {
     });
 
     
-    it("combatSimulation_deadAndRevive_eventOrder", function() {
+    it("combatSimulation_deadAndRevive_eventOrder", async function() {
         let sim1 = new CombatSimulation(TestData.buildDefaultSimParametersTwoWizards(), TestData.buildNewRNG_0());
         let enemy = TestData.buildDefaultEnemy();
         sim1.addEnemyToActive(enemy);
@@ -45,11 +45,11 @@ describe("ReviveCharmEvent", function() {
         sim1.addEvent(reviveCharmEvent);
         expect(sim1.peekNextEvent() instanceof ReviveCharmEvent).to.be.true;
 
-        sim1.processNextEvent(); // Process ReviveCharmEvent
+        await sim1.processNextEvent(); // Process ReviveCharmEvent
         expect(usefulWizard.getFocus()).to.equal(usefulWizard.stats.initialFocus - focusCostData.reviveCharm);
         expect(sim1.peekNextEvent() instanceof WizardReviveEvent).to.be.true;
 
-        sim1.processNextEvent(); // Process WizardReviveEvent
+        await sim1.processNextEvent(); // Process WizardReviveEvent
         expect(deadWizard.getCurrentStamina()).to.equal(deadWizard.getMaxStamina());
         expect(deadWizard.getIsDefeated()).to.be.false;
         expect(reviveCharmEvent.allowWizardFollowupAction()).to.be.true; // Dead wizard should be allowed a followup action        
