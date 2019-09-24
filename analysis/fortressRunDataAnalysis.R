@@ -24,6 +24,14 @@ ggplot(groupedByRun[runestoneLevels==1], aes(x=as.factor(roomLevel), y=nEnemies+
 ggplot(groupedByRun, aes(x=roomLevel, y=nEnemies+nElite)) + geom_point()
 
 
+# Does number of enemies have influence on average enemy difficulty?
+ggplot(groupedByRun[roomLevel==10], aes(x=nEnemies+nElite, y=averageEnemyDifficulty, color=runestoneLevels)) +geom_point() + 
+  geom_jitter(width=0.05,height=0)
+ggplot(groupedByRun[roomLevel==10], aes(x=nEnemies+nElite, y=averageEnemyLevel, color=runestoneLevels)) +geom_point() + 
+  geom_jitter(width=0.05,height=0)
+
+
+
 # Proficiency
 
 

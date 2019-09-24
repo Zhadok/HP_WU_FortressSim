@@ -86,14 +86,14 @@ export class CombatSpellCastWizardEvent extends CombatEvent {
             wizard.getPowerAfterModifications(enemy) *                                                                                                   // Power
             (1 + (isProficient * Math.max(0, wizard.getProficiencyPowerAfterModifications()-enemy.getDeficiencyDefenceAfterModifications()))); // Proficiency / deficiency
         
-        console.log("Wizard damage before defence: " + result);
+        //console.log("Wizard damage before defence: " + result);
             
         result *=     
             defenceMultiplier * 
             (1 + (isCritical * wizard.getCriticalPowerAfterModifications(enemy))) *
             damageBuffs
             ;
-        console.log("Wizard damage after defence: " + result + ", enemy has defenceMultiplier=" + defenceMultiplier);
+        //console.log("Wizard damage after defence: " + result + ", enemy has defenceMultiplier=" + defenceMultiplier);
         return Math.ceil(result);
     }
 
