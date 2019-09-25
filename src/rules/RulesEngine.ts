@@ -54,6 +54,7 @@ export class RulesEngine {
             throw new Error("Could not find a next action for wizard id=" + facts.wizard.playerIndex + 
                             ", class=" + facts.wizard.nameClassUserFriendly);
         } 
+        //console.log(results);
         let event = results[0];
         let highestPriorityAvailableEnemy = facts.highestPriorityAvailableEnemy;
         let wizard = facts.wizard;
@@ -72,7 +73,7 @@ export class RulesEngine {
         }
         switch (event.type as actionNameType) {
             case "defenceCharm": 
-                console.log(event);
+                //console.log(event);
                 return new DefenceCharmEvent(timestampBegin, wizard.stats.defenceCharmIncrease, targetWizard!, wizard);
             case "proficiencyPowerCharm":
                 return new ProficiencyPowerCharmEvemt(timestampBegin, wizard.stats.proficiencyPowerCharmIncrease, facts.allWizards, wizard);

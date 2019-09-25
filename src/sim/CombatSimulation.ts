@@ -182,6 +182,7 @@ export class CombatSimulation {
                 this.log(2, "Spawning enemy id=" + event.enemy.enemyIndex + " (" + event.enemy.nameUserFriendly + ")");
                 this.addEnemyToActive(event.enemy);
                 if (this.eventQueue.filter(e => e instanceof InitialEnemySpawnEvent).length === 0) {
+                    // Only trigger idle wizards if no more initial enemy spawns in queue
                     await this.triggerIdleWizards();
                 }   
             }
@@ -227,6 +228,7 @@ export class CombatSimulation {
         for (let event of this.eventQueue) {
             if (event instanceof WizardEvent) {
                 if (event.wizard.playerIndex === wizard.playerIndex) {
+                    //this.log(3, "Wizard id=" + wizard.playerIndex + " has blocking event: " + event.eventName);
                     hasBlockingEvent = true;
                 }
             }

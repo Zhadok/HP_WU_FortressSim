@@ -30,8 +30,8 @@
                 }, {
                     "fact": "wizard",
                     "path": ".triggers.defenceCharm",
-                    "operator": "equal",
-                    "value": 1
+                    "operator": "notEqual",
+                    "value": null
                 }
             ]
         }

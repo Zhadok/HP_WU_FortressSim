@@ -18,6 +18,7 @@ import { EnemySpawnEvent } from "../../src/sim/events/env/EnemySpawnEvent";
 import { DeteriorationHexEvent } from "../../src/sim/events/wizard/room/spells/professor/DeteriorationHexEvent";
 import { WizardDefeatEvent } from "../../src/sim/events/wizard/combat/WizardDefeatEvent";
 import { Wizard } from "../../src/model/player/Wizard";
+import { Professor } from "../model/player/Professor";
 
 
 describe("CombatSimulation", function() {
@@ -110,7 +111,7 @@ describe("CombatSimulation", function() {
     });
 
 
-    it("combatSimulation_fullManualSimulation", function() {
+    it("combatSimulation_fullManualSimulation", async function() {
         Logger.verbosity = 2;
         let defaultEnemies = TestData.buildDefaultEnemies();
         let shouldBeTime = 0;
@@ -132,19 +133,24 @@ describe("CombatSimulation", function() {
         expect(sim1.peekNextEvent() instanceof EnemySpawnEvent).to.be.true;
 
         sim1.wizards[0].addFocus(3), // Enough for defence charm
-        sim1.processNextEvent(); // Processing enemy spawn
+        sim1.wizards[0].setTrigger("defenceCharm", 0.16);
+        await sim1.processNextEvent(); // Processing enemy spawn
         expect(sim1.fortressRoom.enemiesActive.length).to.be.equals(1);
         expect(sim1.fortressRoom.enemiesActive[0]).to.deep.equal(defaultEnemies[0]);
         expect(sim1.isWizardIdle(sim1.wizards[0])).to.be.true;
-        expect(sim1.peekNextEvent() instanceof InitialEnemySpawnEvent).to.be.true;
+        expect(sim1.peekNextEvent()).to.be.instanceOf(InitialEnemySpawnEvent);
 
-        sim1.processNextEvent(); // Processing initial spawn
+        expect((sim1.wizards[0] as Professor).hasStudiedDefenceCharm()).to.be.true; 
+        expect(sim1.wizards[0].hasEnoughFocusForStrategicSpell("defenceCharm")).to.be.true; 
+        expect(sim1.wizards[0].inCombat).to.be.false; 
+        expect(sim1.wizards[0].hasDefenceCharm).to.be.false; 
+        await sim1.processNextEvent(); // Processing initial spawn
         shouldBeTime += eventData.initialEnemySpawnAnimation;    
         expect(sim1.currentTime).to.equals(shouldBeTime);
         expect(sim1.isWizardIdle(sim1.wizards[0])).to.be.false;
-        expect(sim1.peekNextEvent() instanceof DefenceCharmEvent).to.be.true;
+        expect(sim1.peekNextEvent()).to.be.instanceOf(DefenceCharmEvent);
 
-        sim1.processNextEvent(); // Processing defence charm
+        await sim1.processNextEvent(); // Processing defence charm
         shouldBeTime += eventData.strategicSpellDragAndCastAnimation;
         expect(sim1.currentTime).to.equals(shouldBeTime);
         expect(sim1.wizards[0].hasDefenceCharm).to.be.true;
@@ -152,99 +158,99 @@ describe("CombatSimulation", function() {
         expect(sim1.wizards[0].inCombat).to.be.true; // Should be in combat at START of event
         expect(sim1.fortressRoom.enemiesActive[0].inCombat).to.be.true;
 
-        sim1.processNextEvent(); // Processing enter combat
+        await sim1.processNextEvent(); // Processing enter combat
         shouldBeTime += eventData.enterCombat;
         expect(sim1.currentTime).to.equals(shouldBeTime);
         expect(sim1.peekNextEvent() instanceof CombatBeginEvent);
-
-        sim1.processNextEvent(); // Processing combat begin animation
+     
+        await sim1.processNextEvent(); // Processing combat begin animation
         shouldBeTime += eventData.combatBeginAnimation_acromantula;
         expect(sim1.currentTime).to.equals(shouldBeTime);
         expect(sim1.peekNextEvent() instanceof CombatSpellCircleEvent).to.be.true;
 
-        sim1.processNextEvent(); // Processing spell circle animation (filling the target circle)
+        await sim1.processNextEvent(); // Processing spell circle animation (filling the target circle)
         shouldBeTime += eventData.spellCircle_acromantula;
         expect(sim1.currentTime).to.equals(shouldBeTime);
         expect(sim1.peekNextEvent() instanceof CombatSpellTraceEvent).to.be.true;
 
-        sim1.processNextEvent(); // Processing spell trace animation (tracing the form of the spell)
+        await sim1.processNextEvent(); // Processing spell trace animation (tracing the form of the spell)
         shouldBeTime += eventData.spellTrace;
         expect(sim1.currentTime).to.equals(shouldBeTime);
         expect(sim1.peekNextEvent() instanceof CombatSpellCastWizardEvent).to.be.true;
         sim1.wizards[0].stats.accuracy = 2; 
 
-        sim1.processNextEvent(); // Processing spell cast animation (wizard casts, enemy flinches)
+        await sim1.processNextEvent(); // Processing spell cast animation (wizard casts, enemy flinches)
         shouldBeTime += eventData.spellCast_wizard;
         expect(sim1.currentTime).to.equals(shouldBeTime);
         expect(sim1.peekNextEvent() instanceof CombatSpellCastEnemyEvent).to.be.true;
         expect(defaultEnemies[0].getCurrentStamina() < defaultEnemies[0].getMaxStamina()).to.be.true;
 
-        sim1.processNextEvent(); // Processing spell cast (enemy casts, wizard has opportunity for protego)
+        await sim1.processNextEvent(); // Processing spell cast (enemy casts, wizard has opportunity for protego)
         shouldBeTime += eventData.spellCast_enemy;
         expect(sim1.currentTime).to.equals(shouldBeTime);
         expect(sim1.peekNextEvent() instanceof CombatSpellCircleEvent).to.be.true;
         expect(sim1.wizards[0].getCurrentStamina() < sim1.wizards[0].getMaxStamina());
 
-        sim1.processNextEvent(); // Processing spell circle event
+        await sim1.processNextEvent(); // Processing spell circle event
         shouldBeTime += eventData.spellCircle_acromantula;
         sim1.processNextEvent(); // Processing spell trace
         shouldBeTime += eventData.spellTrace;
         defaultEnemies[0].removeStamina( defaultEnemies[0].getCurrentStamina() - 1 );
 
-        sim1.processNextEvent(); // Processing spell cast (wizard casts, enemy should be dead after this)
+        await sim1.processNextEvent(); // Processing spell cast (wizard casts, enemy should be dead after this)
         shouldBeTime += eventData.spellCast_wizard;
         expect(defaultEnemies[0].getIsDefeated()).to.be.true;
         expect(sim1.peekNextEvent() instanceof EnemyDefeatEvent).to.be.true;
 
 
-        sim1.processNextEvent(); // Processing EnemyDeathAnimation
+        await sim1.processNextEvent(); // Processing EnemyDeathAnimation
         shouldBeTime += eventData.enemyDeathAnimation;
         expect(sim1.currentTime).to.equals(shouldBeTime);
         expect(sim1.wizards[0].inCombat).to.be.false;
         expect(sim1.isWizardIdle(sim1.wizards[0])).to.be.true;
         expect(sim1.peekNextEvent() instanceof EnemySpawnEvent).to.be.true;
 
-        sim1.processNextEvent(); // Processing enemy spawn event
+        await sim1.processNextEvent(); // Processing enemy spawn event
         shouldBeTime += 0; // Should be instantly there
         expect(sim1.currentTime).to.equals(shouldBeTime);
         expect(sim1.peekNextEvent() instanceof DeteriorationHexEvent).to.be.true; // Idle wizard should be triggered to cast hex
          
-        sim1.processNextEvent(); // Processing hex 
+        await sim1.processNextEvent(); // Processing hex 
         shouldBeTime += eventData.strategicSpellDragAndCastAnimation;
         expect(sim1.currentTime).to.equals(shouldBeTime);
         expect(defaultEnemies[1].hasDeteriorationHex).to.be.true;
         expect(defaultEnemies[1].deteriorationHexDamage).to.be.greaterThan(0);
         expect(sim1.peekNextEvent() instanceof EnterCombatEvent).to.be.true; // wizard should enter combat
         
-        sim1.processNextEvent(); // Processing enter combat
+        await sim1.processNextEvent(); // Processing enter combat
         shouldBeTime += eventData.enterCombat;
         expect(sim1.currentTime).to.equals(shouldBeTime);
         expect(defaultEnemies[1].inCombat).to.be.true;
         expect(sim1.wizards[0].inCombat).to.be.true;
         
-        sim1.processNextEvent(); // Processing combat begin animation
+        await sim1.processNextEvent(); // Processing combat begin animation
         shouldBeTime += eventData.combatBeginAnimation_pixie;
         expect(sim1.currentTime).to.equals(shouldBeTime);
         expect(sim1.peekNextEvent() instanceof CombatSpellCircleEvent).to.be.true;
     
-        sim1.processNextEvent(); // Processing spell circle animation (filling the target circle)
+        await sim1.processNextEvent(); // Processing spell circle animation (filling the target circle)
         shouldBeTime += eventData.spellCircle_pixie;
         expect(sim1.currentTime).to.equals(shouldBeTime);
         expect(sim1.peekNextEvent() instanceof CombatSpellTraceEvent).to.be.true;
 
-        sim1.processNextEvent(); // Processing spell trace animation (tracing the form of the spell)
+        await sim1.processNextEvent(); // Processing spell trace animation (tracing the form of the spell)
         shouldBeTime += eventData.spellTrace;
         expect(sim1.currentTime).to.equals(shouldBeTime);
         expect(sim1.peekNextEvent() instanceof CombatSpellCastWizardEvent).to.be.true;
         defaultEnemies[1].removeStamina( defaultEnemies[1].getCurrentStamina() - 1 );
 
-        sim1.processNextEvent(); // Processing spell cast animation (wizard casts, enemy flinches)
+        await sim1.processNextEvent(); // Processing spell cast animation (wizard casts, enemy flinches)
         shouldBeTime += eventData.spellCast_wizard;
         expect(sim1.currentTime).to.equals(shouldBeTime);
         expect(defaultEnemies[1].getIsDefeated()).to.be.true;
         expect(sim1.peekNextEvent() instanceof EnemyDefeatEvent).to.be.true;
 
-        sim1.processNextEvent(); // Processing enemydefeatevent
+        await sim1.processNextEvent(); // Processing enemydefeatevent
         
 
 

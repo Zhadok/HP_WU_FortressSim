@@ -53,7 +53,7 @@ describe("RulesEngine", function() {
         wizard.inCombat = false; 
         wizard.addFocus(3);
         wizard.hasDefenceCharm = false;
-        wizard.setTrigger("defenceCharm", 1);
+        wizard.setTrigger("defenceCharm", 0.16);
 
         expect(wizard.hasStudiedDefenceCharm()).to.be.true; 
 
