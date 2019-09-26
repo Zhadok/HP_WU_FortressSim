@@ -14,8 +14,8 @@ ggplot(groupedByRun[runestoneLevels==1], aes(x=roomLevel, y=difficultyBeforePlay
 ggplot(groupedByRun[runestoneLevels==1], aes(x=roomLevel, y=difficultyBeforePlayerMultiplier)) + geom_point() + geom_line() + scale_y_sqrt()
 
 # How is difficulty budget divided among enemies?
-ggplot(groupedByRun[runestoneLevels==1], aes(x=roomLevel, y=difficulty/sumProposedMultiplication)) + geom_point() + geom_line()
-ggplot(groupedByRun, aes(x=as.factor(roomLevel), y=difficulty/sumProposedMultiplication)) + geom_boxplot() + ylim(c(0, NA))
+ggplot(groupedByRun, aes(x=roomLevel, y=difficulty/sumProposedMultiplication)) + geom_point() + geom_line()
+ggplot(groupedByRun, aes(x=factor(roomLevel, levels=1:20, labels=1:20), y=difficulty/sumProposedMultiplication)) + geom_boxplot() + ylim(c(0, NA)) + scale_x_discrete()
 
 
 # Number of enemies per room level
@@ -24,12 +24,13 @@ ggplot(groupedByRun[runestoneLevels==1], aes(x=as.factor(roomLevel), y=nEnemies+
 ggplot(groupedByRun, aes(x=roomLevel, y=nEnemies+nElite)) + geom_point()
 
 
-# Does number of enemies have influence on average enemy difficulty?
+# Does number of enemies have influence on stuff
 ggplot(groupedByRun[roomLevel==10], aes(x=nEnemies+nElite, y=averageEnemyDifficulty, color=runestoneLevels)) +geom_point() + 
   geom_jitter(width=0.05,height=0)
 ggplot(groupedByRun[roomLevel==10], aes(x=nEnemies+nElite, y=averageEnemyLevel, color=runestoneLevels)) +geom_point() + 
   geom_jitter(width=0.05,height=0)
-
+ggplot(groupedByRun[roomLevel==10], aes(x=nEnemies+nElite, y=, color=runestoneLevels)) +geom_point() + 
+  geom_jitter(width=0.05,height=0)
 
 
 # Proficiency
@@ -67,6 +68,8 @@ ggplot(groupedByRoomLevel[runestoneLevels==1], aes(x=roomLevel, y=averageEnemyLe
   geom_point() 
 ggplot(groupedByRoomLevel, aes(x=difficulty, y=averageEnemyLevel)) + geom_point(aes(y=minAverageEnemyLevel), color="red") + geom_point(aes(y=maxAverageEnemyLevel), color="red") + 
   geom_point() 
+ggplot(groupedByRoomLevel, aes(x=difficultyBeforePlayerMultiplier, y=averageEnemyLevel)) + geom_point(aes(y=minAverageEnemyLevel), color="red") + geom_point(aes(y=maxAverageEnemyLevel), color="red") + 
+  geom_point() 
 
 
 # Average enemy difficulty: Maybe linear? Large variance
@@ -74,6 +77,11 @@ ggplot(groupedByRoomLevel[runestoneLevels==1], aes(x=roomLevel, y=averageEnemyDi
   geom_point() 
 ggplot(groupedByRoomLevel, aes(x=difficulty, y=averageEnemyDifficulty)) + geom_point(aes(y=minAverageEnemyDifficulty), color="red") + geom_point(aes(y=maxAverageEnemyDifficulty), color="red") + 
   geom_point() + ylim(c(1,5))
+
+
+# Average elites per room level
+ggplot(groupedByRoomLevel, aes(x=difficulty, y=meanNElite / meanNEnemies)) + geom_point()
+
 
 
 ggplot(groupedByRoomLevel, aes(x=roomLevel, y=difficultyBeforePlayerMultiplier/meanNEnemies)) + geom_point() # this seems weird
@@ -101,8 +109,7 @@ ggplot(groupedByRoomLevel, aes(x=as.factor(roomLevel), y=averageProficiency))
 ggplot(groupedByRoomLevel, aes(x=roomLevel, y=averageProficiency)) + geom_point() + geom_line()
 
 dataFortresses[, difficultyBudgetThisEnemy:=predict(modelForDifficultyBudgetPerSingleEnemy, data.table(roomLevel=roomLevel))]
-dataFortresses[, enemyMultiplication:=2*enemyDifficulty*enemyLevel*(1+isElite)]
-
+dataFortresses[, enemyMultiplication:=enemyDifficulty*enemyLevel*(1+isElite)]
 
 
 
@@ -143,3 +150,82 @@ ggplot(data.table(), aes(x=1:20, y=multipliers)) + geom_point() + geom_line()
 # nEnemies is function of roomLevel
 # elites count as two enemies
 # 
+
+
+
+
+
+
+
+#############################################
+## Regression results for enemy generation ##
+#############################################
+# For now, base everything on difficulty
+# steps: Determine number of enemies (sqrt of difficulty)
+# For each enemy: 
+#   determine isElite
+#   determine level
+#   determine difficulty
+
+dataTrain <- groupedByRoomLevel[roomLevel>0]
+dataToPredict <- data.table(roomLevel=1:20, difficulty=playerMultiplier * getSoloDifficultyForRoomLevel(1:20), difficultyBeforePlayerMultiplier=getSoloDifficultyForRoomLevel(1:20))
+
+# Number of enemies
+modelNEnemies <- lm(meanNEnemies ~ I(sqrt(difficulty)), dataTrain)
+summary(modelNEnemies)
+(title <- paste0("let nEnemies = ", modelNEnemies$coefficients[[1]], " + ", modelNEnemies$coefficients[[2]],  " * Math.sqrt(difficulty);"))
+ggplot(dataTrain, aes(x=difficulty, y=meanNEnemies)) + geom_point() + geom_line(data=data.table(x=dataTrain$difficulty, 
+                                                                                                         y=predict(modelNEnemies, dataTrain)), 
+                                                                                         aes(x=x, y=y)) + ggtitle(title) +
+  geom_point(data=dataTrain, aes(y=dataTrain$minNEnemies), color="red") + geom_point(data=dataTrain, aes(y=dataTrain$maxNEnemies), color="red")
+cat(title)
+
+# Is Elite: Lowest level seen is in roomLevel 4. Assume static factor
+isEliteProbability <- dataFortresses[roomLevel>=4, (sum(isElite)/.N)]
+print(paste0("Elite probability: ", isEliteProbability))
+
+
+
+
+# Determine level
+modelAverageEnemyLevel <- lm(averageEnemyLevel ~ I(sqrt(difficulty)), dataTrain) #
+title <- paste0("const averageEnemyLevel = ", modelAverageEnemyLevel$coefficients[[1]], " + ", modelAverageEnemyLevel$coefficients[[2]],  " * sqrt(difficulty)")
+modelAverageEnemyLevel <- lm(averageEnemyLevel ~ runestoneLevels + roomLevel, dataTrain) #
+(title <- paste0("const averageEnemyLevel = ", modelAverageEnemyLevel$coefficients[[1]], 
+                " + ", modelAverageEnemyLevel$coefficients[[2]], " * runestoneLevels", 
+                " + ", modelAverageEnemyLevel$coefficients[[3]], " * roomLevel"))
+ggplot(dataTrain, aes(x=difficulty, y=averageEnemyLevel)) + geom_point() + geom_line(data=data.table(x=dataTrain$difficulty, 
+                                                                                                         y=predict(modelAverageEnemyLevel, dataTrain))+2, 
+                                                                                         aes(x=x, y=y)) + ggtitle(title)
+
+predict(modelAverageEnemyLevel, data.table(roomLevel=1, difficulty=39, difficultyBeforePlayerMultiplier=39, runestoneLevels=1))[[1]]
+predict(modelAverageEnemyLevel, data.table(roomLevel=10, difficulty=2441, difficultyBeforePlayerMultiplier=1877.692, runestoneLevels=1))[[1]]
+
+predict(modelAverageEnemyLevel, data.table(roomLevel=20, difficulty=17000))[[1]]
+
+
+
+
+# Determine difficulty. Hmm, dependent on nEnemies that were actually used (see data for roomLevel==10)
+
+
+
+##########################################################
+## Regression approach 2: Difficulty "budget" per enemy ##
+##########################################################
+
+
+(modelDifficultyBudgetMultiplier <- lm(averageDifficultyBudgetMultiplier ~ exp(-roomLevel), groupedByRoomLevel))
+(title <- paste0("const difficultyBudgetPerEnemyMultiplier = ", modelDifficultyBudgetMultiplier$coefficients[[1]], 
+                 " + ", modelDifficultyBudgetMultiplier$coefficients[[2]], " * Math.exp(-roomLevel);"))
+ggplot(groupedByRoomLevel, aes(x=roomLevel, y=averageDifficultyBudgetMultiplier)) + geom_point() +
+  geom_line(data=data.table(x=1:20, y=predict(modelDifficultyBudgetMultiplier, data.table(roomLevel=1:20))), 
+            aes(x=x, y=y))
+cat(title)
+
+
+
+
+
+
+

@@ -21,19 +21,19 @@ describe("ExstimuloPotionEvent", function() {
         expect(wizard.exstimuloPotionUsesRemaining).to.equal(5);
         expect(wizard.getDamageBuffMultiplier(enemy)).to.equal(3.25);
        
-        wizard.performAttackCast(); // 4 remaining
+        wizard.performAttackCast(1, false, false); // 4 remaining
         expect(wizard.exstimuloPotionDamageBuff).to.equal(2.25);
         expect(wizard.exstimuloPotionUsesRemaining).to.equal(4);
         expect(wizard.getDamageBuffMultiplier(enemy)).to.equal(3.25);
        
-        wizard.performAttackCast(); // 3 remaining
-        wizard.performAttackCast(); // 2 remaining
-        wizard.performAttackCast(); // 1 remaining
+        wizard.performAttackCast(1, false, false); // 3 remaining
+        wizard.performAttackCast(1, false, false); // 2 remaining
+        wizard.performAttackCast(1, false, false); // 1 remaining
         expect(wizard.exstimuloPotionDamageBuff).to.equal(2.25);
         expect(wizard.exstimuloPotionUsesRemaining).to.equal(1);
         expect(wizard.getDamageBuffMultiplier(enemy)).to.equal(3.25);
        
-        wizard.performAttackCast(); // 0 remaining
+        wizard.performAttackCast(1, false, false); // 0 remaining
         expect(wizard.exstimuloPotionDamageBuff).to.equal(0);
         expect(wizard.exstimuloPotionUsesRemaining).to.equal(0);
         expect(wizard.getDamageBuffMultiplier(enemy)).to.equal(1);

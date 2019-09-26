@@ -1,20 +1,21 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 
 import { CombatSimulation } from "../../../src/sim/CombatSimulation";
-import { CombatSpellCircleEvent } from '../sim/events/wizard/combat/CombatSpellCircleEvent';
-import { CombatSpellCastEnemyEvent } from '../sim/events/wizard/combat/CombatSpellCastEnemyEvent';
 import Prando from 'prando';
 import { TestData } from "../../../tests/TestData";
-import { CombatSimulationParameters } from '../sim/CombatSimulationParameters';
-import { nameClassType, nameClassUserFriendlyType } from '../types';
-import { PotionAvailabilityParameters } from '../sim/PotionAvailabilityParameters';
-import { PersistedSkillTree } from '../model/player/SkillTree/PersistedSkillTree';
-import { SkillTreeNode } from '../model/player/SkillTree/SkillTreeNode';
+import { CombatSimulationParameters } from '../../../src/sim/CombatSimulationParameters';
+import { nameClassType, nameClassUserFriendlyType } from '../../../src/types';
+import { PotionAvailabilityParameters } from '../../../src/sim/PotionAvailabilityParameters';
+import { PersistedSkillTree } from '../../../src/model/player/SkillTree/PersistedSkillTree';
+import { SkillTreeNode } from '../../../src/model/player/SkillTree/SkillTreeNode';
 import { SkillTree } from "../../../src/model/player/SkillTree/SkillTree";
 import { Professor } from '../../../src/model/player/Professor';
 import { Magizoologist } from '../../../src/model/player/Magizoloogist';
 import { Auror } from '../../../src/model/player/Auror';
-
+import {MatExpansionModule, MatExpansionPanel} from '@angular/material/expansion';
+import { statNameType } from '../../../src/types';
+import { Logger } from '../../../src/util/Logger';
+import { CombatSimulationResults } from '../../../src/sim/CombatSimulationResults';
 
 
 @Component({
@@ -23,10 +24,8 @@ import { Auror } from '../../../src/model/player/Auror';
     styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-    title: string = 'HP WU Fortress Simulator';
-    numberSimulations: number = 10000; 
-
-    skillTreeVis = {
+    
+    readonly skillTreeVis = {
         rowHeight: 80,
         columnWidth: 100,
         marginTop: 30,
@@ -34,10 +33,17 @@ export class AppComponent {
         nodeCircleRadius: 30
     }; 
 
-    allowedClasses: { [key in nameClassType]: nameClassUserFriendlyType }; 
+    readonly allowedClasses: { [key in nameClassType]: nameClassUserFriendlyType }; 
+
+    numberSimulations: number = 10000; 
+    simMode: "single" | "multiple" = "single"; 
+    simulationLog: string = "";
+    simulationSingleResults: CombatSimulationResults | null; 
 
     simParameters: CombatSimulationParameters; 
     skillTrees: Array<SkillTree> = [];
+
+
     constructor() {
         //let sim = new CombatSimulation(this.simParameters, new Prando(0));
         this.allowedClasses = {
@@ -46,16 +52,45 @@ export class AppComponent {
             "professor": "Professor"
         };
 
-        if (true) {
+        let self = this; 
+        let localStorageHandler = {
+            get: function(target, key) {
+                // Accessing nested properties: Also require a proxy of its own
+                if (typeof target[key] === 'object' && target[key] !== null) {
+                    return new Proxy(target[key], localStorageHandler)
+                  } else {
+                    return target[key];
+                  }
+            },
+            set: function(obj, prop, value) {
+
+                // The default behavior to store the value
+                obj[prop] = value;
+                self.persistToLocalStorage.call(self);
+
+                // Indicate success
+                return true;
+            }
+        };
+        
+        if (this.isPersistedInLocalStorage() === false) {
             // If nothing stored in localStorage
             this.simParameters = this.getInitialSimParameters();
             let initialWizardSettings = this.getInitialWizardSettings();
             this.addWizardSettings(initialWizardSettings);
+        } else {
+            this.initFromLocalStorage(); 
         }
 
+        this.simParameters = new Proxy(this.simParameters, localStorageHandler); 
+        Logger.callbackFunction = function(messageLine: string) {
+            self.simulationLog += messageLine + "\n";
+            //console.log(messageLine);
+        }
+        this.simulationSingleResults = null; 
     }
 
-    onClickAddWizard(event) {
+    onClickAddWizard() {
         console.log("Adding wizard...");
         let initialWizardSettings = this.getInitialWizardSettings();
         this.addWizardSettings(initialWizardSettings);
@@ -69,7 +104,7 @@ export class AppComponent {
         this.skillTrees.push(new SkillTree(settings.nameClass));
     }
 
-    onClickRemoveWizard(playerIndex) {
+    onClickRemoveWizard(playerIndex: number) {
         console.log("Removing wizard with playerIndex=" + playerIndex);
         this.simParameters.nameClasses.splice(playerIndex, 1);
         this.simParameters.potions.splice(playerIndex, 1);
@@ -78,7 +113,7 @@ export class AppComponent {
         this.skillTrees.splice(playerIndex, 1);
     }
 
-    onChangeSelectWizardClass(event, playerIndex): void {
+    onChangeSelectWizardClass(event, playerIndex: number): void {
         if (this.skillTrees[playerIndex].nameClass === event.value) {
             return; 
         }
@@ -89,23 +124,42 @@ export class AppComponent {
         }
     }
 
-    onClickSkillTreeNode(node: SkillTreeNode, playerIndex): void {
+    onClickSkillTreeNode(node: SkillTreeNode, playerIndex: number): void {
         let skillTree = this.skillTrees[playerIndex];
-        let currentLevel = skillTree.nodesStudied.get(node);
+        let currentLevel: number = skillTree.nodesStudied.get(node)!;
         let maxLevel = node.levels.length;
         skillTree.nodesStudied.set(node, (currentLevel + 1) % (maxLevel+1));
 
         this.simParameters.skillTrees[playerIndex] = skillTree.persist();
-        // Persist to local storage
         
     }
 
-    onClickButtonStartSingleSimulation(): void {
-
+    async onClickButtonStartSingleSimulation() {
+        this.simulationLog = "";
+        this.closeSettingsPanels();
+        this.simMode = "single";
+        console.log("Starting single simulation with parameters:");
+        console.log(this.simParameters);
+        let sim = new CombatSimulation(this.simParameters, new Prando(this.simParameters.seed));
+        sim.init();
+        await sim.simulate(); 
+        this.simulationSingleResults = sim.toSimulationResults(); 
     }
 
     onClickButtonStartMultipleSimulations(): void {
-        console.log("Starting " + this.numberSimulations + " simulations...");
+        this.closeSettingsPanels();
+        this.simMode = "multiple";
+        console.log("Starting " + this.numberSimulations + " simulations with parameters:");
+        console.log(this.simParameters);
+    }
+
+    @ViewChild("matPanelInputParameters", {static: false}) matPanelInputParameters: MatExpansionPanel;
+    @ViewChild("matPanelAdvancedSimulationSettings", {static: false}) matPanelAdvancedSimulationSettings: MatExpansionPanel;
+    @ViewChild("matPanelSimulationResults", {static:false}) matPanelSimulationResults: MatExpansionPanel;
+    closeSettingsPanels(): void {
+        this.matPanelInputParameters.close();
+        this.matPanelAdvancedSimulationSettings.close(); 
+        this.matPanelSimulationResults.open(); 
     }
 
     // Dependencies can look like the following: ["10/2", "9/3"]
@@ -142,10 +196,12 @@ export class AppComponent {
     isUppercase(char: string):boolean {
         return char === char.toUpperCase(); 
     }
-    isValidStatForClass(statName, playerIndex: number): boolean {
+    isValidStatForClass(statName: statNameType, playerIndex: number): boolean {
         if (this.simParameters.nameClasses[playerIndex] == "professor") return Professor.isValidStatForClass(statName);
         if (this.simParameters.nameClasses[playerIndex] == "magizoologist") return Magizoologist.isValidStatForClass(statName);
         if (this.simParameters.nameClasses[playerIndex] == "auror") return Auror.isValidStatForClass(statName);
+
+        throw new Error("Unknown class name: " + this.simParameters.nameClasses[playerIndex]);
     }
 
     getSkillTreeNodeTooltip(node: SkillTreeNode): string {
@@ -196,5 +252,29 @@ export class AppComponent {
             nWitSharpeningAvailable: 0
         };
     }
+
+    initFromLocalStorage(): void {
+        let data = JSON.parse(localStorage.getItem("savedData")!); 
+        this.numberSimulations = data.numberSimulations;
+        this.simParameters = data.simParameters;
+        for (let persistedSkillTree of this.simParameters.skillTrees) {
+            this.skillTrees.push(SkillTree.fromPersisted(persistedSkillTree));
+        }
+    }
+
+
+    isPersistedInLocalStorage(): boolean {
+        return localStorage.getItem("savedData") !== null; 
+    }
+
+    persistToLocalStorage(): void {
+        console.log("Persisting to local storage...");
+        // Persist neccessary attributes of this class
+        localStorage.setItem("savedData", JSON.stringify({
+            numberSimulations: this.numberSimulations,
+            simParameters: this.simParameters
+        }));
+    }
+
 
 }

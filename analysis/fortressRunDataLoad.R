@@ -12,6 +12,11 @@ dirToRScript <- dirname(rstudioapi::getSourceEditorContext()$path)
 ######################
 runestoneData <- fromJSON(paste0(dirToRScript, "/../src/data/fortressDifficulties.json"))
 playerMultiplier <- runestoneData$playerCountMultipliers[, 1]
+
+getSoloDifficultyForRoomLevel <- function(roomLevel, runestoneLevel=1) {
+  runestoneData$runestoneDifficulties[roomLevel, runestoneLevel]
+}
+
 dataFortressesRaw <- data.table(read.csv(paste0(dirToRScript, "/fortressRunData.csv"), stringsAsFactors=F))
 
 dataFortresses1 <- copy(dataFortressesRaw)
@@ -177,6 +182,10 @@ groupedByRoomLevel <- groupedByRun[, list(nRuns=.N
                                           , meanNEnemies=mean(nEnemies+nElite)
                                           , maxNEnemies=max(nEnemies+nElite)
                                           
+                                          , minNElite=min(nElite)
+                                          , meanNElite=mean(nElite)
+                                          , maxNElite=max(nElite)
+                                          
                                           , minAverageEnemyLevel=min(averageEnemyLevel)
                                           , averageEnemyLevel=weighted.mean(averageEnemyLevel, nEnemies+nElite)
                                           , maxAverageEnemyLevel=max(averageEnemyLevel)
@@ -186,7 +195,7 @@ groupedByRoomLevel <- groupedByRun[, list(nRuns=.N
                                           , maxAverageEnemyDifficulty=max(averageEnemyDifficulty)
                                           
                                           , min=min(difficulty/sumProposedMultiplication)
-                                          , meanFraction=mean(difficulty/sumProposedMultiplication)
+                                          , averageDifficultyBudgetMultiplier=mean(difficulty/sumProposedMultiplication)
                                           , max=max(difficulty/sumProposedMultiplication)
                                           
                                           , averageProficiency=weighted.mean(averageProficiency, nEnemies+nElite)

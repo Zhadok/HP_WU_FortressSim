@@ -47,7 +47,10 @@ export abstract class Wizard extends Combatant {
     witSharpeningPotionDamageBuff: number = 0;
 
     // Stats
+    totalDamage: number = 0; 
     numberAttackCasts: number = 0;
+    numberCriticalCasts: number = 0;
+    numberDodgedCasts: number = 0;
 
     constructor(stats: WizardStats, 
         nameClass: nameClassType,
@@ -165,8 +168,9 @@ export abstract class Wizard extends Combatant {
                this.witSharpeningPotionDamageBuff + 
                (enemy.isElite ? this.braveryCharmValue : 0);
     }
+    
 
-    performAttackCast(): void {
+    performAttackCast(damage: number, isCritical: boolean, isDodge: boolean): void {
         // Exstimulo potion
         if (this.exstimuloPotionUsesRemaining > 0) {
             this.exstimuloPotionUsesRemaining--;
@@ -182,7 +186,10 @@ export abstract class Wizard extends Combatant {
             this.witSharpeningPotionDamageBuff = 0;
         }
         // Stats
+        this.totalDamage += damage; 
         this.numberAttackCasts++;
+        if (isCritical) this.numberCriticalCasts++;
+        if (isDodge) this.numberDodgedCasts++;
     }
 
     resetPotionUsesRemaining(): void {

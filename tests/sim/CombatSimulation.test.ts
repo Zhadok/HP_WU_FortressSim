@@ -19,6 +19,7 @@ import { DeteriorationHexEvent } from "../../src/sim/events/wizard/room/spells/p
 import { WizardDefeatEvent } from "../../src/sim/events/wizard/combat/WizardDefeatEvent";
 import { Wizard } from "../../src/model/player/Wizard";
 import { Professor } from "../model/player/Professor";
+import Prando from "prando";
 
 
 describe("CombatSimulation", function() {
@@ -262,9 +263,19 @@ describe("CombatSimulation", function() {
 
         expect(sim1.isFinished()).to.be.true;
         
+    });
 
+    it("fullSimulation", async function() {
+        Logger.verbosity = 0;
+        let sim = new CombatSimulation(TestData.buildDefaultSimParameters(), new Prando(0));
+        sim.init(); 
 
+        await sim.simulate(); 
 
+        let simResults = sim.toSimulationResults();
+        expect(simResults.nEvents > 0);
+        expect(simResults.wizardResults[0].numberOfCasts > 0);
+        expect(simResults.wizardResults[0].totalDamage >= sim.fortressRoom.enemiesAll.map(enemy => enemy.getMaxStamina()).reduce((a, b) => a + b, 0));
     });
 
 });

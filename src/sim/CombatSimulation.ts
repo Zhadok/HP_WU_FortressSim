@@ -26,6 +26,7 @@ import { ProficiencyPowerCharmEvemt } from "./events/wizard/room/spells/professo
 import { SkillTree } from "../model/player/SkillTree/SkillTree";
 import { RulesEngine } from "../rules/RulesEngine";
 import { nameClassType, ruleFactType } from "../types.js";
+import { CombatSimulationResults } from "./CombatSimulationResults";
 
 
 export class CombatSimulation {
@@ -40,6 +41,15 @@ export class CombatSimulation {
     readonly rulesEngineProfessor: RulesEngine;
 
     currentTime: number;
+    readonly maxTime: number; 
+
+    // For simulation results
+    timeStart: number = -1; 
+    timeEnd: number = -1; 
+    nEventsProcessed: number = 0;
+    isWin: boolean | null = null; 
+
+
 
     // Events are index by their END timestamp
     // Example: Event starts at 531ms, ends at 1652ms. events.get(1652) returns array with that event
@@ -52,6 +62,7 @@ export class CombatSimulation {
     readonly eventQueue: Array<SimEvent>;
 
     constructor(params: CombatSimulationParameters, rng: Prando) {
+        this.timeStart = (new Date()).getTime(); 
         this.params = params;
         this.rng = rng;  
         this.currentTime = 0;
@@ -60,6 +71,7 @@ export class CombatSimulation {
 
         this.fortressRoom = new FortressRoom(params.runestoneLevels, params.roomLevel, params.runestoneLevels.length, rng);
         let knockoutTime = this.fortressRoom.computeKnockoutTime(); 
+        this.maxTime = this.fortressRoom.computeMaxtime() * 1000;
 
         for (let i=0;i<params.nameClasses.length;i++) {
             let skillTree = SkillTree.fromPersisted(params.skillTrees[i]);
@@ -140,22 +152,46 @@ export class CombatSimulation {
     async simulate() {
         let done = false;
         while (this.eventQueue.length > 0) {
-            await this.processNextEvent();
+            let eventProcessed: boolean = await this.processNextEvent();
+            if (eventProcessed === false) {
+                this.log(2, "Simulation reached max time (" + this.maxTime/1000 + "s). Wizard(s) were defeated!");
+                this.isWin = false; 
+                this.emptyEventQueue(); 
+                break; 
+            }
         }
+        if (this.isWin === null) {
+            this.log(1, "All enemies have been defeated!");
+            this.isWin = true; 
+        } 
+
+        this.timeEnd = (new Date()).getTime();
+        this.log(2, "Simulation finished after " + (this.timeEnd-this.timeStart) + "ms."); 
     }
     
     peekNextEvent(): SimEvent {
         return this.eventQueue[ this.eventQueue.length-1 ];
     }
+    emptyEventQueue(): void {
+        this.eventQueue.splice(0, this.eventQueue.length);
+    }
 
-    async processNextEvent() {
+    // Returns whether event was processed or not
+    async processNextEvent(): Promise<boolean> {
         let currentEvent = this.eventQueue.pop()!; // Get last element of array and remove it from array
         if (this.currentTime > currentEvent.timestampEnd) {
             throw new Error("Tried to go back in time! currentTime=" + this.currentTime + ", event.timestampEnd=" + currentEvent.timestampEnd);
         }
         this.currentTime = currentEvent.timestampEnd
+
+        if (this.currentTime > this.maxTime) {
+            return false; 
+        }
+
         await this.processEvent(currentEvent);
-        return currentEvent;
+
+        this.nEventsProcessed++; 
+        return true;
     }
 
     // Event is always called at END of event (e.g. at END of animation)
@@ -192,7 +228,10 @@ export class CombatSimulation {
                     this.addEvent(new EnemySpawnEvent(this.currentTime, this.fortressRoom.getNextActiveEnemy()));
                 }
                 this.rewardWizardFocus(event.enemy.focusReward);
-                this.checkForVictory();
+                if (this.checkForVictory() === true) {
+                    this.emptyEventQueue(); 
+                    return; 
+                }
             }
             return; 
         }
@@ -206,10 +245,8 @@ export class CombatSimulation {
         }
     }
 
-    checkForVictory(): void {
-        if (this.fortressRoom.areAllEnemiesDefeated()) {
-            this.log(1, "All enemies have been defeated!");
-        }
+    checkForVictory(): boolean {
+        return this.fortressRoom.areAllEnemiesDefeated(); 
     }
 
 
@@ -302,6 +339,27 @@ export class CombatSimulation {
         return this.eventQueue.length === 0;
     }
 
+    toSimulationResults(): CombatSimulationResults {
+        let wizardResults = this.wizards.map(wizard => {
+            return {
+                playerIndex: wizard.playerIndex,
+                numberOfCasts: wizard.numberAttackCasts,
+                numberOfDodgedCasts: wizard.numberDodgedCasts,
+                numberOfCriticalCasts: wizard.numberCriticalCasts,
+                totalDamage: wizard.totalDamage,
+                averageDamage: wizard.totalDamage / wizard.numberAttackCasts
+            }
+        });
+        return {
+            timeStart: this.timeStart,
+            timeEnd: this.timeEnd,
+            durationMS: this.timeEnd - this.timeStart,
+            nEvents: this.nEventsProcessed,
+            simParameters: this.params,
+            wizardResults: wizardResults
+        };
+    }
+    
     // In combat: Drink potion, attack, exit combat
 
 }

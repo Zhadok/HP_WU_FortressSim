@@ -14,7 +14,15 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     margin-right: auto; 
 }
 
+#divSettingsRoomLevel {
+    float: left; 
+}
 
+
+/***** Single wizard settings *****/
+#matTabGroupWizardSettings {
+    clear: both; 
+}
 .divSingleWizardSettings {
     width: 45%;
     padding: 10px;
@@ -47,11 +55,15 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     margin: 5px; 
     float: left
 }
-
+.divSettingsRunestoneLevel {
+    float: left; 
+    clear: both; 
+}
 
 #buttonRemoveWizard {
     margin-top: 20px;
     float: left; 
+    clear: both; 
 }
 
 /**** Start simulation *****/
@@ -63,6 +75,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     width: 50%;
     margin-left: auto;
     margin-right: auto; 
+    z-index: 1000; 
 }
 .buttonStartSimulation {
     height: 45px; 
@@ -78,7 +91,18 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 }
 
 
+
+/**** Simulation outputs ****/
+#inputSimulationLog {
+    height: 800px; 
+    color: black; 
+}
+
+
+
+
 /*** Generic stuff ****/
 .myMatTooltip {
     white-space: pre-line;
 }
+

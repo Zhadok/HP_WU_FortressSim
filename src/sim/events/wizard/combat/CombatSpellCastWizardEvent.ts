@@ -38,6 +38,7 @@ export class CombatSpellCastWizardEvent extends CombatEvent {
     }
 
     onFinish() {
+        let isCritical: number = 0; 
         let rngResult = this.rng.next();
         let isDodge: boolean = this.enemy.getDodgeAfterModifications(this.wizard) - 
                                this.wizard.getAccuracyAfterModifications(this.enemy) >= 
@@ -47,7 +48,7 @@ export class CombatSpellCastWizardEvent extends CombatEvent {
         let damage = 0;
         if (isDodge === false) {
             let rngResult = this.rng.next();
-            let isCritical: number = (this.wizard.getCritChanceAfterModifications(this.enemy) >= rngResult) ? 1 : 0;
+            isCritical = (this.wizard.getCritChanceAfterModifications(this.enemy) >= rngResult) ? 1 : 0;
             //console.log("isCritical=" + isCritical + ", critChance=" + this.wizard.getCritChanceAfterModifications(this.enemy) + ", rngResult=" + rngResult);
             damage = CombatSpellCastWizardEvent.computeWizardDamage(this.wizard, this.enemy, isCritical);
         }
@@ -60,10 +61,11 @@ export class CombatSpellCastWizardEvent extends CombatEvent {
 
         let staminaBeforeDamage = this.enemy.getCurrentStamina();
         this.enemy.removeStamina(damage);
-        this.wizard.performAttackCast(); // Reduce exstimulo, wit sharpening and for stats
+        this.wizard.performAttackCast(damage, isCritical===1, isDodge); // Reduce exstimulo, wit sharpening and for stats
 
+        let critString = isCritical === 1 ? " (crit) " : " ";
         Logger.logT(2, this.timestampEnd, "Enemy id=" + this.enemy.enemyIndex + " was dealt " + damage + 
-                                            " damage by wizard id=" + this.wizard.playerIndex + "! " +
+                                            " damage" + critString + "by wizard id=" + this.wizard.playerIndex + "! " +
                                             "(" + staminaBeforeDamage + "/" + this.enemy.getMaxStamina() + " -> " +
                                             this.enemy.getCurrentStamina() + "/" + this.enemy.getMaxStamina() + ")");
     }

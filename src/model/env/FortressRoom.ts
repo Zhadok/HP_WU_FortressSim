@@ -88,7 +88,7 @@ export class FortressRoom {
     }
 
     generateEnemies(rng: Prando): Array<Enemy> {
-        return EnemyGenerator.buildEnemyGeneratorWithRng(rng).generateEnemies(this.overallDifficulty, this.focusBudget, this.playerCount, this.roomLevel);
+        return EnemyGenerator.buildEnemyGeneratorWithRng(rng).generateEnemies(this.overallDifficulty, this.focusBudget, this.playerCount, this.roomLevel, this.runestoneLevels);
     }
 
     // How much focus can we divide among enemies?

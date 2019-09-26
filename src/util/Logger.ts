@@ -5,13 +5,15 @@ export class Logger {
 
     static log(verbosityParam: number, message: string) {
         if (this.verbosity >= verbosityParam) {
-            console.log(message);
+            Logger.callbackFunction(message);
         }
     }
 
     static logT(verbosityParam: number, timestamp: number, message: string) {
         if (this.verbosity >= verbosityParam) {
-            console.log((timestamp / 1000.0).toFixed(3) + ": " + message);
+            Logger.callbackFunction((timestamp / 1000.0).toFixed(3) + ": " + message);
         }
     }
+
+    static callbackFunction = console.log; 
 }
