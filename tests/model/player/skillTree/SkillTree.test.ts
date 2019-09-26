@@ -65,6 +65,13 @@ describe("SkillTree", function() {
     it("toWizardStats_fullyStudied", function() {
 
     });
+    it("toWizardStats_withStudiedTrigger", function() {
+        let skillTree = new SkillTree("professor");
+        skillTree.setNodeLevelByTriggerName("teamworkMakesTheDreamWork", 1);
+        let stats = skillTree.toWizardStats();
+
+        expect(stats.stamina).to.equal(WizardStats.buildBaseStats().stamina);
+    });
 
     it("applyTriggers", function() {
         let wizard = TestData.buildDefaultProfessor();

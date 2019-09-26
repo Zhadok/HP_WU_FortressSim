@@ -1,0 +1,84 @@
+
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
+#divContainer {
+    margin-top: 30px; 
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto; 
+}
+
+
+.divSingleWizardSettings {
+    width: 45%;
+    padding: 10px;
+    float: left;
+}
+
+.divSkillTree {
+    height: 600px;
+    width: 100%;
+    overflow-y: scroll; 
+    margin-top: 10px;
+    position: relative; /* relative to parent container */
+}
+.divSkillTreeNode {
+    position: absolute; 
+    text-align: center; 
+}
+.skillTreeNodeText {
+    font-size: 7px;
+}
+
+.divSettingsPotions {
+    margin-top: 10px; 
+    max-width: 370px; 
+    float: left;
+    clear: both; 
+}
+.inputPotion {
+    width: 110px;
+    margin: 5px; 
+    float: left
+}
+
+
+#buttonRemoveWizard {
+    margin-top: 20px;
+    float: left; 
+}
+
+/**** Start simulation *****/
+#divStartSimulationContainer {
+    position: fixed; 
+    bottom: 10px; 
+    left: 50%; 
+    display: block; 
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto; 
+}
+.buttonStartSimulation {
+    height: 45px; 
+    width: 200px; 
+    font-size: 12px;
+    margin: 3px !important; 
+}
+
+
+/**** Advanced settings ***/
+.inputAdvancedSetting {
+    width: 100%;
+}
+
+
+/*** Generic stuff ****/
+.myMatTooltip {
+    white-space: pre-line;
+}

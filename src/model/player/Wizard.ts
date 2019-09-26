@@ -1,6 +1,6 @@
 import { Combatant } from "../Combatant";
 import { WizardStats } from "./WizardStats";
-import { nameClassType, nameClassUserFriendlyType, strategicSpellNameType } from "../../types";
+import { nameClassType, nameClassUserFriendlyType, strategicSpellNameType, statNameType } from "../../types";
 import { Enemy } from "../env/enemies/Enemy";
 
 import focusCostData from "../../data/focusCosts.json";

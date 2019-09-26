@@ -3,11 +3,10 @@ import { Enemy } from "../env/enemies/Enemy";
 import { WizardStats } from "./WizardStats";
 import { SkillTree } from "./SkillTree/SkillTree";
 import { SkillTreeNode } from "./SkillTree/SkillTreeNode";
+import { statNameType } from '../../types';
 
 
 export class Professor extends Wizard {
-
-    
 
     constructor(stats: WizardStats, playerIndex: number, knockoutTime: number) {
         super(stats, "professor", playerIndex, knockoutTime);
@@ -80,6 +79,16 @@ export class Professor extends Wizard {
             accuracyBuffs += this.getTriggers().peskyPixies!;
         }
         return super.getAccuracyAfterModifications(enemy) + accuracyBuffs; 
+    }
+
+    static isValidStatForClass(statName: statNameType): boolean {
+        switch(statName) {
+            case "weakeningHexValue": 
+            case "confusionHexValue": 
+            case "batBogeyHexDamage": 
+            case "focusCharmValue": return false; 
+        }
+        return true; 
     }
 
 }

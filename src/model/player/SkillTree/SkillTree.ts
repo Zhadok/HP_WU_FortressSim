@@ -126,6 +126,16 @@ export class SkillTree {
             wizard.setTrigger(node.triggerName, node.levels[0].statChange);
         });
     }
+    toStudiedTriggers(): Array<SkillTreeNode> {
+        let result: Array<SkillTreeNode> = [];
+        this.nodesStudied.forEach((level, node) => {
+            if (level === 0 || node.triggerName === null || node.triggerName===undefined) {
+                return; 
+            }
+            result.push(node);
+        });
+        return result; 
+    }
 
     // Returns only stats and strategic spell stats, no triggers or skills learnt
     toWizardStats(): WizardStats {
@@ -133,15 +143,15 @@ export class SkillTree {
 
         // Ignore any without "statChanged" attributes
         this.nodesStudied.forEach((level, node) => {
-            if (node.statChanged === null) {
-                Logger.log(2, "SkillTree.toWizardStats(): Skipping node with name=" + node.name);
+            if (node.statChanged === null || node.statChanged === undefined) {
+                Logger.log(3, "SkillTree.toWizardStats(): Skipping node with name=" + node.name);
                 return; 
             }
             if (level === 0) {
                 Logger.log(3, "SkillTree.toWizardStats(): Node was not studied with name=" + node.name);
                 return; 
             }
-
+            
             // How much was the stat changed by?
             let statChange: number = 0;
             for (var i=0;i<level;i++) {
@@ -154,7 +164,7 @@ export class SkillTree {
                 stats[node.statChanged as keyof WizardStats] += statChange; 
             }
             else {
-                throw new Error("Error: bad value with node.statChanged='" + node.statChanged + "'");
+                throw new Error("Error: bad value with node.statChanged='" + node.statChanged + "'. Object is: " + JSON.stringify(node));
             }
         });
         return stats;

@@ -1,0 +1,168 @@
+
+
+
+
+<div id="divContainer">
+    <h1 class="mat-h1">Harry Potter - Wizards Unite Fortress Simulator</h1>
+
+    <div id="divContainerInputParameters">
+        <h2 class="mat-h2">Input parameters</h2>
+    </div>
+    Choose between your skill tree and directly entering stats. 
+    <mat-tab-group>
+        <mat-tab label="Skill Tree"> 
+            <div id="divSkillTreeSettingsWrapper">
+                <div *ngFor="let nameClass of simParameters.nameClasses; let playerIndex=index" class="divSingleWizardSettings">
+                    <h2 class="mat-h2">Settings for player {{playerIndex+1}}</h2>
+                    Class: 
+                    <mat-select placeholder="Select class..." name="selectWizardClass" 
+                                (selectionChange)="onChangeSelectWizardClass($event, playerIndex)"
+                                [(value)]="nameClass">
+                        <mat-option *ngFor="let item of allowedClasses | keyvalue" value="{{item.key}}">{{item.value}}</mat-option>
+                    </mat-select>
+
+                    <p>Skill tree: </p>
+                    <div class="divSkillTree">
+                        <!-- https://teropa.info/blog/2016/12/12/graphics-in-angular-2.html -->
+                        <svg width="100%" [attr.height]="skillTreeVis.marginTop + skillTreeVis.rowHeight*20" [attr.viewBox]="[0,0,
+                            skillTreeVis.marginLeft + skillTreeVis.columnWidth*5,
+                            skillTreeVis.marginTop + skillTreeVis.rowHeight*20]">
+                            <g *ngFor="let node of skillTrees[playerIndex].nodesStudied | keyvalue">
+                                <line *ngFor="let dependency of getDependenciesFromSkillTreeNode(node.key.dependencies)"
+                                    [attr.x1]="dependency.columnIndex * skillTreeVis.columnWidth + skillTreeVis.marginLeft*2" 
+                                    [attr.y1]="dependency.rowIndex * skillTreeVis.rowHeight + skillTreeVis.marginTop*2" 
+                                    [attr.x2]="node.key.columnIndex * skillTreeVis.columnWidth + skillTreeVis.marginLeft*2" 
+                                    [attr.y2]="node.key.rowIndex * skillTreeVis.rowHeight + skillTreeVis.marginTop*2" 
+                                    stroke="black"
+                                />
+                            </g>
+
+                            <g *ngFor="let node of skillTrees[playerIndex].nodesStudied | keyvalue">
+                                <text [attr.x]="node.key.columnIndex * skillTreeVis.columnWidth + skillTreeVis.marginLeft*2" 
+                                    [attr.y]="node.key.rowIndex * skillTreeVis.rowHeight + skillTreeVis.marginTop*2 - skillTreeVis.nodeCircleRadius/2 - 20" 
+                                    text-anchor="middle"
+                                    font-size="8">{{node.key.name}}</text>
+                                <circle [attr.cx]="node.key.columnIndex * skillTreeVis.columnWidth + skillTreeVis.marginLeft*2"
+                                        [attr.cy]="node.key.rowIndex * skillTreeVis.rowHeight + skillTreeVis.marginTop*2"
+                                        [attr.r]="skillTreeVis.nodeCircleRadius" stroke="black" fill="gray" 
+                                        (click)="onClickSkillTreeNode(node.key, playerIndex)"
+                                        matTooltip="{{getSkillTreeNodeTooltip(node.key)}}"
+                                        [matTooltipClass]="'myMatTooltip'"
+                                        ></circle>
+                                <text [attr.x]="node.key.columnIndex * skillTreeVis.columnWidth + skillTreeVis.marginLeft*2" 
+                                      [attr.y]="node.key.rowIndex * skillTreeVis.rowHeight + skillTreeVis.marginTop*2 + 6" 
+                                      class="small" text-anchor="middle"
+                                      (click)="onClickSkillTreeNode(node.key, playerIndex)"
+                                      matTooltip="{{getSkillTreeNodeTooltip(node.key)}}"
+                                      [matTooltipClass]="'myMatTooltip'"
+                                      >{{node.value}}/{{node.key.levels.length}}</text>
+                            </g>
+                        </svg>
+                        <!--<div *ngFor="let node of skillTrees[playerIndex].nodesStudied | keyvalue" class="divSkillTreeNode"
+                             [style.left.px]="node.key.columnIndex * skillTreeVis.columnWidth + skillTreeVis.marginLeft" 
+                             [style.top.px]="node.key.rowIndex * skillTreeVis.rowHeight + skillTreeVis.marginTop">
+                             <span class="skillTreeNodeText">{{node.key.name}}</span>
+                             <br>
+                             <button mat-fab  color="primary"> 
+                                {{node.value}}/{{node.key.levels.length}}
+                            </button>
+                        </div> -->
+                    </div>
+
+                    <div class="divSettingsOutputWizardStats">
+                        <p>Resulting stats:</p>
+                        <div *ngFor="let stat of skillTrees[playerIndex].toWizardStats() | keyvalue">
+                            <span *ngIf="isValidStatForClass(stat.key, playerIndex)">
+                                {{formatUserFriendlyStat(stat.key)}}: {{stat.value.toFixed(2)}}
+                            </span>   
+                        </div>
+
+                        <p>Triggers (conditional stat changes):</p>
+                        <div>
+                            <ul>
+                                <li *ngFor="let skillTreeNode of skillTrees[playerIndex].toStudiedTriggers()">
+                                    <b>{{skillTreeNode.name}}</b>: {{skillTreeNode.statChangeDescription}} (+{{skillTreeNode.levels[0].statChange.toFixed(2)}})
+                                </li>
+                            </ul>
+                        </div>
+                        
+                    </div>
+
+                    <div class="divSettingsPotions">
+                        <p>Potions: </p>
+                        <form class="potionsForm">
+                            <mat-form-field class="inputPotion">
+                                <input type="number" matInput placeholder="Regular exstimulo" [(value)]="simParameters.potions[playerIndex].nExstimuloAvailable">
+                            </mat-form-field>
+                            <mat-form-field class="inputPotion">
+                                <input type="number" matInput placeholder="Strong exstimulo" [(value)]="simParameters.potions[playerIndex].nStrongExstimuloAvailable">
+                            </mat-form-field>
+                            <mat-form-field class="inputPotion">
+                                <input type="number" matInput placeholder="Potent exstimulo" [(value)]="simParameters.potions[playerIndex].nPotentExstimuloAvailable">
+                            </mat-form-field>
+                            <mat-form-field class="inputPotion">
+                                <input type="number" matInput placeholder="Wit Sharpening" [(value)]="simParameters.potions[playerIndex].nWitSharpeningAvailable">
+                            </mat-form-field>
+                            <mat-form-field class="inputPotion">
+                                <input type="number" matInput placeholder="Weak Invigoration" [(value)]="simParameters.potions[playerIndex].nWeakInvigorationAvailable">
+                            </mat-form-field>
+                            <mat-form-field class="inputPotion">
+                                <input type="number" matInput placeholder="Strong Invigoration" [(value)]="simParameters.potions[playerIndex].nStrongInvigorationAvailable">
+                            </mat-form-field>
+                        </form>
+                    </div>
+
+                    <br>
+                    <button id="buttonRemoveWizard" mat-raised-button (click)="onClickRemoveWizard(playerIndex)">Remove</button>
+                </div>
+                <div *ngIf="simParameters.nameClasses.length<5" class="divSingleWizardSettings">
+                    <button id="buttonAddWizard"  mat-raised-button (click)="onClickAddWizard($event)" matTooltip="Add another wizard" >Add wizard</button> 
+                </div>
+
+                <div id="divStartSimulationContainer">
+                    <button (click)="onClickButtonStartSingleSimulation()" class="buttonStartSimulation" mat-raised-button large color="primary" >
+                        Start single simulation
+                    </button>
+                    <button (click)="onClickButtonStartMultipleSimulations()" class="buttonStartSimulation" mat-raised-button large color="primary" >
+                        Start {{numberSimulations}} simulations
+                    </button>
+                </div>
+                
+
+            </div>
+        </mat-tab>
+        <mat-tab label="Direct stats"> 
+
+        </mat-tab>
+    </mat-tab-group>
+    <div id="divAdvancedSettingsContainer">
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Advanced simulation settings
+                </mat-panel-title>
+                <mat-panel-description>
+                    Enter seed, number of simulations, ...
+                </mat-panel-description>
+            </mat-expansion-panel-header>
+        
+            <mat-form-field class="inputAdvancedSetting">
+                <mat-label>This will ensure reproducible results. For multiple simulations, the seed will increased by 1 for each simulation. </mat-label>
+                <input matInput type="number" placeholder="Seed"  [(value)]="simParameters.seed">
+            </mat-form-field>
+            <br>
+            <mat-form-field class="inputAdvancedSetting">
+                <input matInput type="number" placeholder="Number of simulations" [(ngModel)]="numberSimulations" [(value)]="numberSimulations">
+            </mat-form-field>
+        
+        </mat-expansion-panel>
+    </div>
+
+</div>
+
+
+
+
+
+
+<router-outlet></router-outlet>

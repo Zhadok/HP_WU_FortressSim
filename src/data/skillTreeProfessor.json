@@ -254,7 +254,7 @@
             "costScrolls": 7,
             "costRSB": 15
         }],
-        "dependencies": ["4/4"]
+        "dependencies": ["3/4"]
     },
     
     {
@@ -319,7 +319,7 @@
         "dependencies": ["6/2"]
     }, {
         "rowIndex": 6,
-        "columnIndex": 3,
+        "columnIndex": 4,
         "name": "Attention to Detail",
         "statChangeDescription": "Precision",
         "statChanged": "critChance",
@@ -925,7 +925,7 @@
         "dependencies": ["15/1"]
     }, {
         "rowIndex": 15,
-        "columnIndex": 0,
+        "columnIndex": 4,
         "name": "Full Moon Hunter",
         "triggerName": "fullMoonHunter",
         "statChangeDescription": "Defence Breach vs Werewolves",

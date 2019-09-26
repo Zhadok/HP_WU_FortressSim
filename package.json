@@ -2,7 +2,6 @@
   "name": "harrypotterwu_sim",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "start": "npm run build:live",
     "build": "tsc -p .",
@@ -10,7 +9,7 @@
     "test": "mocha -r ts-node/register \"tests/**/*.test.ts\""
   },
   "author": "",
-  "license": "ISC",
+  "license": "Apache v2",
   "devDependencies": {
     "@types/chai": "^4.2.1",
     "@types/chai-as-promised": "^7.1.2",
@@ -22,12 +21,18 @@
     "nodemon": "^1.19.2",
     "nyc": "^14.1.1",
     "ts-node": "^8.3.0",
-    "typescript": "^3.6.2"
+    "typescript": "^3.6.2",
+    "tslib": "^1.10.0"
   },
   "dependencies": {
     "json-rules-engine": "^4.0.0",
     "prando": "^5.1.1",
     "thenby": "^1.3.0",
-    "truegin": "^4.1.0"
-  }
+    "truegin": "^4.1.0",
+    "tslib": "^1.10.0"
+  },
+  "files": [
+    "lib"
+  ],
+  "main": "src/index.ts"
 }

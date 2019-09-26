@@ -2,6 +2,7 @@ import { Wizard } from "./Wizard";
 import focusCostData from "../../data/focusCosts.json";
 import { Enemy } from "../env/enemies/Enemy";
 import { WizardStats } from "./WizardStats";
+import { statNameType } from '../../types';
 
 
 export class Auror extends Wizard {
@@ -48,5 +49,15 @@ export class Auror extends Wizard {
         return super.getCritChanceAfterModifications(enemy) + critChanceBuffs;
     }
 
+
+    static isValidStatForClass(statName: statNameType): boolean {
+        switch(statName) {
+            case "deteriorationHexDamage": 
+            case "mendingCharmStaminaRestore": 
+            case "defenceCharmIncrease": 
+            case "proficiencyPowerCharmIncrease": return false; 
+        }
+        return true; 
+    }
 
 }
