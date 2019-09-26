@@ -3,6 +3,7 @@ import { Enemy } from "./Enemy";
 import { enemyNameType } from "../../../types";
 import { firstBy } from "thenby";
 import Prando from "prando";
+import { Logger } from "../../../util/Logger";
 
 export class EnemyGenerator {
 
@@ -43,9 +44,17 @@ export class EnemyGenerator {
 
         // Unknown if average runestone level should be used here
         const averageRunestoneLevel = runestoneLevels.reduce((a, b) => ( a += b)) / runestoneLevels.length;
-        const averageEnemyLevel = -11.2882802691465 + 0.865920623399864 * averageRunestoneLevel + 9.85336218225852 * roomLevel
-        const averageDifficulty = nEnemiesRemaining / averageEnemyLevel; 
+        let averageEnemyLevel = -11.2882802691465 + 0.865920623399864 * averageRunestoneLevel + 9.85336218225852 * roomLevel;
+        if (roomLevel === 1) {
+            averageEnemyLevel = 3; // Ruins 1 has higher average so that we push between 1 and 5
+        }
+        //const averageDifficulty = nEnemiesRemaining / averageEnemyLevel; 
 
+        Logger.log(2, "Generating enemies for room with following parameters:");
+        Logger.log(2, "Room level: " + roomLevel + 
+                      ", average runestone level: " + averageRunestoneLevel + 
+                      ", number of enemies: " + nEnemiesRemaining + 
+                      ", average enemy level: " + averageEnemyLevel);
         let enemyIndex = 0;
         let enemyParams = []; 
         while (nEnemiesRemaining > 0) {
@@ -65,11 +74,13 @@ export class EnemyGenerator {
                 level: level
             });
             enemyIndex++; 
+            nEnemiesRemaining--; 
         }   
 
-        let focusBudgets = this.getFocusBudgets(enemyParams.length, focusBudget);
+        let focusBudgets = this.getFocusRewards(enemyParams.length, focusBudget);
 
         for (let i=0;i<enemyParams.length;i++) {
+            //console.log(enemyParams[i]);
             let enemy = Enemy.buildEnemy(enemyParams[i].type as enemyNameType, 
                 enemyParams[i].enemyIndex, enemyParams[i].isElite, enemyParams[i].difficulty, 
                 enemyParams[i].level, focusBudgets[i]);
@@ -78,13 +89,13 @@ export class EnemyGenerator {
 
        
 
-        result.push(Enemy.buildEnemy("acromantula", 0, false, 2, 150, 3));
-        result.push(Enemy.buildEnemy("pixie", 1, false, 2, 150, 3));
+        //result.push(Enemy.buildEnemy("acromantula", 0, false, 2, 150, 3));
+        //result.push(Enemy.buildEnemy("pixie", 1, false, 2, 150, 3));
 
         return result;
     }
 
-    getFocusBudgets(nEnemies: number, totalBudget: number): Array<number> {
+    getFocusRewards(nEnemies: number, totalBudget: number): Array<number> {
         // Split total focus budget into budget per enemy 
         // example: 10 -> 3, 3, 2, 2
         let result: Array<number> = [];
@@ -95,8 +106,13 @@ export class EnemyGenerator {
             var floorFocus = Math.floor(focusPerEnemy);
 
             let chosenValue; 
-            if (totalBudget / floorFocus === focusPerEnemy) {
+            if (remainingTotalBudget / floorFocus === nEnemies-i ) {
                 // If rest of focus budget can be filled by floor value then use that
+                // Example: 
+                // 10 / 2 = 4? NO
+                //  7 / 2 = 3? NO
+                //  4 / 2 = 2? YES
+                //  2 / 2 = 1? YES
                 chosenValue = floorFocus;
             }
             else {

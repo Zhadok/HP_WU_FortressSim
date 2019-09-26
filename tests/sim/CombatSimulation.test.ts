@@ -23,7 +23,11 @@ import Prando from "prando";
 
 
 describe("CombatSimulation", function() {
-    let params1 = TestData.buildDefaultSimParameters();
+    let params1: CombatSimulationParameters;
+    
+    beforeEach(() => {
+        params1 = TestData.buildDefaultSimParameters();
+    });
     
     Logger.verbosity = 0;
 
@@ -117,6 +121,7 @@ describe("CombatSimulation", function() {
         let defaultEnemies = TestData.buildDefaultEnemies();
         let shouldBeTime = 0;
 
+        params1.roomLevel = 1;
         let sim1 = new CombatSimulation(params1, TestData.buildNewRNG_0());
         sim1.fortressRoom.enemiesAll[0] = defaultEnemies[0];
         sim1.fortressRoom.enemiesAll[1] = defaultEnemies[1];

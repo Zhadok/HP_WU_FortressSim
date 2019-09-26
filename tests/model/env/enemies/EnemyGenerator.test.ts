@@ -18,11 +18,15 @@ describe("EnemyGenerator", function() {
         let budget = 10;
         let nEnemies = 4;
 
-        let result = enemyGenerator.getFocusBudgets(nEnemies, budget);
+        let result = enemyGenerator.getFocusRewards(nEnemies, budget);
 
         expect(result.length).to.equal(nEnemies);
         expect(result).to.deep.equal([3, 3, 2, 2]);
-    });
 
+        expect(enemyGenerator.getFocusRewards(4, 11)).to.deep.equal([3, 3, 3, 2]);
+        expect(enemyGenerator.getFocusRewards(4, 12)).to.deep.equal([3, 3, 3, 3]);
+        expect(enemyGenerator.getFocusRewards(4, 13)).to.deep.equal([4, 3, 3, 3]);
+        
+    });
 
 });

@@ -74,6 +74,10 @@ export class Enemy extends Combatant {
     // TODO: Do we use Math.ceil properly here? 
     static buildEnemy(name: enemyNameType, enemyIndex: number, isElite: boolean, difficulty: number, level: number, focusReward: number): Enemy  {
 
+        if (difficulty < 1 || difficulty > 5 || !difficulty) {
+            throw new Error("Invalid value for enemy difficulty (should be between 1 and 5): " + difficulty);
+        }
+
         var base: EnemyStats = enemyData[name].stats[difficulty-1][(isElite)?"elite":"normal"];
         var computedStats: EnemyStats = new EnemyStats(
             Math.floor(base.stamina * (1 + enemyConfig.growthAdjustStaminaPerLevel * level)), // The Math.floor is confirmed by video data
