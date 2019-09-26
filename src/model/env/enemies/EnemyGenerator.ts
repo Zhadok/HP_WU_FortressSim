@@ -44,7 +44,12 @@ export class EnemyGenerator {
 
         // Unknown if average runestone level should be used here
         const averageRunestoneLevel = runestoneLevels.reduce((a, b) => ( a += b)) / runestoneLevels.length;
-        let averageEnemyLevel = -11.2882802691465 + 0.865920623399864 * averageRunestoneLevel + 9.85336218225852 * roomLevel;
+        //let averageEnemyLevel = -11.2882802691465 + 0.865920623399864 * averageRunestoneLevel + 9.85336218225852 * roomLevel;
+        
+        // Seems like this might be the simplest answer, except for ruins I
+        // -3 because jitter later does +-3
+        let averageEnemyLevel = -13 + averageRunestoneLevel + 10 * roomLevel; 
+        
         if (roomLevel === 1) {
             averageEnemyLevel = 3; // Ruins 1 has higher average so that we push between 1 and 5
         }
@@ -54,7 +59,8 @@ export class EnemyGenerator {
         Logger.log(2, "Room level: " + roomLevel + 
                       ", average runestone level: " + averageRunestoneLevel + 
                       ", number of enemies: " + nEnemiesRemaining + 
-                      ", average enemy level: " + averageEnemyLevel);
+                      ", average enemy level: " + averageEnemyLevel + 
+                      ", difficulty budget per enemy: " + difficultyBudgetPerEnemy);
         let enemyIndex = 0;
         let enemyParams = []; 
         while (nEnemiesRemaining > 0) {
@@ -64,15 +70,17 @@ export class EnemyGenerator {
             }
 
             // difficultyBudget for this enemy is: level * enemyDifficulty
-            const level = Math.round(averageEnemyLevel + this.jitterByAmount(4)); // for example for ruins I seen level between 1 and 5
+            const level = Math.ceil(averageEnemyLevel + this.jitterByAmount(6)); // for example for ruins I seen level between 1 and 5
             const difficulty = Math.round( difficultyBudgetPerEnemy / level );
-            enemyParams.push({
+            let enemyParam = {
                 type: "acromantula", 
                 enemyIndex: enemyIndex, 
                 isElite: isElite, 
                 difficulty: difficulty, 
                 level: level
-            });
+            }
+            console.log("Generating enemy: " + JSON.stringify(enemyParam));
+            enemyParams.push(enemyParam);
             enemyIndex++; 
             nEnemiesRemaining--; 
         }   

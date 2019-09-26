@@ -126,16 +126,19 @@ export class FortressRoom {
     // https://docs.google.com/spreadsheets/d/1jtBjdncxspRt51K048islZdEPTZ06yBKuZX7_MBzprI/edit#gid=0
     // NOTE: Currently unknown how difficulty scales with different levels of runestones
     // so currently interface will ONLY use first runestone in array
-    computeOverallDifficulty(): number {
-        const playerCount = this.runestoneLevels.length;
-        const runestoneLevel = this.runestoneLevels[0];
+    static computeOverallDifficultyStatic(roomLevel: number, runestoneLevel: number, playerCount: number): number {
         
         // Strangely, difficulty is rounded (see data on videos) and notes in tests
-        return Math.round(fortressDifficultyData.runestoneDifficulties[this.roomLevel-1][runestoneLevel-1] * 
-               fortressDifficultyData.playerCountMultipliers[this.roomLevel-1][playerCount-1] * playerCount);
+        return Math.round(fortressDifficultyData.runestoneDifficulties[roomLevel-1][runestoneLevel-1] * 
+               fortressDifficultyData.playerCountMultipliers[roomLevel-1][playerCount-1] * playerCount);
 
     }
 
+    computeOverallDifficulty(): number {
+        const playerCount = this.runestoneLevels.length;
+        const runestoneLevel = this.runestoneLevels[0];
+        return FortressRoom.computeOverallDifficultyStatic(this.roomLevel, runestoneLevel, playerCount);
+    }
 
     computeMaxtime(): number {
         switch(this.roomLevel) {
