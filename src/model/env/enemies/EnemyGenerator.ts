@@ -12,6 +12,7 @@ export class EnemyGenerator {
 
     private constructor(rng: Prando) {
         this.rng = rng;
+        this.rng.skip(100);
     }
 
     static buildEnemyGeneratorWithRng(rng: Prando): EnemyGenerator {
@@ -26,60 +27,91 @@ export class EnemyGenerator {
         return this.jitterByAmount(1); 
     }
     jitterByAmount(magnitude: number): number {
-        return this.rng.next() - 0.5 * magnitude; 
+        // Center should be 0
+        return (this.rng.next() - 0.5) * magnitude; 
+    }
+
+    getNEnemies(overallDifficulty: number, roomLevel: number, playerCount: number): number {
+        const averageNEnemies = 1.72132702158096 + 0.0661370810873348 * Math.sqrt(overallDifficulty);  // sqrt of overallDifficulty 
+        //console.log("averageNEnemies for roomLevel=" + roomLevel + ": " + averageNEnemies);
+        // Concrete nEnemies for this room (can vary by +-1)
+        // Example: Tower V has been seen with 4, 5 and 6 enemies for 1 player
+        // Average is 4.999, so jitter by 2 (==> +-1)
+        let nEnemies = Math.round(averageNEnemies + this.jitterByAmount(2)); 
+        if (roomLevel === 1) {
+            nEnemies = 2 * playerCount;  // Always use 2 enemies per player for ruins I
+        }
+        return nEnemies;
+    }
+
+    getAverageEnemyLevel(roomLevel: number, averageRunestoneLevel: number): number {
+        //let averageEnemyLevel = -11.2882802691465 + 0.865920623399864 * averageRunestoneLevel + 9.85336218225852 * roomLevel;
+        // Seems like this might be the simplest answer, except for ruins I
+        // -3 because jitter later does +-3
+        let averageEnemyLevel = -13 + averageRunestoneLevel + 10 * roomLevel; 
+        if (roomLevel === 1) {
+            averageEnemyLevel = 3; // Ruins 1 has higher average so we push between 1 and 5 (later we jitter by +-2)
+        }
+        return averageEnemyLevel;
+    }
+
+    // Difficulty budget per enemy: This value has a multiplier
+    // difficulty = multiplier * nEnemies * (level * enemyDifficulty * (1+isElite)))
+    // difficultyBudgetPerEnemy = (level * enemyDifficulty * (1+isElite))
+    // difficultyBudgetPerEnemy = difficulty / (multiplier * nEnemies)
+    getNormalizedDifficultyBudgetPerEnemy(overallDifficulty: number, roomLevel: number, nEnemiesRemaining: number): number {
+        const difficultyBudgetPerEnemyMultiplier = 2.20611936028795 + 10.1673379263563 * Math.exp(-roomLevel); 
+        const normalizedDifficultyBudgetPerEnemy = overallDifficulty / (difficultyBudgetPerEnemyMultiplier * nEnemiesRemaining); 
+        return normalizedDifficultyBudgetPerEnemy;
+    }
+
+    // Concrete enemy difficulty for one enemy (number of stars)
+    getEnemyDifficulty(normalizedDifficultyBudgetPerEnemy: number, enemyLevel: number, roomLevel: number): number {
+        let enemyDifficulty = Math.round( normalizedDifficultyBudgetPerEnemy / enemyLevel + this.jitterByAmount(2) );
+        if (roomLevel === 1) {
+            enemyDifficulty = 1; // Hard code this since ruins I are only difficulty 1
+        }
+        return enemyDifficulty;
     }
 
     generateEnemies(overallDifficulty: number, focusBudget: number, playerCount: number, roomLevel: number, runestoneLevels: Array<number>): Array<Enemy> {
         let result: Array<Enemy> = [];
-
-        const averageNEnemies = 1.72132702158096 + 0.0661370810873348 * Math.sqrt(overallDifficulty);  // sqrt of overallDifficulty 
-        let nEnemiesRemaining = Math.round(averageNEnemies + this.jitter()); // Concrete nEnemies for this room
+        let nEnemiesRemaining = this.getNEnemies(overallDifficulty, roomLevel, playerCount);
+        let normalizedDifficultyBudgetPerEnemy = this.getNormalizedDifficultyBudgetPerEnemy(overallDifficulty, roomLevel, nEnemiesRemaining);
         
-        // Difficulty budget per enemy: This value has a multiplier
-        // difficulty = multiplier * nEnemies * (level * enemyDifficulty * (1+isElite)))
-        // difficultyBudgetPerEnemy = (level * enemyDifficulty * (1+isElite))
-        // difficultyBudgetPerEnemy = difficulty / (multiplier * nEnemies)
-        const difficultyBudgetPerEnemyMultiplier = 2.20611936028795 + 10.1673379263563 * Math.exp(-roomLevel); 
-        const difficultyBudgetPerEnemy = overallDifficulty / (difficultyBudgetPerEnemyMultiplier * nEnemiesRemaining); 
-
         // Unknown if average runestone level should be used here
         const averageRunestoneLevel = runestoneLevels.reduce((a, b) => ( a += b)) / runestoneLevels.length;
-        //let averageEnemyLevel = -11.2882802691465 + 0.865920623399864 * averageRunestoneLevel + 9.85336218225852 * roomLevel;
+        let averageEnemyLevel = this.getAverageEnemyLevel(roomLevel, averageRunestoneLevel);
         
-        // Seems like this might be the simplest answer, except for ruins I
-        // -3 because jitter later does +-3
-        let averageEnemyLevel = -13 + averageRunestoneLevel + 10 * roomLevel; 
-        
-        if (roomLevel === 1) {
-            averageEnemyLevel = 3; // Ruins 1 has higher average so that we push between 1 and 5
-        }
-        //const averageDifficulty = nEnemiesRemaining / averageEnemyLevel; 
-
         Logger.log(2, "Generating enemies for room with following parameters:");
         Logger.log(2, "Room level: " + roomLevel + 
                       ", average runestone level: " + averageRunestoneLevel + 
                       ", number of enemies: " + nEnemiesRemaining + 
                       ", average enemy level: " + averageEnemyLevel + 
-                      ", difficulty budget per enemy: " + difficultyBudgetPerEnemy);
+                      ", difficulty budget per enemy: " + normalizedDifficultyBudgetPerEnemy);
         let enemyIndex = 0;
         let enemyParams = []; 
         while (nEnemiesRemaining > 0) {
-            const isElite = (this.rng.next() >= this.eliteProbability && nEnemiesRemaining >= 2);
+            const isElite = (this.rng.next() >= (1-this.eliteProbability) && nEnemiesRemaining >= 2 && roomLevel >= 4);
             if (isElite) {
                 nEnemiesRemaining--; // Count elite as extra
             }
 
+            // for example for ruins I seen level between 1 and 5 (so jitter by 4 or +-2), in tower V seen +-3
+            let jitterAmount = (roomLevel === 1) ? 4 : 6; 
+            const enemyLevel = Math.round(averageEnemyLevel + this.jitterByAmount(jitterAmount)); 
+
             // difficultyBudget for this enemy is: level * enemyDifficulty
-            const level = Math.ceil(averageEnemyLevel + this.jitterByAmount(6)); // for example for ruins I seen level between 1 and 5
-            const difficulty = Math.round( difficultyBudgetPerEnemy / level );
+            let enemyDifficulty = this.getEnemyDifficulty(normalizedDifficultyBudgetPerEnemy, enemyLevel, roomLevel);
+
             let enemyParam = {
                 type: "acromantula", 
                 enemyIndex: enemyIndex, 
                 isElite: isElite, 
-                difficulty: difficulty, 
-                level: level
+                difficulty: enemyDifficulty, 
+                level: enemyLevel
             }
-            console.log("Generating enemy: " + JSON.stringify(enemyParam));
+            Logger.log(2, "Generating enemy: " + JSON.stringify(enemyParam));
             enemyParams.push(enemyParam);
             enemyIndex++; 
             nEnemiesRemaining--; 
@@ -132,15 +164,19 @@ export class EnemyGenerator {
         return result;
     }
 
-    describeEnemies(enemies: Enemy[]): void {
-        console.log("Number of enemies: " + enemies.length);
-        console.log("Number of elites: " + enemies.filter(enemy => enemy.isElite).length);
+    static describeEnemies(enemies: Enemy[]): void {
+        console.log("Number of enemies: " + enemies.length + " (" +  enemies.filter(enemy => enemy.isElite).length + " elites)");
         
+        let minLevel = Math.min(...enemies.map(enemy => enemy.level));
         let sumLevel = enemies.map(enemy => enemy.level).reduce((previous, current) => current += previous);
-        let sumDifficulty = enemies.map(enemy => enemy.difficulty).reduce((previous, current) => current += previous);
+        let maxLevel = Math.max(...enemies.map(enemy => enemy.level));
 
-        console.log("Average enemy level: " + sumLevel/enemies.length);
-        console.log("Average enemy difficulty: " + sumDifficulty/enemies.length);
+        let minDifficulty = Math.min(...enemies.map(enemy => enemy.difficulty));
+        let sumDifficulty = enemies.map(enemy => enemy.difficulty).reduce((previous, current) => current += previous);
+        let maxDifficulty = Math.max(...enemies.map(enemy => enemy.difficulty));
+        
+        console.log("Average enemy level: " + sumLevel/enemies.length + " (min: " + minLevel + ", max: " + maxLevel + ")");
+        console.log("Average enemy difficulty: " + sumDifficulty/enemies.length + " (min: " + minDifficulty + ", max: " + maxDifficulty + ")");
 
     }
 

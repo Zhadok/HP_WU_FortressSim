@@ -1,7 +1,10 @@
 ---
-title: "Fortress runs data analysis"
+title: "Fortress runs data analysis v1"
 output: html_notebook
 ---
+
+### Deprecated
+Please see newer version v2. 
 
 ### Goal
 The goal of this analysis is to provide basis for a function to generate a realistic fortress room and enemies given the following parameters:

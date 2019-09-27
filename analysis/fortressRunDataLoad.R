@@ -5,7 +5,8 @@ library(zoo)
 library(dplyr)
 library(jsonlite)
 
-dirToRScript <- dirname(rstudioapi::getSourceEditorContext()$path)
+#dirToRScript <- dirname(rstudioapi::getSourceEditorContext()$path)
+dirToRScript <- "."
 
 ######################
 ## Load my own data ##
@@ -161,7 +162,9 @@ print(paste0("Loaded ", NROW(unique(dataFortresses$runID)), " unique runs with 1
 ##################
 groupedByRun <- dataFortresses[, list(nEnemies=.N
                                       , nElite=sum(isElite)
+                                      , minEnemyDifficulty=min(enemyDifficulty)
                                       , averageEnemyDifficulty=mean(enemyDifficulty)
+                                      , maxEnemyDifficulty=max(enemyDifficulty)
                                       ,  averageEnemyLevel=mean(enemyLevel)
                                       , sumProposedMultiplication=  sum(enemyDifficulty*enemyLevel*(1+isElite))
                                       , proposedComputedDifficulty= 2* sum(enemyDifficulty*enemyLevel*(1+isElite))

@@ -2,6 +2,7 @@ import { FortressRoom } from "../../../src/model/env/FortressRoom";
 import { expect } from 'chai';
 import { Enemy } from "../../../src/model/env/enemies/Enemy";
 import { TestData } from "../../TestData";
+import { Logger } from "../../../src/util/Logger";
 
 function getDefaultEnemies(): Array<Enemy> {
     return [
@@ -11,6 +12,7 @@ function getDefaultEnemies(): Array<Enemy> {
 }
 
 describe("FortressRoom", function() {
+    Logger.verbosity = 0;
     var fortress1: FortressRoom = new FortressRoom([1], 1, 1, TestData.buildNewRNG_0());
     var fortress2: FortressRoom = new FortressRoom([1], 5, 1, TestData.buildNewRNG_0());
     var fortress3: FortressRoom = new FortressRoom([1], 8, 1, TestData.buildNewRNG_0());

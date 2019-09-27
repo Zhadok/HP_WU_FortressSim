@@ -180,4 +180,15 @@ export class FortressRoom {
         return -1;
     }
 
+    // Elites count as double 
+    getNEnemiesElitesCountDouble(): number {
+        return this.enemiesAll.length + this.enemiesAll.filter(enemy => enemy.isElite).length;
+    }
+
+    describeRoom(): void {
+        console.log("Room level: " + this.roomLevel + ", runestoneLevels: " + this.runestoneLevels);
+        EnemyGenerator.describeEnemies(this.enemiesAll);
+    }
+
+
 }

@@ -77,7 +77,9 @@ export class Enemy extends Combatant {
         if (difficulty < 1 || difficulty > 5 || !difficulty) {
             throw new Error("Invalid value for enemy difficulty (should be between 1 and 5): " + difficulty);
         }
-
+        if (level < 1 || !level) {
+            throw new Error("Invalid value for level (should be greater 0): " + level);
+        }
         var base: EnemyStats = enemyData[name].stats[difficulty-1][(isElite)?"elite":"normal"];
         var computedStats: EnemyStats = new EnemyStats(
             Math.floor(base.stamina * (1 + enemyConfig.growthAdjustStaminaPerLevel * level)), // The Math.floor is confirmed by video data
