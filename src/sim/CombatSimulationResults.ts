@@ -13,7 +13,9 @@ export interface CombatSimulationResults {
         averageDamage: number
     }>; 
     readonly nEvents: number; 
-    readonly timeStart: number; 
-    readonly timeEnd: number; 
-    readonly durationMS: number; 
+
+    readonly wallTimeStart: number; 
+    readonly wallTimeEnd: number; 
+    readonly durationWallTimeMS: number; 
+    readonly durationGameTimeMS: number; 
 }

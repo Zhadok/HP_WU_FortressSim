@@ -137,9 +137,16 @@ I have seen values between 50% and 60%.
 
 This graph disputes that theory and shows that this percentage may depend on difficulty/room level and is not in fact constant. However, more data is needed to model this relation. 
 
-```{r}
-ggplot(groupedByRoomLevel, aes(x=as.factor(roomLevel), y=averageProficiency)) + geom_boxplot() + theme_bw() + xlab("Room level") + ylab("Average percentage the wizard was proficient against")
+I use the following equation to predict average proficiency: 
+$$ averageProficiency = \alpha + \beta * roomLevel $$
 
+```{r}
+
+modelAverageProficiency <- lm(averageProficiency ~ roomLevel, dataTrain)
+ggplot(groupedByRoomLevel, aes(x=roomLevel, y=averageProficiency)) + 
+  geom_point() + 
+  geom_line(data=data.table(x=dataTrain$roomLevel, y=predict(modelAverageProficiency, dataTrain)), aes(x=x, y=y)) +
+  theme_bw() + xlab("Room level") + ylab("Average proficiency")
 ```
 
 

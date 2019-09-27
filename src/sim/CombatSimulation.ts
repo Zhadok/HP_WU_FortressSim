@@ -69,7 +69,7 @@ export class CombatSimulation {
         //this.events = new Map<number, Array<SimEvent>>();
         this.eventQueue = [];
 
-        this.fortressRoom = new FortressRoom(params.runestoneLevels, params.roomLevel, params.runestoneLevels.length, rng);
+        this.fortressRoom = new FortressRoom(params, rng);
         let knockoutTime = this.fortressRoom.computeKnockoutTime(); 
         this.maxTime = this.fortressRoom.computeMaxtime() * 1000;
 
@@ -351,9 +351,10 @@ export class CombatSimulation {
             }
         });
         return {
-            timeStart: this.timeStart,
-            timeEnd: this.timeEnd,
-            durationMS: this.timeEnd - this.timeStart,
+            wallTimeStart: this.timeStart,
+            wallTimeEnd: this.timeEnd,
+            durationWallTimeMS: this.timeEnd - this.timeStart,
+            durationGameTimeMS: this.currentTime, 
             nEvents: this.nEventsProcessed,
             simParameters: this.params,
             wizardResults: wizardResults

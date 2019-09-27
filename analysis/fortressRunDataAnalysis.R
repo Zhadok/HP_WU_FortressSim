@@ -105,11 +105,12 @@ ggplot(groupedByRoomLevel, aes(x=roomLevel, y=averageEnemyDifficulty)) + geom_po
 
 
 # Proficiency percentage, analysis below should be per room level
-ggplot(groupedByRoomLevel, aes(x=as.factor(roomLevel), y=averageProficiency)) + geom_point()
+ggplot(groupedByRoomLevel, aes(x=as.factor(roomLevel), y=averageProficiency)) + geom_boxplot()
 ggplot(groupedByRoomLevel, aes(x=roomLevel, y=averageProficiency)) + geom_point() + geom_line()
 
-dataFortresses[, difficultyBudgetThisEnemy:=predict(modelForDifficultyBudgetPerSingleEnemy, data.table(roomLevel=roomLevel))]
-dataFortresses[, enemyMultiplication:=enemyDifficulty*enemyLevel*(1+isElite)]
+ggplot(groupedByRoomLevel, aes(x=difficulty, y=averageProficiency)) + geom_point()
+
+
 
 
 
@@ -207,6 +208,16 @@ predict(modelAverageEnemyLevel, data.table(roomLevel=20, difficulty=17000))[[1]]
 
 
 # Determine difficulty. Hmm, dependent on nEnemies that were actually used (see data for roomLevel==10)
+
+
+# Determine proficiency
+modelAverageProficiency <- lm(averageProficiency ~ roomLevel, dataTrain)
+summary(modelAverageProficiency)
+(title <- paste0("const averageProficiency = ", modelAverageProficiency$coefficients[[1]], 
+                 " ", modelAverageProficiency$coefficients[[2]], " * roomLevel"))
+ggplot(groupedByRoomLevel, aes(x=roomLevel, y=averageProficiency)) + geom_point() + geom_line(data=data.table(x=dataTrain$roomLevel, 
+                                                                                                     y=predict(modelAverageProficiency, dataTrain)), 
+                                                                                     aes(x=x, y=y))
 
 
 

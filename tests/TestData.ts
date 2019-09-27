@@ -20,7 +20,8 @@ export class TestRNG_0 extends Prando {
 }
 export class TestRNG_1 extends Prando {
     next(): number {
-        return 1;
+        // rng.next() doesnt actually ever return 1 (0 inclusive, 1 exclusive)
+        return 0.99999;
     }
 }
 export class TestRNG_Sequence extends Prando {

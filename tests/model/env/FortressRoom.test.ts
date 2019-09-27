@@ -13,10 +13,31 @@ function getDefaultEnemies(): Array<Enemy> {
 
 describe("FortressRoom", function() {
     Logger.verbosity = 0;
-    var fortress1: FortressRoom = new FortressRoom([1], 1, 1, TestData.buildNewRNG_0());
-    var fortress2: FortressRoom = new FortressRoom([1], 5, 1, TestData.buildNewRNG_0());
-    var fortress3: FortressRoom = new FortressRoom([1], 8, 1, TestData.buildNewRNG_0());
-    var fortress4: FortressRoom = new FortressRoom([2], 8, 1, TestData.buildNewRNG_0());
+
+    let fortress1: FortressRoom; 
+    let fortress2: FortressRoom;
+    let fortress3: FortressRoom; 
+    let fortress4: FortressRoom; 
+
+    beforeEach(() => {
+        let params1 = TestData.buildDefaultSimParameters();
+        params1.roomLevel = 1;
+        fortress1 = new FortressRoom(params1, TestData.buildNewRNG_0());
+
+        let params2 = TestData.buildDefaultSimParameters();
+        params2.roomLevel = 5;
+        fortress2 = new FortressRoom(params2, TestData.buildNewRNG_0());
+
+        let params3 = TestData.buildDefaultSimParameters();
+        params3.roomLevel = 8;
+        fortress3 = new FortressRoom(params3, TestData.buildNewRNG_0());
+        
+        let params4 = TestData.buildDefaultSimParameters();
+        params4.roomLevel = 8;
+        params4.runestoneLevels = [2]; 
+        fortress4 = new FortressRoom(params4, TestData.buildNewRNG_0());
+        
+    });
 
     it('focusBudget_fromComputedData', function() {
         expect(fortress1.computeFocusBudget()).equal(4);
@@ -26,12 +47,10 @@ describe("FortressRoom", function() {
     });
 
     it("focusBudget_fromVideo", function() {
-        expect((new FortressRoom([1], 6, 1, TestData.buildNewRNG_0())).computeFocusBudget()).to.equal(8);
-        expect((new FortressRoom([1], 7, 1, TestData.buildNewRNG_0())).computeFocusBudget()).to.equal(9);
-        expect((new FortressRoom([1], 8, 1, TestData.buildNewRNG_0())).computeFocusBudget()).to.equal(10);
-        expect((new FortressRoom([2], 8, 1, TestData.buildNewRNG_0())).computeFocusBudget()).to.equal(10);
-        expect((new FortressRoom([1], 9, 1, TestData.buildNewRNG_0())).computeFocusBudget()).to.equal(11);
-        expect((new FortressRoom([2], 9, 1, TestData.buildNewRNG_0())).computeFocusBudget()).to.equal(11);
+        expect(fortress1.computeFocusBudget()).to.equal(4);
+        expect(fortress2.computeFocusBudget()).to.equal(8);
+        expect(fortress3.computeFocusBudget()).to.equal(10);
+        expect(fortress4.computeFocusBudget()).to.equal(10);
     });
 
     it("difficulty_fromComputedData", function() {
@@ -39,15 +58,6 @@ describe("FortressRoom", function() {
         expect(fortress2.computeOverallDifficulty()).equal(445);
         expect(fortress3.computeOverallDifficulty()).equal(1362);
         expect(fortress4.computeOverallDifficulty()).equal(1395);
-    });
-    it("difficulty_fromVideo", function() {
-        expect((new FortressRoom([1], 6, 1, TestData.buildNewRNG_0())).computeOverallDifficulty()).to.equal(647);
-        expect((new FortressRoom([1], 7, 1, TestData.buildNewRNG_0())).computeOverallDifficulty()).to.equal(970);
-        expect((new FortressRoom([1], 8, 1, TestData.buildNewRNG_0())).computeOverallDifficulty()).to.equal(1362);
-        expect((new FortressRoom([2], 8, 1, TestData.buildNewRNG_0())).computeOverallDifficulty()).to.equal(1395);
-        expect((new FortressRoom([1], 9, 1, TestData.buildNewRNG_0())).computeOverallDifficulty()).to.equal(1850);
-        expect((new FortressRoom([2], 9, 1, TestData.buildNewRNG_0())).computeOverallDifficulty()).to.equal(1891);
-        
     });
 
     it("maxTime", function() {
@@ -65,27 +75,25 @@ describe("FortressRoom", function() {
     });
 
     it("addEnemyToActive", function() {
-        let fortress = new FortressRoom([1], 1, 1, TestData.buildNewRNG_0());
         let enemies = getDefaultEnemies();
-        fortress.addEnemyToActive(enemies[0]);
-        expect(fortress.enemiesActive).to.have.length(1);
-        fortress.addEnemyToActive(enemies[1]);
-        expect(fortress.enemiesActive).to.have.length(2);
+        fortress1.addEnemyToActive(enemies[0]);
+        expect(fortress1.enemiesActive).to.have.length(1);
+        fortress1.addEnemyToActive(enemies[1]);
+        expect(fortress1.enemiesActive).to.have.length(2);
     });
 
     it("removeEnemyFromActive", function() {
-        let fortress = new FortressRoom([1], 1, 1, TestData.buildNewRNG_0());
         let enemies = getDefaultEnemies();
-        fortress.addEnemyToActive(enemies[0]);
-        fortress.addEnemyToActive(enemies[1]);
-        expect(fortress.enemiesActive).to.have.length(2);
+        fortress1.addEnemyToActive(enemies[0]);
+        fortress1.addEnemyToActive(enemies[1]);
+        expect(fortress1.enemiesActive).to.have.length(2);
 
-        fortress.removeEnemyFromActive(enemies[0]);
-        expect(fortress.enemiesActive).to.have.length(1);
-        expect(fortress.enemiesActive[0].enemyIndex).to.equal(1);
+        fortress1.removeEnemyFromActive(enemies[0]);
+        expect(fortress1.enemiesActive).to.have.length(1);
+        expect(fortress1.enemiesActive[0].enemyIndex).to.equal(1);
 
-        fortress.removeEnemyFromActive(enemies[1]);
-        expect(fortress.enemiesActive).to.have.length(0);
+        fortress1.removeEnemyFromActive(enemies[1]);
+        expect(fortress1.enemiesActive).to.have.length(0);
     });
 
 

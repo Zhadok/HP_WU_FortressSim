@@ -1,6 +1,6 @@
 import { Enemy } from "./Enemy";
 
-import { enemyNameType } from "../../../types";
+import { enemyNameType, nameClassType } from "../../../types";
 import { firstBy } from "thenby";
 import Prando from "prando";
 import { Logger } from "../../../util/Logger";
@@ -9,6 +9,16 @@ export class EnemyGenerator {
 
     readonly eliteProbability = 0.10; // Each enemy has a 10% chance to be elite (and then counts for 2)
     readonly rng: Prando;  
+    readonly proficiencyMap: { [key in nameClassType]: Array<enemyNameType>} = {
+        "auror": ["darkWizard", "deathEater"],
+        "magizoologist": ["acromantula", "erkling"],
+        "professor": ["pixie", "werewolf"]
+    };
+    readonly inproficiencyMap: { [key in nameClassType]: Array<enemyNameType>} = {
+        "auror": ["acromantula", "erkling", "pixie", "werewolf"],
+        "magizoologist": ["darkWizard", "deathEater", "pixie", "werewolf"],
+        "professor": ["acromantula", "darkWizard", "deathEater", "erkling"]
+    };
 
     private constructor(rng: Prando) {
         this.rng = rng;
@@ -55,6 +65,21 @@ export class EnemyGenerator {
         return averageEnemyLevel;
     }
 
+    getAverageProficiency(roomLevel: number) {
+        const averageProficiency = 0.703789438124907 -0.0196579934802149 * roomLevel;
+        return averageProficiency;
+    }
+    getEnemyType(averageProficiency: number, nameClass: nameClassType): enemyNameType {
+        // You should be proficient roughly against averageProficiency percentage of enemies
+        let shouldBeProficient = this.rng.next() >= (1-averageProficiency);
+        if (shouldBeProficient === true) {
+            return this.proficiencyMap[nameClass][Math.floor(this.rng.next() * 2)]; // array.length = 2
+        }
+        else {
+            return this.inproficiencyMap[nameClass][Math.floor(this.rng.next() * 4)]; //array.length = 4
+        }
+    }
+
     // Difficulty budget per enemy: This value has a multiplier
     // difficulty = multiplier * nEnemies * (level * enemyDifficulty * (1+isElite)))
     // difficultyBudgetPerEnemy = (level * enemyDifficulty * (1+isElite))
@@ -74,15 +99,19 @@ export class EnemyGenerator {
         return enemyDifficulty;
     }
 
-    generateEnemies(overallDifficulty: number, focusBudget: number, playerCount: number, roomLevel: number, runestoneLevels: Array<number>): Array<Enemy> {
+   
+
+    generateEnemies(overallDifficulty: number, focusBudget: number, playerCount: number, 
+        roomLevel: number, runestoneLevels: Array<number>, nameClasses: Array<nameClassType>): Array<Enemy> {
         let result: Array<Enemy> = [];
         let nEnemiesRemaining = this.getNEnemies(overallDifficulty, roomLevel, playerCount);
-        let normalizedDifficultyBudgetPerEnemy = this.getNormalizedDifficultyBudgetPerEnemy(overallDifficulty, roomLevel, nEnemiesRemaining);
+        const normalizedDifficultyBudgetPerEnemy = this.getNormalizedDifficultyBudgetPerEnemy(overallDifficulty, roomLevel, nEnemiesRemaining);
         
         // Unknown if average runestone level should be used here
         const averageRunestoneLevel = runestoneLevels.reduce((a, b) => ( a += b)) / runestoneLevels.length;
-        let averageEnemyLevel = this.getAverageEnemyLevel(roomLevel, averageRunestoneLevel);
-        
+        const averageEnemyLevel = this.getAverageEnemyLevel(roomLevel, averageRunestoneLevel);
+        const averageProficiency = this.getAverageProficiency(roomLevel); 
+
         Logger.log(2, "Generating enemies for room with following parameters:");
         Logger.log(2, "Room level: " + roomLevel + 
                       ", average runestone level: " + averageRunestoneLevel + 
@@ -104,8 +133,13 @@ export class EnemyGenerator {
             // difficultyBudget for this enemy is: level * enemyDifficulty
             let enemyDifficulty = this.getEnemyDifficulty(normalizedDifficultyBudgetPerEnemy, enemyLevel, roomLevel);
 
+            // First approach for proficiency: Allow each player in turn to get a chance to get a proficient enemy or not
+            let proficiencyPlayerIndex = 0;
+            let type = this.getEnemyType(averageProficiency, nameClasses[proficiencyPlayerIndex % playerCount]);
+            proficiencyPlayerIndex++;
+
             let enemyParam = {
-                type: "acromantula", 
+                type: type, 
                 enemyIndex: enemyIndex, 
                 isElite: isElite, 
                 difficulty: enemyDifficulty, 

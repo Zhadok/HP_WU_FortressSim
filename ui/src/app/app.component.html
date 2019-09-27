@@ -200,7 +200,8 @@
 
             <div #divContainerSingleSimulation *ngIf="simMode ==='single' && simulationSingleResults !== null">
                 <div #divContainerSingleSimulationLog>
-                    Duration: {{simulationSingleResults.durationMS}}ms <br>
+                    Real world time: {{simulationSingleResults.durationWallTimeMS}}ms <br>
+                    Simulation time: {{simulationSingleResults.durationGameTimeMS}}ms
                     Number of events: {{simulationSingleResults.nEvents}} <br>
                     <div *ngFor="let wizardResult of simulationSingleResults.wizardResults">
                         Player {{wizardResult.playerIndex}}: 

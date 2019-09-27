@@ -1,14 +1,16 @@
 import {Enemy} from "./enemies/Enemy";
 import fortressDifficultyData from "../../data/fortressDifficulties.json";
-import { enemyNameType } from "../../types";
+import { enemyNameType, nameClassType } from "../../types";
 import { EnemyGenerator } from "./enemies/EnemyGenerator";
 import Prando from "prando";
+import { CombatSimulationParameters } from "../../sim/CombatSimulationParameters";
 
 export class FortressRoom {
 
     // data source: https://wizardsunitehub.info/wiki/fortress/#Fortress_floors_time_limits_minimum_level_base_rating_chart
 
     readonly runestoneLevels: Array<number>; // Currently: 1-5
+    readonly nameClasses: Array<nameClassType>; 
     readonly roomLevel: number; // Currently: 1-20 (1=ruins I, 6=Tower I)
     readonly playerCount: number; // 1-5 players allowed
     readonly overallDifficulty: number; // Function of player count, room level and runestone levels used
@@ -19,13 +21,12 @@ export class FortressRoom {
     readonly enemiesAll: Array<Enemy>;
     readonly enemiesActive: Array<Enemy> = [];
 
-    constructor(runestoneLevels: Array<number>,
-        roomLevel: number,
-        playerCount: number, 
+    constructor(params: CombatSimulationParameters, 
         rng: Prando) {
-        this.runestoneLevels = runestoneLevels;
-        this.roomLevel = roomLevel;
-        this.playerCount = playerCount;
+        this.runestoneLevels = params.runestoneLevels;
+        this.nameClasses = params.nameClasses; 
+        this.roomLevel = params.roomLevel;
+        this.playerCount = params.runestoneLevels.length;
 
         this.overallDifficulty = this.computeOverallDifficulty();
         this.focusBudget = this.computeFocusBudget();
@@ -88,7 +89,9 @@ export class FortressRoom {
     }
 
     generateEnemies(rng: Prando): Array<Enemy> {
-        return EnemyGenerator.buildEnemyGeneratorWithRng(rng).generateEnemies(this.overallDifficulty, this.focusBudget, this.playerCount, this.roomLevel, this.runestoneLevels);
+        return EnemyGenerator
+                .buildEnemyGeneratorWithRng(rng)
+                .generateEnemies(this.overallDifficulty, this.focusBudget, this.playerCount, this.roomLevel, this.runestoneLevels, this.nameClasses);
     }
 
     // How much focus can we divide among enemies?
