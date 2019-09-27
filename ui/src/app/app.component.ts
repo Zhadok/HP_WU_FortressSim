@@ -4,7 +4,7 @@ import { CombatSimulation } from "../../../src/sim/CombatSimulation";
 import Prando from 'prando';
 import { TestData } from "../../../tests/TestData";
 import { CombatSimulationParameters } from '../../../src/sim/CombatSimulationParameters';
-import { nameClassType, nameClassUserFriendlyType } from '../../../src/types';
+import { nameClassType, nameClassUserFriendlyType, simModeType } from '../../../src/types';
 import { PotionAvailabilityParameters } from '../../../src/sim/PotionAvailabilityParameters';
 import { PersistedSkillTree } from '../../../src/model/player/SkillTree/PersistedSkillTree';
 import { SkillTreeNode } from '../../../src/model/player/SkillTree/SkillTreeNode';
@@ -16,6 +16,7 @@ import {MatExpansionModule, MatExpansionPanel} from '@angular/material/expansion
 import { statNameType } from '../../../src/types';
 import { Logger } from '../../../src/util/Logger';
 import { CombatSimulationResults } from '../../../src/sim/CombatSimulationResults';
+import { CombatSimulationComparison } from '../../../src/sim//parallel/CombatSimulationComparison';
 
 
 @Component({
@@ -36,7 +37,7 @@ export class AppComponent {
     readonly allowedClasses: { [key in nameClassType]: nameClassUserFriendlyType }; 
 
     numberSimulations: number = 100; 
-    simMode: "single" | "multiple_compare_roomLevels" | "multiple_compare_skillTreeNodes" = "single"; 
+    simMode: simModeType = "single"; 
 
     simulationLog: string = "";
     simulationSingleResults: CombatSimulationResults | null; 
@@ -150,21 +151,9 @@ export class AppComponent {
     onClickButtonStartMultipleSimulations(): void {
         this.closeSettingsPanels();
         this.simMode = "multiple_compare_roomLevels";
-        let simulationParametersCompare: CombatSimulationParameters[] = this.getSimParametersToCompare();
-        console.log("Starting " + this.numberSimulations + " simulations with parameters:");
-        console.log(this.simParameters);
-    }
-
-    getSimParametersToCompare(): CombatSimulationParameters[] {
-        // Use current settings as basis
-        let result = [];
-        if (this.simMode === "multiple_compare_roomLevels") {
-            
-        }
-        if (this.simMode === "multiple_compare_skillTreeNodes") {
-            // What should my next skill tree node be?
-        }
-        return result; 
+        let simComparison = new CombatSimulationComparison(this.simParameters, this.simMode, this.numberSimulations);
+        //let simulationParametersCompare: CombatSimulationParameters[] = this.getSimParametersToCompare();
+        //console.log("Running " + simulationParametersCompare.length + " simulations...");
     }
 
 

@@ -45,3 +45,8 @@ declare type actionNameType = strategicSpellNameType |
                               "enterCombatWithHighestPriorityAvailableEnemy" | "exitCombat" | 
                               "combatSpellCastWizard";
 
+
+
+
+// Sim modes for frontend
+declare type simModeType = "single" | "multiple_compare_roomLevels" | "multiple_compare_skillTreeNodes";
