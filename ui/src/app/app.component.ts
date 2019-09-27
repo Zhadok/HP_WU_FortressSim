@@ -35,8 +35,9 @@ export class AppComponent {
 
     readonly allowedClasses: { [key in nameClassType]: nameClassUserFriendlyType }; 
 
-    numberSimulations: number = 10000; 
-    simMode: "single" | "multiple" = "single"; 
+    numberSimulations: number = 100; 
+    simMode: "single" | "multiple_compare_roomLevels" | "multiple_compare_skillTreeNodes" = "single"; 
+
     simulationLog: string = "";
     simulationSingleResults: CombatSimulationResults | null; 
 
@@ -148,10 +149,24 @@ export class AppComponent {
 
     onClickButtonStartMultipleSimulations(): void {
         this.closeSettingsPanels();
-        this.simMode = "multiple";
+        this.simMode = "multiple_compare_roomLevels";
+        let simulationParametersCompare: CombatSimulationParameters[] = this.getSimParametersToCompare();
         console.log("Starting " + this.numberSimulations + " simulations with parameters:");
         console.log(this.simParameters);
     }
+
+    getSimParametersToCompare(): CombatSimulationParameters[] {
+        // Use current settings as basis
+        let result = [];
+        if (this.simMode === "multiple_compare_roomLevels") {
+            
+        }
+        if (this.simMode === "multiple_compare_skillTreeNodes") {
+            // What should my next skill tree node be?
+        }
+        return result; 
+    }
+
 
     @ViewChild("matPanelInputParameters", {static: false}) matPanelInputParameters: MatExpansionPanel;
     @ViewChild("matPanelAdvancedSimulationSettings", {static: false}) matPanelAdvancedSimulationSettings: MatExpansionPanel;
@@ -256,6 +271,7 @@ export class AppComponent {
     initFromLocalStorage(): void {
         let data = JSON.parse(localStorage.getItem("savedData")!); 
         this.numberSimulations = data.numberSimulations;
+        this.simMode = data.simMode; 
         this.simParameters = data.simParameters;
         for (let persistedSkillTree of this.simParameters.skillTrees) {
             this.skillTrees.push(SkillTree.fromPersisted(persistedSkillTree));
@@ -272,6 +288,7 @@ export class AppComponent {
         // Persist neccessary attributes of this class
         localStorage.setItem("savedData", JSON.stringify({
             numberSimulations: this.numberSimulations,
+            simMode: this.simMode, 
             simParameters: this.simParameters
         }));
     }
