@@ -5,6 +5,7 @@ import { CombatSimulationResults } from '../CombatSimulationResults';
 import { combatSimulationWorker } from "./CombatSimulationWorker";
 import { CombatSimulation } from "../CombatSimulation"; 
 import Prando from 'prando';
+import { Logger } from "../../util/Logger";
 
 export class CombatSimulationComparison {
 
@@ -18,7 +19,7 @@ export class CombatSimulationComparison {
         this.simMode = simMode; 
         this.numberSimulationsPerSeed = numberSimulationsPerSeed;
         //this.pool = workerpool.pool(__dirname + "/CombatSimulationWorker.ts");
-        this.pool = workerpool.pool(); 
+        this.pool = workerpool.pool(undefined);  
     }
 
     getSimParametersToCompare(baseSimParameters: CombatSimulationParameters, numberSimulationsPerSeed: number, simMode: simModeType): CombatSimulationParameters[] {
@@ -46,28 +47,59 @@ export class CombatSimulationComparison {
         return result; 
     }
 
-    async run() {
+
+
+    async run(): Promise<CombatSimulationResults[]> {
         let simParams: CombatSimulationParameters[] = this.getSimParametersToCompare(this.baseSimParameters, this.numberSimulationsPerSeed, this.simMode); 
 
         let simResults: CombatSimulationResults[] = [];
-        //return this.pool.exec("combatSimulationWorker", simParams); 
-        for (let runID=0;runID<1;runID++) { //simParams.length
-            /*let result = await this.pool.exec(
-                
-                , [simParams[runID]]); */
-            this.pool.exec((simParams: CombatSimulationParameters) =>  {
-               console.log(simParams)
-               let sim = new CombatSimulation(simParams, new Prando(0));
-               sim.init(); 
-               sim.simulate();
-               return sim.toSimulationResults();
-            }, [simParams[runID]])
-                .then((result) => console.log(result))
-                .catch((err) => console.error(err))
-                .then(() => this.pool.terminate());
-            //console.log(result); 
+        for (let runID=0;runID<simParams.length;runID++) { //simParams.length
+            let simResult = await combatSimulationWorker(simParams[runID], new Prando(simParams[runID].seed)); 
+            simResult.runID = runID; 
+            simResults.push(simResult); 
+            Logger.log(1, "Finished runID=" + runID + " after " + simResult.durationWallTimeMS + "ms"); 
         }
-        //this.pool.stats
+        return simResults; 
+    }
+
+    async runParallel(): Promise<CombatSimulationResults[]> {
+        let simParams: CombatSimulationParameters[] = this.getSimParametersToCompare(this.baseSimParameters, this.numberSimulationsPerSeed, this.simMode); 
+
+        let simResults: CombatSimulationResults[] = [];
+        return new Promise((resolve, reject) => {
+            
+            for (let runID=0;runID<20;runID++) { //simParams.length
+                this.pool.exec((simParams: CombatSimulationParameters, verbosity: number, runID: number) =>  {
+                        var Prando = require("Prando");
+                        var Logger = require("../../../lib/src/util/Logger").Logger; 
+                        Logger.verbosity = verbosity;  
+                        var CombatSimulation = require("../../../lib/src/sim/CombatSimulation").CombatSimulation;
+
+                        let sim = new CombatSimulation(simParams, new Prando(simParams.seed));
+                        sim.init(); 
+                        return sim.simulate().then(() => {
+                            let simulationResults = sim.toSimulationResults(); 
+                            simulationResults.runID = runID; 
+                            return simulationResults; 
+                        });
+                    }, [simParams[runID], Logger.verbosity, runID])
+                        .then((simulationResults: CombatSimulationResults) => {
+                            Logger.log(1, "Finished run with runID=" + simulationResults.runID);
+                            simResults.push(simulationResults);
+                        })
+                        .catch((err) => console.error(err))
+                        .then(() => {
+                            let stats = this.pool.stats();
+                            if (stats.pendingTasks === 0 && stats.activeTasks === 0) {
+                                Logger.log(1, "Terminating worker pool."); 
+                                this.pool.terminate();
+                                simResults.sort((a, b) => { return a.runID! - b.runID!; }); 
+                                resolve(simResults); 
+                            }
+                        });
+            }
+        }); 
+
     }
 
     

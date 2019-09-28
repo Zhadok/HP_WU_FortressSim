@@ -161,7 +161,7 @@ export class CombatSimulation {
             }
         }
         if (this.isWin === null) {
-            this.log(1, "All enemies have been defeated!");
+            this.log(2, "All enemies have been defeated!");
             this.isWin = true; 
         } 
 

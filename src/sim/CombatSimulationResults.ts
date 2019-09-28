@@ -14,8 +14,10 @@ export interface CombatSimulationResults {
     }>; 
     readonly nEvents: number; 
 
-    readonly wallTimeStart: number; 
-    readonly wallTimeEnd: number; 
-    readonly durationWallTimeMS: number; 
+    wallTimeStart: number; 
+    wallTimeEnd: number; 
+    durationWallTimeMS: number; 
     readonly durationGameTimeMS: number; 
+
+    runID?: number; 
 }

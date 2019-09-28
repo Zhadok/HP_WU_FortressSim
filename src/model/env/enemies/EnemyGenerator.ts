@@ -92,10 +92,10 @@ export class EnemyGenerator {
 
     // Concrete enemy difficulty for one enemy (number of stars)
     getEnemyDifficulty(normalizedDifficultyBudgetPerEnemy: number, enemyLevel: number, roomLevel: number): number {
-        let enemyDifficulty = Math.round( normalizedDifficultyBudgetPerEnemy / enemyLevel + this.jitterByAmount(2) );
         if (roomLevel === 1) {
-            enemyDifficulty = 1; // Hard code this since ruins I are only difficulty 1
+            return 1; // Hard code this since ruins I are only difficulty 1
         }
+        let enemyDifficulty = Math.max(1, Math.round( normalizedDifficultyBudgetPerEnemy / enemyLevel + this.jitterByAmount(2) ));
         return enemyDifficulty;
     }
 
