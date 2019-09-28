@@ -4,7 +4,7 @@ import { CombatSimulation } from "../../../src/sim/CombatSimulation";
 import Prando from 'prando';
 import { TestData } from "../../../tests/TestData";
 import { CombatSimulationParameters } from '../../../src/sim/CombatSimulationParameters';
-import { nameClassType, nameClassUserFriendlyType, simModeType } from '../../../src/types';
+import { nameClassType, nameClassUserFriendlyType, simGoalType as simGoalType, simAdvancedSettingsType, simProgressType, simulationResultsGroupedType } from '../../../src/types';
 import { PotionAvailabilityParameters } from '../../../src/sim/PotionAvailabilityParameters';
 import { PersistedSkillTree } from '../../../src/model/player/SkillTree/PersistedSkillTree';
 import { SkillTreeNode } from '../../../src/model/player/SkillTree/SkillTreeNode';
@@ -17,7 +17,7 @@ import { statNameType } from '../../../src/types';
 import { Logger } from '../../../src/util/Logger';
 import { CombatSimulationResults } from '../../../src/sim/CombatSimulationResults';
 import { CombatSimulationComparison } from '../../../src/sim//parallel/CombatSimulationComparison';
-
+import {MatTable, MatTab } from "@angular/material"; 
 
 @Component({
     selector: 'app-root',
@@ -28,7 +28,7 @@ export class AppComponent {
     
     readonly skillTreeVis = {
         rowHeight: 80,
-        columnWidth: 100,
+        columnWidth: 120,
         marginTop: 30,
         marginLeft: 30,
         nodeCircleRadius: 30
@@ -36,12 +36,22 @@ export class AppComponent {
 
     readonly allowedClasses: { [key in nameClassType]: nameClassUserFriendlyType }; 
 
-    numberSimulations: number = 100; 
-    simMode: simModeType = "single"; 
+    // Advanced sim settings
+    simAdvancedSettings: simAdvancedSettingsType = {
+        numberSimulations: 100,
+        simGoal: "single",
+        runParallel: true
+    }; 
+    
 
+    // For showing results of simulations
     simulationLog: string = "";
     simulationSingleResults: CombatSimulationResults | null; 
+    simulationMultipleResults: CombatSimulationResults[]; 
+    simulationMultipleResultsGrouped: simulationResultsGroupedType[]; 
+    simProgress: simProgressType | null = null; 
 
+    // Base sim parameters shown in UI
     simParameters: CombatSimulationParameters; 
     skillTrees: Array<SkillTree> = [];
 
@@ -85,6 +95,7 @@ export class AppComponent {
         }
 
         this.simParameters = new Proxy(this.simParameters, localStorageHandler); 
+        this.simAdvancedSettings = new Proxy(this.simAdvancedSettings, localStorageHandler); 
         Logger.callbackFunction = function(messageLine: string) {
             self.simulationLog += messageLine + "\n";
             //console.log(messageLine);
@@ -136,24 +147,105 @@ export class AppComponent {
         
     }
 
-    async onClickButtonStartSingleSimulation() {
+
+    resetSimulationResults() {
         this.simulationLog = "";
         this.closeSettingsPanels();
-        this.simMode = "single";
+        
+    }
+
+    async onClickButtonStartSingleSimulation() {
+        this.resetSimulationResults(); 
+        this.simAdvancedSettings.simGoal = "single";
         console.log("Starting single simulation with parameters:");
         console.log(this.simParameters);
+
+        Logger.verbosity = 2; 
         let sim = new CombatSimulation(this.simParameters, new Prando(this.simParameters.seed));
         sim.init();
         await sim.simulate(); 
         this.simulationSingleResults = sim.toSimulationResults(); 
     }
 
-    onClickButtonStartMultipleSimulations(): void {
-        this.closeSettingsPanels();
-        this.simMode = "multiple_compare_roomLevels";
-        let simComparison = new CombatSimulationComparison(this.simParameters, this.simMode, this.numberSimulations);
-        //let simulationParametersCompare: CombatSimulationParameters[] = this.getSimParametersToCompare();
-        //console.log("Running " + simulationParametersCompare.length + " simulations...");
+    async onClickButtonStartMultipleSimulations()  {
+        this.resetSimulationResults(); 
+        this.simAdvancedSettings.simGoal = "multiple_compare_roomLevels";
+        var self = this; 
+        let simComparison = new CombatSimulationComparison(this.simParameters, this.simAdvancedSettings.simGoal, this.simAdvancedSettings.numberSimulations);
+        this.simProgress = {
+            nFinished: 0,
+            nRemaining: simComparison.getNumberSimulationsTotal(),
+            nTotal: simComparison.getNumberSimulationsTotal()
+        };
+        simComparison.setListenerSimProgress((simProgress: simProgressType) => {
+            self.simProgress = simProgress; 
+        });
+
+        Logger.verbosity = 1; 
+        if (this.simAdvancedSettings.runParallel === false) {
+            setTimeout(async function() {
+                self.simulationMultipleResults = await simComparison.run(); 
+                self.simProgress = null; 
+                self.updateSimulationMultipleResultsGrouped.call(self); 
+            }, 100); 
+        }
+        else {
+            this.simulationMultipleResults = await simComparison.runParallel(); 
+            this.simProgress = null; 
+            this.updateSimulationMultipleResultsGrouped(); 
+        }
+    }
+
+
+    columnNamesMultipleSimulationsResultsGrouped = []; 
+    @ViewChild("tableMultipleSimulationResults", {static: false}) matTableMultipleSimulationResults: MatTable<simulationResultsGroupedType>;
+    updateSimulationMultipleResultsGrouped() {
+
+        let uniqueRoomLevels: number[] = Array.from(new Set(this.simulationMultipleResults.map(result => result.simParameters.roomLevel)));
+        let resultsGrouped: simulationResultsGroupedType[] = []; 
+        if (this.simAdvancedSettings.simGoal === "multiple_compare_roomLevels") {
+            // Group by room level (example total runs: 200)
+            for (let roomLevel of uniqueRoomLevels) {
+                // All  results for X simulations of this room level (example runs: 10)
+                let resultsFiltered = this.simulationMultipleResults.filter((results) => results.simParameters.roomLevel === roomLevel); 
+                let nRuns = resultsFiltered.length; 
+                let nWins = resultsFiltered.map(r => r.isWin).map(isWin => Number(isWin)).reduce((a,b) => (a+=b)); 
+                let totalDamage = 0; 
+                let totalCasts = 0; 
+                let totalCritCasts = 0;
+                let totalDodgeCasts = 0; 
+                let nWizards = resultsFiltered[0].wizardResults.length; 
+                for (let wizardResultArray of resultsFiltered.map(r => r.wizardResults)) {
+                    // Results for X wizards of 1 concrete simulation
+                    for (let wizardResult of wizardResultArray) {
+                        // Result for 1 wizard of 1 concrete simulation
+                        totalDamage += wizardResult.totalDamage; 
+                        totalCasts += wizardResult.numberOfCasts; 
+                        totalCritCasts += wizardResult.numberOfCriticalCasts; 
+                        totalDodgeCasts += wizardResult.numberOfDodgedCasts; 
+                        // Wizard 1 and wizard 2 might have different number of casts, so averages must be weighted for averageNumberOfCritCasts
+
+                    }
+                }
+
+                resultsGrouped.push({
+                    roomLevel: roomLevel,
+                    winPercentage: nWins / nRuns,
+                    averageDamage: totalDamage / totalCasts, // Average damage per cast
+                    averageNumberOfCasts: totalCasts / (nRuns * nWizards), // Average number of casts a wizard made 
+                    averageNumberOfCriticalCasts: totalCritCasts / (nRuns * nWizards),
+                    averageNumberOfDodgedCasts: totalDodgeCasts / (nRuns * nWizards), 
+                    averageTotalDamage: totalDamage / (nRuns * nWizards),
+                    averageGameTimeMS: resultsFiltered.map(r => r.durationGameTimeMS).reduce((a,b)=>a+=b) / nRuns,
+                    numberOfRuns: nRuns
+                });
+            }
+            this.simulationMultipleResultsGrouped = resultsGrouped; 
+            this.columnNamesMultipleSimulationsResultsGrouped = Object.keys(this.simulationMultipleResultsGrouped[0]);
+            console.log(this.simulationMultipleResultsGrouped); 
+            console.log(this.columnNamesMultipleSimulationsResultsGrouped); 
+            //this.matTableMultipleSimulationResults.renderRows(); 
+        }
     }
 
 
@@ -259,8 +351,7 @@ export class AppComponent {
 
     initFromLocalStorage(): void {
         let data = JSON.parse(localStorage.getItem("savedData")!); 
-        this.numberSimulations = data.numberSimulations;
-        this.simMode = data.simMode; 
+        this.simAdvancedSettings = data.simAdvancedSettings; 
         this.simParameters = data.simParameters;
         for (let persistedSkillTree of this.simParameters.skillTrees) {
             this.skillTrees.push(SkillTree.fromPersisted(persistedSkillTree));
@@ -276,8 +367,7 @@ export class AppComponent {
         console.log("Persisting to local storage...");
         // Persist neccessary attributes of this class
         localStorage.setItem("savedData", JSON.stringify({
-            numberSimulations: this.numberSimulations,
-            simMode: this.simMode, 
+            simAdvancedSettings: this.simAdvancedSettings, 
             simParameters: this.simParameters
         }));
     }

@@ -11,7 +11,7 @@
                 Start single simulation
             </button>
             <button (click)="onClickButtonStartMultipleSimulations()" class="buttonStartSimulation" mat-raised-button large color="primary" >
-                Start {{numberSimulations}} simulations
+                Start {{simAdvancedSettings.numberSimulations}} simulations
             </button>
         </div>
 
@@ -40,12 +40,17 @@
                         <div id="divSkillTreeSettingsWrapper">
                             <div *ngFor="let nameClass of simParameters.nameClasses; let playerIndex=index" class="divSingleWizardSettings">
                                 <h2 class="mat-h2">Settings for player {{playerIndex+1}}</h2>
-                                Class: 
-                                <mat-select placeholder="Select class..." name="selectWizardClass" 
-                                            (selectionChange)="onChangeSelectWizardClass($event, playerIndex)"
-                                            [(value)]="nameClass">
-                                    <mat-option *ngFor="let item of allowedClasses | keyvalue" value="{{item.key}}">{{item.value}}</mat-option>
-                                </mat-select>
+                                
+                                <mat-form-field>
+                                    <mat-label>Class</mat-label>
+                                    <mat-select placeholder="Select class..." name="selectWizardClass" 
+                                                (selectionChange)="onChangeSelectWizardClass($event, playerIndex)"
+                                                [(value)]="nameClass"
+                                                class="inputPotion">
+                                                
+                                        <mat-option *ngFor="let item of allowedClasses | keyvalue" value="{{item.key}}">{{item.value}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
             
                                 <p>Skill tree: </p>
                                 <div class="divSkillTree">
@@ -67,7 +72,7 @@
                                             <text [attr.x]="node.key.columnIndex * skillTreeVis.columnWidth + skillTreeVis.marginLeft*2" 
                                                 [attr.y]="node.key.rowIndex * skillTreeVis.rowHeight + skillTreeVis.marginTop*2 - skillTreeVis.nodeCircleRadius/2 - 20" 
                                                 text-anchor="middle"
-                                                font-size="8">{{node.key.name}}</text>
+                                                class="textSkillTreeNodeName">{{node.key.name}}</text>
                                             <circle [attr.cx]="node.key.columnIndex * skillTreeVis.columnWidth + skillTreeVis.marginLeft*2"
                                                     [attr.cy]="node.key.rowIndex * skillTreeVis.rowHeight + skillTreeVis.marginTop*2"
                                                     [attr.r]="skillTreeVis.nodeCircleRadius" stroke="black" fill="gray" 
@@ -77,7 +82,7 @@
                                                     ></circle>
                                             <text [attr.x]="node.key.columnIndex * skillTreeVis.columnWidth + skillTreeVis.marginLeft*2" 
                                                   [attr.y]="node.key.rowIndex * skillTreeVis.rowHeight + skillTreeVis.marginTop*2 + 6" 
-                                                  class="small" text-anchor="middle"
+                                                  class="textSkillTreeNode" text-anchor="middle"
                                                   (click)="onClickSkillTreeNode(node.key, playerIndex)"
                                                   matTooltip="{{getSkillTreeNodeTooltip(node.key)}}"
                                                   [matTooltipClass]="'myMatTooltip'"
@@ -167,7 +172,7 @@
                 </mat-tab-group>
         </mat-expansion-panel>
 
-        <mat-expansion-panel #matPanelAdvancedSimulationSettings>
+        <mat-expansion-panel #matPanelAdvancedSimulationSettings [expanded]="true">
             <mat-expansion-panel-header>
                 <mat-panel-title>
                     Advanced simulation settings
@@ -183,8 +188,9 @@
             </mat-form-field>
             <br>
             <mat-form-field class="inputAdvancedSetting">
-                <input matInput type="number" placeholder="Number of simulations" [(ngModel)]="numberSimulations">
+                <input matInput type="number" placeholder="Number of simulations" [(ngModel)]="simAdvancedSettings.numberSimulations">
             </mat-form-field>
+            <mat-checkbox [(ngModel)]="simAdvancedSettings.runParallel">Run parallel</mat-checkbox>
         
         </mat-expansion-panel>
 
@@ -198,7 +204,7 @@
                 </mat-panel-description>
             </mat-expansion-panel-header>
 
-            <div #divContainerSingleSimulation *ngIf="simMode ==='single' && simulationSingleResults !== null">
+            <div #divContainerSingleSimulation *ngIf="simAdvancedSettings.simGoal ==='single' && simulationSingleResults !== null">
                 <div #divContainerSingleSimulationLog>
                     Real world time: {{simulationSingleResults.durationWallTimeMS}}ms <br>
                     Simulation time: {{simulationSingleResults.durationGameTimeMS}}ms
@@ -211,15 +217,65 @@
                         {{wizardResult.averageDamage.toFixed(2)}} average damage,
                         {{wizardResult.totalDamage}} total damage
                     </div>
-                    <br>
-                    <mat-form-field  class="inputAdvancedSetting">
-                        <textarea matInput id="inputSimulationLog" type="text" disabled="true" placeholder="Simulation log" [(value)]="simulationLog"></textarea>
-                    </mat-form-field> 
+
                 </div>
             </div>
-            <div #divContainerMultipleSimulations *ngIf="simMode === 'multiple'">
+            
+            <div #divContainerMultipleSimulations *ngIf="simAdvancedSettings.simGoal.indexOf('multiple') !== -1">
+                <div *ngIf="simProgress !== null">
+                    Progress: {{ simProgress.nFinished }} / {{ simProgress.nTotal }}
+                </div>
+                <div *ngIf="simProgress === null">
+                    <table #tableMultipleSimulationResults mat-table [dataSource]="simulationMultipleResultsGrouped" class="mat-elevation-z8">
 
+                            <ng-container matColumnDef="roomLevel">
+                                    <th mat-header-cell *matHeaderCellDef> Room level </th>
+                                    <td mat-cell *matCellDef="let row"> {{row.roomLevel}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="winPercentage">
+                                    <th mat-header-cell *matHeaderCellDef> Win % </th>
+                                    <td mat-cell *matCellDef="let row"> {{row.winPercentage}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="averageNumberOfCasts">
+                                    <th mat-header-cell *matHeaderCellDef> Average casts </th>
+                                    <td mat-cell *matCellDef="let row"> {{row.averageNumberOfCasts.toFixed(2)}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="averageDamage">
+                                    <th mat-header-cell *matHeaderCellDef> Average damage (per cast) </th>
+                                    <td mat-cell *matCellDef="let row"> {{row.averageDamage.toFixed(2)}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="averageNumberOfCriticalCasts">
+                                    <th mat-header-cell *matHeaderCellDef> Average crits </th>
+                                    <td mat-cell *matCellDef="let row"> {{row.averageNumberOfCriticalCasts.toFixed(2)}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="averageNumberOfDodgedCasts">
+                                    <th mat-header-cell *matHeaderCellDef> Average dodged </th>
+                                    <td mat-cell *matCellDef="let row"> {{row.averageNumberOfDodgedCasts.toFixed(2)}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="averageTotalDamage">
+                                    <th mat-header-cell *matHeaderCellDef> Average total damage </th>
+                                    <td mat-cell *matCellDef="let row"> {{row.averageTotalDamage.toFixed(2)}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="averageGameTimeMS">
+                                    <th mat-header-cell *matHeaderCellDef> Average game time (s) </th>
+                                    <td mat-cell *matCellDef="let row"> {{(row.averageGameTimeMS / 1000).toFixed(3)}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="numberOfRuns">
+                                    <th mat-header-cell *matHeaderCellDef> Runs </th>
+                                    <td mat-cell *matCellDef="let row"> {{row.numberOfRuns}} </td>
+                            </ng-container>
+        
+                            <tr mat-header-row *matHeaderRowDef="columnNamesMultipleSimulationsResultsGrouped"></tr>
+                            <tr mat-row *matRowDef="let row; columns: columnNamesMultipleSimulationsResultsGrouped;"></tr>
+                        </table>
+                </div>
+                
             </div>
+
+            <br>
+            <mat-form-field  class="inputAdvancedSetting">
+                <textarea matInput id="inputSimulationLog" type="text" disabled="true" placeholder="Simulation log" [(value)]="simulationLog"></textarea>
+            </mat-form-field> 
 
         </mat-expansion-panel>
 

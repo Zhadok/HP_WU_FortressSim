@@ -47,6 +47,30 @@ declare type actionNameType = strategicSpellNameType |
 
 
 
-
 // Sim modes for frontend
-declare type simModeType = "single" | "multiple_compare_roomLevels" | "multiple_compare_skillTreeNodes";
+declare type simGoalType = "single" | "multiple_compare_roomLevels" | "multiple_compare_skillTreeNodes";
+declare type simAdvancedSettingsType = {
+    simGoal: simGoalType,
+    numberSimulations: number,
+    runParallel: boolean
+}; 
+declare type simProgressType = {
+    nTotal: number, 
+    nFinished: number, 
+    nRemaining: number
+};
+
+declare type simulationResultsGroupedType = {
+    roomLevel: number, 
+    winPercentage: number,
+    
+    averageNumberOfCasts: number,
+    averageNumberOfCriticalCasts: number,
+    averageNumberOfDodgedCasts: number,
+    averageTotalDamage: number, 
+    averageDamage: number
+
+    averageGameTimeMS: number; 
+
+    numberOfRuns: number
+}

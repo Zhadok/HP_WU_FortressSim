@@ -356,6 +356,7 @@ export class CombatSimulation {
             durationWallTimeMS: this.timeEnd - this.timeStart,
             durationGameTimeMS: this.currentTime, 
             nEvents: this.nEventsProcessed,
+            isWin: this.isWin as boolean, 
             simParameters: this.params,
             wizardResults: wizardResults
         };

@@ -1,18 +1,13 @@
 import { CombatSimulationParameters } from "./CombatSimulationParameters";
+import { CombatSimulationResultsWizard } from "./CombatSimulationResultsWizard";
 
 
 export interface CombatSimulationResults {
 
     readonly simParameters: CombatSimulationParameters;
-    readonly wizardResults: Array<{
-        playerIndex: number, 
-        numberOfCasts: number,
-        numberOfCriticalCasts: number,
-        numberOfDodgedCasts: number,
-        totalDamage: number, 
-        averageDamage: number
-    }>; 
-    readonly nEvents: number; 
+    readonly wizardResults: Array<CombatSimulationResultsWizard>; 
+    readonly nEvents: number;
+    readonly isWin: boolean; 
 
     wallTimeStart: number; 
     wallTimeEnd: number; 

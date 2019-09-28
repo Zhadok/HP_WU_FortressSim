@@ -13,6 +13,9 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatListModule} from '@angular/material';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { FormsModule } from '@angular/forms'
+import { MatCheckboxModule } from "@angular/material"; 
+import { MatTableModule } from "@angular/material"; 
+
 
 @NgModule({
   declarations: [
@@ -30,7 +33,9 @@ import { FormsModule } from '@angular/forms'
     MatListModule,
     MatTooltipModule,
     MatExpansionModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    MatCheckboxModule,
+    MatTableModule
   ],
   providers: [],
   bootstrap: [AppComponent]
