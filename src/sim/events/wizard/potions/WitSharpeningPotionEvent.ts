@@ -2,15 +2,18 @@ import { PotionEvent } from "./PotionEvent";
 import { Wizard } from "../../../../model/player/Wizard";
 import { PotionAvailabilityParameters } from "../../../PotionAvailabilityParameters";
 import { Logger } from "../../../../util/Logger";
+import { Enemy } from "../../../../model/env/enemies/Enemy";
 
 
 export class WitSharpeningPotionEvent extends PotionEvent {
 
+    readonly enemy: Enemy; 
     readonly damageBuff: number;
     readonly uses: number;
 
-    constructor(timestampBegin: number, wizard: Wizard, damageBuff: number, uses: number, potionAvailability: PotionAvailabilityParameters) {
+    constructor(timestampBegin: number, wizard: Wizard, enemy: Enemy, damageBuff: number, uses: number, potionAvailability: PotionAvailabilityParameters) {
         super(timestampBegin, wizard, potionAvailability);
+        this.enemy = enemy; 
         this.damageBuff = damageBuff;
         this.uses = uses;
 
@@ -20,12 +23,11 @@ export class WitSharpeningPotionEvent extends PotionEvent {
     }
 
     onFinish(): void {
-        if (this.wizard.witSharpeningPotionDamageBuff >= this.damageBuff) {
+        if (this.enemy.getWitSharpeningDamageBuff(this.wizard.playerIndex) >= this.damageBuff) {
             Logger.logT(2, this.timestampBegin, "WitSharpeningPotionEvent: wizard id=" + this.wizard.playerIndex + " tried drinking WitSharpeningPotion but version already active!");
             return; 
         }
-        this.wizard.witSharpeningPotionDamageBuff = this.damageBuff;
-        this.wizard.witSharpeningPotionUsesRemaining = this.uses;
+        this.enemy.applyWitSharpeningPotion(this.wizard.playerIndex, this.uses, this.damageBuff); 
     }
 
 }

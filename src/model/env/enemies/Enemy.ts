@@ -37,6 +37,16 @@ export class Enemy extends Combatant {
     hasDeteriorationHex: boolean = false;
     deteriorationHexDamage: number = 0;
 
+    // Potions are applied against an enemy, not of the wizard
+    // Each player can use a potion against an enemy...
+    // Exstimulo potion
+    exstimuloPotionUsesRemaining: number[] = [];
+    exstimuloPotionDamageBuff: number[] = [];
+
+    // Wit sharpening potion
+    witSharpeningPotionUsesRemaining: number[] = [];
+    witSharpeningPotionDamageBuff: number[] = [];
+
 
     constructor(
         name: enemyNameType,
@@ -64,6 +74,105 @@ export class Enemy extends Combatant {
                (this.hasWeakeningHex ? 1 : 0) + 
                (this.hasDeteriorationHex ? 1 : 0);
     }
+
+
+    decreasePotionUsesRemaining(playerIndex: number): void {
+        // Exstimulo potion
+        if (this.exstimuloPotionUsesRemaining[playerIndex] > 0) {
+            this.exstimuloPotionUsesRemaining[playerIndex]--;
+        }
+        if (this.exstimuloPotionUsesRemaining[playerIndex] === 0) {
+            this.exstimuloPotionDamageBuff[playerIndex] = 0;
+        }
+        // Wit sharpening potion
+        if (this.witSharpeningPotionUsesRemaining[playerIndex] > 0) {
+            this.witSharpeningPotionUsesRemaining[playerIndex];
+        }
+        if (this.witSharpeningPotionUsesRemaining[playerIndex] === 0) {
+            this.witSharpeningPotionDamageBuff[playerIndex] = 0;
+        }
+    }
+
+    resetPotionUsesRemaining(playerIndex: number): void {
+        this.exstimuloPotionUsesRemaining[playerIndex] = 0;
+        this.exstimuloPotionDamageBuff[playerIndex] = 0;
+        this.witSharpeningPotionUsesRemaining[playerIndex] = 0;
+        this.witSharpeningPotionDamageBuff[playerIndex] = 0;
+    }
+
+    applyExstimuloPotion(playerIndex: number, potionUses: number, damageBuff: number) {
+        this.exstimuloPotionUsesRemaining[playerIndex] = potionUses; 
+        this.exstimuloPotionDamageBuff[playerIndex] = damageBuff; 
+    }
+    applyWitSharpeningPotion(playerIndex: number, potionUses: number, damageBuff: number) {
+        this.witSharpeningPotionUsesRemaining[playerIndex] = potionUses; 
+        this.witSharpeningPotionDamageBuff[playerIndex] = damageBuff; 
+    }
+
+    getExstimuloDamageBuff(playerIndex: number): number {
+        if (this.exstimuloPotionDamageBuff[playerIndex] > 0) {
+            return this.exstimuloPotionDamageBuff[playerIndex];
+        }
+        else {
+            return 0; 
+        }
+    }
+    getExstimuloUsesRemaining(playerIndex: number): number {
+        if (this.exstimuloPotionUsesRemaining[playerIndex] > 0) {
+            return this.exstimuloPotionUsesRemaining[playerIndex];
+        }
+        else {
+            return 0; 
+        }
+    }
+    getWitSharpeningDamageBuff(playerIndex: number): number {
+        if (this.witSharpeningPotionDamageBuff[playerIndex] > 0) {
+            return this.witSharpeningPotionDamageBuff[playerIndex];
+        }
+        else {
+            return 0; 
+        }
+    }
+    getWitSharpeningUsesRemaining(playerIndex: number): number {
+        if (this.witSharpeningPotionUsesRemaining[playerIndex] > 0) {
+            return this.witSharpeningPotionUsesRemaining[playerIndex];
+        }
+        else {
+            return 0; 
+        }
+    }
+    
+    getDefenceAfterModifications(): number {
+        return Math.max(0, this.stats.defence - this.confusionHexValue);
+    }
+
+    getDeficiencyDefenceAfterModifications(): number {
+        return this.stats.deficiencyDefence;
+    }
+
+    getPowerAfterModifications(): number {
+        return this.stats.power * (1 - this.weakeningHexValue);
+    }
+
+    getProficiencyPowerAfterModifications(): number {
+        return this.stats.proficiencyPower;
+    }
+
+    getDefenceBreachAfterModifications(): number {
+        return Math.max(0, this.stats.defenceBreach - this.confusionHexValue);
+    }
+
+    getDodgeAfterModifications(wizard: Wizard): number {
+        return Math.max(0, this.stats.dodge - this.confusionHexValue);
+    }
+
+    isProficientAgainst(wizard: Wizard): boolean {
+        if (wizard instanceof Auror && (this.name==="acromantula" || this.name=="erkling")) return true;
+        if (wizard instanceof Magizoologist && (this.name==="pixie" || this.name==="werewolf")) return true;
+        if (wizard instanceof Professor && (this.name==="darkWizard" || this.name==="deathEater")) return true;
+        return false;
+    }
+
 
 
     // Base stats need to be transformed to take into account actual level
@@ -103,37 +212,6 @@ export class Enemy extends Combatant {
             focusReward
         );
 
-    }
-
-    getDefenceAfterModifications(): number {
-        return Math.max(0, this.stats.defence - this.confusionHexValue);
-    }
-
-    getDeficiencyDefenceAfterModifications(): number {
-        return this.stats.deficiencyDefence;
-    }
-
-    getPowerAfterModifications(): number {
-        return this.stats.power * (1 - this.weakeningHexValue);
-    }
-
-    getProficiencyPowerAfterModifications(): number {
-        return this.stats.proficiencyPower;
-    }
-
-    getDefenceBreachAfterModifications(): number {
-        return Math.max(0, this.stats.defenceBreach - this.confusionHexValue);
-    }
-
-    getDodgeAfterModifications(wizard: Wizard): number {
-        return Math.max(0, this.stats.dodge - this.confusionHexValue);
-    }
-
-    isProficientAgainst(wizard: Wizard): boolean {
-        if (wizard instanceof Auror && (this.name==="acromantula" || this.name=="erkling")) return true;
-        if (wizard instanceof Magizoologist && (this.name==="pixie" || this.name==="werewolf")) return true;
-        if (wizard instanceof Professor && (this.name==="darkWizard" || this.name==="deathEater")) return true;
-        return false;
     }
 
 }

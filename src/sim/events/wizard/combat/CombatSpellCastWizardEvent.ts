@@ -61,7 +61,7 @@ export class CombatSpellCastWizardEvent extends CombatEvent {
 
         let staminaBeforeDamage = this.enemy.getCurrentStamina();
         this.enemy.removeStamina(damage);
-        this.wizard.performAttackCast(damage, isCritical===1, isDodge); // Reduce exstimulo, wit sharpening and for stats
+        this.wizard.performAttackCast(damage, isCritical===1, isDodge, this.enemy); // Reduce exstimulo, wit sharpening and for stats
 
         let critString = isCritical === 1 ? " (crit) " : " ";
         Logger.logT(2, this.timestampEnd, "Enemy id=" + this.enemy.enemyIndex + " was dealt " + damage + 

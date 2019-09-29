@@ -26,8 +26,6 @@ export class EnemyDefeatEvent extends EnvEvent {
         this.enemy.inCombatWith = null;
         this.wizard.inCombat = false;
         this.wizard.inCombatWith = null;
-        // Reset exstimulos and wit sharpening potion
-        this.wizard.resetPotionUsesRemaining();
     }
 }
 

@@ -77,7 +77,7 @@ describe("BraveryCharmEvent", function() {
         let eventBraveryCharm = new BraveryCharmEvent(0, 1.5, [wizard], wizard);
         eventBraveryCharm.onFinish();
 
-        let eventPotion = new ExstimuloPotionEvent(0, wizard, potions, potionData.potentExstimuloPotionDamageBuff, potionData.potentExstimuloPotionUses, "potent");
+        let eventPotion = new ExstimuloPotionEvent(0, wizard, enemy, potions, potionData.potentExstimuloPotionDamageBuff, potionData.potentExstimuloPotionUses, "potent");
         eventPotion.onFinish();
 
         let newDamage = CombatSpellCastWizardEvent.computeWizardDamage(wizard, enemy, 0);
@@ -97,9 +97,9 @@ describe("BraveryCharmEvent", function() {
         let eventBraveryCharm = new BraveryCharmEvent(0, 1.5, [wizard], wizard);
         eventBraveryCharm.onFinish();
 
-        let eventPotion = new ExstimuloPotionEvent(0, wizard, potions, potionData.potentExstimuloPotionDamageBuff, potionData.potentExstimuloPotionUses, "potent");
+        let eventPotion = new ExstimuloPotionEvent(0, wizard, enemy, potions, potionData.potentExstimuloPotionDamageBuff, potionData.potentExstimuloPotionUses, "potent");
         eventPotion.onFinish();
-        let eventPotion2 = new WitSharpeningPotionEvent(0, wizard, potionData.witSharpeningPotionDamageBuff, potionData.witSharpeningPotionUses, potions);
+        let eventPotion2 = new WitSharpeningPotionEvent(0, wizard, enemy, potionData.witSharpeningPotionDamageBuff, potionData.witSharpeningPotionUses, potions);
         eventPotion2.onFinish();
 
         let newDamage = CombatSpellCastWizardEvent.computeWizardDamage(wizard, enemy, 0);

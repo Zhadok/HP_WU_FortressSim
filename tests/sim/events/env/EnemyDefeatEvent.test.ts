@@ -8,11 +8,12 @@ import { ExstimuloPotionEvent } from "../../../../src/sim/events/wizard/potions/
 
 describe("EnemyDefeatEvent", function() {
 
-    it("shouldResetPotionUsesRemaining", function() {
+    // Might be relevant if the way exstimulo potions are applied is changed
+    /*it("shouldResetPotionUsesRemaining", function() {
         let wizard = TestData.buildDefaultProfessor();
         let enemy = TestData.buildDefaultEnemy();
 
-        let potionEvent = new ExstimuloPotionEvent(0, wizard, TestData.buildDefaultPotionParameters(), 2.25, 5, "potent");
+        let potionEvent = new ExstimuloPotionEvent(0, wizard, enemy, TestData.buildDefaultPotionParameters(), 2.25, 5, "potent");
         potionEvent.onFinish();
 
         expect(wizard.exstimuloPotionUsesRemaining).to.equal(5);
@@ -23,6 +24,6 @@ describe("EnemyDefeatEvent", function() {
 
         expect(wizard.exstimuloPotionUsesRemaining).to.equal(0);
         expect(wizard.exstimuloPotionDamageBuff).to.equal(0);
-    });
+    });*/
 
 });

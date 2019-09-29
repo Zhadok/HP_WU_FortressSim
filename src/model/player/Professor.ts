@@ -39,10 +39,10 @@ export class Professor extends Wizard {
         if (this.getTriggers().idealExchange !== null && enemy.getNumberOfImpairments() >= 1) {
             powerBuffs += this.getTriggers().idealExchange!;
         }
-        if (this.getTriggers().strengthInNumbers !== null && this.getNumberOfEnhancements() >= 1) {
+        if (this.getTriggers().strengthInNumbers !== null && this.getNumberOfEnhancements(enemy) >= 1) {
             powerBuffs += this.getTriggers().strengthInNumbers!;
         }
-        if (this.getTriggers().teamworkMakesTheDreamWork !== null && this.getNumberOfEnhancements() >= 2) {
+        if (this.getTriggers().teamworkMakesTheDreamWork !== null && this.getNumberOfEnhancements(enemy) >= 2) {
             powerBuffs += this.getTriggers().teamworkMakesTheDreamWork!;
         }
         if (this.getTriggers().onSabbatical !== null && enemy.getNumberOfImpairments() >= 3) {
@@ -56,10 +56,10 @@ export class Professor extends Wizard {
         if (this.getTriggers().sparringSpecifics !== null && enemy.getNumberOfImpairments() >= 2) {
             defenceBuffs += this.getTriggers().sparringSpecifics!;
         }
-        if (this.getTriggers().confidence !== null && this.getNumberOfEnhancements() >= 1) {
+        if (this.getTriggers().confidence !== null && this.getNumberOfEnhancements(enemy) >= 1) {
             defenceBuffs += this.getTriggers().confidence!;
         }
-        if (this.getTriggers().teamTeaching !== null && this.getNumberOfEnhancements() >= 2) {
+        if (this.getTriggers().teamTeaching !== null && this.getNumberOfEnhancements(enemy) >= 2) {
             defenceBuffs += this.getTriggers().teamTeaching!;
         }
         return super.getDefenceAfterModifications(enemy) + defenceBuffs; 

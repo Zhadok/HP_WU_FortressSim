@@ -39,14 +39,6 @@ export abstract class Wizard extends Combatant {
     hasBraveryCharm: boolean = false;
     braveryCharmValue: number = 0;
 
-    // Exstimulo potion
-    exstimuloPotionUsesRemaining: number = 0;
-    exstimuloPotionDamageBuff: number = 0;
-
-    // Wit sharpening potion
-    witSharpeningPotionUsesRemaining: number = 0;
-    witSharpeningPotionDamageBuff: number = 0;
-
     // Stats
     totalDamage: number = 0; 
     numberAttackCasts: number = 0;
@@ -165,39 +157,22 @@ export abstract class Wizard extends Combatant {
     // Source: https://www.reddit.com/r/harrypotterwu/comments/csgsdd/all_about_combat_damage_what_i_know_or_i_think_i/?st=k0gijz3i&sh=acd204fd
     getDamageBuffMultiplier(enemy: Enemy) {   
         return 1 + 
-               this.exstimuloPotionDamageBuff + 
-               this.witSharpeningPotionDamageBuff + 
+               enemy.getExstimuloDamageBuff(this.playerIndex) +
+               enemy.getWitSharpeningDamageBuff(this.playerIndex) + 
+               //this.exstimuloPotionDamageBuff + 
+               //this.witSharpeningPotionDamageBuff + 
                (enemy.isElite ? this.braveryCharmValue : 0);
     }
     
 
-    performAttackCast(damage: number, isCritical: boolean, isDodge: boolean): void {
-        // Exstimulo potion
-        if (this.exstimuloPotionUsesRemaining > 0) {
-            this.exstimuloPotionUsesRemaining--;
-        }
-        if (this.exstimuloPotionUsesRemaining === 0) {
-            this.exstimuloPotionDamageBuff = 0;
-        }
-        // Wit sharpening potion
-        if (this.witSharpeningPotionUsesRemaining > 0) {
-            this.witSharpeningPotionUsesRemaining;
-        }
-        if (this.witSharpeningPotionUsesRemaining === 0) {
-            this.witSharpeningPotionDamageBuff = 0;
-        }
+    performAttackCast(damage: number, isCritical: boolean, isDodge: boolean, enemy: Enemy): void {
+        enemy.decreasePotionUsesRemaining(this.playerIndex); 
+
         // Stats
         this.totalDamage += damage; 
         this.numberAttackCasts++;
         if (isCritical) this.numberCriticalCasts++;
         if (isDodge) this.numberDodgedCasts++;
-    }
-
-    resetPotionUsesRemaining(): void {
-        this.exstimuloPotionUsesRemaining = 0;
-        this.exstimuloPotionDamageBuff = 0;
-        this.witSharpeningPotionUsesRemaining = 0;
-        this.witSharpeningPotionDamageBuff = 0;
     }
 
 
@@ -209,12 +184,12 @@ export abstract class Wizard extends Combatant {
     }
 
     // https://www.reddit.com/r/harrypotterwu/comments/d02hyh/potions_count_as_an_enhancement_for_professors/?st=k0p91lra&sh=4f6c4a34
-    getNumberOfEnhancements(): number {
+    getNumberOfEnhancements(enemy: Enemy): number {
         return (this.hasBraveryCharm ? 1 : 0) + 
                (this.hasDefenceCharm ? 1 : 0) + 
                (this.hasProficiencyPowerCharm ? 1 : 0) +
-               // Potions count as enhancements
-               (this.exstimuloPotionUsesRemaining > 0 || this.witSharpeningPotionUsesRemaining > 0 ? 1 : 0); 
+               // Potions count as enhancements. But only exstimulo OR wit sharpening, not both
+               (enemy.getExstimuloDamageBuff(this.playerIndex) > 0 || enemy.getWitSharpeningDamageBuff(this.playerIndex) > 0 ? 1 : 0); 
     }
 
     abstract isProficientAgainst(enemy: Enemy): boolean;
