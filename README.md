@@ -8,7 +8,7 @@
 This software is a "discrete event" simulation. That means each event is a single discrete event. Example events are attacks or strategic spell casts. The full list of event types and their durations are found in [events.json](https://github.com/Zhadok/HP_WU_FortressSim/blob/master/src/data/events.json). The durations for each event were derived from annotating gameplay videos with [anvil](http://anvil-software.org/download/index.html#). 
 
 ### How are enemies generated?
-Data from over 100 fortress runs was collected and analyzed. Enemies are generated using a mix of regression models and random numbers. The full analysis can be found [here](https://zhadok.github.io/HP_WU_FortressSim/analysis/fortressRunDataAnalysis.nb.html). 
+Data from over 100 fortress runs was collected and analyzed. Enemies are generated using a mix of regression models and random numbers. The full analysis can be found [here](https://zhadok.github.io/HP_WU_FortressSim/analysis/fortressRunDataAnalysis_v2.html). 
 
 The implementation of enemy generation can be found [here](https://github.com/Zhadok/HP_WU_FortressSim/blob/master/src/model/env/enemies/EnemyGenerator.ts#L104). 
 
