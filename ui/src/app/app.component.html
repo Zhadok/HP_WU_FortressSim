@@ -224,6 +224,7 @@
             <div #divContainerMultipleSimulations *ngIf="simAdvancedSettings.simGoal.indexOf('multiple') !== -1">
                 <div *ngIf="simProgress !== null">
                     Progress: {{ simProgress.nFinished }} / {{ simProgress.nTotal }}
+                    <mat-progress-bar mode="determinate" [value]="simProgress.nFinished / simProgress.nTotal *100"></mat-progress-bar>
                 </div>
                 <div *ngIf="simProgress === null">
                     <table #tableMultipleSimulationResults mat-table [dataSource]="simulationMultipleResultsGrouped" class="mat-elevation-z8">

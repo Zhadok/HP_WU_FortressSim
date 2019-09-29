@@ -203,19 +203,42 @@ export class AppComponent {
             nTotal: simComparison.getNumberSimulationsTotal()
         };
         simComparison.setListenerSimProgress((simProgress: simProgressType) => {
+            console.log(simProgress); 
             self.simProgress = simProgress; 
         });
 
         Logger.verbosity = 1; 
         if (this.simAdvancedSettings.runParallel === false) {
+            self.simulationMultipleResults = []; 
+            setTimeout(function() {
+                self.onFinishOneSimulation.call(self, simComparison); 
+            }, 0); 
+
+            // This is blocking 
+            /* 
             setTimeout(async function() {
-                self.simulationMultipleResults = await simComparison.run(); 
+                self.simulationMultipleResults = await simComparison.runAllSync(); 
                 self.simProgress = null; 
                 self.updateSimulationMultipleResultsGrouped.call(self); 
-            }, 100); 
+            }, 100);  */
         }
         else {
             this.simulationMultipleResults = await simComparison.runParallel(); 
+            this.simProgress = null; 
+            this.updateSimulationMultipleResultsGrouped(); 
+        }
+    }
+
+    async onFinishOneSimulation(simComparison: CombatSimulationComparison) {
+        let simResult = await simComparison.runNext();  
+        this.simulationMultipleResults.push(simResult); 
+        if (simComparison.isFinished() === false) {
+            var self = this; 
+            setTimeout(function() {
+                self.onFinishOneSimulation.call(self, simComparison); 
+            }, 0); 
+        }
+        else {
             this.simProgress = null; 
             this.updateSimulationMultipleResultsGrouped(); 
         }
@@ -267,8 +290,8 @@ export class AppComponent {
             }
             this.simulationMultipleResultsGrouped = resultsGrouped; 
             this.columnNamesMultipleSimulationsResultsGrouped = Object.keys(this.simulationMultipleResultsGrouped[0]);
-            console.log(this.simulationMultipleResultsGrouped); 
-            console.log(this.columnNamesMultipleSimulationsResultsGrouped); 
+            //console.log(this.simulationMultipleResultsGrouped); 
+            //console.log(this.columnNamesMultipleSimulationsResultsGrouped); 
             //this.matTableMultipleSimulationResults.renderRows(); 
         }
     }

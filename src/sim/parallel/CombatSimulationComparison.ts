@@ -16,6 +16,8 @@ export class CombatSimulationComparison {
     readonly pool: workerpool.WorkerPool; 
     listenerSimProgress: Function | null = null; 
 
+    currentRunID: number = 0; 
+
     constructor(simParameters: CombatSimulationParameters, simGoal: simGoalType, numberSimulationsPerSeed: number) {
         this.baseSimParameters = simParameters;
         this.simGoal = simGoal; 
@@ -58,7 +60,27 @@ export class CombatSimulationComparison {
         return this.allSimParams.length; 
     }
 
-    async run(): Promise<CombatSimulationResults[]> {
+    isFinished() {
+        return this.currentRunID === this.allSimParams.length; 
+    }
+
+    // Run next: Designed to give back control to browser
+    async runNext() {
+        let simResult = await combatSimulationWorker(this.allSimParams[this.currentRunID], new Prando(this.allSimParams[this.currentRunID].seed)); 
+        Logger.log(1, "Finished runID=" + this.currentRunID + " after " + simResult.durationWallTimeMS + "ms"); 
+        this.currentRunID++;
+        if (this.listenerSimProgress !== null) {
+            this.listenerSimProgress({
+                nTotal: this.allSimParams.length,
+                nFinished: this.currentRunID,
+                nRemaining: this.allSimParams.length-(this.currentRunID)
+            }); 
+        }
+        return simResult;  
+    }
+
+    // Run all sync
+    async runAllSync(): Promise<CombatSimulationResults[]> {
         let simResults: CombatSimulationResults[] = [];
         for (let runID=0;runID<this.allSimParams.length;runID++) { //simParams.length
             let simResult = await combatSimulationWorker(this.allSimParams[runID], new Prando(this.allSimParams[runID].seed)); 
@@ -76,6 +98,7 @@ export class CombatSimulationComparison {
         return simResults; 
     }
 
+    // Run all parallel
     async runParallel(): Promise<CombatSimulationResults[]> {
 
         let simResults: CombatSimulationResults[] = [];

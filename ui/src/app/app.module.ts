@@ -15,6 +15,8 @@ import {MatExpansionModule} from '@angular/material/expansion';
 import { FormsModule } from '@angular/forms'
 import { MatCheckboxModule } from "@angular/material"; 
 import { MatTableModule } from "@angular/material"; 
+import { MatProgressBarModule } from "@angular/material"; 
+
 
 
 @NgModule({
@@ -35,7 +37,8 @@ import { MatTableModule } from "@angular/material";
     MatExpansionModule,
     BrowserAnimationsModule,
     MatCheckboxModule,
-    MatTableModule
+    MatTableModule,
+    MatProgressBarModule
   ],
   providers: [],
   bootstrap: [AppComponent]

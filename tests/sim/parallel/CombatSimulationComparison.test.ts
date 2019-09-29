@@ -20,7 +20,7 @@ describe("CombatSimulationComparison", function() {
     it('runSync', function() {
         Logger.verbosity = 0; 
         let comparison = new CombatSimulationComparison(baseParams, "multiple_compare_roomLevels", 1);
-        let result = comparison.run(); 
+        let result = comparison.runAllSync(); 
         return result.then((results) => {
             expect(results.length).to.equal(20); 
         }); 
@@ -38,7 +38,7 @@ describe("CombatSimulationComparison", function() {
     it("runSync_shouldEqual_runParallel", async function() {
         Logger.verbosity = 0; 
         let comparisonSync = new CombatSimulationComparison(baseParams, "multiple_compare_roomLevels", 1);
-        let results1 = await comparisonSync.run(); 
+        let results1 = await comparisonSync.runAllSync(); 
 
         let comparisonParallel = new CombatSimulationComparison(baseParams, "multiple_compare_roomLevels", 1);
         let results2 = await comparisonParallel.runParallel(); 
