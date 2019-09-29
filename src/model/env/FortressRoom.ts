@@ -1,5 +1,6 @@
 import {Enemy} from "./enemies/Enemy";
 import fortressDifficultyData from "../../data/fortressDifficulties.json";
+import fortressRewardData from "../../data/fortressRewards.json"; 
 import { enemyNameType, nameClassType } from "../../types";
 import { EnemyGenerator } from "./enemies/EnemyGenerator";
 import Prando from "prando";
@@ -178,9 +179,24 @@ export class FortressRoom {
         return 1000 * (30+(roomLevel-1)*2);
     }
 
+    computeChallengeXPRewards(isWin: boolean): number[] {
+        return FortressRoom.computeChallengeXPRewardsStatic(this.roomLevel, this.runestoneLevels, isWin); 
+    }    
+
     // https://i.redd.it/wz2vwfh5u4k31.jpg
-    computeRewardChallengeXP(runestoneLevel: number): number {
-        return -1;
+    static computeChallengeXPRewardsStatic(roomLevel: number, runestoneLevels: number[], isWin: boolean): number[] {
+        let baseXP = fortressRewardData.data.baseXP[roomLevel-1]; 
+        let rewards: number[] = []; 
+        let nWizards = runestoneLevels.length;
+        let friendBonus = fortressRewardData.data.friendsBonus[nWizards-1]; 
+        let groupBonus = fortressRewardData.data.groupBonus[nWizards-1];  
+        // Assumes all wizards in group are friends
+        for (let runestoneLevel of runestoneLevels) {
+            let xp = (baseXP * runestoneLevel) + baseXP * (friendBonus + groupBonus); 
+            if (isWin === false) xp *= 0.1; 
+            rewards.push(Math.round(xp)); 
+        }
+        return rewards;
     }
 
     // Elites count as double 

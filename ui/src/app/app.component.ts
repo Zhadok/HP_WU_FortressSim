@@ -18,6 +18,8 @@ import { Logger } from '../../../src/util/Logger';
 import { CombatSimulationResults } from '../../../src/sim/CombatSimulationResults';
 import { CombatSimulationComparison } from '../../../src/sim//parallel/CombatSimulationComparison';
 import {MatTable, MatTab } from "@angular/material"; 
+import {MatSort} from '@angular/material/sort';
+import {MatTableDataSource} from '@angular/material/table';
 
 @Component({
     selector: 'app-root',
@@ -40,7 +42,8 @@ export class AppComponent {
     simAdvancedSettings: simAdvancedSettingsType = {
         numberSimulations: 100,
         simGoal: "single",
-        runParallel: false
+        runParallel: false,
+        secondsBetweenSimulations: 40
     }; 
     
 
@@ -48,7 +51,8 @@ export class AppComponent {
     simulationLog: string = "";
     simulationSingleResults: CombatSimulationResults | null; 
     simulationMultipleResults: CombatSimulationResults[]; 
-    simulationMultipleResultsGrouped: simulationResultsGroupedType[]; 
+    //simulationMultipleResultsGrouped: simulationResultsGroupedType[]; 
+    simulationMultipleResultsGrouped: MatTableDataSource<simulationResultsGroupedType>; 
     simProgress: simProgressType | null = null; 
 
     // Base sim parameters shown in UI
@@ -56,6 +60,11 @@ export class AppComponent {
     skillTrees: Array<SkillTree> = [];
 
 
+
+    columnNamesMultipleSimulationsResultsGrouped = []; 
+    @ViewChild("tableMultipleSimulationResults", {static: false}) matTableMultipleSimulationResults: MatTable<simulationResultsGroupedType>;
+    //@ViewChild(MatSort, {static: false}) simulationMultipleResultsGroupedSort: MatSort
+    
     constructor() {
         //let sim = new CombatSimulation(this.simParameters, new Prando(0));
         this.allowedClasses = {
@@ -101,6 +110,8 @@ export class AppComponent {
             //console.log(messageLine);
         }
         this.simulationSingleResults = null; 
+        this.simulationMultipleResultsGrouped = new MatTableDataSource(); 
+        //this.simulationMultipleResultsGrouped.sort = this.simulationMultipleResultsGroupedSort; 
     }
 
     onClickAddWizard() {
@@ -245,9 +256,7 @@ export class AppComponent {
     }
 
 
-    columnNamesMultipleSimulationsResultsGrouped = []; 
-    @ViewChild("tableMultipleSimulationResults", {static: false}) matTableMultipleSimulationResults: MatTable<simulationResultsGroupedType>;
-    updateSimulationMultipleResultsGrouped() {
+     updateSimulationMultipleResultsGrouped() {
 
         let uniqueRoomLevels: number[] = Array.from(new Set(this.simulationMultipleResults.map(result => result.simParameters.roomLevel)));
         let resultsGrouped: simulationResultsGroupedType[] = []; 
@@ -263,6 +272,8 @@ export class AppComponent {
                 let totalCritCasts = 0;
                 let totalDodgeCasts = 0; 
                 let nWizards = resultsFiltered[0].wizardResults.length; 
+                let totalChallengeXPReward = 0; 
+                let totalGameTimeMSPassed = resultsFiltered.map(r => r.durationGameTimeMS).reduce((a, b) => a+=b); 
                 for (let wizardResultArray of resultsFiltered.map(r => r.wizardResults)) {
                     // Results for X wizards of 1 concrete simulation
                     for (let wizardResult of wizardResultArray) {
@@ -272,9 +283,13 @@ export class AppComponent {
                         totalCritCasts += wizardResult.numberOfCriticalCasts; 
                         totalDodgeCasts += wizardResult.numberOfDodgedCasts; 
                         // Wizard 1 and wizard 2 might have different number of casts, so averages must be weighted for averageNumberOfCritCasts
-
+                        totalChallengeXPReward += wizardResult.challengeXPReward; 
                     }
                 }
+
+                let averageGameTimeMS = totalGameTimeMSPassed / nRuns;
+                let averageChallengeXPReward = totalChallengeXPReward / (nRuns * nWizards); 
+                let averageChallengeXPRewardPerHour = averageChallengeXPReward * (3600*1000 / (averageGameTimeMS + this.simAdvancedSettings.secondsBetweenSimulations)); 
 
                 resultsGrouped.push({
                     roomLevel: roomLevel,
@@ -284,12 +299,19 @@ export class AppComponent {
                     averageNumberOfCriticalCasts: totalCritCasts / (nRuns * nWizards),
                     averageNumberOfDodgedCasts: totalDodgeCasts / (nRuns * nWizards), 
                     averageTotalDamage: totalDamage / (nRuns * nWizards),
-                    averageGameTimeMS: resultsFiltered.map(r => r.durationGameTimeMS).reduce((a,b)=>a+=b) / nRuns,
+                    averageGameTimeMS: averageGameTimeMS,
+
+                    averageChallengeXPReward: averageChallengeXPReward, 
+                    averageChallengeXPRewardPerHour: averageChallengeXPRewardPerHour,
+
                     numberOfRuns: nRuns
                 });
             }
-            this.simulationMultipleResultsGrouped = resultsGrouped; 
-            this.columnNamesMultipleSimulationsResultsGrouped = Object.keys(this.simulationMultipleResultsGrouped[0]);
+            //this.simulationMultipleResultsGrouped.data = resultsGrouped; 
+            this.simulationMultipleResultsGrouped = new MatTableDataSource(resultsGrouped); 
+            //this.simulationMultipleResultsGrouped.sort = this.simulationMultipleResultsGroupedSort; 
+            this.columnNamesMultipleSimulationsResultsGrouped = Object.keys(resultsGrouped[0]);
+
             //console.log(this.simulationMultipleResultsGrouped); 
             //console.log(this.columnNamesMultipleSimulationsResultsGrouped); 
             //this.matTableMultipleSimulationResults.renderRows(); 

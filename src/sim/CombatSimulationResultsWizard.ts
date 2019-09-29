@@ -6,5 +6,7 @@ export interface CombatSimulationResultsWizard {
     numberOfCriticalCasts: number,
     numberOfDodgedCasts: number,
     totalDamage: number, 
-    averageDamage: number
+    averageDamage: number,
+
+    challengeXPReward: number; 
 }

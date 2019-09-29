@@ -16,7 +16,7 @@ import { FormsModule } from '@angular/forms'
 import { MatCheckboxModule } from "@angular/material"; 
 import { MatTableModule } from "@angular/material"; 
 import { MatProgressBarModule } from "@angular/material"; 
-
+import {MatSortModule}from "@angular/material"; 
 
 
 @NgModule({
@@ -38,7 +38,8 @@ import { MatProgressBarModule } from "@angular/material";
     BrowserAnimationsModule,
     MatCheckboxModule,
     MatTableModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    MatSortModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -112,6 +112,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 table {
     text-align: center !important;
+    width: 100%
 }
   
 .mat-header-cell {

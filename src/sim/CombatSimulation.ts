@@ -340,6 +340,11 @@ export class CombatSimulation {
     }
 
     toSimulationResults(): CombatSimulationResults {
+        if (this.isFinished() === false) {
+            throw new Error("Simulation not finished yet!"); 
+        }
+
+        let challengeXPRewards = this.fortressRoom.computeChallengeXPRewards(this.isWin!); 
         let wizardResults = this.wizards.map(wizard => {
             return {
                 playerIndex: wizard.playerIndex,
@@ -347,7 +352,8 @@ export class CombatSimulation {
                 numberOfDodgedCasts: wizard.numberDodgedCasts,
                 numberOfCriticalCasts: wizard.numberCriticalCasts,
                 totalDamage: wizard.totalDamage,
-                averageDamage: wizard.totalDamage / wizard.numberAttackCasts
+                averageDamage: wizard.totalDamage / wizard.numberAttackCasts,
+                challengeXPReward: challengeXPRewards[wizard.playerIndex]
             }
         });
         return {

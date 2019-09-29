@@ -58,7 +58,8 @@ declare type simGoalType = "single" | "multiple_compare_roomLevels" | "multiple_
 declare type simAdvancedSettingsType = {
     simGoal: simGoalType,
     numberSimulations: number,
-    runParallel: boolean
+    runParallel: boolean,
+    secondsBetweenSimulations: number
 }; 
 declare type simProgressType = {
     nTotal: number, 
@@ -77,6 +78,8 @@ declare type simulationResultsGroupedType = {
     averageDamage: number
 
     averageGameTimeMS: number; 
+    averageChallengeXPReward: number, 
+    averageChallengeXPRewardPerHour: number; 
 
     numberOfRuns: number
 }

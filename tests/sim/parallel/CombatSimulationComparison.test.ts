@@ -51,6 +51,8 @@ describe("CombatSimulationComparison", function() {
             delete results2[i].durationWallTimeMS;
             delete results2[i].wallTimeStart;
             delete results2[i].wallTimeEnd;
+            //console.log(results1[i]);
+            //console.log(results2[i]);
             expect(results1[i]).to.deep.equal(results2[i]); 
         }
     });
