@@ -13,7 +13,7 @@ export interface SkillTreeNode {
     readonly levels: Array<{
         statChange: number,
         costScrolls: number,
-        costSpellBooks: number | null,
+        costRedBooks: number | null,
         costRSB: number | null
     }>;
 

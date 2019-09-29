@@ -118,7 +118,7 @@
         "columnIndex": 0,
         "name": "Restricted Section",
         "statChangeDescription": "Defence",
-        "statChanged": "power",
+        "statChanged": "defence",
         "levels":[{
             "statChange": 0.06,
             "costScrolls": 5,

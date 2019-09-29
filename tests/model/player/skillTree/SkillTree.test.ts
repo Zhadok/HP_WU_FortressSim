@@ -92,6 +92,35 @@ describe("SkillTree", function() {
         expect(prof.getTriggers().defenceCharm).to.equal(0.16); // value of node (statChanged): 0.16
         expect(prof.hasStudiedDefenceCharm()).to.be.true; 
         expect(prof.stats.defenceCharmIncrease).to.equal(0.16);
-    })
+    });
+
+    it("learnAllLessons_professor", function() {
+        let skillTree = new SkillTree("professor");
+        skillTree.learnAllLessons(); 
+        let costs = skillTree.getCosts(); 
+        expect(costs.costScrolls).to.equal(2325); 
+        expect(costs.costRedBooks).to.equal(320); 
+        expect(costs.costRSB).to.equal(223); 
+    });
+    it("learnAllLessonsWithScrolls_professor", function() {
+        let skillTree = new SkillTree("professor");
+        skillTree.learnAllLessonsWithScrolls(); 
+        let costs = skillTree.getCosts(); 
+        expect(costs.costScrolls).to.equal(1073); 
+        expect(costs.costRedBooks).to.be.equal(0);  
+        expect(costs.costRSB).to.be.equal(0); 
+    });
+    it("resetSkillTree", function() {
+        let skillTree = new SkillTree("professor");
+        skillTree.learnAllLessons(); 
+        skillTree.resetSkillTree(); 
+
+        let costs = skillTree.getCosts(); 
+        expect(costs.costScrolls).to.equal(0); 
+        expect(costs.costRedBooks).to.be.equal(0);  
+        expect(costs.costRSB).to.be.equal(0); 
+        
+        expect(skillTree.toWizardStats()).to.deep.equal(WizardStats.buildBaseStats()); 
+    }); 
 
 });

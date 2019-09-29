@@ -11,7 +11,7 @@
                 Start single simulation
             </button>
             <button (click)="onClickButtonStartMultipleSimulations()" class="buttonStartSimulation" mat-raised-button large color="primary" >
-                Start {{simAdvancedSettings.numberSimulations}} simulations
+                Simulate different room levels
             </button>
         </div>
 
@@ -52,7 +52,7 @@
                                     </mat-select>
                                 </mat-form-field>
             
-                                <p>Skill tree: </p>
+                                <h2 class="mat-h2">Skill tree: </h2>
                                 <div class="divSkillTree">
                                     <!-- https://teropa.info/blog/2016/12/12/graphics-in-angular-2.html -->
                                     <svg width="100%" [attr.height]="skillTreeVis.marginTop + skillTreeVis.rowHeight*20" [attr.viewBox]="[0,0,
@@ -89,19 +89,16 @@
                                                   >{{node.value}}/{{node.key.levels.length}}</text>
                                         </g>
                                     </svg>
-                                    <!--<div *ngFor="let node of skillTrees[playerIndex].nodesStudied | keyvalue" class="divSkillTreeNode"
-                                         [style.left.px]="node.key.columnIndex * skillTreeVis.columnWidth + skillTreeVis.marginLeft" 
-                                         [style.top.px]="node.key.rowIndex * skillTreeVis.rowHeight + skillTreeVis.marginTop">
-                                         <span class="skillTreeNodeText">{{node.key.name}}</span>
-                                         <br>
-                                         <button mat-fab  color="primary"> 
-                                            {{node.value}}/{{node.key.levels.length}}
-                                        </button>
-                                    </div> -->
                                 </div>
-            
+                                <div class="divContainerSkillTreeButtons">
+                                    <button class="buttonSkillTreeControl" mat-raised-button color="accent" (click)="onClickButtonLearnAllLessonsScrolls(playerIndex)">Learn all lessons (scrolls only)</button>
+                                    <button class="buttonSkillTreeControl" mat-raised-button color="accent" (click)="onClickButtonLearnAllLessons(playerIndex)">Learn all lessons</button>
+                                    <button class="buttonSkillTreeControl" mat-raised-button color="accent" (click)="onClickButtonResetSkillTree(playerIndex)">Reset skill tree</button>
+                                    <p>Costs: {{ skillTrees[playerIndex].getCostsString() }}</p>
+                                </div>
+                                
                                 <div class="divSettingsOutputWizardStats">
-                                    <p>Resulting stats:</p>
+                                    <h2 class="mat-h2">Resulting stats:</h2>
                                     <div *ngFor="let stat of skillTrees[playerIndex].toWizardStats() | keyvalue">
                                         <span *ngIf="isValidStatForClass(stat.key, playerIndex)">
                                             {{formatUserFriendlyStat(stat.key)}}: {{stat.value.toFixed(2)}}
@@ -166,7 +163,7 @@
             
                         </div>
                     </mat-tab>
-                    <mat-tab label="Direct stats"> 
+                    <mat-tab [disabled]="true" label="Direct stats"> 
             
                     </mat-tab>
                 </mat-tab-group>
@@ -188,9 +185,10 @@
             </mat-form-field>
             <br>
             <mat-form-field class="inputAdvancedSetting">
+                <mat-label>Number of simulations: For example, when comparing room level, will run each room level this many times (with different seeds). </mat-label>
                 <input matInput type="number" placeholder="Number of simulations" [(ngModel)]="simAdvancedSettings.numberSimulations">
             </mat-form-field>
-            <mat-checkbox [(ngModel)]="simAdvancedSettings.runParallel">Run parallel</mat-checkbox>
+            <mat-checkbox [(ngModel)]="simAdvancedSettings.runParallel" [disabled]="true">Run parallel</mat-checkbox>
         
         </mat-expansion-panel>
 
@@ -206,11 +204,13 @@
 
             <div #divContainerSingleSimulation *ngIf="simAdvancedSettings.simGoal ==='single' && simulationSingleResults !== null">
                 <div #divContainerSingleSimulationLog>
-                    Real world time: {{simulationSingleResults.durationWallTimeMS}}ms <br>
-                    Simulation time: {{simulationSingleResults.durationGameTimeMS}}ms
+                    <h2 class="mat-h2">Overall simulation results: </h2>
+                    Real world time passed: {{(simulationSingleResults.durationWallTimeMS / 1000).toFixed(3)}}s <br>
+                    Simulation time: {{simulationSingleResults.durationGameTimeMS / 1000}}s <br>
                     Number of events: {{simulationSingleResults.nEvents}} <br>
+                    Challenge won: {{simulationSingleResults.isWin ? 'Yes' : 'No'}}
                     <div *ngFor="let wizardResult of simulationSingleResults.wizardResults">
-                        Player {{wizardResult.playerIndex}}: 
+                        <h2 class="mat-h2">Player {{wizardResult.playerIndex+1}}: </h2>
                         {{wizardResult.numberOfCasts}} casts,
                         {{wizardResult.numberOfCriticalCasts}} critical casts,
                         {{wizardResult.numberOfDodgedCasts}} dodged casts, 
@@ -234,7 +234,7 @@
                             </ng-container>
                             <ng-container matColumnDef="winPercentage">
                                     <th mat-header-cell *matHeaderCellDef> Win % </th>
-                                    <td mat-cell *matCellDef="let row"> {{row.winPercentage}} </td>
+                                    <td mat-cell *matCellDef="let row"> {{row.winPercentage.toFixed(2)}} </td>
                             </ng-container>
                             <ng-container matColumnDef="averageNumberOfCasts">
                                     <th mat-header-cell *matHeaderCellDef> Average casts </th>
@@ -257,8 +257,8 @@
                                     <td mat-cell *matCellDef="let row"> {{row.averageTotalDamage.toFixed(2)}} </td>
                             </ng-container>
                             <ng-container matColumnDef="averageGameTimeMS">
-                                    <th mat-header-cell *matHeaderCellDef> Average game time (s) </th>
-                                    <td mat-cell *matCellDef="let row"> {{(row.averageGameTimeMS / 1000).toFixed(3)}} </td>
+                                    <th mat-header-cell *matHeaderCellDef> Average game time </th>
+                                    <td mat-cell *matCellDef="let row"> {{(row.averageGameTimeMS / 1000).toFixed(3)}}s </td>
                             </ng-container>
                             <ng-container matColumnDef="numberOfRuns">
                                     <th mat-header-cell *matHeaderCellDef> Runs </th>

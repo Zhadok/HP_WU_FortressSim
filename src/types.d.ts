@@ -32,6 +32,12 @@ declare type triggerNameType =
 
 declare type triggerMapType = { [key in triggerNameType]: number | null }; 
 
+// Skill tree
+declare type skillTreeCostsType = {
+    costScrolls: number, 
+    costRedBooks: number, 
+    costRSB: number
+}; 
 
 declare type statNameType = keyof WizardStats;
 

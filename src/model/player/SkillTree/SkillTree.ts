@@ -5,7 +5,7 @@ import { Logger } from "../../../util/Logger";
 import skillTreeProfessorData from "../../../data/skillTreeProfessor.json";
 import skillTreeAurorData from "../../../data/skillTreeAuror.json";
 import skillTreeMagizoologistData from "../../../data/skillTreeMagizoologist.json";
-import { nameClassType, triggerNameType, triggerMapType } from "../../../types";
+import { nameClassType, triggerNameType, triggerMapType, skillTreeCostsType } from "../../../types";
 import { PersistedSkillTreeNode } from "./PersistedSkillTreeNode";
 import { PersistedSkillTree } from "./PersistedSkillTree";
 import { Wizard } from "../Wizard";
@@ -170,6 +170,58 @@ export class SkillTree {
         return stats;
     }
 
+    learnAllLessonsWithScrolls(): void {
+        this.nodesStudied.forEach((level, node) => {
+            let newLevel = 0; 
+            for (let i=0; i<node.levels.length; i++) {
+                if (node.levels[i].costRedBooks! > 0 || node.levels[i].costRSB! > 0) {
+                    break;  
+                }
+                newLevel = i+1; 
+            }
+            this.nodesStudied.set(node, newLevel); 
+        });
+    }
+
+    learnAllLessons(): void {
+        this.nodesStudied.forEach((level, node) => {
+            this.nodesStudied.set(node, node.levels.length); 
+        });
+    }
+
+    resetSkillTree(): void {
+        this.nodesStudied.forEach((level, node) => {
+            this.nodesStudied.set(node, 0); 
+        });
+    }
+
+
+    getCosts(): skillTreeCostsType {
+        let totalScrolls = 0;
+        let totalRedBooks = 0; 
+        let totalRSB = 0; 
+        this.nodesStudied.forEach((level, node) => {
+            for (let i=0; i<level;i++) {
+                totalScrolls += node.levels[i].costScrolls; 
+                if (node.levels[i].costRedBooks) {
+                    totalRedBooks += node.levels[i].costRedBooks!; 
+                }
+                if (node.levels[i].costRSB) {
+                    totalRSB += node.levels[i].costRSB!; 
+                }
+            }
+        });
+        return {
+            costScrolls: totalScrolls,
+            costRedBooks: totalRedBooks,
+            costRSB: totalRSB
+        };
+    }
+    getCostsString(): string {
+        let costs = this.getCosts(); 
+        return costs.costScrolls + " scrolls, " + costs.costRedBooks + " red books, " + costs.costRSB + " restricted section books"; 
+    }
+
     getNumberOfLessons(): number {
         let result = 0;
         this.nodesStudied.forEach((level, node) => {
@@ -177,5 +229,7 @@ export class SkillTree {
         });
         return result;
     }
+
+
 
 }

@@ -40,7 +40,7 @@ export class AppComponent {
     simAdvancedSettings: simAdvancedSettingsType = {
         numberSimulations: 100,
         simGoal: "single",
-        runParallel: true
+        runParallel: false
     }; 
     
 
@@ -143,10 +143,35 @@ export class AppComponent {
         let maxLevel = node.levels.length;
         skillTree.nodesStudied.set(node, (currentLevel + 1) % (maxLevel+1));
 
-        this.simParameters.skillTrees[playerIndex] = skillTree.persist();
+        this.persistSkillTree(skillTree, playerIndex); 
         
     }
 
+    onClickButtonLearnAllLessonsScrolls(playerIndex: number): void {
+        console.log("Learning all lessons with scrolls in skill tree for playerIndex=" + playerIndex); 
+        let skillTree = this.skillTrees[playerIndex];
+        skillTree.learnAllLessonsWithScrolls(); 
+        
+        this.persistSkillTree(skillTree, playerIndex); 
+    }
+    onClickButtonLearnAllLessons(playerIndex: number): void {
+        console.log("Learning all lessons in skill tree for playerIndex=" + playerIndex); 
+        let skillTree = this.skillTrees[playerIndex];
+        skillTree.learnAllLessons(); 
+        
+        this.persistSkillTree(skillTree, playerIndex); 
+    }
+    onClickButtonResetSkillTree(playerIndex): void {
+        console.log("Resetting skill tree for playerIndex=" + playerIndex); 
+        let skillTree = this.skillTrees[playerIndex];
+        skillTree.resetSkillTree(); 
+        
+        this.persistSkillTree(skillTree, playerIndex); 
+    }
+
+    persistSkillTree(skillTree: SkillTree, playerIndex: number) {
+        this.simParameters.skillTrees[playerIndex] = skillTree.persist();
+    }
 
     resetSimulationResults() {
         this.simulationLog = "";
@@ -305,7 +330,7 @@ export class AppComponent {
         node.levels.forEach(level => {
             let costString = " (" +
                              ((level.costScrolls > 0) ? "scrolls: " + level.costScrolls : "") + 
-                             ((level.costSpellBooks > 0) ? ", red books: " + level.costSpellBooks  : "") +
+                             ((level.costRedBooks > 0) ? ", red books: " + level.costRedBooks  : "") +
                              ((level.costRSB > 0) ? ", green books: " + level.costRSB : "") + 
                             ")";
             let statDescription = (node.statChangeDescription) ? node.statChangeDescription : this.formatUserFriendlyStat(node.statChanged);
