@@ -20,19 +20,22 @@ import { WizardDefeatEvent } from "../../src/sim/events/wizard/combat/WizardDefe
 import { Wizard } from "../../src/model/player/Wizard";
 import { Professor } from "../model/player/Professor";
 import Prando from "prando";
+import { FortressRoom } from "../../src/model/env/FortressRoom";
+import { WizardsOutOfTimeEvent } from "../../src/sim/events/env/WizardsOutOfTimeEvent";
+import { SkillTree } from "../../src/model/player/SkillTree/SkillTree";
 
 
 describe("CombatSimulation", function() {
     let params1: CombatSimulationParameters;
+    let sim1: CombatSimulation; 
     
     beforeEach(() => {
+        Logger.verbosity = 0;
         params1 = TestData.buildDefaultSimParameters();
+        sim1 = new CombatSimulation(params1, TestData.buildNewRNG_0());
     });
-    
-    Logger.verbosity = 0;
 
     it('addEvent', function() {
-        let sim1 = new CombatSimulation(params1, TestData.buildNewRNG_0());
         let event1 = new InitialEnemySpawnEvent(0);
         let event2 = new InitialEnemySpawnEvent(1000);
         let event3 = new InitialEnemySpawnEvent(2000);
@@ -52,17 +55,17 @@ describe("CombatSimulation", function() {
     });
 
     it("init", function() {
-        let sim1 = new CombatSimulation(params1, TestData.buildNewRNG_0());
         sim1.init();
-        expect(sim1.eventQueue[0].eventName).to.equal("thirdEnemySpawnTime");
-        expect(sim1.eventQueue[1].eventName).to.equal("secondEnemySpawnTime");
-        expect(sim1.eventQueue[2].eventName).to.equal("initialEnemySpawnAnimation");
-        expect(sim1.eventQueue[3].eventName).to.equal("enemySpawn");
-        expect(sim1.eventQueue.length).to.equal(2 + 1 + sim1.wizards.length); // second/thirdEnemy, initialSpawn, 1 for each wizard
+
+        expect(sim1.eventQueue[0]).to.be.instanceOf(WizardsOutOfTimeEvent); 
+        expect(sim1.eventQueue[1].eventName).to.equal("thirdEnemySpawnTime");
+        expect(sim1.eventQueue[2].eventName).to.equal("secondEnemySpawnTime");
+        expect(sim1.eventQueue[3].eventName).to.equal("initialEnemySpawnAnimation");
+        expect(sim1.eventQueue[4].eventName).to.equal("enemySpawn");
+        expect(sim1.eventQueue.length).to.equal(3 + 1 + sim1.wizards.length); // outoftime/second/thirdEnemy, initialSpawn, 1 for each wizard
     });
 
     it("targetPriority", function() {
-        let sim1 = new CombatSimulation(params1, TestData.buildNewRNG_0());
         let enemy1 = Enemy.buildEnemy("acromantula", 0, false, 1, 1, 3);
         let enemy2 = Enemy.buildEnemy("pixie", 1, false, 1, 1, 3);
         let activeEnemies: Array<Enemy> = [
@@ -76,7 +79,6 @@ describe("CombatSimulation", function() {
     });
 
     it("targetPriorityWithCombat", function() {
-        let sim1 = new CombatSimulation(params1, TestData.buildNewRNG_0());
         let enemy1 = Enemy.buildEnemy("acromantula", 0, false, 1, 1, 3);
         let enemy2 = Enemy.buildEnemy("pixie", 1, false, 1, 1, 3);
         enemy2.inCombat = true;
@@ -91,7 +93,6 @@ describe("CombatSimulation", function() {
     });
 
     it("combatSimulation_dead_normalOrder", function() {
-        let sim1 = new CombatSimulation(TestData.buildDefaultSimParameters(), TestData.buildNewRNG_0());
         let enemy = TestData.buildDefaultEnemy();
         sim1.addEnemyToActive(enemy);
 
@@ -117,7 +118,7 @@ describe("CombatSimulation", function() {
 
 
     it("combatSimulation_fullManualSimulation", async function() {
-        Logger.verbosity = 2;
+        Logger.verbosity = 2; 
         let defaultEnemies = TestData.buildDefaultEnemies();
         let shouldBeTime = 0;
 
@@ -127,12 +128,9 @@ describe("CombatSimulation", function() {
         sim1.fortressRoom.enemiesAll[1] = defaultEnemies[1];
 
         sim1.init();
-        expect(sim1.eventQueue[0].eventName).to.equal("thirdEnemySpawnTime");
-        expect(sim1.eventQueue[1].eventName).to.equal("secondEnemySpawnTime");
-        expect(sim1.eventQueue[2].eventName).to.equal("initialEnemySpawnAnimation");
-        expect(sim1.eventQueue[3].eventName).to.equal("enemySpawn");
         expect(sim1.isWizardIdle(sim1.wizards[0])).to.be.true;
-        // remove second/third enemy spawn
+        // remove outoftime/second/third enemy spawn
+        sim1.eventQueue.splice(0, 1);
         sim1.eventQueue.splice(0, 1);
         sim1.eventQueue.splice(0, 1);
 
@@ -209,10 +207,11 @@ describe("CombatSimulation", function() {
         expect(sim1.peekNextEvent() instanceof EnemyDefeatEvent).to.be.true;
 
 
-        await sim1.processNextEvent(); // Processing EnemyDeathAnimation
+        await sim1.processNextEvent(); // Processing EnemyDefeatEvent
         shouldBeTime += eventData.enemyDeathAnimation;
         expect(sim1.currentTime).to.equals(shouldBeTime);
         expect(sim1.wizards[0].inCombat).to.be.false;
+        //console.log(sim1.eventQueue); 
         expect(sim1.isWizardIdle(sim1.wizards[0])).to.be.true;
         expect(sim1.peekNextEvent() instanceof EnemySpawnEvent).to.be.true;
 
@@ -271,7 +270,7 @@ describe("CombatSimulation", function() {
     });
 
     it("fullSimulation", async function() {
-        Logger.verbosity = 0;
+        Logger.verbosity = 0; 
         let sim = new CombatSimulation(TestData.buildDefaultSimParameters(), new Prando(0));
         sim.init(); 
 
@@ -281,6 +280,37 @@ describe("CombatSimulation", function() {
         expect(simResults.nEvents > 0);
         expect(simResults.wizardResults[0].numberOfCasts > 0);
         expect(simResults.wizardResults[0].totalDamage >= sim.fortressRoom.enemiesAll.map(enemy => enemy.getMaxStamina()).reduce((a, b) => a + b, 0));
+    });
+
+    it("simulation_runOutOfTime", async function() {
+        Logger.verbosity = 0;
+        params1.roomLevel = 20; 
+        // Wizard should fail at this
+        let sim = new CombatSimulation(params1, new Prando(0));
+        sim.init(); 
+
+        await sim.simulate(); 
+
+        //console.log(sim.toSimulationResults()); 
+        expect(sim.toSimulationResults().isWin).to.equal(false); 
+        expect(sim.toSimulationResults().durationGameTimeMS).to.equal(FortressRoom.computeMaxtimeStatic(params1.roomLevel)*1000); 
+        
+    });
+
+    it("simulation_lostBecauseOfIdleness", async function() {
+        Logger.verbosity = 2;
+        params1.roomLevel = 1; 
+        params1.runestoneLevels = [3]; 
+        params1.skillTrees = [(new SkillTree("professor")).persist()]; 
+        params1.seed = 3; 
+        // Wizard should fail at this
+        let sim = new CombatSimulation(params1, new Prando(params1.seed));
+        sim.init(); 
+
+        await sim.simulate(); 
+
+        expect(sim.toSimulationResults().isWin).to.equal(true); 
+        
     });
 
 });

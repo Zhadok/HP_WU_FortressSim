@@ -45,7 +45,7 @@ export class RulesEngine {
 
 
 
-    async getNextAction(timestampBegin: number, facts: ruleFactType): Promise<SimEvent> {
+    async getNextAction(timestampBegin: number, facts: ruleFactType): Promise<SimEvent | null> {
         //console.log(facts);
         let results = await this.engine.run(facts).catch((error) => {
             throw new Error("Error processing rules");
@@ -87,7 +87,8 @@ export class RulesEngine {
                 return new ExitCombatEvent(timestampBegin, wizard.inCombatWith!, wizard, this.rng);
             case "combatSpellCastWizard":
                 return new CombatSpellCircleEvent(timestampBegin, wizard.inCombatWith!, wizard, this.rng);
-            
+            case "noAction":
+                return null; 
         }
 
         throw new Error("Could not find action for event type=" + results[0].type + "!");

@@ -186,13 +186,25 @@
                     "path": ".inCombat",
                     "operator": "equal",
                     "value": false
-                },
-                {
+                }, {
                     "fact": "highestPriorityAvailableEnemy",
                     "operator": "equal",
                     "value": null
+                }, {
+                    "fact": "wizard",
+                    "path": ".triggers.mendingCharm",
+                    "operator": "notEqual",
+                    "value": null
                 }
             ]
+        }
+    }, {
+        "event": {
+            "type": "noAction"
+        },
+        "priority": 0,
+        "conditions": {
+            "all": []
         }
     }
 ]

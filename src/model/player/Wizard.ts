@@ -7,6 +7,7 @@ import focusCostData from "../../data/focusCosts.json";
 import { triggerNameType, triggerMapType } from "../../types";
 import { SkillTree } from "./SkillTree/SkillTree";
 import { SkillTreeNode } from "./SkillTree/SkillTreeNode";
+import { Logger } from "../../util/Logger";
 
 export abstract class Wizard extends Combatant {
 

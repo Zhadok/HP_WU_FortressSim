@@ -18,7 +18,7 @@ export class EnemyDefeatEvent extends EnvEvent {
     }
 
     allowWizardFollowupAction() {
-        return true; 
+        return false; 
     }
 
     onFinish() {

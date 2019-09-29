@@ -49,7 +49,7 @@ declare type ruleFactType = {
 }
 declare type actionNameType = strategicSpellNameType | 
                               "enterCombatWithHighestPriorityAvailableEnemy" | "exitCombat" | 
-                              "combatSpellCastWizard";
+                              "combatSpellCastWizard" | "noAction";
 
 
 

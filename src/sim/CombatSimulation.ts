@@ -5,28 +5,22 @@ import eventData from "../data/events.json";
 import potionData from "../data/potions.json";
 import { CombatSimulationParameters } from "./CombatSimulationParameters";
 import { SimEvent } from "./events/SimEvent.js";
-import { FortressRoom } from "../model/env/FortressRoom";
 import { Wizard } from "../model/player/Wizard";
 import { WizardFactory } from "../model/player/WizardFactory";
 import { Logger } from "../util/Logger";
-import { PotionAvailabilityParameters } from "./PotionAvailabilityParameters";
-import { Professor } from "../model/player/Professor";
 import { Enemy } from "../model/env/enemies/Enemy";
 import { WizardEvent } from "./events/wizard/WizardEvent";
-import { EnterCombatEvent } from "./events/wizard/combat/EnterCombatEvent";
 import { InitialEnemySpawnEvent } from "./events/env/InitialEnemySpawnEvent";
-import { DefenceCharmEvent } from "./events/wizard/room/spells/professor/DefenceCharmEvent";
-import { DeteriorationHexEvent } from "./events/wizard/room/spells/professor/DeteriorationHexEvent";
 import { EnemySpawnEvent } from "./events/env/EnemySpawnEvent";
 import { EnvEvent } from "./events/env/EnvEvent";
 import { EnemyDefeatEvent } from "./events/env/EnemyDefeatEvent";
-import { CombatSpellCircleEvent } from "./events/wizard/combat/CombatSpellCircleEvent";
 import { SecondEnemySpawnEvent } from "./events/env/SecondEnemySpawnEvent";
-import { ProficiencyPowerCharmEvemt } from "./events/wizard/room/spells/professor/ProficiencyPowerCharmEvent";
 import { SkillTree } from "../model/player/SkillTree/SkillTree";
 import { RulesEngine } from "../rules/RulesEngine";
 import { nameClassType, ruleFactType } from "../types.js";
 import { CombatSimulationResults } from "./CombatSimulationResults";
+import { WizardsOutOfTimeEvent } from "./events/env/WizardsOutOfTimeEvent";
+import { FortressRoom } from "../model/env/FortressRoom";
 
 
 export class CombatSimulation {
@@ -98,6 +92,8 @@ export class CombatSimulation {
         // Add another enemy per wizard after 34s
         this.addEvent(new SecondEnemySpawnEvent("thirdEnemySpawnTime", 0));
 
+        // Add out of time event
+        this.addEvent(new WizardsOutOfTimeEvent(this.maxTime)); 
     }
 
 
@@ -183,8 +179,9 @@ export class CombatSimulation {
             throw new Error("Tried to go back in time! currentTime=" + this.currentTime + ", event.timestampEnd=" + currentEvent.timestampEnd);
         }
         this.currentTime = currentEvent.timestampEnd
+        this.log(2, "Processing event: " + currentEvent.constructor.name);
 
-        if (this.currentTime > this.maxTime) {
+        if (this.currentTime >= this.maxTime) {
             return false; 
         }
 
@@ -197,7 +194,6 @@ export class CombatSimulation {
     // Event is always called at END of event (e.g. at END of animation)
     // timestampBegin of next event is equal to timestampEnd of this event
     async processEvent(event: SimEvent) {
-        this.log(2, "Processing event: " + event.constructor.name);
         event.onFinish();
 
         if (event instanceof EnvEvent) {
@@ -212,20 +208,25 @@ export class CombatSimulation {
                         this.addEvent(new EnemySpawnEvent(this.currentTime, this.fortressRoom.getNextActiveEnemy()));
                     }
                 }
-                await this.triggerIdleWizards();
+                //await this.triggerIdleWizards();
             }
             else if (event instanceof EnemySpawnEvent) {
                 this.log(2, "Spawning enemy id=" + event.enemy.enemyIndex + " (" + event.enemy.nameUserFriendly + ")");
                 this.addEnemyToActive(event.enemy);
                 if (this.eventQueue.filter(e => e instanceof InitialEnemySpawnEvent).length === 0) {
                     // Only trigger idle wizards if no more initial enemy spawns in queue
-                    await this.triggerIdleWizards();
+                    await this.triggerIdleWizards(); 
                 }   
             }
             else if (event instanceof EnemyDefeatEvent) {
                 this.removeEnemyFromActive(event.enemy);
                 if (this.fortressRoom.hasNextActiveEnemy()) {
+                     // In this case, the wizard should NOT be allowed a followup action, since he should wait for the spawn event
                     this.addEvent(new EnemySpawnEvent(this.currentTime, this.fortressRoom.getNextActiveEnemy()));
+                }
+                else {
+                    // In this case, the wizard should be allowed a followup action, since there will be no new enemies after next event
+                    await this.triggerIdleWizards(); 
                 }
                 this.rewardWizardFocus(event.enemy.focusReward);
                 if (this.checkForVictory() === true) {
@@ -233,6 +234,7 @@ export class CombatSimulation {
                     return; 
                 }
             }
+
             return; 
         }
 
@@ -251,6 +253,7 @@ export class CombatSimulation {
 
 
     rewardWizardFocus(focus: number): void {
+        this.log(2, "Adding " + focus + " focus to all wizards."); 
         for (let wizard of this.wizards) {
             wizard.addFocus(focus);
         }
@@ -308,8 +311,11 @@ export class CombatSimulation {
             highestPriorityAvailableEnemy: highestPriorityAvailableEnemy,  
             allWizards: this.wizards
         }
-        let nextEvent: SimEvent = await this.getRulesEngine(wizard.nameClass).getNextAction(timestampBegin, facts);
-        this.addEvent(nextEvent);
+        let nextEvent = await this.getRulesEngine(wizard.nameClass).getNextAction(timestampBegin, facts);
+        if (nextEvent !== null) {
+            // event can be null, for example, if professor has not studied mending charm and no enemies available
+            this.addEvent(nextEvent);
+        }
     }   
 
 

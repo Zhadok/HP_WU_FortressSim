@@ -290,7 +290,7 @@ export class AppComponent {
                 let averageGameTimeMS = totalGameTimeMSPassed / nRuns;
                 let averageChallengeXPReward = totalChallengeXPReward / (nRuns * nWizards); 
                 let averageChallengeXPRewardPerHour = averageChallengeXPReward * (3600*1000 / (averageGameTimeMS + this.simAdvancedSettings.secondsBetweenSimulations)); 
-
+                
                 resultsGrouped.push({
                     roomLevel: roomLevel,
                     winPercentage: nWins / nRuns,

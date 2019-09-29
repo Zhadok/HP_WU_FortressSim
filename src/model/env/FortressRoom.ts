@@ -145,7 +145,11 @@ export class FortressRoom {
     }
 
     computeMaxtime(): number {
-        switch(this.roomLevel) {
+        return FortressRoom.computeMaxtimeStatic(this.roomLevel); 
+    }
+
+    static computeMaxtimeStatic(roomLevel: number): number {
+        switch(roomLevel) {
             case 1: return 300;
             case 2: return 300;
             case 3: return 300;
