@@ -105,6 +105,10 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 
 /**** Simulation outputs ****/
+.matPanelSimulationResults {
+    margin-bottom: 20px !important; 
+}
+
 #inputSimulationLog {
     height: 800px; 
     color: black; 
@@ -118,6 +122,7 @@ table {
 .mat-header-cell {
     text-align: center !important;
 }
+
 
 
 
