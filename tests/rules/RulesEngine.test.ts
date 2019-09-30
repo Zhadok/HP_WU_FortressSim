@@ -169,13 +169,11 @@ describe("RulesEngine", function() {
         wizard.inCombat = true; 
         enemy.inCombatWith = wizard;
         enemy.inCombat = true;
-        enemy.applyExstimuloPotion(wizard.playerIndex, 5, 2.25); 
-        wizard.getPotions().nExstimuloAvailable = 1; 
+        enemy.applyExstimuloPotion(wizard, 5, 2.25); 
+        wizard.getPotions().nPotentExstimuloAvailable = 1; 
 
         return rulesEngine.getNextAction(0, facts).then(simEvent => {
-            expect(simEvent instanceof ExstimuloPotionEvent).to.be.true; 
-            expect((simEvent as ExstimuloPotionEvent).damageBuff).to.equal(0.5); 
-            expect((simEvent as ExstimuloPotionEvent).uses).to.equal(3); 
+            expect(simEvent instanceof ExstimuloPotionEvent).to.be.false; 
         }); 
     });
 });

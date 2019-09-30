@@ -26,7 +26,11 @@ export abstract class Wizard extends Combatant {
     private triggers: triggerMapType;
 
     inCombatWith: Enemy | null = null;
-    
+    // Used for rules to check whether exstimulo should be applied
+    exstimuloPotionDamageBuff: number = 0; 
+    witSharpeningPotionDamageBuff: number = 0; 
+
+
     // Potions
     private potions: PotionAvailabilityParameters | undefined; 
 
@@ -168,7 +172,7 @@ export abstract class Wizard extends Combatant {
     
 
     performAttackCast(damage: number, isCritical: boolean, isDodge: boolean, enemy: Enemy): void {
-        enemy.decreasePotionUsesRemaining(this.playerIndex); 
+        enemy.decreasePotionUsesRemaining(this); 
 
         // Stats
         this.totalDamage += damage; 

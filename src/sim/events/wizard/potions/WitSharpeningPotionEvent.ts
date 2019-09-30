@@ -27,7 +27,12 @@ export class WitSharpeningPotionEvent extends PotionEvent {
             Logger.logT(2, this.timestampBegin, "WitSharpeningPotionEvent: wizard id=" + this.wizard.playerIndex + " tried drinking WitSharpeningPotion but version already active!");
             return; 
         }
-        this.enemy.applyWitSharpeningPotion(this.wizard.playerIndex, this.uses, this.damageBuff); 
+        if (this.enemy.isElite === false) {
+            Logger.logT(2, this.timestampBegin, "WitSharpeningPotionEvent: wizard id=" + this.wizard.playerIndex + " tried drinking WitSharpeningPotion but enemy is not elite!"); 
+            return; 
+        }
+        
+        this.enemy.applyWitSharpeningPotion(this.wizard, this.uses, this.damageBuff); 
     }
 
 }

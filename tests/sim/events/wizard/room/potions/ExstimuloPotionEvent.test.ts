@@ -29,23 +29,27 @@ describe("ExstimuloPotionEvent", function() {
         expect(enemy.getExstimuloDamageBuff(wizard.playerIndex)).to.equal(2.25);
         expect(enemy.getExstimuloUsesRemaining(wizard.playerIndex)).to.equal(5);
         expect(wizard.getDamageBuffMultiplier(enemy)).to.equal(3.25);
-       
+        expect(wizard.exstimuloPotionDamageBuff).to.equal(2.25); 
+
         wizard.performAttackCast(1, false, false, enemy); // 4 remaining
         expect(enemy.getExstimuloDamageBuff(wizard.playerIndex)).to.equal(2.25);
         expect(enemy.getExstimuloUsesRemaining(wizard.playerIndex)).to.equal(4);
         expect(wizard.getDamageBuffMultiplier(enemy)).to.equal(3.25);
-       
+        expect(wizard.exstimuloPotionDamageBuff).to.equal(2.25); 
+
         wizard.performAttackCast(1, false, false, enemy); // 3 remaining
         wizard.performAttackCast(1, false, false, enemy); // 2 remaining
         wizard.performAttackCast(1, false, false, enemy); // 1 remaining
         expect(enemy.getExstimuloDamageBuff(wizard.playerIndex)).to.equal(2.25);
         expect(enemy.getExstimuloUsesRemaining(wizard.playerIndex)).to.equal(1);
         expect(wizard.getDamageBuffMultiplier(enemy)).to.equal(3.25);
-       
+        expect(wizard.exstimuloPotionDamageBuff).to.equal(2.25); 
+
         wizard.performAttackCast(1, false, false, enemy); // 0 remaining
         expect(enemy.getExstimuloDamageBuff(wizard.playerIndex)).to.equal(0);
         expect(enemy.getExstimuloUsesRemaining(wizard.playerIndex)).to.equal(0);
         expect(wizard.getDamageBuffMultiplier(enemy)).to.equal(1);
+        expect(wizard.exstimuloPotionDamageBuff).to.equal(0); 
     });
 
     it("potion_damageIncrease", function() {
@@ -82,11 +86,11 @@ describe("ExstimuloPotionEvent", function() {
 
         let eventPotion = new ExstimuloPotionEvent(0, wizard, enemy, potions, potionData.potentExstimuloPotionDamageBuff, potionData.potentExstimuloPotionUses, "potent");
         eventPotion.onFinish();
-        enemy.resetPotionUsesRemaining(wizard.playerIndex); 
+        enemy.resetPotionUsesRemaining(wizard); 
 
         let eventPotion2 = new ExstimuloPotionEvent(0, wizard, enemy, potions, potionData.potentExstimuloPotionDamageBuff, potionData.potentExstimuloPotionUses, "potent");
         eventPotion2.onFinish();
-        enemy.resetPotionUsesRemaining(wizard.playerIndex); 
+        enemy.resetPotionUsesRemaining(wizard); 
         
         try {
             let eventPotion3 = new ExstimuloPotionEvent(0, wizard, enemy, potions, potionData.potentExstimuloPotionDamageBuff, potionData.potentExstimuloPotionUses, "potent");

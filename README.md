@@ -7,6 +7,9 @@
 ### How does this simulation work?
 This software is a "discrete event" simulation. That means each event is a single discrete event. Example events are attacks or strategic spell casts. The full list of event types and their durations are found in [events.json](https://github.com/Zhadok/HP_WU_FortressSim/blob/master/src/data/events.json). The durations for each event were derived from annotating gameplay videos with [anvil](http://anvil-software.org/download/index.html#). 
 
+The simulation runs completely in the browser. There is no backend server involved! 
+
+
 ### How are enemies generated?
 Data from over 100 fortress runs was collected and analyzed. Enemies are generated using a mix of regression models and random numbers. The full analysis can be found [here](https://zhadok.github.io/HP_WU_FortressSim/analysis/fortressRunDataAnalysis_v2.html). 
 
@@ -31,7 +34,7 @@ The implementation can be found [here](https://github.com/Zhadok/HP_WU_FortressS
 
 
 ## Sources for equations and data
-This work would not be possible without the following prior work. 
+This simulation would not be possible without the following prior work. 
 
 Data on enemies:
 - Base stats for enemies values: [link](https://jibsentertainment.com/2019/07/24/a-complete-and-comprehensive-guide-to-fortresses-and-wizarding-challenges/)

@@ -32,7 +32,7 @@ export class ExstimuloPotionEvent extends PotionEvent {
             Logger.logT(2, this.timestampBegin, "ExstimuloPotionEvent: wizard id=" + this.wizard.playerIndex + " tried drinking exstimulo potion but version already active!");
             return; 
         }
-        this.enemy.applyExstimuloPotion(this.wizard.playerIndex, this.uses, this.damageBuff); 
+        this.enemy.applyExstimuloPotion(this.wizard, this.uses, this.damageBuff); 
         if (this.potionName === "normal") this.potions.nExstimuloAvailable--;
         else if (this.potionName === "strong") this.potions.nStrongExstimuloAvailable--;
         else if (this.potionName === "potent") this.potions.nPotentExstimuloAvailable--;

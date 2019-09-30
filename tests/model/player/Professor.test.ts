@@ -56,7 +56,7 @@ describe("Professor", function() {
         let enemy = TestData.buildDefaultEnemy();
 
         professor.hasBraveryCharm = true;
-        enemy.applyExstimuloPotion(professor.playerIndex, 1, 2.25); 
+        enemy.applyExstimuloPotion(professor, 1, 2.25); 
         professor.setTrigger("teamworkMakesTheDreamWork", 12);
 
         expect(professor.getPowerAfterModifications(enemy)).to.equal(professor.stats.power + 12);

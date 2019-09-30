@@ -226,8 +226,8 @@
                     "value": 0
                 }, {
                     "fact": "wizard", 
-                    "path": ".inCombatWith.exstimuloPotionDamageBuff[wizard.playerIndex]",
-                    "operator": "lesserThan",
+                    "path": ".exstimuloPotionDamageBuff",
+                    "operator": "lessThan",
                     "value": 2.25
                 }
             ]

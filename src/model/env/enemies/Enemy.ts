@@ -76,37 +76,45 @@ export class Enemy extends Combatant {
     }
 
 
-    decreasePotionUsesRemaining(playerIndex: number): void {
+    decreasePotionUsesRemaining(wizard: Wizard): void {
         // Exstimulo potion
-        if (this.exstimuloPotionUsesRemaining[playerIndex] > 0) {
-            this.exstimuloPotionUsesRemaining[playerIndex]--;
+        if (this.exstimuloPotionUsesRemaining[wizard.playerIndex] > 0) {
+            this.exstimuloPotionUsesRemaining[wizard.playerIndex]--;
         }
-        if (this.exstimuloPotionUsesRemaining[playerIndex] === 0) {
-            this.exstimuloPotionDamageBuff[playerIndex] = 0;
+        if (this.exstimuloPotionUsesRemaining[wizard.playerIndex] === 0) {
+            // Potion used up
+            this.exstimuloPotionDamageBuff[wizard.playerIndex] = 0;
+            wizard.exstimuloPotionDamageBuff = 0; 
         }
         // Wit sharpening potion
-        if (this.witSharpeningPotionUsesRemaining[playerIndex] > 0) {
-            this.witSharpeningPotionUsesRemaining[playerIndex];
+        if (this.witSharpeningPotionUsesRemaining[wizard.playerIndex] > 0) {
+            this.witSharpeningPotionUsesRemaining[wizard.playerIndex];
         }
-        if (this.witSharpeningPotionUsesRemaining[playerIndex] === 0) {
-            this.witSharpeningPotionDamageBuff[playerIndex] = 0;
+        if (this.witSharpeningPotionUsesRemaining[wizard.playerIndex] === 0) {
+            // Potion used up
+            this.witSharpeningPotionDamageBuff[wizard.playerIndex] = 0;
+            wizard.witSharpeningPotionDamageBuff = 0; 
         }
     }
 
-    resetPotionUsesRemaining(playerIndex: number): void {
-        this.exstimuloPotionUsesRemaining[playerIndex] = 0;
-        this.exstimuloPotionDamageBuff[playerIndex] = 0;
-        this.witSharpeningPotionUsesRemaining[playerIndex] = 0;
-        this.witSharpeningPotionDamageBuff[playerIndex] = 0;
+    resetPotionUsesRemaining(wizard: Wizard): void {
+        this.exstimuloPotionUsesRemaining[wizard.playerIndex] = 0;
+        this.exstimuloPotionDamageBuff[wizard.playerIndex] = 0;
+        wizard.exstimuloPotionDamageBuff = 0; 
+        this.witSharpeningPotionUsesRemaining[wizard.playerIndex] = 0;
+        this.witSharpeningPotionDamageBuff[wizard.playerIndex] = 0;
+        wizard.witSharpeningPotionDamageBuff = 0; 
     }
 
-    applyExstimuloPotion(playerIndex: number, potionUses: number, damageBuff: number) {
-        this.exstimuloPotionUsesRemaining[playerIndex] = potionUses; 
-        this.exstimuloPotionDamageBuff[playerIndex] = damageBuff; 
+    applyExstimuloPotion(wizard: Wizard, potionUses: number, damageBuff: number) {
+        this.exstimuloPotionUsesRemaining[wizard.playerIndex] = potionUses; 
+        this.exstimuloPotionDamageBuff[wizard.playerIndex] = damageBuff; 
+        wizard.exstimuloPotionDamageBuff = damageBuff; 
     }
-    applyWitSharpeningPotion(playerIndex: number, potionUses: number, damageBuff: number) {
-        this.witSharpeningPotionUsesRemaining[playerIndex] = potionUses; 
-        this.witSharpeningPotionDamageBuff[playerIndex] = damageBuff; 
+    applyWitSharpeningPotion(wizard: Wizard, potionUses: number, damageBuff: number) {
+        this.witSharpeningPotionUsesRemaining[wizard.playerIndex] = potionUses; 
+        this.witSharpeningPotionDamageBuff[wizard.playerIndex] = damageBuff; 
+        wizard.witSharpeningPotionDamageBuff = damageBuff; 
     }
 
     getExstimuloDamageBuff(playerIndex: number): number {

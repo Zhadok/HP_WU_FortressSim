@@ -26,6 +26,8 @@ export class EnemyDefeatEvent extends EnvEvent {
         this.enemy.inCombatWith = null;
         this.wizard.inCombat = false;
         this.wizard.inCombatWith = null;
+        this.wizard.exstimuloPotionDamageBuff = 0; 
+        this.wizard.witSharpeningPotionDamageBuff = 0; 
     }
 }
 
