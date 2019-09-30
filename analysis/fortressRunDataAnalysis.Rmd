@@ -1,0 +1,121 @@
+---
+title: "Fortress runs data analysis v1"
+output: html_notebook
+---
+
+### Deprecated
+Please see newer version v2. 
+
+### Goal
+The goal of this analysis is to provide basis for a function to generate a realistic fortress room and enemies given the following parameters:
+
+* Room level
+* Player count
+* Runestone levels
+
+
+### Data load and preparation
+
+```{r}
+dirToRScript <- dirname(rstudioapi::getSourceEditorContext()$path)
+source(paste0(dirToRScript, "/fortressRunDataLoad.R"))
+```
+
+
+### Dataset size: 
+
+```{r}
+ggplot(groupedByRoomLevel, aes(x=roomLevel, y=nRuns)) + geom_bar(stat="identity") + ylab("Number of runs") + xlab("Room level") + theme_bw()
+```
+
+
+
+### Difficulty
+When removing the player count multiplier (see [link](https://docs.google.com/spreadsheets/d/1jtBjdncxspRt51K048islZdEPTZ06yBKuZX7_MBzprI/edit#gid=0)), difficulty clearly scales quadratically with room number (for a single player):
+
+```{r}
+ggplot(groupedByRun[runestoneLevels==1], aes(x=roomLevel, y=difficultyBeforePlayerMultiplier)) + geom_point() + geom_line() +
+  xlab("Room level") + ylab("Difficulty before player count multiplier") + theme_bw() + ggtitle("Difficulty before player count multiplier is clearly quadratic")
+```
+
+
+
+
+### Number of enemies (in relation to difficulty)
+The following charts all use difficulty for the X axis. Hopefully this number alone can be used to describe the following characteristic of a fortress room: 
+
+* Average number of enemies (elites count as 2)
+* Average enemy level
+* Average enemy difficulty (stars)
+* Average proficiency
+
+I explicitly use difficulty instead of a combination of runestone levels, player count and room level. 
+
+For this graph, I count the number of elites as 2 enemies. 
+
+```{r}
+ggplot(groupedByRoomLevel, aes(x=difficulty, y=meanNEnemies))  + geom_point(aes(y=minNEnemies), color="red") + geom_point(aes(y=maxNEnemies), color="red") +  geom_point() + theme_bw() + xlab("difficulty") + ylab("Average number of enemies")
+```
+
+
+
+
+
+### Average enemy level (in relation to difficulty)
+Here, the picture is clearer. 
+The average enemy level seems to be a root function in relation to difficulty (which would make it linear in relation to room level). 
+The following graph also contains min and max values for each difficulty. For example, a difficulty of 39 (Ruins I, runestone level 1, 1 player) can apparently have an average enemy level anywhere between 2 and 5. 
+
+```{r}
+ggplot(groupedByRoomLevel, aes(x=difficulty, y=averageEnemyLevel)) + geom_point(aes(y=minAverageEnemyLevel), color="red") + geom_point(aes(y=maxAverageEnemyLevel), color="red") + 
+  geom_point() + xlab("Difficulty") + ylab("Average enemy level") + theme_bw() + xlab("Difficulty") + ylab("Mean number of enemies")
+```
+
+
+
+
+# Average enemy difficulty (stars)
+More data is needed here. 
+Perhaps this too is a root function.
+
+```{r}
+ggplot(groupedByRoomLevel, aes(x=difficulty, y=averageEnemyDifficulty)) + geom_point(aes(y=minAverageEnemyDifficulty), color="red") + geom_point(aes(y=maxAverageEnemyDifficulty), color="red") + 
+  geom_point() + ylim(c(1,5)) + theme_bw()+ xlab("Difficulty") + ylab("Average enemy difficulty (stars)")
+
+```
+
+
+
+
+# Average proficiency
+The current theory is that when doing a solo fortress run you will be proficient against a certain percentage of enemies. 
+I have seen values between 50% and 60%.
+
+This graph disputes that theory and shows that this percentage may depend on difficulty/room level and is not in fact constant. However, more data is needed to model this relation. 
+
+```{r}
+ggplot(groupedByRoomLevel, aes(x=as.factor(roomLevel), y=averageProficiency)) + geom_boxplot() + theme_bw() + xlab("Room level") + ylab("Average percentage the wizard was proficient against")
+
+```
+
+
+
+
+### Computing a difficulty "budget" per enemy
+When generating a room one approach could be to compute a difficulty "budget" per enemy, which would translate to enemy difficulty and enemy level.
+
+This [post](https://www.reddit.com/r/harrypotterwu/comments/csgsdd/all_about_combat_damage_what_i_know_or_i_think_i/?st=k0gijz3i&sh=acd204fd) suggests the following might hold:
+
+$difficulty \approx 2 * \sum enemyDifficulty * enemyLevel (1+isElite)$
+
+This relation seems to be a good approach for room levels > 7 but inaccurate for easier rooms.
+
+The following chart shows how the factor 2 may be computed: 
+
+```{r}
+ggplot(groupedByRun, aes(x=as.factor(roomLevel), y=difficulty/sumProposedMultiplication)) + geom_boxplot() + ylim(c(0, NA)) +
+  theme_bw() + xlab("Room level") + ylab("Difficulty / sum(enemyLevel*enemyDifficulty*(1+isElite))") 
+```
+
+
+
