@@ -1,37 +1,37 @@
 {
 
-    "initialEnemySpawnAnimation": 3000,
+    "initialEnemySpawnAnimation": 1720,
     "enemySpawn": 0,
 
     "secondEnemySpawnTime": 18000,
     "thirdEnemySpawnTime": 34000, 
 
     "wizardSpawnAfterReviveCharm": 0,
-    "strategicSpellDragAndCastAnimation": 1500,
-    "potionMenuAndSelectAndDrink": 3000,
+    "strategicSpellDragAndCastAnimation": 1060,
+    "potionMenuAndSelectAndDrink": 2606,
 
-    "enterCombat": 3000,
+    "enterCombat": 1826,
     "exitCombat": 1000, 
-    "combatBeginAnimation_acromantula": 1500,
-    "combatBeginAnimation_darkWizard": 2000,
-    "combatBeginAnimation_deathEater": 2000,
-    "combatBeginAnimation_erkling": 3000,
-    "combatBeginAnimation_pixie": 3000,
-    "combatBeginAnimation_werewolf": 2000,
+    "combatBeginAnimation_acromantula": 2800,
+    "combatBeginAnimation_darkWizard": 4493,
+    "combatBeginAnimation_deathEater": 4140,
+    "combatBeginAnimation_erkling": 3560,
+    "combatBeginAnimation_pixie": 3720,
+    "combatBeginAnimation_werewolf": 3920,
 
-    "spellCircle_acromantula": 1000,
-    "spellCircle_darkWizard": 1000,
-    "spellCircle_deathEater": 1000,
-    "spellCircle_erkling": 1500,
-    "spellCircle_pixie": 3000,
-    "spellCircle_werewolf": 1000,
+    "spellCircle_acromantula": 920,
+    "spellCircle_darkWizard": 1560,
+    "spellCircle_deathEater": 1048,
+    "spellCircle_erkling": 1200,
+    "spellCircle_pixie": 2620,
+    "spellCircle_werewolf": 1220,
 
-    "spellTrace": 500,
+    "spellTrace": 807,
     
-    "spellCast_wizard": 500,
-    "spellCast_enemy": 4000,
+    "spellCast_wizard": 1885,
+    "spellCast_enemy": 4740,
 
-    "enemyDeathAnimation": 2000,
+    "enemyDeathAnimation": 5215,
 
     "rewardsAnimation": 500,
 
