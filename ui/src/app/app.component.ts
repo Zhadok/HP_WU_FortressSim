@@ -38,9 +38,9 @@ export class AppComponent {
 
     readonly allowedClasses: { [key in nameClassType]: nameClassUserFriendlyType }; 
 
-    // Advanced sim settings
+    // Advanced sim settings: Default settings
     simAdvancedSettings: simAdvancedSettingsType = {
-        numberSimulations: 100,
+        numberSimulations: 10,
         simGoal: "single",
         runParallel: false,
         secondsBetweenSimulations: 40

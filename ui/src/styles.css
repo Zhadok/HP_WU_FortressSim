@@ -105,7 +105,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 
 /**** Simulation outputs ****/
-.matPanelSimulationResults {
+.matPanelSimulationResultsClass {
     margin-bottom: 20px !important; 
 }
 
