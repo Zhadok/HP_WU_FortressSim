@@ -35,7 +35,8 @@ describe("CombatSimulationComparison", function() {
         }); 
     });
 
-    it("runSync_shouldEqual_runParallel", async function() {
+    // Disable for now since not used anyway
+    /*it("runSync_shouldEqual_runParallel", async function() {
         Logger.verbosity = 0; 
         let comparisonSync = new CombatSimulationComparison(baseParams, "multiple_compare_roomLevels", 1);
         let results1 = await comparisonSync.runAllSync(); 
@@ -55,6 +56,6 @@ describe("CombatSimulationComparison", function() {
             //console.log(results2[i]);
             expect(results1[i]).to.deep.equal(results2[i]); 
         }
-    });
+    });*/
 
 });

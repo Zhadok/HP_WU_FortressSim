@@ -48,6 +48,9 @@ declare type ruleFactType = {
     highestPriorityAvailableEnemy: Enemy | null
 }
 declare type actionNameType = strategicSpellNameType | 
+                              "strongInvigorationPotion" | "weakInvigorationPotion" |
+                              "potentExstimuloPotion" | "strongExstimuloPotion" | "exstimuloPotion" | 
+                              "witSharpeningPotion" | 
                               "enterCombatWithHighestPriorityAvailableEnemy" | "exitCombat" | 
                               "combatSpellCastWizard" | "noAction";
 

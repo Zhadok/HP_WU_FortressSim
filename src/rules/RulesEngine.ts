@@ -6,6 +6,7 @@ import professorRules from "./store/professorRules.json";
 import aurorRules from "./store/aurorRules.json";
 import magizoologistRules from "./store/magizoologistRules.json";
 
+import potionsData from "../data/potions.json"; 
 import { nameClassType, nameClassUserFriendlyType, strategicSpellNameType, ruleFactType, actionNameType } from "../types";
 import { SimEvent } from "../sim/events/SimEvent";
 import { DefenceCharmEvent } from "../sim/events/wizard/room/spells/professor/DefenceCharmEvent";
@@ -19,6 +20,9 @@ import { CombatSpellTraceEvent } from "../sim/events/wizard/combat/CombatSpellTr
 import { CombatSpellCircleEvent } from "../sim/events/wizard/combat/CombatSpellCircleEvent";
 import { MendingCharmEvent } from "../sim/events/wizard/room/spells/professor/MendingCharmEvent";
 import { firstBy } from "thenby";
+import { InvigorationPotionEvent } from "../sim/events/wizard/potions/InvigorationPotionEvent";
+import { ExstimuloPotionEvent } from "../sim/events/wizard/potions/ExstimuloPotionEvent";
+import { WitSharpeningPotionEvent } from "../sim/events/wizard/potions/WitSharpeningPotionEvent";
 
 
 export class RulesEngine {
@@ -72,6 +76,13 @@ export class RulesEngine {
             }
         }
         switch (event.type as actionNameType) {
+            // Invigoration potion
+            case "strongInvigorationPotion": 
+                return new InvigorationPotionEvent(timestampBegin, wizard, wizard.getPotions(), potionsData.strongInvigorationPotionFocus, "strong");
+            case "weakInvigorationPotion": 
+                return new InvigorationPotionEvent(timestampBegin, wizard, wizard.getPotions(), potionsData.weakInvigorationPotionFocus, "weak");
+            
+            // Professor    
             case "defenceCharm": 
                 //console.log(event);
                 return new DefenceCharmEvent(timestampBegin, wizard.stats.defenceCharmIncrease, targetWizard!, wizard);
@@ -81,10 +92,28 @@ export class RulesEngine {
                 return new DeteriorationHexEvent(timestampBegin, wizard.stats.deteriorationHexDamage, highestPriorityAvailableEnemy!, wizard);
             case "mendingCharm": 
                 return new MendingCharmEvent(timestampBegin, wizard.stats.mendingCharmStaminaRestore, targetWizardLowestHP!, wizard);
+            
+            // Combat
             case "enterCombatWithHighestPriorityAvailableEnemy": 
                 return new EnterCombatEvent(timestampBegin, highestPriorityAvailableEnemy!, wizard, this.rng);
             case "exitCombat": 
                 return new ExitCombatEvent(timestampBegin, wizard.inCombatWith!, wizard, this.rng);
+            case "potentExstimuloPotion": 
+                return new ExstimuloPotionEvent(timestampBegin, wizard, wizard.inCombatWith!, 
+                    wizard.getPotions(), potionsData.potentExstimuloPotionDamageBuff, 
+                    potionsData.potentExstimuloPotionUses, "potent"); 
+            case "strongExstimuloPotion": 
+                return new ExstimuloPotionEvent(timestampBegin, wizard, wizard.inCombatWith!, 
+                    wizard.getPotions(), potionsData.strongExstimuloPotionDamageBuff, 
+                    potionsData.strongExstimuloPotionUses, "strong"); 
+            case "exstimuloPotion": 
+                return new ExstimuloPotionEvent(timestampBegin, wizard, wizard.inCombatWith!, 
+                    wizard.getPotions(), potionsData.exstimuloPotionDamageBuff,
+                    potionsData.exstimuloPotionUses, "normal"); 
+            case "witSharpeningPotion": 
+                return new WitSharpeningPotionEvent(timestampBegin, wizard, wizard.inCombatWith!,
+                    potionsData.witSharpeningPotionDamageBuff, potionsData.witSharpeningPotionUses,
+                    wizard.getPotions()); 
             case "combatSpellCastWizard":
                 return new CombatSpellCircleEvent(timestampBegin, wizard.inCombatWith!, wizard, this.rng);
             case "noAction":

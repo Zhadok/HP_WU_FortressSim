@@ -1,6 +1,62 @@
 [
     {
         "event": {
+            "type": "strongInvigorationPotion"
+        },
+        "priority": 0,
+        "conditions": {
+            "all": [
+                {
+                    "fact": "wizard",
+                    "path": ".inCombat",
+                    "operator": "equal",
+                    "value": false
+                }, {
+                    "fact": "wizard",
+                    "path": ".focus",
+                    "operator": "lessThan",
+                    "value": {
+                        "fact": "wizard",
+                        "path": ".stats.maxFocus"
+                    }
+                }, {
+                    "fact": "wizard", 
+                    "path": ".potions.nStrongInvigorationAvailable",
+                    "operator": "greaterThan",
+                    "value": 0
+                }
+            ]
+        }
+    }, {
+        "event": {
+            "type": "weakInvigorationPotion"
+        },
+        "priority": 0,
+        "conditions": {
+            "all": [
+                {
+                    "fact": "wizard",
+                    "path": ".inCombat",
+                    "operator": "equal",
+                    "value": false
+                }, {
+                    "fact": "wizard",
+                    "path": ".focus",
+                    "operator": "lessThan",
+                    "value": {
+                        "fact": "wizard",
+                        "path": ".stats.maxFocus"
+                    }
+                }, {
+                    "fact": "wizard", 
+                    "path": ".potions.nWeakInvigorationAvailable",
+                    "operator": "greaterThan",
+                    "value": 0
+                }
+            ]
+        }
+    }, {
+        "event": {
             "type": "defenceCharm",
             "params": {
                 "targetWizardIndex": 0
@@ -152,6 +208,34 @@
             ]
         }
     }, {
+        "event": {
+            "type": "potentExstimuloPotion"
+        },
+        "priority": 0,
+        "conditions": {
+            "all": [
+                {
+                    "fact": "wizard",
+                    "path": ".inCombat",
+                    "operator": "equal",
+                    "value": true
+                }, {
+                    "fact": "wizard", 
+                    "path": ".potions.nPotentExstimuloAvailable",
+                    "operator": "greaterThan",
+                    "value": 0
+                }, {
+                    "fact": "wizard", 
+                    "path": ".inCombatWith.exstimuloPotionDamageBuff[wizard.playerIndex]",
+                    "operator": "lesserThan",
+                    "value": 2.25
+                }
+            ]
+        }
+    }, 
+    
+    
+    {
         "event": {
             "type": "combatSpellCastWizard"
         },

@@ -87,7 +87,7 @@ describe("SkillTree", function() {
     it("applyTriggers_strategicSpell", function() {
         let skillTree = new SkillTree("professor");
         skillTree.setNodeLevelByTriggerName("defenceCharm", 1); // studied level: 1
-        let prof = WizardFactory.buildWizardWithSkillTree(skillTree, 0, 0) as Professor;
+        let prof = WizardFactory.buildWizardWithSkillTree(skillTree, 0, 0, TestData.buildDefaultPotionParameters()) as Professor;
 
         expect(prof.getTriggers().defenceCharm).to.equal(0.16); // value of node (statChanged): 0.16
         expect(prof.hasStudiedDefenceCharm()).to.be.true; 

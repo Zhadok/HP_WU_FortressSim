@@ -118,12 +118,13 @@ describe("CombatSimulation", function() {
 
 
     it("combatSimulation_fullManualSimulation", async function() {
-        Logger.verbosity = 2; 
+        Logger.verbosity = 0; 
         let defaultEnemies = TestData.buildDefaultEnemies();
         let shouldBeTime = 0;
 
         params1.roomLevel = 1;
         let sim1 = new CombatSimulation(params1, TestData.buildNewRNG_0());
+        sim1.wizards[0].setPotions(TestData.buildDefaultPotionParameters_noPotions()); 
         sim1.fortressRoom.enemiesAll[0] = defaultEnemies[0];
         sim1.fortressRoom.enemiesAll[1] = defaultEnemies[1];
 
@@ -298,12 +299,12 @@ describe("CombatSimulation", function() {
     });
 
     it("simulation_lostBecauseOfIdleness", async function() {
-        Logger.verbosity = 2;
+        Logger.verbosity = 0;
         params1.roomLevel = 1; 
         params1.runestoneLevels = [3]; 
         params1.skillTrees = [(new SkillTree("professor")).persist()]; 
         params1.seed = 3; 
-        // Wizard should fail at this
+        // Wizard fails at this with a certain bug
         let sim = new CombatSimulation(params1, new Prando(params1.seed));
         sim.init(); 
 

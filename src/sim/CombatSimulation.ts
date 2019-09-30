@@ -69,7 +69,7 @@ export class CombatSimulation {
 
         for (let i=0;i<params.nameClasses.length;i++) {
             let skillTree = SkillTree.fromPersisted(params.skillTrees[i]);
-            let wizard = WizardFactory.buildWizardWithSkillTree(skillTree, i, knockoutTime); 
+            let wizard = WizardFactory.buildWizardWithSkillTree(skillTree, i, knockoutTime, params.potions[i]); 
             this.wizards.push(wizard);
         }
 

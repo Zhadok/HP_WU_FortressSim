@@ -12,6 +12,8 @@ import { DefenceCharmEvent } from "../../src/sim/events/wizard/room/spells/profe
 import { SimEvent } from "../../src/sim/events/SimEvent";
 import { CombatSpellCircleEvent } from "../../src/sim/events/wizard/combat/CombatSpellCircleEvent";
 import { MendingCharmEvent } from "../../src/sim/events/wizard/room/spells/professor/MendingCharmEvent";
+import { InvigorationPotionEvent } from "../../src/sim/events/wizard/potions/InvigorationPotionEvent";
+import { ExstimuloPotionEvent } from "../../src/sim/events/wizard/potions/ExstimuloPotionEvent";
 
 // https://github.com/domenic/chai-as-promised/issues/192
 before(() => {
@@ -28,6 +30,7 @@ describe("RulesEngine", function() {
     let rulesEngine: RulesEngine;
     this.beforeEach(() => {
         wizard = TestData.buildDefaultProfessor();
+        wizard.setPotions(TestData.buildDefaultPotionParameters_noPotions()); 
         enemy = TestData.buildDefaultEnemy();
         facts = {
             wizard: wizard,
@@ -39,6 +42,7 @@ describe("RulesEngine", function() {
     });
 
     it("professor_notEnoughFocusDefenceCharm", function()  {
+        
         wizard.inCombat = false; 
         wizard.removeFocus(wizard.getFocus());
         wizard.hasDefenceCharm = false;
@@ -99,4 +103,79 @@ describe("RulesEngine", function() {
         }); 
     });
 
+    it("professor_shouldDrink_strongInvigorationPotion", function() {
+        wizard.inCombat = false;
+        wizard.removeFocus(wizard.getFocus());
+        wizard.getPotions().nStrongInvigorationAvailable = 1; 
+
+        return rulesEngine.getNextAction(0, facts).then(simEvent => {
+            expect(simEvent instanceof InvigorationPotionEvent).to.be.true; 
+            expect((simEvent as InvigorationPotionEvent).focusReward).to.equal(3); 
+        }); 
+    });
+    it("professor_shouldDrink_weakInvigorationPotion", function() {
+        wizard.inCombat = false;
+        wizard.removeFocus(wizard.getFocus());
+        wizard.getPotions().nWeakInvigorationAvailable = 1; 
+
+        return rulesEngine.getNextAction(0, facts).then(simEvent => {
+            expect(simEvent instanceof InvigorationPotionEvent).to.be.true; 
+            expect((simEvent as InvigorationPotionEvent).focusReward).to.equal(1); 
+        }); 
+    });
+    it("professor_shouldDrink_potentExstimuloPotion", function() {
+        wizard.inCombatWith = enemy;
+        wizard.inCombat = true; 
+        enemy.inCombatWith = wizard;
+        enemy.inCombat = true;
+        wizard.getPotions().nPotentExstimuloAvailable = 1; 
+
+        return rulesEngine.getNextAction(0, facts).then(simEvent => {
+            console.log(simEvent); 
+            expect(simEvent instanceof ExstimuloPotionEvent).to.be.true; 
+            expect((simEvent as ExstimuloPotionEvent).damageBuff).to.equal(2.25); 
+            expect((simEvent as ExstimuloPotionEvent).uses).to.equal(5); 
+        }); 
+    });
+    /*it("professor_shouldDrink_strongExstimuloPotion", function() {
+        wizard.inCombatWith = enemy;
+        wizard.inCombat = true; 
+        enemy.inCombatWith = wizard;
+        enemy.inCombat = true;
+        wizard.getPotions().nStrongExstimuloAvailable = 1; 
+
+        return rulesEngine.getNextAction(0, facts).then(simEvent => {
+            expect(simEvent instanceof ExstimuloPotionEvent).to.be.true; 
+            expect((simEvent as ExstimuloPotionEvent).damageBuff).to.equal(1.25); 
+            expect((simEvent as ExstimuloPotionEvent).uses).to.equal(4); 
+        }); 
+    });
+    it("professor_shouldDrink_exstimuloPotion", function() {
+        wizard.inCombatWith = enemy;
+        wizard.inCombat = true; 
+        enemy.inCombatWith = wizard;
+        enemy.inCombat = true;
+        wizard.getPotions().nExstimuloAvailable = 1; 
+
+        return rulesEngine.getNextAction(0, facts).then(simEvent => {
+            expect(simEvent instanceof ExstimuloPotionEvent).to.be.true; 
+            expect((simEvent as ExstimuloPotionEvent).damageBuff).to.equal(0.5); 
+            expect((simEvent as ExstimuloPotionEvent).uses).to.equal(3); 
+        }); 
+    });*/
+
+    it("professor_shouldNotDrink_alreadyApplied", function() {
+        wizard.inCombatWith = enemy;
+        wizard.inCombat = true; 
+        enemy.inCombatWith = wizard;
+        enemy.inCombat = true;
+        enemy.applyExstimuloPotion(wizard.playerIndex, 5, 2.25); 
+        wizard.getPotions().nExstimuloAvailable = 1; 
+
+        return rulesEngine.getNextAction(0, facts).then(simEvent => {
+            expect(simEvent instanceof ExstimuloPotionEvent).to.be.true; 
+            expect((simEvent as ExstimuloPotionEvent).damageBuff).to.equal(0.5); 
+            expect((simEvent as ExstimuloPotionEvent).uses).to.equal(3); 
+        }); 
+    });
 });

@@ -127,6 +127,20 @@ export class TestData {
             nWitSharpeningAvailable: 1
         };
     }
+    static buildDefaultPotionParameters_noPotions(): PotionAvailabilityParameters {
+        return {
+            nHealingPotionsAvailable: 0,
+
+            nWeakInvigorationAvailable: 0,
+            nStrongInvigorationAvailable: 0,
+
+            nExstimuloAvailable: 0,
+            nStrongExstimuloAvailable: 0,
+            nPotentExstimuloAvailable: 0,
+
+            nWitSharpeningAvailable: 0
+        };
+    }
 
     static buildDefaultSimParametersTwoWizards(): CombatSimulationParameters {
         return {
@@ -146,19 +160,22 @@ export class TestData {
 
     static buildDefaultAuror(): Auror {
         let skillTree = this.buildDefaultSkillTreeAuror();
-        let wizard = WizardFactory.buildWizardWithSkillTree(skillTree, 0, FortressRoom.computeKnockoutTimeStatic(this.getDefaultRoomLevel())) as Auror;
+        let wizard = WizardFactory.buildWizardWithSkillTree(skillTree, 0, 
+            FortressRoom.computeKnockoutTimeStatic(this.getDefaultRoomLevel()), this.buildDefaultPotionParameters()) as Auror;
         wizard.stats.maxFocus = 7;
         return wizard;
     }
     static buildDefaultMagizoologist(): Magizoologist {
         let skillTree = this.buildDefaultSkillTreeMagizoologist();
-        let wizard = WizardFactory.buildWizardWithSkillTree(skillTree, 0, FortressRoom.computeKnockoutTimeStatic(this.getDefaultRoomLevel())) as Magizoologist;
+        let wizard = WizardFactory.buildWizardWithSkillTree(skillTree, 0, 
+            FortressRoom.computeKnockoutTimeStatic(this.getDefaultRoomLevel()), this.buildDefaultPotionParameters()) as Magizoologist;
         wizard.stats.maxFocus = 7;
         return wizard;
     }
     static buildDefaultProfessor(): Professor {
         let skillTree = this.buildDefaultSkillTreeProfessor();
-        let wizard =  WizardFactory.buildWizardWithSkillTree(skillTree, 0, FortressRoom.computeKnockoutTimeStatic(this.getDefaultRoomLevel())) as Professor;
+        let wizard =  WizardFactory.buildWizardWithSkillTree(skillTree, 0, 
+            FortressRoom.computeKnockoutTimeStatic(this.getDefaultRoomLevel()), this.buildDefaultPotionParameters()) as Professor;
         wizard.stats.maxFocus = 7;
         return wizard;
     }

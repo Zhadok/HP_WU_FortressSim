@@ -5,6 +5,7 @@ import { Professor } from "./Professor";
 import { nameClassType, triggerNameType } from "../../types";
 import { Wizard } from "./Wizard";
 import { SkillTree } from "./SkillTree/SkillTree";
+import { PotionAvailabilityParameters } from "../../sim/PotionAvailabilityParameters";
 
 
 export class WizardFactory {
@@ -27,10 +28,11 @@ export class WizardFactory {
         return result;
     }*/
 
-    static buildWizardWithSkillTree(skillTree: SkillTree, playerIndex: number, knockoutTime: number): Wizard {
-        let result = this.buildWizard(skillTree.toWizardStats(), skillTree.nameClass, playerIndex, knockoutTime);
-        skillTree.applyTriggers(result);
-        return result;
+    static buildWizardWithSkillTree(skillTree: SkillTree, playerIndex: number, knockoutTime: number, potions: PotionAvailabilityParameters): Wizard {
+        let wizard = this.buildWizard(skillTree.toWizardStats(), skillTree.nameClass, playerIndex, knockoutTime);
+        wizard.setPotions(potions); 
+        skillTree.applyTriggers(wizard);
+        return wizard;
     }
 
 }

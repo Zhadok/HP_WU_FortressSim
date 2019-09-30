@@ -9,7 +9,14 @@ dataEvents1 <- getEventsData(pathAnvilXML1)
 dataEvents2 <- getEventsData(pathAnvilXML2)
 dataEvents <- rbind(dataEvents1, dataEvents2)
 paste0("Loaded ", NROW(dataEvents), " events.")
-grouped <- dataEvents[, .N, by=eventName]
+dataEvents[, duration:= end - start]
+grouped <- dataEvents[, list(n=.N
+                             , minDuration=min(duration)
+                             , meanDuration=mean(duration)
+                             , maxDuration=max(duration)
+                             
+                             ), 
+                      by=eventName]
 grouped[order(eventName)]
 #
 

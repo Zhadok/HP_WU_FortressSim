@@ -8,6 +8,7 @@ import { triggerNameType, triggerMapType } from "../../types";
 import { SkillTree } from "./SkillTree/SkillTree";
 import { SkillTreeNode } from "./SkillTree/SkillTreeNode";
 import { Logger } from "../../util/Logger";
+import { PotionAvailabilityParameters } from "../../sim/PotionAvailabilityParameters";
 
 export abstract class Wizard extends Combatant {
 
@@ -22,11 +23,12 @@ export abstract class Wizard extends Combatant {
     private focus: number;
 
     // Skill tree triggers (e.g. more power when X happens)
-    //private triggers: Map<triggerNameType, number>;
     private triggers: triggerMapType;
 
     inCombatWith: Enemy | null = null;
     
+    // Potions
+    private potions: PotionAvailabilityParameters | undefined; 
 
     // Buffs
     // Professor
@@ -190,6 +192,13 @@ export abstract class Wizard extends Combatant {
                (this.hasProficiencyPowerCharm ? 1 : 0) +
                // Potions count as enhancements. But only exstimulo OR wit sharpening, not both
                (enemy.getExstimuloDamageBuff(this.playerIndex) > 0 || enemy.getWitSharpeningDamageBuff(this.playerIndex) > 0 ? 1 : 0); 
+    }
+
+    setPotions(potions: PotionAvailabilityParameters) {
+        this.potions = potions; 
+    }
+    getPotions(): PotionAvailabilityParameters {
+        return this.potions!; 
     }
 
     abstract isProficientAgainst(enemy: Enemy): boolean;
