@@ -4,6 +4,7 @@ import { nameClassType, nameClassUserFriendlyType, strategicSpellNameType, statN
 import { Enemy } from "../env/enemies/Enemy";
 
 import focusCostData from "../../data/focusCosts.json";
+import potionData from "../../data/potions.json"; 
 import { triggerNameType, triggerMapType } from "../../types";
 import { SkillTree } from "./SkillTree/SkillTree";
 import { SkillTreeNode } from "./SkillTree/SkillTreeNode";
@@ -13,6 +14,7 @@ import { PotionAvailabilityParameters } from "../../sim/PotionAvailabilityParame
 export abstract class Wizard extends Combatant {
 
     readonly focusCostData = focusCostData;
+    readonly potionData = potionData; 
 
     readonly stats: WizardStats;
     readonly nameClass: nameClassType;

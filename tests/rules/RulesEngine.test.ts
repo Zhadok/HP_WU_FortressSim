@@ -14,6 +14,7 @@ import { CombatSpellCircleEvent } from "../../src/sim/events/wizard/combat/Comba
 import { MendingCharmEvent } from "../../src/sim/events/wizard/room/spells/professor/MendingCharmEvent";
 import { InvigorationPotionEvent } from "../../src/sim/events/wizard/potions/InvigorationPotionEvent";
 import { ExstimuloPotionEvent } from "../../src/sim/events/wizard/potions/ExstimuloPotionEvent";
+import { WitSharpeningPotionEvent } from "../../src/sim/events/wizard/potions/WitSharpeningPotionEvent";
 
 // https://github.com/domenic/chai-as-promised/issues/192
 before(() => {
@@ -131,13 +132,12 @@ describe("RulesEngine", function() {
         wizard.getPotions().nPotentExstimuloAvailable = 1; 
 
         return rulesEngine.getNextAction(0, facts).then(simEvent => {
-            console.log(simEvent); 
             expect(simEvent instanceof ExstimuloPotionEvent).to.be.true; 
             expect((simEvent as ExstimuloPotionEvent).damageBuff).to.equal(2.25); 
             expect((simEvent as ExstimuloPotionEvent).uses).to.equal(5); 
         }); 
     });
-    /*it("professor_shouldDrink_strongExstimuloPotion", function() {
+    it("professor_shouldDrink_strongExstimuloPotion", function() {
         wizard.inCombatWith = enemy;
         wizard.inCombat = true; 
         enemy.inCombatWith = wizard;
@@ -162,18 +162,64 @@ describe("RulesEngine", function() {
             expect((simEvent as ExstimuloPotionEvent).damageBuff).to.equal(0.5); 
             expect((simEvent as ExstimuloPotionEvent).uses).to.equal(3); 
         }); 
-    });*/
+    });
 
-    it("professor_shouldNotDrink_alreadyApplied", function() {
+    it("professor_shouldNotDrinkExstimulo_alreadyApplied", function() {
         wizard.inCombatWith = enemy;
         wizard.inCombat = true; 
         enemy.inCombatWith = wizard;
         enemy.inCombat = true;
         enemy.applyExstimuloPotion(wizard, 5, 2.25); 
         wizard.getPotions().nPotentExstimuloAvailable = 1; 
+        wizard.getPotions().nStrongExstimuloAvailable = 1; 
+        wizard.getPotions().nExstimuloAvailable = 1; 
+        
 
         return rulesEngine.getNextAction(0, facts).then(simEvent => {
             expect(simEvent instanceof ExstimuloPotionEvent).to.be.false; 
+        }); 
+    });
+
+    it("professor_shouldDrink_witSharpeningPotion", function() {
+        let eliteEnemy = TestData.buildDefaultEnemyElite(); 
+        wizard.inCombatWith = eliteEnemy;
+        wizard.inCombat = true; 
+        eliteEnemy.inCombatWith = wizard;
+        eliteEnemy.inCombat = true;
+        wizard.getPotions().nWitSharpeningAvailable = 1; 
+
+        return rulesEngine.getNextAction(0, facts).then(simEvent => {
+            expect(simEvent instanceof WitSharpeningPotionEvent).to.be.true; 
+            expect((simEvent as WitSharpeningPotionEvent).damageBuff).to.equal(0.5); 
+            expect((simEvent as WitSharpeningPotionEvent).uses).to.equal(3); 
+        }); 
+    });
+
+    it("professor_shouldNotDrinkWitSharpening_alreadyApplied", function() {
+        let eliteEnemy = TestData.buildDefaultEnemyElite(); 
+        let event = new WitSharpeningPotionEvent(0, wizard, eliteEnemy, 0.5, 3, TestData.buildDefaultPotionParameters()); 
+        event.onFinish(); 
+        expect(eliteEnemy.getWitSharpeningDamageBuff(wizard.playerIndex)).to.equal(0.5); 
+
+        wizard.inCombatWith = eliteEnemy;
+        wizard.inCombat = true; 
+        eliteEnemy.inCombatWith = wizard;
+        eliteEnemy.inCombat = true;
+        wizard.getPotions().nWitSharpeningAvailable = 1; 
+
+        return rulesEngine.getNextAction(0, facts).then(simEvent => {
+            expect(simEvent).to.not.be.instanceOf(WitSharpeningPotionEvent); 
+        }); 
+    })
+    it("professor_shouldNotDrinkWitSharpening_notElite", function() {
+        wizard.inCombatWith = enemy;
+        wizard.inCombat = true; 
+        enemy.inCombatWith = wizard;
+        enemy.inCombat = true;
+        wizard.getPotions().nWitSharpeningAvailable = 1; 
+
+        return rulesEngine.getNextAction(0, facts).then(simEvent => {
+            expect(simEvent).to.not.be.instanceOf(WitSharpeningPotionEvent); 
         }); 
     });
 });

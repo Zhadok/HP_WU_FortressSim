@@ -20,6 +20,7 @@ import { CombatSimulationComparison } from '../../../src/sim//parallel/CombatSim
 import {MatTable, MatTab } from "@angular/material"; 
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
+import * as ObservableSlim from "observable-slim"; 
 
 @Component({
     selector: 'app-root',
@@ -75,6 +76,7 @@ export class AppComponent {
 
         let self = this; 
         let localStorageHandler = {
+            // https://stackoverflow.com/questions/41299642/how-to-use-javascript-proxy-for-nested-objects
             get: function(target, key) {
                 // Accessing nested properties: Also require a proxy of its own
                 if (typeof target[key] === 'object' && target[key] !== null) {
@@ -86,6 +88,7 @@ export class AppComponent {
             set: function(obj, prop, value) {
 
                 // The default behavior to store the value
+                console.log(value); 
                 obj[prop] = value;
                 self.persistToLocalStorage.call(self);
 
@@ -103,8 +106,16 @@ export class AppComponent {
             this.initFromLocalStorage(); 
         }
 
-        this.simParameters = new Proxy(this.simParameters, localStorageHandler); 
-        this.simAdvancedSettings = new Proxy(this.simAdvancedSettings, localStorageHandler); 
+        //this.simParameters = new Proxy(this.simParameters, localStorageHandler); 
+        this.simParameters = ObservableSlim.create(this.simParameters, false, function(changes) {
+            self.persistToLocalStorage.call(self); 
+        }); 
+        this.simAdvancedSettings = ObservableSlim.create(this.simAdvancedSettings, false, function(changes) {
+            self.persistToLocalStorage.call(self); 
+        }); 
+        
+
+        //this.simAdvancedSettings = new Proxy(this.simAdvancedSettings, localStorageHandler); 
         Logger.callbackFunction = function(messageLine: string) {
             self.simulationLog += messageLine + "\n";
             //console.log(messageLine);
@@ -434,7 +445,8 @@ export class AppComponent {
     }
 
     persistToLocalStorage(): void {
-        console.log("Persisting to local storage...");
+        console.log("Persisting to local storage: " + this.simParameters.potions);
+        console.log(this.simParameters.potions); 
         // Persist neccessary attributes of this class
         localStorage.setItem("savedData", JSON.stringify({
             simAdvancedSettings: this.simAdvancedSettings, 

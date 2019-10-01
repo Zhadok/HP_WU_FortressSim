@@ -228,12 +228,103 @@
                     "fact": "wizard", 
                     "path": ".exstimuloPotionDamageBuff",
                     "operator": "lessThan",
-                    "value": 2.25
+                    "value": {
+                        "fact": "wizard",
+                        "path": ".potionData.potentExstimuloPotionDamageBuff"
+                    }
+                }
+            ]
+        }
+    },  {
+        "event": {
+            "type": "strongExstimuloPotion"
+        },
+        "priority": 0,
+        "conditions": {
+            "all": [
+                {
+                    "fact": "wizard",
+                    "path": ".inCombat",
+                    "operator": "equal",
+                    "value": true
+                }, {
+                    "fact": "wizard", 
+                    "path": ".potions.nStrongExstimuloAvailable",
+                    "operator": "greaterThan",
+                    "value": 0
+                }, {
+                    "fact": "wizard", 
+                    "path": ".exstimuloPotionDamageBuff",
+                    "operator": "lessThan",
+                    "value": {
+                        "fact": "wizard",
+                        "path": ".potionData.strongExstimuloPotionDamageBuff"
+                    }
+                }
+            ]
+        }
+    }, {
+        "event": {
+            "type": "exstimuloPotion"
+        },
+        "priority": 0,
+        "conditions": {
+            "all": [
+                {
+                    "fact": "wizard",
+                    "path": ".inCombat",
+                    "operator": "equal",
+                    "value": true
+                }, {
+                    "fact": "wizard", 
+                    "path": ".potions.nExstimuloAvailable",
+                    "operator": "greaterThan",
+                    "value": 0
+                }, {
+                    "fact": "wizard", 
+                    "path": ".exstimuloPotionDamageBuff",
+                    "operator": "lessThan",
+                    "value": {
+                        "fact": "wizard",
+                        "path": ".potionData.exstimuloPotionDamageBuff"
+                    }
+                }
+            ]
+        }
+    }, {
+        "event": {
+            "type": "witSharpeningPotion"
+        },
+        "priority": 0,
+        "conditions": {
+            "all": [
+                {
+                    "fact": "wizard",
+                    "path": ".inCombat",
+                    "operator": "equal",
+                    "value": true
+                }, {
+                    "fact": "wizard", 
+                    "path": ".potions.nWitSharpeningAvailable",
+                    "operator": "greaterThan",
+                    "value": 0
+                }, {
+                    "fact": "wizard", 
+                    "path": ".witSharpeningPotionDamageBuff",
+                    "operator": "lessThan",
+                    "value": {
+                        "fact": "wizard",
+                        "path": ".potionData.witSharpeningPotionDamageBuff"
+                    }
+                }, {
+                    "fact": "wizard",
+                    "path": ".inCombatWith.isElite", 
+                    "operator": "equal",
+                    "value": true
                 }
             ]
         }
     }, 
-    
     
     {
         "event": {
