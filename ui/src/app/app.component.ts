@@ -75,27 +75,6 @@ export class AppComponent {
         };
 
         let self = this; 
-        let localStorageHandler = {
-            // https://stackoverflow.com/questions/41299642/how-to-use-javascript-proxy-for-nested-objects
-            get: function(target, key) {
-                // Accessing nested properties: Also require a proxy of its own
-                if (typeof target[key] === 'object' && target[key] !== null) {
-                    return new Proxy(target[key], localStorageHandler)
-                  } else {
-                    return target[key];
-                  }
-            },
-            set: function(obj, prop, value) {
-
-                // The default behavior to store the value
-                console.log(value); 
-                obj[prop] = value;
-                self.persistToLocalStorage.call(self);
-
-                // Indicate success
-                return true;
-            }
-        };
         
         if (this.isPersistedInLocalStorage() === false) {
             // If nothing stored in localStorage
@@ -201,6 +180,10 @@ export class AppComponent {
         
     }
 
+    getSimParametersCopy(): CombatSimulationParameters {
+        return JSON.parse(JSON.stringify(this.simParameters)); 
+    }
+
     async onClickButtonStartSingleSimulation() {
         this.resetSimulationResults(); 
         this.simAdvancedSettings.simGoal = "single";
@@ -208,7 +191,7 @@ export class AppComponent {
         console.log(this.simParameters);
 
         Logger.verbosity = 2; 
-        let sim = new CombatSimulation(this.simParameters, new Prando(this.simParameters.seed));
+        let sim = new CombatSimulation(this.getSimParametersCopy(), new Prando(this.simParameters.seed));
         sim.init();
         await sim.simulate(); 
         this.simulationSingleResults = sim.toSimulationResults(); 
@@ -218,14 +201,14 @@ export class AppComponent {
         this.resetSimulationResults(); 
         this.simAdvancedSettings.simGoal = "multiple_compare_roomLevels";
         var self = this; 
-        let simComparison = new CombatSimulationComparison(this.simParameters, this.simAdvancedSettings.simGoal, this.simAdvancedSettings.numberSimulations);
+        let simComparison = new CombatSimulationComparison(this.getSimParametersCopy(), this.simAdvancedSettings.simGoal, this.simAdvancedSettings.numberSimulations);
         this.simProgress = {
             nFinished: 0,
             nRemaining: simComparison.getNumberSimulationsTotal(),
             nTotal: simComparison.getNumberSimulationsTotal()
         };
         simComparison.setListenerSimProgress((simProgress: simProgressType) => {
-            console.log(simProgress); 
+            //console.log(simProgress); 
             self.simProgress = simProgress; 
         });
 
@@ -334,8 +317,8 @@ export class AppComponent {
     @ViewChild("matPanelAdvancedSimulationSettings", {static: false}) matPanelAdvancedSimulationSettings: MatExpansionPanel;
     @ViewChild("matPanelSimulationResults", {static:false}) matPanelSimulationResults: MatExpansionPanel;
     closeSettingsPanels(): void {
-        this.matPanelInputParameters.close();
-        this.matPanelAdvancedSimulationSettings.close(); 
+        //this.matPanelInputParameters.close();
+        //this.matPanelAdvancedSimulationSettings.close(); 
         this.matPanelSimulationResults.open(); 
     }
 
@@ -445,8 +428,8 @@ export class AppComponent {
     }
 
     persistToLocalStorage(): void {
-        console.log("Persisting to local storage: " + this.simParameters.potions);
-        console.log(this.simParameters.potions); 
+        console.log("Persisting to local storage: ...");
+        //console.log(this.simParameters.potions); 
         // Persist neccessary attributes of this class
         localStorage.setItem("savedData", JSON.stringify({
             simAdvancedSettings: this.simAdvancedSettings, 

@@ -43,7 +43,7 @@ export class CombatSimulationComparison {
         
         for (let roomLevel = 1; roomLevel <= 20; roomLevel++) {
             for (let seed=baseSimParameters.seed; seed<baseSimParameters.seed + numberSimulationsPerSeed;seed++) {
-                let simParamsLoop = Object.assign({}, baseSimParameters);
+                let simParamsLoop = JSON.parse(JSON.stringify(this.baseSimParameters)); 
                 simParamsLoop.seed = seed;
                 simParamsLoop.roomLevel = roomLevel;
                 result.push(simParamsLoop);

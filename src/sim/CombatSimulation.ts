@@ -220,6 +220,7 @@ export class CombatSimulation {
             }
             else if (event instanceof EnemyDefeatEvent) {
                 this.removeEnemyFromActive(event.enemy);
+                this.rewardWizardFocus(event.enemy.focusReward);
                 if (this.fortressRoom.hasNextActiveEnemy()) {
                      // In this case, the wizard should NOT be allowed a followup action, since he should wait for the spawn event
                     this.addEvent(new EnemySpawnEvent(this.currentTime, this.fortressRoom.getNextActiveEnemy()));
@@ -228,7 +229,6 @@ export class CombatSimulation {
                     // In this case, the wizard should be allowed a followup action, since there will be no new enemies after next event
                     await this.triggerIdleWizards(); 
                 }
-                this.rewardWizardFocus(event.enemy.focusReward);
                 if (this.checkForVictory() === true) {
                     this.emptyEventQueue(); 
                     return; 
