@@ -85,12 +85,10 @@ export class AppComponent {
             this.initFromLocalStorage(); 
         }
 
-        //this.simParameters = new Proxy(this.simParameters, localStorageHandler); 
-        this.simParameters = ObservableSlim.create(this.simParameters, false, function(changes) {
-            self.persistToLocalStorage.call(self); 
-        }); 
-        this.simAdvancedSettings = ObservableSlim.create(this.simAdvancedSettings, false, function(changes) {
-            self.persistToLocalStorage.call(self); 
+        // Apply initial observer functions
+        this.applyObserverFunctions({
+            simAdvancedSettings: this.simAdvancedSettings, 
+            simParameters: this.simParameters
         }); 
         
 
@@ -103,6 +101,15 @@ export class AppComponent {
         this.simulationMultipleResultsGrouped = new MatTableDataSource(); 
         //this.simulationMultipleResultsGrouped.sort = this.simulationMultipleResultsGroupedSort; 
 
+    }
+
+    applyObserverFunctions(data: localStorageDataType) {
+        this.simParameters = ObservableSlim.create(data.simParameters, false, function(changes) {
+            this.persistToLocalStorage.call(self); 
+        }); 
+        this.simAdvancedSettings = ObservableSlim.create(data.simAdvancedSettings, false, function(changes) {
+            this.persistToLocalStorage.call(self); 
+        }); 
     }
 
     onClickAddWizard() {
@@ -509,8 +516,9 @@ export class AppComponent {
             return function(e) {
                 console.log("Importing data from file: ");
                 console.log(e.target.result); 
-                let data: localStorageDataType = JSON.parse(e.target.result); 
-                console.log(self.simAdvancedSettings); 
+                let importedData: localStorageDataType = JSON.parse(e.target.result); 
+                //console.log(self.simAdvancedSettings); 
+                self.applyObserverFunctions.call(self, importedData); 
                 //self.simAdvancedSettings = data.simAdvancedSettings; 
                 //self.simParameters = data.simParameters; 
             };
