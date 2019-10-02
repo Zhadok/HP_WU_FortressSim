@@ -381,6 +381,32 @@ export class AppComponent {
         return result;
     }
 
+    getChamberName(roomLevel: number): string {
+        let roomType = "";
+        if (roomLevel / 5 > 3) {
+            roomType = "Dark Chamber"; 
+        }
+        else if (roomLevel / 5 > 2) {
+            roomType = "Forest Chamber";
+        }
+        else if (roomLevel / 5 > 1) {
+            roomType = "Tower Chamber";
+        }
+        else {
+            roomType = "Ruins Chamber"; 
+        }
+        let chamberLevel = "";
+        switch (roomLevel % 5) {
+            case 1: chamberLevel = "I"; break; 
+            case 2: chamberLevel = "II"; break; 
+            case 3: chamberLevel = "III"; break; 
+            case 4: chamberLevel = "IV"; break; 
+            case 0: chamberLevel = "V"; break; 
+        }
+
+        return roomType + " " + chamberLevel; 
+    }
+
     // Todo: Use localstorage
     getInitialSimParameters(): CombatSimulationParameters {
         return {

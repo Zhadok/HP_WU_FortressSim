@@ -30,9 +30,10 @@
                 <div id="divSettingsRoomLevel">
                     <h2 class="mat-h2">Overall parameters</h2>
                     <mat-form-field class="inputPotion">
-                        <input type="number" matInput placeholder="Room level" name="roomLevel"
+                        <input type="number" matInput placeholder="Chamber level" name="roomLevel"
                                     [(ngModel)]="simParameters.roomLevel">
                     </mat-form-field>
+                    {{getChamberName(simParameters.roomLevel)}}
                 </div>
 
                 <mat-tab-group id="matTabGroupWizardSettings">
