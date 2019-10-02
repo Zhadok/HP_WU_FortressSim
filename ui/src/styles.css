@@ -28,6 +28,10 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     float: left;
 }
 
+.inputRoomLevel {
+    width: 200px;
+}
+
 
 /***** Skill tree ****/
 .divSkillTree {

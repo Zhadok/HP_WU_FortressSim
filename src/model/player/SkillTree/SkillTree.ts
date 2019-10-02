@@ -8,7 +8,10 @@ import skillTreeMagizoologistData from "../../../data/skillTreeMagizoologist.jso
 import { nameClassType, triggerNameType, triggerMapType, skillTreeCostsType } from "../../../types";
 import { PersistedSkillTreeNode } from "./PersistedSkillTreeNode";
 import { PersistedSkillTree } from "./PersistedSkillTree";
+
 import { Wizard } from "../Wizard";
+import focusCostData from "../../../data/focusCosts.json"; 
+
 
 // One skill tree is a concrete instance of a skill tree for one wizard (which lessons has the wizard learned and at which level?)
 export class SkillTree {
@@ -126,10 +129,11 @@ export class SkillTree {
             wizard.setTrigger(node.triggerName, node.levels[0].statChange);
         });
     }
-    toStudiedTriggers(): Array<SkillTreeNode> {
+    toStudiedTriggers(showStrategicSpells: boolean): Array<SkillTreeNode> {
         let result: Array<SkillTreeNode> = [];
         this.nodesStudied.forEach((level, node) => {
-            if (level === 0 || node.triggerName === null || node.triggerName===undefined) {
+            if (level === 0 || node.triggerName === null || node.triggerName===undefined || 
+                (Object.keys(focusCostData).indexOf(node.triggerName) !== -1 && showStrategicSpells === false)) {
                 return; 
             }
             result.push(node);

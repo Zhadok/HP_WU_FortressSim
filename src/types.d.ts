@@ -17,6 +17,7 @@ import { WizardStats } from "./model/player/WizardStats";
 import { Professor } from "./model/player/Professor";
 import { Wizard } from "./model/player/Wizard";
 import { Enemy } from "./model/env/enemies/Enemy";
+import { CombatSimulationParameters } from "./sim/CombatSimulationParameters.js";
 declare type triggerNameType = 
             // Auror triggers
             "aurorAdvantage" | "playingDirty" | "dancingWithDummies" | "trickWithDeathEaters" |
@@ -31,6 +32,7 @@ declare type triggerNameType =
             "deteriorationHex" | "mendingCharm" | "proficiencyPowerCharm" | "defenceCharm";
 
 declare type triggerMapType = { [key in triggerNameType]: number | null }; 
+
 
 // Skill tree
 declare type skillTreeCostsType = {
@@ -64,6 +66,11 @@ declare type simAdvancedSettingsType = {
     runParallel: boolean,
     secondsBetweenSimulations: number
 }; 
+declare type localStorageDataType = {
+    simParameters: CombatSimulationParameters, 
+    simAdvancedSettings: simAdvancedSettingsType
+}
+
 declare type simProgressType = {
     nTotal: number, 
     nFinished: number, 

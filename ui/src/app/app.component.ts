@@ -4,7 +4,7 @@ import { CombatSimulation } from "../../../src/sim/CombatSimulation";
 import Prando from 'prando';
 import { TestData } from "../../../tests/TestData";
 import { CombatSimulationParameters } from '../../../src/sim/CombatSimulationParameters';
-import { nameClassType, nameClassUserFriendlyType, simGoalType as simGoalType, simAdvancedSettingsType, simProgressType, simulationResultsGroupedType } from '../../../src/types';
+import { nameClassType, nameClassUserFriendlyType, simGoalType as simGoalType, simAdvancedSettingsType, simProgressType, simulationResultsGroupedType, localStorageDataType } from '../../../src/types';
 import { PotionAvailabilityParameters } from '../../../src/sim/PotionAvailabilityParameters';
 import { PersistedSkillTree } from '../../../src/model/player/SkillTree/PersistedSkillTree';
 import { SkillTreeNode } from '../../../src/model/player/SkillTree/SkillTreeNode';
@@ -102,6 +102,7 @@ export class AppComponent {
         this.simulationSingleResults = null; 
         this.simulationMultipleResultsGrouped = new MatTableDataSource(); 
         //this.simulationMultipleResultsGrouped.sort = this.simulationMultipleResultsGroupedSort; 
+
     }
 
     onClickAddWizard() {
@@ -440,7 +441,7 @@ export class AppComponent {
     }
 
     initFromLocalStorage(): void {
-        let data = JSON.parse(localStorage.getItem("savedData")!); 
+        let data = this.getDataFromLocalStorage(); 
         this.simAdvancedSettings = data.simAdvancedSettings; 
         this.simParameters = data.simParameters;
         for (let persistedSkillTree of this.simParameters.skillTrees) {
@@ -453,6 +454,11 @@ export class AppComponent {
         return localStorage.getItem("savedData") !== null; 
     }
 
+    getDataFromLocalStorage(): localStorageDataType {
+        let data = JSON.parse(localStorage.getItem("savedData")!); 
+        return data; 
+    }
+
     persistToLocalStorage(): void {
         console.log("Persisting to local storage: ...");
         //console.log(this.simParameters.potions); 
@@ -463,5 +469,70 @@ export class AppComponent {
         }));
     }
 
+    importDataFromFile(): void {
+
+        this.createFileUpload(); 
+    }
+
+    exportDataToFile(): void {
+        let data = this.getDataFromLocalStorage(); 
+        this.createFileDownload("simulationParameters.json", JSON.stringify(data)); 
+    }
+
+    createFileUpload() {
+        var element = document.createElement("input"); 
+        element.setAttribute("type", "file"); 
+        var self = this;
+        element.addEventListener("change", function(event) {
+            self.onUploadFileSelect.call(self, event); 
+        }); 
+
+        element.style.display = 'none';
+        document.body.appendChild(element);
+        element.click(); 
+
+        document.body.removeChild(element); 
+    }
+
+
+    // https://stackoverflow.com/questions/16505333/get-the-data-of-uploaded-file-in-javascript
+    onUploadFileSelect(event) {
+        var files = event.target.files; // FileList object
+    
+        // use the 1st file from the list
+        let f = files[0];
+    
+        var reader = new FileReader();
+        var self = this; 
+        // Closure to capture the file information.
+        reader.onload = (function(theFile) {
+            return function(e) {
+                console.log("Importing data from file: ");
+                console.log(e.target.result); 
+                let data: localStorageDataType = JSON.parse(e.target.result); 
+                console.log(self.simAdvancedSettings); 
+                //self.simAdvancedSettings = data.simAdvancedSettings; 
+                //self.simParameters = data.simParameters; 
+            };
+        })(f);
+    
+        // Read in the image file as a data URL.
+        reader.readAsText(f);
+      }
+
+    // https://ourcodeworld.com/articles/read/189/how-to-create-a-file-and-generate-a-download-with-javascript-in-the-browser-without-a-server
+    createFileDownload(filename, text) {
+        var element = document.createElement('a');
+        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+        element.setAttribute('download', filename);
+      
+        element.style.display = 'none';
+        document.body.appendChild(element);
+      
+        element.click();
+      
+        document.body.removeChild(element);
+      }
+      
 
 }

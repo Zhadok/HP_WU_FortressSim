@@ -22,7 +22,7 @@ More data is definitely required to accurately generate realistic fortress rooms
 Many components of this simulation require a random number generator (RNG). However, an RNG is usually initialized with a "seed". This seed ensures that the RNG will always produce the same sequence of results. This ensures that each fortress run will be exactly the same given the same seed. 
 
 
-### How do wizards decide which action to take?
+### How does the player AI work? How do wizards decide which action to take?
 The game is comparatively complex and allows players to choose from many actions such as potions, stragic spells or simply attacking. This simulation uses a rules engine to decide which action each wizard should take. A sample action would be to cast a strategic spell: 
 
 ```
@@ -31,6 +31,12 @@ If professor is not in combat AND has enough focus:
 ```
 
 The implementation can be found [here](https://github.com/Zhadok/HP_WU_FortressSim/blob/master/src/rules/RulesEngine.ts#L48). The rules that a professor player will follow, for example, can be found [here](https://github.com/Zhadok/HP_WU_FortressSim/blob/master/src/rules/store/professorRules.json). 
+
+
+### What happens to my data?
+Simulation data is stored only locally, on your device. 
+
+
 
 
 ## Sources for equations and data
