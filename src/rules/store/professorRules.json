@@ -325,7 +325,33 @@
             ]
         }
     }, 
-    
+    {
+        "event": {
+            "type": "healthPotion"
+        },
+        "priority": 0,
+        "conditions": {
+            "all": [
+                {
+                    "fact": "wizard",
+                    "path": ".inCombat",
+                    "operator": "equal",
+                    "value": true
+                }, {
+                    "fact": "wizard", 
+                    "path": ".potions.nHealingPotionsAvailable",
+                    "operator": "greaterThan",
+                    "value": 0
+                }, {
+                    "fact": "wizard", 
+                    "path": ".currentStaminaPercent",
+                    "operator": "lessThan",
+                    "value": 0.65
+                }
+            ]
+        }
+    }, 
+
     {
         "event": {
             "type": "combatSpellCastWizard"

@@ -12,13 +12,13 @@ export class HealthPotionEvent extends PotionEvent {
         this.staminaRestorePercent = staminaRestorePercent;
 
         if (potionAvailability.nHealingPotionsAvailable === 0) {
-            throw new Error("Tried to drink a potion the wizard was not allowed to!");
+            throw new Error("Wizard id=" + wizard.playerIndex + " tried to drink a health potion but has none available!");
         }
     }
 
     onFinish(): void {
         this.wizard.addStaminaPercent(this.staminaRestorePercent);
-        this.potions.nHealingPotionsAvailable --;
+        this.potions.nHealingPotionsAvailable--;
     }
 
 }

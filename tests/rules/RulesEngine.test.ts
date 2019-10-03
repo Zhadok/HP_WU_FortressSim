@@ -15,6 +15,7 @@ import { MendingCharmEvent } from "../../src/sim/events/wizard/room/spells/profe
 import { InvigorationPotionEvent } from "../../src/sim/events/wizard/potions/InvigorationPotionEvent";
 import { ExstimuloPotionEvent } from "../../src/sim/events/wizard/potions/ExstimuloPotionEvent";
 import { WitSharpeningPotionEvent } from "../../src/sim/events/wizard/potions/WitSharpeningPotionEvent";
+import { HealthPotionEvent } from "../../src/sim/events/wizard/potions/HealthPotionEvent";
 
 // https://github.com/domenic/chai-as-promised/issues/192
 before(() => {
@@ -222,4 +223,32 @@ describe("RulesEngine", function() {
             expect(simEvent).to.not.be.instanceOf(WitSharpeningPotionEvent); 
         }); 
     });
+
+    it("professor_shouldDrink_healthPotion", function() {
+        wizard.inCombatWith = enemy;
+        wizard.inCombat = true; 
+        enemy.inCombatWith = wizard;
+        enemy.inCombat = true;
+        wizard.getPotions().nHealingPotionsAvailable = 1; 
+        wizard.removeStamina(wizard.getMaxStamina() * 0.4); // wizard is at 60% hp
+
+        return rulesEngine.getNextAction(0, facts).then(simEvent => {
+            expect(simEvent).to.be.instanceOf(HealthPotionEvent); 
+            expect((simEvent as HealthPotionEvent).staminaRestorePercent).to.equal(0.35); 
+        }); 
+    });
+    it("professor_shouldNotDrink_healthPotion", function () {
+        wizard.inCombatWith = enemy;
+        wizard.inCombat = true; 
+        enemy.inCombatWith = wizard;
+        enemy.inCombat = true;
+        wizard.getPotions().nHealingPotionsAvailable = 1; 
+
+        // Wizard is at 100% hp
+        return rulesEngine.getNextAction(0, facts).then(simEvent => {
+            expect(simEvent).to.not.be.instanceOf(HealthPotionEvent); 
+        }); 
+    });
+
+
 });

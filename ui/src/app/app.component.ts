@@ -104,6 +104,8 @@ export class AppComponent {
     }
 
     applyObserverFunctions(data: localStorageDataType) {
+        console.log("Applying observer function: ");
+        console.log(data); 
         var self  = this; 
         this.simParameters = ObservableSlim.create(data.simParameters, false, function(changes) {
             self.persistToLocalStorage.call(self); 

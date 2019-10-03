@@ -23,6 +23,7 @@ import { firstBy } from "thenby";
 import { InvigorationPotionEvent } from "../sim/events/wizard/potions/InvigorationPotionEvent";
 import { ExstimuloPotionEvent } from "../sim/events/wizard/potions/ExstimuloPotionEvent";
 import { WitSharpeningPotionEvent } from "../sim/events/wizard/potions/WitSharpeningPotionEvent";
+import { HealthPotionEvent } from "../sim/events/wizard/potions/HealthPotionEvent";
 
 
 export class RulesEngine {
@@ -114,6 +115,8 @@ export class RulesEngine {
                 return new WitSharpeningPotionEvent(timestampBegin, wizard, wizard.inCombatWith!,
                     potionsData.witSharpeningPotionDamageBuff, potionsData.witSharpeningPotionUses,
                     wizard.getPotions()); 
+            case "healthPotion": 
+                return new HealthPotionEvent(timestampBegin, wizard, wizard.getPotions(), potionsData.healthPotion); 
             case "combatSpellCastWizard":
                 return new CombatSpellCircleEvent(timestampBegin, wizard.inCombatWith!, wizard, this.rng);
             case "noAction":

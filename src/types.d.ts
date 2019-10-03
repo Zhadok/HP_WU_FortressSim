@@ -52,7 +52,7 @@ declare type ruleFactType = {
 declare type actionNameType = strategicSpellNameType | 
                               "strongInvigorationPotion" | "weakInvigorationPotion" |
                               "potentExstimuloPotion" | "strongExstimuloPotion" | "exstimuloPotion" | 
-                              "witSharpeningPotion" | 
+                              "witSharpeningPotion" | "healthPotion" |
                               "enterCombatWithHighestPriorityAvailableEnemy" | "exitCombat" | 
                               "combatSpellCastWizard" | "noAction";
 

@@ -4,15 +4,23 @@ export abstract class Combatant {
     protected isDefeated: boolean = false; // Is dead? Enemies are permanently dead, players are revived after a while
     
     private currentStamina: number; // How much hp? Start at full
+    private currentStaminaPercent: number; // How much hp in % (between 0 and 1)? 
     private readonly maxStamina: number; 
+
 
     constructor(maxStamina: number) {
         this.currentStamina = maxStamina;
+        this.currentStaminaPercent = 1; 
         this.maxStamina = maxStamina;
     }
 
+    setStamina(stamina: number) {
+        this.currentStamina = stamina; 
+        this.currentStaminaPercent = this.getCurrentStaminaPercent(); // Used for rules, which cannot call functions but need a value
+    }
+
     addStamina(stamina: number) {
-        this.currentStamina = Math.min(this.maxStamina, this.currentStamina + stamina);
+        this.setStamina(Math.min(this.maxStamina, this.currentStamina + stamina));
     }
     addStaminaPercent(maxStaminaPercent: number) {
         // TODO: is ceiling here correct?
@@ -21,9 +29,9 @@ export abstract class Combatant {
     }
 
     removeStamina(stamina: number) {
-        this.currentStamina -= stamina;
+        this.setStamina(this.currentStamina - stamina); 
         if (this.currentStamina <= 0) {
-            this.currentStamina = 0;
+            this.setStamina(0); 
             this.isDefeated = true;
         }
     }
