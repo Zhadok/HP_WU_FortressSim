@@ -4,7 +4,8 @@ import { CombatSimulation } from "../../../src/sim/CombatSimulation";
 import Prando from 'prando';
 import { TestData } from "../../../tests/TestData";
 import { CombatSimulationParameters } from '../../../src/sim/CombatSimulationParameters';
-import { nameClassType, nameClassUserFriendlyType, simGoalType as simGoalType, simAdvancedSettingsType, simProgressType, simulationResultsGroupedType, localStorageDataType } from '../../../src/types';
+import { nameClassType, nameClassUserFriendlyType, simGoalType as simGoalType, simAdvancedSettingsType,
+     simProgressType, simulationResultsGroupedType, localStorageDataType, ruleVisDataRowType, ruleVisDataContainerType } from '../../../src/types';
 import { PotionAvailabilityParameters } from '../../../src/sim/PotionAvailabilityParameters';
 import { PersistedSkillTree } from '../../../src/model/player/SkillTree/PersistedSkillTree';
 import { SkillTreeNode } from '../../../src/model/player/SkillTree/SkillTreeNode';
@@ -21,6 +22,13 @@ import {MatTable, MatTab } from "@angular/material";
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import * as ObservableSlim from "observable-slim"; 
+
+import professorRules from "../../../src/rules/store/professorRules.json";
+import aurorRules from "../../../src/rules/store/aurorRules.json";
+import magizoologistRules from "../../../src/rules/store/magizoologistRules.json";
+import { RulesEngine } from '../../../src/rules/RulesEngine';
+import { Utils_UI } from './utils_ui';
+
 
 @Component({
     selector: 'app-root',
@@ -66,6 +74,9 @@ export class AppComponent {
     @ViewChild("tableMultipleSimulationResults", {static: false}) matTableMultipleSimulationResults: MatTable<simulationResultsGroupedType>;
     //@ViewChild(MatSort, {static: false}) simulationMultipleResultsGroupedSort: MatSort
     
+    columnNamesPlayerRules = []; 
+    playerRulesData: ruleVisDataContainerType[] = []; // 3 containers of rule data
+
     constructor() {
         //let sim = new CombatSimulation(this.simParameters, new Prando(0));
         this.allowedClasses = {
@@ -101,7 +112,52 @@ export class AppComponent {
         this.simulationMultipleResultsGrouped = new MatTableDataSource(); 
         //this.simulationMultipleResultsGrouped.sort = this.simulationMultipleResultsGroupedSort; 
 
+        this.buildAllPlayerRulesData(); 
     }
+
+    buildAllPlayerRulesData(): void {
+        this.playerRulesData.push(this.buildPlayerRulesData(professorRules, "Professor")); 
+        console.log(this.playerRulesData); 
+    }
+    // Convert rules json to table ready data
+    buildPlayerRulesData(rulesJSONArray, nameClassUserFriendly: nameClassUserFriendlyType): ruleVisDataContainerType {
+        let rulesDataRaw: ruleVisDataRowType[] = []; 
+
+        rulesJSONArray.forEach((ruleJSON, index) => {
+            let conditionsString = ""; 
+            ruleJSON.conditions.all.forEach((condition, indexCondition) => {
+                let leftSide = condition.fact + "" + condition.path;
+                let operator = RulesEngine.ruleOperatorMap[condition.operator]; 
+                let rightSide = "";
+
+                if (Utils_UI.isObject(condition.value)) {
+                    rightSide = condition.value.fact + condition.value.path; 
+                }
+                else {
+                    rightSide = condition.value; 
+                }
+                conditionsString += leftSide + operator + rightSide;
+                if (indexCondition < ruleJSON.conditions.all.length - 1)
+                    conditionsString += " AND ";   
+            }); 
+            
+            rulesDataRaw.push({
+                priority: 10000 - index, 
+                action: ruleJSON.event.type, 
+                conditionsString: conditionsString
+            }); 
+        });
+
+        this.columnNamesPlayerRules = Object.keys(rulesDataRaw[0]); 
+
+        console.log(rulesDataRaw); 
+        //let rulesDataSource = new MatTableDataSource(rulesDataRaw); 
+        return {
+            nameClassUserFriendly: nameClassUserFriendly, 
+            rules: rulesDataRaw
+        };
+    }
+
 
     applyObserverFunctions(data: localStorageDataType) {
         console.log("Applying observer function: ");

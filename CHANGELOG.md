@@ -1,4 +1,5 @@
 - 0.1.0
     - Added more user friendly chamber level name
     - Changed "triggers" to "conditional buffs" and filtered the list by strategic spells
-    
+    - Added health potions to UI
+    - Added a first version of player AI rules under advanced settings

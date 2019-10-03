@@ -57,6 +57,22 @@ declare type actionNameType = strategicSpellNameType |
                               "combatSpellCastWizard" | "noAction";
 
 
+declare type ruleOperatorType = "equal" | "notEqual" |
+                                "lessThan" | "lessThanInclusive" | "greaterThan" | "greaterThanInclusive"; 
+declare type ruleOperatorShortType = "==" | "!=" | "<" | "<=" | ">" | ">=";
+declare type ruleOperatorMapType = { [key in ruleOperatorType]: ruleOperatorShortType }; 
+
+// Visualizing rules in frontend
+declare type ruleVisDataContainerType = {
+    nameClassUserFriendly: nameClassUserFriendlyType,
+    rules: ruleVisDataRowType[]
+}; 
+// One row
+declare type ruleVisDataRowType = {
+    priority: number,
+    action: string,
+    conditionsString: string
+}
 
 // Sim modes for frontend
 declare type simGoalType = "single" | "multiple_compare_roomLevels" | "multiple_compare_skillTreeNodes";
@@ -71,12 +87,14 @@ declare type localStorageDataType = {
     simAdvancedSettings: simAdvancedSettingsType
 }
 
+
+// Multiple simulations
 declare type simProgressType = {
     nTotal: number, 
     nFinished: number, 
     nRemaining: number
 };
-
+// Results of multiple simulations (table)
 declare type simulationResultsGroupedType = {
     roomLevel: number, 
     winPercentage: number,

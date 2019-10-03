@@ -7,7 +7,7 @@ import aurorRules from "./store/aurorRules.json";
 import magizoologistRules from "./store/magizoologistRules.json";
 
 import potionsData from "../data/potions.json"; 
-import { nameClassType, nameClassUserFriendlyType, strategicSpellNameType, ruleFactType, actionNameType } from "../types";
+import { nameClassType, nameClassUserFriendlyType, strategicSpellNameType, ruleFactType, actionNameType, ruleOperatorMapType } from "../types";
 import { SimEvent } from "../sim/events/SimEvent";
 import { DefenceCharmEvent } from "../sim/events/wizard/room/spells/professor/DefenceCharmEvent";
 import { Enemy } from "../model/env/enemies/Enemy";
@@ -28,6 +28,14 @@ import { HealthPotionEvent } from "../sim/events/wizard/potions/HealthPotionEven
 
 export class RulesEngine {
 
+    static ruleOperatorMap: ruleOperatorMapType = {
+        "equal": "==",
+        "notEqual": "!=",
+        "lessThan": "<",
+        "lessThanInclusive": "<=",
+        "greaterThan": ">",
+        "greaterThanInclusive": ">="
+    };
 
     readonly engine: Engine    
     readonly rng: Prando; 
