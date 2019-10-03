@@ -246,7 +246,7 @@
         "columnIndex": 3,
         "name": "Self Reflection",
         "statChangeDescription": "Critical Power",
-        "statChanged": "critPower",
+        "statChanged": "criticalPower",
         "levels":[{
             "statChange": 0.04,
             "costScrolls": 7
@@ -588,13 +588,349 @@
             "costRedBooks": 12
         }],
         "dependencies": ["8/4"]
-    }
+    },
+
+    {
+        "rowIndex": 11,
+        "columnIndex": 0,
+        "name": "Confusion Hex Repetitions",
+        "statChangeDescription": "",
+        "statChanged": "confusionHexValue",
+        "levels":[{
+            "statChange": 0.10,
+            "costScrolls": 22,
+            "costRSB": 4
+        }, {
+            "statChange": 0.10,
+            "costScrolls": 22,
+            "costRSB": 4
+        }],
+        "dependencies": ["10/1"]
+    }, {
+        "rowIndex": 11,
+        "columnIndex": 1,
+        "name": "The Criminal Mind",
+        "statChangeDescription": "Proficiency Power",
+        "statChanged": "proficiencyPower",
+        "levels":[{
+            "statChange": 0.07,
+            "costScrolls": 22
+        }, {
+            "statChange": 0.08,
+            "costScrolls": 22
+        }, {
+            "statChange": 0.10,
+            "costScrolls": 22,
+            "costRedBooks": 14
+        }, {
+            "statChange": 0.13,
+            "costScrolls": 22,
+            "costRedBooks": 14
+        }],
+        "dependencies": ["10/2"]
+    }, {
+        "rowIndex": 11,
+        "columnIndex": 3,
+        "name": "Battle Instinct",
+        "statChangeDescription": "Precision",
+        "statChanged": "critChance",
+        "levels":[{
+            "statChange": 0.02,
+            "costScrolls": 22
+        }, {
+            "statChange": 0.02,
+            "costScrolls": 22
+        }, {
+            "statChange": 0.03,
+            "costScrolls": 22,
+            "costRedBooks": 14
+        }],
+        "dependencies": ["10/2"]
+    }, {
+        "rowIndex": 11,
+        "columnIndex": 4,
+        "name": "Creatures Elective",
+        "statChangeDescription": "Deficiency Defence",
+        "statChanged": "deficiencyDefence",
+        "levels":[{
+            "statChange": 0.06,
+            "costScrolls": 22
+        }, {
+            "statChange": 0.08,
+            "costScrolls": 22
+        }, {
+            "statChange": 0.11,
+            "costScrolls": 22,
+            "costRedBooks": 14
+        }],
+        "dependencies": ["11/3"]
+    }, 
+
+    {
+        "rowIndex": 12,
+        "columnIndex": 0,
+        "name": "Advanced Guard",
+        "statChangeDescription": "Protego Power",
+        "statChanged": "protegoPower",
+        "levels":[{
+            "statChange": 0.02,
+            "costScrolls": 26
+        }, {
+            "statChange": 0.02,
+            "costScrolls": 26
+        }, {
+            "statChange": 0.03,
+            "costScrolls": 26,
+            "costRedBooks": 17
+        }],
+        "dependencies": ["12/1"]
+    }, {
+        "rowIndex": 12,
+        "columnIndex": 1,
+        "name": "History of the Dark Arts",
+        "statChangeDescription": "Proficiency Power",
+        "statChanged": "proficiencyPower",
+        "levels":[{
+            "statChange": 0.08,
+            "costScrolls": 26
+        }, {
+            "statChange": 0.09,
+            "costScrolls": 26
+        }, {
+            "statChange": 0.11,
+            "costScrolls": 26,
+            "costRedBooks": 17
+        }, {
+            "statChange": 0.14,
+            "costScrolls": 26,
+            "costRedBooks": 17
+        }, {
+            "statChange": 0.19,
+            "costScrolls": 35,
+            "costRedBooks": 17
+        }],
+        "dependencies": ["11/1", "12/2"]
+    }, {
+        "rowIndex": 12,
+        "columnIndex": 2,
+        "name": "Thieves' Survival Guide",
+        "statChangeDescription": "Precision",
+        "statChanged": "critChance",
+        "levels":[{
+            "statChange": 0.02,
+            "costScrolls": 26
+        }, {
+            "statChange": 0.02,
+            "costScrolls": 26
+        }, {
+            "statChange": 0.03,
+            "costScrolls": 26,
+            "costRedBooks": 17
+        }, {
+            "statChange": 0.03,
+            "costScrolls": 26,
+            "costRedBooks": 17
+        }],
+        "dependencies": ["11/3", "12/1"]
+    }, {
+        "rowIndex": 12,
+        "columnIndex": 4,
+        "name": "Knowledge and Understanding",
+        "statChangeDescription": "Deficiency Defence",
+        "statChanged": "deficiencyDefence",
+        "levels":[{
+            "statChange": 0.11,
+            "costScrolls": 26
+        }, {
+            "statChange": 0.14,
+            "costScrolls": 26
+        }],
+        "dependencies": ["11/4"]
+    },
+
+    {
+        "rowIndex": 13,
+        "columnIndex": 0,
+        "name": "Into the Fire",
+        "statChangeDescription": "Stamina",
+        "statChanged": "stamina",
+        "levels":[{
+            "statChange": 11,
+            "costScrolls": 32
+        }, {
+            "statChange": 13,
+            "costScrolls": 32
+        }, {
+            "statChange": 15,
+            "costScrolls": 32,
+            "costRedBooks": 21
+        }],
+        "dependencies": ["12/0"]
+    }, {
+        "rowIndex": 13,
+        "columnIndex": 1,
+        "name": "Best Laid Plans",
+        "statChangeDescription": "Initial Focus",
+        "statChanged": "initialFocus",
+        "levels":[{
+            "statChange": 1,
+            "costScrolls": 32
+        }],
+        "dependencies": ["12/1"]
+    }, {
+        "rowIndex": 13,
+        "columnIndex": 2,
+        "name": "Accelerating Blast",
+        "statChangeDescription": "Critical Power",
+        "statChanged": "criticalPower",
+        "levels":[{
+            "statChange": 0.06,
+            "costScrolls": 32
+        }, {
+            "statChange": 0.07,
+            "costScrolls": 32
+        }, {
+            "statChange": 0.09,
+            "costScrolls": 32,
+            "costRedBooks": 21
+        }],
+        "dependencies": ["12/2", "13/2"]
+    }, {
+        "rowIndex": 13,
+        "columnIndex": 3,
+        "name": "Light and Shadow Room",
+        "statChangeDescription": "Critical Power",
+        "statChanged": "criticalPower",
+        "levels":[{
+            "statChange": 0.07,
+            "costScrolls": 32
+        }, {
+            "statChange": 0.09,
+            "costScrolls": 32
+        }, {
+            "statChange": 0.10,
+            "costScrolls": 32,
+            "costRedBooks": 21
+        }],
+        "dependencies": ["13/2", "12/4"]
+    }, {
+        "rowIndex": 13,
+        "columnIndex": 4,
+        "name": "Expanding Repertoire",
+        "statChangeDescription": "Power",
+        "statChanged": "power",
+        "levels":[{
+            "statChange": 3,
+            "costScrolls": 32
+        }, {
+            "statChange": 3,
+            "costScrolls": 32
+        }, {
+            "statChange": 3,
+            "costScrolls": 32,
+            "costRedBooks": 21
+        }, {
+            "statChange": 4,
+            "costScrolls": 32,
+            "costRedBooks": 21
+        }],
+        "dependencies": ["12/4"]
+    }, 
+
+    {
+        "rowIndex": 14,
+        "columnIndex": 0,
+        "name": "Fashion Forward",
+        "statChangeDescription": "Defence",
+        "statChanged": "defence",
+        "levels":[{
+            "statChange": 0.10,
+            "costScrolls": 38
+        }, {
+            "statChange": 0.14,
+            "costScrolls": 38
+        }],
+        "dependencies": ["13/0"]
+    }, {
+        "rowIndex": 14,
+        "columnIndex": 1,
+        "name": "Confusion Hex Mastery",
+        "statChangeDescription": "",
+        "statChanged": "confusionHexValue",
+        "levels":[{
+            "statChange": 0.10,
+            "costScrolls": 38,
+            "costRSB": 4
+        }, {
+            "statChange": 0.10,
+            "costScrolls": 38,
+            "costRSB": 4
+        }],
+        "dependencies": ["13/0"]
+    }, {
+        "rowIndex": 14,
+        "columnIndex": 4,
+        "name": "Perfect Form",
+        "statChangeDescription": "Power",
+        "statChanged": "power",
+        "levels":[{
+            "statChange": 3,
+            "costScrolls": 38
+        }, {
+            "statChange": 3,
+            "costScrolls": 38
+        }, {
+            "statChange": 4,
+            "costScrolls": 38,
+            "costRedBooks": 25
+        }, {
+            "statChange": 4,
+            "costScrolls": 38,
+            "costRedBooks": 25
+        }],
+        "dependencies": ["13/4"]
+    },
+
+    {
+        "rowIndex": 15,
+        "columnIndex": 0,
+        "name": "The Trick with Death Eaters",
+        "statChangeDescription": "Precision vs Death Eaters",
+        "triggerName": "trickWithDeathEaters",
+        "levels":[{
+            "statChange": 0.25,
+            "costScrolls": 46,
+            "costRSB": 15
+        }],
+        "dependencies": ["14/0"]
+    }, {
+        "rowIndex": 15,
+        "columnIndex": 2,
+        "name": "First Strike",
+        "statChangeDescription": "Critical Power vs Foes with 100% Stamina",
+        "triggerName": "firstStrike",
+        "levels":[{
+            "statChange": 0.50,
+            "costScrolls": 46,
+            "costRSB": 15
+        }],
+        "dependencies": ["13/2"]
+    }, {
+        "rowIndex": 15,
+        "columnIndex": 4,
+        "name": "Mundungus Among Us",
+        "statChangeDescription": "Protego Power vs Dark Wizards",
+        "triggerName": "mundungusAmongUs",
+        "levels":[{
+            "statChange": 0.20,
+            "costScrolls": 46,
+            "costRSB": 15
+        }],
+        "dependencies": ["14/4"]
+    }   
 
 
-
-
-
-
+    
 
     ]
 

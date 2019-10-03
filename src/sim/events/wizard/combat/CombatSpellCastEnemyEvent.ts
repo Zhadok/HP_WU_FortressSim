@@ -75,7 +75,7 @@ export class CombatSpellCastEnemyEvent extends CombatEvent {
         //console.log("power after modifications=" + enemy.getPowerAfterModifications() + ", defence after modifications=" + wizard.getDefenceAfterModifications() + ", defence breach="  + enemy.getDefenceBreachAfterModifications());
         //console.log("result without protego="  + result);
 
-        result *= (1 - (isProtego * wizard.getProtegoPowerAfterModifications()))
+        result *= (1 - (isProtego * wizard.getProtegoPowerAfterModifications(enemy)))
         //console.log("result with protego=" + result);
         
         return Math.ceil(result);

@@ -154,7 +154,7 @@ export abstract class Wizard extends Combatant {
     getCriticalPowerAfterModifications(enemy: Enemy) {
         return this.stats.criticalPower; // + auror if 100% stamina
     }
-    getProtegoPowerAfterModifications() {
+    getProtegoPowerAfterModifications(enemy: Enemy) {
         return this.stats.protegoPower;
     }
     getAccuracyAfterModifications(enemy: Enemy) {

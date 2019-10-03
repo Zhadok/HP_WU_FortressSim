@@ -62,9 +62,6 @@ describe("SkillTree", function() {
 
         expect(stats.stamina).to.equal(WizardStats.buildBaseStats().stamina + 15);
     });
-    it("toWizardStats_fullyStudied", function() {
-
-    });
     it("toWizardStats_withStudiedTrigger", function() {
         let skillTree = new SkillTree("professor");
         skillTree.setNodeLevelByTriggerName("teamworkMakesTheDreamWork", 1);
@@ -101,6 +98,22 @@ describe("SkillTree", function() {
         expect(costs.costScrolls).to.equal(2325); 
         expect(costs.costRedBooks).to.equal(320); 
         expect(costs.costRSB).to.equal(223); 
+
+        let deltaComparison = 1e-6; 
+        let stats = skillTree.toWizardStats(); 
+        expect(stats.protegoPower).to.be.closeTo(0.45, deltaComparison); 
+        expect(stats.critChance).to.be.closeTo(0.23, deltaComparison);
+        expect(stats.maxFocus).to.equal(15); 
+        expect(stats.proficiencyPower).to.equal(1.50); 
+        expect(stats.accuracy).to.be.closeTo(0.32, deltaComparison); 
+        expect(stats.deficiencyDefence).to.equal(0.5); 
+        expect(stats.power).to.equal(79); 
+        expect(stats.stamina).to.equal(397); 
+        expect(stats.criticalPower).to.be.closeTo(1.11, deltaComparison); 
+        expect(stats.initialFocus).to.equal(4); 
+        expect(stats.defence).to.equal(0.50); // "confidence" is not taken into account in gamepress page 
+        expect(stats.defenceBreach).to.be.closeTo(0.15, deltaComparison);  
+
     });
     it("learnAllLessonsWithScrolls_professor", function() {
         let skillTree = new SkillTree("professor");
@@ -122,5 +135,31 @@ describe("SkillTree", function() {
         
         expect(skillTree.toWizardStats()).to.deep.equal(WizardStats.buildBaseStats()); 
     }); 
+
+    it("learnAllLessons_auror", function() { // https://wizardsunite.gamepress.gg/reference/auror-skill-tree
+        let skillTree = new SkillTree("auror");
+        skillTree.learnAllLessons(); 
+        let costs = skillTree.getCosts(); 
+        expect(costs.costScrolls).to.equal(2352); 
+        expect(costs.costRedBooks).to.equal(430); 
+        expect(costs.costRSB).to.equal(115); 
+
+        let deltaComparison = 1e-6; 
+        let stats = skillTree.toWizardStats(); 
+        expect(stats.protegoPower).to.be.closeTo(0.35, deltaComparison); 
+        expect(stats.critChance).to.be.closeTo(0.35, deltaComparison);
+        expect(stats.maxFocus).to.equal(10); 
+        expect(stats.proficiencyPower).to.equal(1.48); 
+        expect(stats.accuracy).to.be.closeTo(0.15, deltaComparison); 
+        expect(stats.deficiencyDefence).to.equal(0.5); 
+        expect(stats.power).to.equal(100); 
+        expect(stats.stamina).to.equal(296); 
+        expect(stats.criticalPower).to.equal(1.2); 
+        expect(stats.initialFocus).to.equal(4); 
+        expect(stats.defence).to.equal(0.39); 
+        expect(stats.defenceBreach).to.equal(0.32);  
+
+    });
+
 
 });

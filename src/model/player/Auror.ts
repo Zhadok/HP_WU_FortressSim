@@ -46,9 +46,33 @@ export class Auror extends Wizard {
         if (this.getTriggers().dancingWithDummies !== null && enemy.getCurrentStaminaPercent() === 1) {
             critChanceBuffs += this.getTriggers().dancingWithDummies!;
         }
+        if (this.getTriggers().trickWithDeathEaters !== null && enemy.name === "deathEater") {
+            critChanceBuffs += this.getTriggers().trickWithDeathEaters! 
+        }
         return super.getCritChanceAfterModifications(enemy) + critChanceBuffs;
     }
+    getCriticalPowerAfterModifications(enemy: Enemy): number {
+        let criticalPowerBuffs = 0; 
+        if (this.getTriggers().firstStrike !== null && enemy.getCurrentStaminaPercent() === 1) {
+            criticalPowerBuffs += this.getTriggers().firstStrike!; 
+        }
+        return super.getCriticalPowerAfterModifications(enemy) + criticalPowerBuffs; 
+    }
 
+    getDefenceAfterModifications(enemy: Enemy): number {
+        let defenceBuffs = 0; 
+        if (this.getTriggers().playingDirty !== null && enemy.getCurrentStaminaPercent() < 0.5) {
+            defenceBuffs += this.getTriggers().playingDirty!; 
+        }
+        return super.getDefenceAfterModifications(enemy) + defenceBuffs; 
+    }
+    getProtegoPowerAfterModifications(enemy: Enemy): number {
+        let buffs = 0; 
+        if (this.getTriggers().mundungusAmongUs !== null && enemy.name === "darkWizard") {
+            buffs += this.getTriggers().mundungusAmongUs!; 
+        }
+        return super.getProtegoPowerAfterModifications(enemy) + buffs; 
+    }
 
     static isValidStatForClass(statName: statNameType): boolean {
         switch(statName) {
