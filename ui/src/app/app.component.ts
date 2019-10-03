@@ -104,11 +104,12 @@ export class AppComponent {
     }
 
     applyObserverFunctions(data: localStorageDataType) {
+        var self  = this; 
         this.simParameters = ObservableSlim.create(data.simParameters, false, function(changes) {
-            this.persistToLocalStorage.call(self); 
+            self.persistToLocalStorage.call(self); 
         }); 
         this.simAdvancedSettings = ObservableSlim.create(data.simAdvancedSettings, false, function(changes) {
-            this.persistToLocalStorage.call(self); 
+            self.persistToLocalStorage.call(self); 
         }); 
     }
 
@@ -519,6 +520,7 @@ export class AppComponent {
                 let importedData: localStorageDataType = JSON.parse(e.target.result); 
                 //console.log(self.simAdvancedSettings); 
                 self.applyObserverFunctions.call(self, importedData); 
+                self.persistToLocalStorage(); 
                 //self.simAdvancedSettings = data.simAdvancedSettings; 
                 //self.simParameters = data.simParameters; 
             };
