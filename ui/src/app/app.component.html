@@ -257,16 +257,42 @@
                     <h2 class="mat-h2">Overall simulation results: </h2>
                     Real world time passed: {{(simulationSingleResults.durationWallTimeMS / 1000).toFixed(3)}}s <br>
                     Simulation time: {{simulationSingleResults.durationGameTimeMS / 1000}}s <br>
-                    Number of events: {{simulationSingleResults.nEvents}} <br>
-                    Challenge won: {{simulationSingleResults.isWin ? 'Yes' : 'No'}}
-                    <div *ngFor="let wizardResult of simulationSingleResults.wizardResults">
-                        <h2 class="mat-h2">Player {{wizardResult.playerIndex+1}}: </h2>
-                        {{wizardResult.numberOfCasts}} casts,
-                        {{wizardResult.numberOfCriticalCasts}} critical casts,
-                        {{wizardResult.numberOfDodgedCasts}} dodged casts, 
-                        {{wizardResult.averageDamage.toFixed(2)}} average damage,
-                        {{wizardResult.totalDamage}} total damage, 
-                        {{wizardResult.challengeXPReward}} challenge XP
+                    <!-- Number of events: {{simulationSingleResults.nEvents}} <br> -->
+                    {{simulationSingleResults.isWin === false ? 'Challenge was not won.' : 'Challenge was won!'}}<br>
+                    
+                    <h2 class="mat-h2">Enemies: </h2>
+                    <div class="divSimulationSingleResultAllEnemies">
+                        <div class="divSimulationSingleResultEnemy" *ngFor="let enemy of simulationSingleResults.enemies">
+                            {{ enemy.nameUserFriendly }}
+                            ({{ enemy.level }})
+                            <mat-progress-bar mode="determinate" color="warn" [value]="enemy.currentStamina  / enemy.maxStamina *100"></mat-progress-bar>
+                            <span *ngFor="let difficulty of [].constructor(enemy.difficulty)">★</span>
+                            <span *ngFor="let difficulty of [].constructor(5-enemy.difficulty)">☆</span>
+                            <div class="divSimulationSingleResultEnemyHexes">
+                                <div class="divSimulationSingleResultEnemyHex">
+                                    <img src="assets/img/deteriorationHex.png" *ngIf="enemy.hasDeteriorationHex" />
+                                </div>
+                                <div class="divSimulationSingleResultEnemyHex">
+                                    <img src="assets/img/confusionHex.png" *ngIf="enemy.hasConfusionHex" />
+                                </div>
+                                <div class="divSimulationSingleResultEnemyHex">
+                                    <img src="assets/img/weakeningHex.png" *ngIf="enemy.hasWeakeningHex " />
+                                </div>
+                                        
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class ="divSimulationSingleResultAllWizards">
+                        <div *ngFor="let wizardResult of simulationSingleResults.wizardResults">
+                            <h2 class="mat-h2">Player {{wizardResult.playerIndex+1}}: </h2>
+                            {{wizardResult.numberOfCasts}} casts,
+                            {{wizardResult.numberOfCriticalCasts}} critical casts,
+                            {{wizardResult.numberOfDodgedCasts}} dodged casts, 
+                            {{wizardResult.averageDamage.toFixed(2)}} average damage,
+                            {{wizardResult.totalDamage}} total damage, 
+                            {{wizardResult.challengeXPReward}} challenge XP
+                        </div>
                     </div>
 
                 </div>

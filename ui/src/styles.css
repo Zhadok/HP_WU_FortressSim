@@ -113,11 +113,35 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     margin-bottom: 20px !important; 
 }
 
+/**** Single simulation results ****/
+.divSimulationSingleResultEnemy { /** Each div is one enemy portrait + difficulty and level **/
+    float: left; 
+    padding: 10px; 
+}
+.divSimulationSingleResultEnemyHex { /** Each div contains one picture of the hex**/
+    height: 25px; 
+    width: 25px; 
+    /* border: 1px solid black; */
+    float: left; 
+    text-align: center; 
+    width: 150px; 
+}
+.divSimulationSingleResultEnemyHex > img {
+    width: 100%;
+    height: 100%; 
+}
+
+.divSimulationSingleResultAllWizards { /** Stats of wizards **/
+    clear: both; 
+}
+
 #inputSimulationLog {
     height: 800px; 
     color: black; 
 }
 
+
+/***** Multiple simulation results ******/ 
 table {
     text-align: center !important;
     width: 100%

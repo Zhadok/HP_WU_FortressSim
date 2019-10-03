@@ -117,7 +117,7 @@ export class AppComponent {
 
     buildAllPlayerRulesData(): void {
         this.playerRulesData.push(this.buildPlayerRulesData(professorRules, "Professor")); 
-        console.log(this.playerRulesData); 
+        //console.log(this.playerRulesData); 
     }
     // Convert rules json to table ready data
     buildPlayerRulesData(rulesJSONArray, nameClassUserFriendly: nameClassUserFriendlyType): ruleVisDataContainerType {
@@ -150,7 +150,7 @@ export class AppComponent {
 
         this.columnNamesPlayerRules = Object.keys(rulesDataRaw[0]); 
 
-        console.log(rulesDataRaw); 
+        //console.log(rulesDataRaw); 
         //let rulesDataSource = new MatTableDataSource(rulesDataRaw); 
         return {
             nameClassUserFriendly: nameClassUserFriendly, 
@@ -160,8 +160,8 @@ export class AppComponent {
 
 
     applyObserverFunctions(data: localStorageDataType) {
-        console.log("Applying observer function: ");
-        console.log(data); 
+        //console.log("Applying observer function: ");
+        //console.log(data); 
         var self  = this; 
         this.simParameters = ObservableSlim.create(data.simParameters, false, function(changes) {
             self.persistToLocalStorage.call(self); 
@@ -262,6 +262,8 @@ export class AppComponent {
         sim.init();
         await sim.simulate(); 
         this.simulationSingleResults = sim.toSimulationResults(); 
+        console.log("Results of the simulation are: "); 
+        console.log(this.simulationSingleResults); 
     }
 
     async onClickButtonStartMultipleSimulations()  {
