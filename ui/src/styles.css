@@ -114,19 +114,28 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 }
 
 /**** Single simulation results ****/
-.divSimulationSingleResultEnemy { /** Each div is one enemy portrait + difficulty and level **/
+.divSimulationSingleResultCombatant { /** Each div is one enemy portrait + difficulty and level **/
     float: left; 
     padding: 10px; 
 }
-.divSimulationSingleResultEnemyHex { /** Each div contains one picture of the hex**/
+.divSimulationSingleResultEnemy {
+    width: 150px; 
+    text-align: center; 
+}
+.spanEnemyDifficultyStar {
+    font-size: 25px; 
+}
+.divSimulationSingleResultWizard {
+    width: 300px; 
+}
+
+.divSimulationSingleResultCombatantBuff { /** Each div contains one picture of the hex or the buff **/
     height: 25px; 
     width: 25px; 
     /* border: 1px solid black; */
     float: left; 
-    text-align: center; 
-    width: 150px; 
 }
-.divSimulationSingleResultEnemyHex > img {
+.divSimulationSingleResultCombatantBuff > img {
     width: 100%;
     height: 100%; 
 }

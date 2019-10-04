@@ -59,6 +59,12 @@
                                     <svg width="100%" [attr.height]="skillTreeVis.marginTop + skillTreeVis.rowHeight*20" [attr.viewBox]="[0,0,
                                         skillTreeVis.marginLeft + skillTreeVis.columnWidth*5,
                                         skillTreeVis.marginTop + skillTreeVis.rowHeight*20]">
+                                        <defs>
+                                            <pattern id="deteriorationHex" x="0" y="0" height="10" width="10">
+                                                <image xlink:href="assets/img/deteriorationHex.png" x="0" y="0"></image>
+                                            </pattern>
+                                        </defs>
+
                                         <g *ngFor="let node of skillTrees[playerIndex].nodesStudied | keyvalue">
                                             <line *ngFor="let dependency of getDependenciesFromSkillTreeNode(node.key.dependencies)"
                                                 [attr.x1]="dependency.columnIndex * skillTreeVis.columnWidth + skillTreeVis.marginLeft*2" 
@@ -80,6 +86,7 @@
                                                     (click)="onClickSkillTreeNode(node.key, playerIndex)"
                                                     matTooltip="{{getSkillTreeNodeTooltip(node.key)}}"
                                                     [matTooltipClass]="'myMatTooltip'"
+                                                    
                                                     ></circle>
                                             <text [attr.x]="node.key.columnIndex * skillTreeVis.columnWidth + skillTreeVis.marginLeft*2" 
                                                   [attr.y]="node.key.rowIndex * skillTreeVis.rowHeight + skillTreeVis.marginTop*2 + 6" 
@@ -260,23 +267,33 @@
                     <!-- Number of events: {{simulationSingleResults.nEvents}} <br> -->
                     {{simulationSingleResults.isWin === false ? 'Challenge was not won.' : 'Challenge was won!'}}<br>
                     
-                    <h2 class="mat-h2">Enemies: </h2>
                     <div class="divSimulationSingleResultAllEnemies">
-                        <div class="divSimulationSingleResultEnemy" *ngFor="let enemy of simulationSingleResults.enemies">
+                        <h2 class="mat-h2">Enemies: </h2>
+                        <div class="divSimulationSingleResultCombatant divSimulationSingleResultEnemy" *ngFor="let enemy of simulationSingleResults.enemies">
                             {{ enemy.nameUserFriendly }}
                             ({{ enemy.level }})
-                            <mat-progress-bar mode="determinate" color="warn" [value]="enemy.currentStamina  / enemy.maxStamina *100"></mat-progress-bar>
-                            <span *ngFor="let difficulty of [].constructor(enemy.difficulty)">★</span>
-                            <span *ngFor="let difficulty of [].constructor(5-enemy.difficulty)">☆</span>
-                            <div class="divSimulationSingleResultEnemyHexes">
-                                <div class="divSimulationSingleResultEnemyHex">
-                                    <img src="assets/img/deteriorationHex.png" *ngIf="enemy.hasDeteriorationHex" />
+                            <mat-progress-bar mode="determinate" color="warn" 
+                                 [value]="enemy.currentStamina  / enemy.maxStamina *100"></mat-progress-bar>
+                            <span class="spanEnemyDifficultyStar" *ngFor="let difficulty of [].constructor(enemy.difficulty)">★</span>
+                            <span class="spanEnemyDifficultyStar" *ngFor="let difficulty of [].constructor(5-enemy.difficulty)">☆</span>
+                            <div class="divSimulationSingleResultAllCombatantBuffs">
+                                <div class="divSimulationSingleResultCombatantBuff">
+                                    <img src="assets/img/deteriorationHex.png" *ngIf="enemy.hasDeteriorationHex"
+                                        matTooltip="Deterioration hex damage: {{enemy.deteriorationHexDamage}}"
+                                        [matTooltipClass]="'myMatTooltip'"
+                                    />
                                 </div>
-                                <div class="divSimulationSingleResultEnemyHex">
-                                    <img src="assets/img/confusionHex.png" *ngIf="enemy.hasConfusionHex" />
+                                <div class="divSimulationSingleResultCombatantBuff">
+                                    <img src="assets/img/confusionHex.png" *ngIf="enemy.hasConfusionHex" 
+                                        matTooltip="Confusion hex (-defence, -defence breach, -dodge): {{enemy.confusionHexValue}}"
+                                        [matTooltipClass]="'myMatTooltip'"
+                                    />
                                 </div>
-                                <div class="divSimulationSingleResultEnemyHex">
-                                    <img src="assets/img/weakeningHex.png" *ngIf="enemy.hasWeakeningHex " />
+                                <div class="divSimulationSingleResultCombatantBuff">
+                                    <img src="assets/img/weakeningHex.png" *ngIf="enemy.hasWeakeningHex" 
+                                        matTooltip="Weakening hex (-power): {{enemy.weakeningHexValue}}"
+                                        [matTooltipClass]="'myMatTooltip'"
+                                    />
                                 </div>
                                         
                             </div>
@@ -284,14 +301,36 @@
                     </div>
 
                     <div class ="divSimulationSingleResultAllWizards">
-                        <div *ngFor="let wizardResult of simulationSingleResults.wizardResults">
-                            <h2 class="mat-h2">Player {{wizardResult.playerIndex+1}}: </h2>
-                            {{wizardResult.numberOfCasts}} casts,
-                            {{wizardResult.numberOfCriticalCasts}} critical casts,
-                            {{wizardResult.numberOfDodgedCasts}} dodged casts, 
-                            {{wizardResult.averageDamage.toFixed(2)}} average damage,
-                            {{wizardResult.totalDamage}} total damage, 
+                        <h2 class="mat-h2">Players: </h2>
+                        <div class="divSimulationSingleResultCombatant divSimulationSingleResultWizard"
+                             *ngFor="let wizardResult of simulationSingleResults.wizardResults">
+                            <b>Player {{wizardResult.playerIndex+1}} </b>
+                            ({{ simulationSingleResults.wizards[wizardResult.playerIndex].nameClassUserFriendly }})<br>
+
+                            <!-- 
+                            <mat-progress-bar mode="determinate" color="warn" 
+                                              [value]="simulationSingleResults.wizards[wizardResult.playerIndex].currentStaminaPercent*100"></mat-progress-bar>
+                            -->
+                            {{wizardResult.numberOfCasts}} hits ({{wizardResult.numberOfCriticalCasts}} critical, {{wizardResult.numberOfDodgedCasts}} dodged)<br>
+                            {{wizardResult.averageDamage.toFixed(2)}} average damage<br>
+                            {{wizardResult.totalDamage}} total damage<br>
                             {{wizardResult.challengeXPReward}} challenge XP
+                            <div class="divSimulationSingleResultAllCombatantBuffs">
+                                <div class="divSimulationSingleResultCombatantBuff">
+                                    <img src="assets/img/defenceCharm.png" 
+                                         *ngIf="simulationSingleResults.wizards[wizardResult.playerIndex].hasDefenceCharm"
+                                         matTooltip="Defence charm: +{{simulationSingleResults.wizards[wizardResult.playerIndex].defenceCharmValue*100}}% defence"
+                                        [matTooltipClass]="'myMatTooltip'" />
+                                </div>
+                                <div class="divSimulationSingleResultCombatantBuff">
+                                    <img src="assets/img/proficiencyCharm.png" 
+                                         *ngIf="simulationSingleResults.wizards[wizardResult.playerIndex].hasProficiencyPowerCharm" />
+                                </div>
+                                <div class="divSimulationSingleResultCombatantBuff">
+                                    <img src="assets/img/braveryCharm.png" 
+                                         *ngIf="simulationSingleResults.wizards[wizardResult.playerIndex].hasBraveryCharm" />
+                                </div>
+                            </div>
                         </div>
                     </div>
 

@@ -371,7 +371,8 @@ export class CombatSimulation {
             isWin: this.isWin as boolean, 
             simParameters: this.params,
             wizardResults: wizardResults,
-            enemies: this.fortressRoom.enemiesAll
+            enemies: this.fortressRoom.enemiesAll,
+            wizards: this.wizards
         };
     }
     
