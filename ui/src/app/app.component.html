@@ -270,6 +270,9 @@
                     <div class="divSimulationSingleResultAllEnemies">
                         <h2 class="mat-h2">Enemies: </h2>
                         <div class="divSimulationSingleResultCombatant divSimulationSingleResultEnemy" *ngFor="let enemy of simulationSingleResults.enemies">
+                            <div class="divEnemyPortraitContainer">
+                                <img src="assets/img/enemies/{{enemy.name}}.png" />
+                            </div>
                             {{ enemy.nameUserFriendly }}
                             ({{ enemy.level }})
                             <mat-progress-bar mode="determinate" color="warn" 
