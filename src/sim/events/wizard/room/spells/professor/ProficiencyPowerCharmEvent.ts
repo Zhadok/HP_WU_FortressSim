@@ -18,6 +18,7 @@ export class ProficiencyPowerCharmEvemt extends StrategicSpellEvent {
     }
 
     onFinish() {
+        super.onFinish(); 
         for (let wizard of this.allWizards) {
             if (wizard.proficiencyPowerCharmValue < this.proficiencyIncrease) {
                 wizard.hasProficiencyPowerCharm = true;
@@ -26,5 +27,11 @@ export class ProficiencyPowerCharmEvemt extends StrategicSpellEvent {
         }
         this.getCaster().processFocusCostStrategicSpell("proficiencyPowerCharm");
     }
+
+    getStrategicSpellName(): string {
+        return "Proficiency Power Charm (+" +
+            (this.proficiencyIncrease * 100).toFixed(0) + "% proficiency)"; 
+    }
+
 
 }

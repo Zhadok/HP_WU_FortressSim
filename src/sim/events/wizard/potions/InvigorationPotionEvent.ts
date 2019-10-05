@@ -21,9 +21,17 @@ export class InvigorationPotionEvent extends PotionEvent {
     }
 
     onFinish(): void {
+        super.onFinish(); 
         this.wizard.addFocus(this.focusReward);
         if (this.potionName === "weak") this.potions.nWeakInvigorationAvailable--;
         else if (this.potionName === "strong") this.potions.nStrongInvigorationAvailable--;
+    }
+
+    getPotionName(): string {
+        return this.potionName.charAt(0).toUpperCase() + this.potionName.substr(1) + " Invigoration" +
+            " (" + this.wizard.getFocus() + "/" + this.wizard.stats.maxFocus + " -> " + 
+            Math.min(this.wizard.getFocus() + this.focusReward, this.wizard.stats.maxFocus) + "/" + this.wizard.stats.maxFocus + 
+            " focus)"; 
     }
 
 }

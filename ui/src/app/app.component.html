@@ -128,31 +128,31 @@
                                     <p>Potions: </p>
                                     <form class="potionsForm">
                                         <mat-form-field class="inputPotion">
-                                            <input type="number" min="1" matInput placeholder="Regular exstimulo" name="exstimulo"
+                                            <input type="number" min="0" matInput placeholder="Regular exstimulo" name="exstimulo"
                                                    [(ngModel)]="simParameters.potions[playerIndex].nExstimuloAvailable">
                                         </mat-form-field>
                                         <mat-form-field class="inputPotion">
-                                            <input type="number" min="1" matInput placeholder="Strong exstimulo" name="strongExstimulo"
+                                            <input type="number" min="0" matInput placeholder="Strong exstimulo" name="strongExstimulo"
                                                    [(ngModel)]="simParameters.potions[playerIndex].nStrongExstimuloAvailable">
                                         </mat-form-field>
                                         <mat-form-field class="inputPotion">
-                                            <input type="number" min="1" matInput placeholder="Potent exstimulo" name="potentExstimulo"
+                                            <input type="number" min="0" matInput placeholder="Potent exstimulo" name="potentExstimulo"
                                                     [(ngModel)]="simParameters.potions[playerIndex].nPotentExstimuloAvailable">
                                         </mat-form-field>
                                         <mat-form-field class="inputPotion">
-                                            <input type="number" min="1" matInput placeholder="Wit Sharpening" name="witSharpening"
+                                            <input type="number" min="0" matInput placeholder="Wit Sharpening" name="witSharpening"
                                                     [(ngModel)]="simParameters.potions[playerIndex].nWitSharpeningAvailable">
                                         </mat-form-field>
                                         <mat-form-field class="inputPotion">
-                                            <input type="number" min="1" matInput placeholder="Weak Invigoration" name="weakInvigoration"
+                                            <input type="number" min="0" matInput placeholder="Weak Invigoration" name="weakInvigoration"
                                                     [(ngModel)]="simParameters.potions[playerIndex].nWeakInvigorationAvailable">
                                         </mat-form-field>
                                         <mat-form-field class="inputPotion">
-                                            <input type="number" min="1" matInput placeholder="Strong Invigoration" name="strongInvigoration"
+                                            <input type="number" min="0" matInput placeholder="Strong Invigoration" name="strongInvigoration"
                                                     [(ngModel)]="simParameters.potions[playerIndex].nStrongInvigorationAvailable">
                                         </mat-form-field>
                                         <mat-form-field class="inputPotion">
-                                            <input type="number" min="1" matInput placeholder="Health" name="health"
+                                            <input type="number" min="0" matInput placeholder="Health" name="health"
                                                     [(ngModel)]="simParameters.potions[playerIndex].nHealingPotionsAvailable">
                                         </mat-form-field>
                                     </form>
@@ -319,12 +319,14 @@
                                 <div class="divSimulationSingleResultCombatantBuff">
                                     <img src="assets/img/defenceCharm.png" 
                                          *ngIf="simulationSingleResults.wizards[wizardResult.playerIndex].hasDefenceCharm"
-                                         matTooltip="Defence charm: +{{simulationSingleResults.wizards[wizardResult.playerIndex].defenceCharmValue*100}}% defence"
+                                         matTooltip="Defence charm: +{{(simulationSingleResults.wizards[wizardResult.playerIndex].defenceCharmValue*100).toFixed(0)}}% defence"
                                         [matTooltipClass]="'myMatTooltip'" />
                                 </div>
                                 <div class="divSimulationSingleResultCombatantBuff">
                                     <img src="assets/img/proficiencyCharm.png" 
-                                         *ngIf="simulationSingleResults.wizards[wizardResult.playerIndex].hasProficiencyPowerCharm" />
+                                         *ngIf="simulationSingleResults.wizards[wizardResult.playerIndex].hasProficiencyPowerCharm"
+                                         matTooltip="Proficiency power charm: +{{(simulationSingleResults.wizards[wizardResult.playerIndex].proficiencyPowerCharmValue*100).toFixed(0)}}% proficiency"
+                                         [matTooltipClass]="'myMatTooltip'" />
                                 </div>
                                 <div class="divSimulationSingleResultCombatantBuff">
                                     <img src="assets/img/braveryCharm.png" 
@@ -399,18 +401,23 @@
             </div>
 
             <br>
-            <mat-form-field  class="inputAdvancedSetting">
-                <mat-select placeholder="Select log channel" name="selectLogChannel" 
-                                                [(ngModel)]="simAdvancedSettings.simulationLogChannel"
-                                                class="inputPotion">
-                                                
-                    <mat-option *ngFor="let item of simulationLogChannelStore | keyvalue" 
-                                value="{{item.key}}">{{item.key}}</mat-option>
-                </mat-select>
+            <div id="divContainerSimulationLog">
+                <h2 class="mat-h2">Simulation log: </h2>
+                <mat-form-field id="selectLogChannelInput"  class="inputAdvancedSetting">
+                    <mat-select placeholder="Select log channel" name="selectLogChannel" 
+                                                    [(ngModel)]="simAdvancedSettings.simulationLogChannel"
+                                                    class="inputPotion">
+                                                    
+                        <mat-option *ngFor="let item of simulationLogChannelStore | keyvalue" 
+                                    value="{{item.key}}">{{item.key}}</mat-option>
+                    </mat-select>
+                </mat-form-field> 
                 <textarea matInput id="inputSimulationLog" type="text" disabled="true" 
                         placeholder="Simulation log" 
                         [(value)]="simulationLogChannelStore[simAdvancedSettings.simulationLogChannel]"></textarea>
-            </mat-form-field> 
+            </div>
+            
+           
 
         </mat-expansion-panel>
 

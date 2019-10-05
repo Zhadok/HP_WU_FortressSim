@@ -64,10 +64,13 @@ export class CombatSpellCastWizardEvent extends CombatEvent {
         this.wizard.performAttackCast(damage, isCritical===1, isDodge, this.enemy); // Reduce exstimulo, wit sharpening and for stats
 
         let critString = isCritical === 1 ? " (crit) " : " ";
-        Logger.logT(2, this.timestampEnd, "Enemy id=" + this.enemy.enemyIndex + " was dealt " + damage + 
-                                            " damage" + critString + "by wizard id=" + this.wizard.playerIndex + "! " +
-                                            "(" + staminaBeforeDamage + "/" + this.enemy.getMaxStamina() + " -> " +
-                                            this.enemy.getCurrentStamina() + "/" + this.enemy.getMaxStamina() + ")");
+        let message = this.wizard.toUserFriendlyDescription() + " dealt " + damage + 
+                        " damage" + critString + " to " + this.enemy.toUserFriendlyDescription() +  ". (" +
+                        staminaBeforeDamage + "/" + this.enemy.getMaxStamina() + " -> " +
+                        this.enemy.getCurrentStamina() + "/" + this.enemy.getMaxStamina() + ")"; 
+
+        Logger.logT(2, this.timestampEnd, message);
+        Logger.logTUserFriendly(2, this.timestampEnd, message); 
     }
 
     // Sources: 

@@ -144,7 +144,16 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     clear: both; 
 }
 
+
+/*****  Simulation log *****/
+#divContainerSimulationLog {
+    margin-top: 20px; 
+    float: left; 
+    clear: both; 
+    width: 100%; 
+}
 #inputSimulationLog {
+    margin-top: 20px; 
     height: 800px; 
     color: black; 
 }

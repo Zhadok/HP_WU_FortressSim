@@ -13,6 +13,7 @@ export class BraveryCharmEvent extends StrategicSpellEvent {
     }
 
     onFinish() {
+        super.onFinish(); 
         for (let wizard of this.allWizards) {
             if (wizard.braveryCharmValue < this.powerIncreaseAgainstElites) {
                 wizard.hasBraveryCharm = true;
@@ -21,5 +22,10 @@ export class BraveryCharmEvent extends StrategicSpellEvent {
         }
         this.getCaster().processFocusCostStrategicSpell("braveryCharm");
     }
+
+    getStrategicSpellName(): string {
+        return "Bravery Charm"; 
+    }
+
 
 }

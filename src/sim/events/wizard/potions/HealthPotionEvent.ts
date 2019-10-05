@@ -17,8 +17,14 @@ export class HealthPotionEvent extends PotionEvent {
     }
 
     onFinish(): void {
+        super.onFinish(); 
         this.wizard.addStaminaPercent(this.staminaRestorePercent);
         this.potions.nHealingPotionsAvailable--;
+    }
+
+    getPotionName(): string {
+        return "Health Potion (+" + 
+            Math.ceil(this.wizard.getMaxStamina() * this.staminaRestorePercent) + "hp)"; 
     }
 
 }

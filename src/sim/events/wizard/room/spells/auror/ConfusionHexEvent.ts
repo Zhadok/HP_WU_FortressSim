@@ -21,10 +21,16 @@ export class ConfusionHexEvent extends StrategicSpellEvent {
     onFinish() {
         // Should only cast when this is a better version of the hex
         if (this.targetEnemy.confusionHexValue < this.confusionHexValue) {
+            super.onFinish(); 
             this.targetEnemy.hasConfusionHex = true; 
             this.targetEnemy.confusionHexValue = this.confusionHexValue;
             this.getCaster().processFocusCostStrategicSpell("confusionHex");
         }
     }
+
+    getStrategicSpellName(): string {
+        return "Confusion Hex"; 
+    }
+
 
 }

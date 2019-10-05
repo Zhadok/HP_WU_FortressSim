@@ -20,10 +20,16 @@ export class DefenceCharmEvent extends StrategicSpellEvent {
     onFinish() {
         // Should only cast when there is a weaker or no version of the charm
         if (this.targetWizard.defenceCharmValue < this.defenceIncrease) {
+            super.onFinish(); 
             this.targetWizard.hasDefenceCharm = true; // Increase target's defence
             this.targetWizard.defenceCharmValue = this.defenceIncrease;
             this.getCaster().processFocusCostStrategicSpell("defenceCharm");
         }
     }
+
+    getStrategicSpellName(): string {
+        return "Defence Charm (+" + (this.defenceIncrease*100).toFixed(0) + "% defence)"; 
+    }
+
 
 }

@@ -20,10 +20,16 @@ export class WeakeningHexEvent extends StrategicSpellEvent {
 
     onFinish() {
         if (this.targetEnemy.weakeningHexValue < this.powerDecreasePercent) {
+            super.onFinish(); 
             this.targetEnemy.hasWeakeningHex = true; 
             this.targetEnemy.weakeningHexValue = this.powerDecreasePercent;
             this.getCaster().processFocusCostStrategicSpell("weakeningHex");
         }
     }
+
+    getStrategicSpellName(): string {
+        return "Weakening Hex"; 
+    }
+
 
 }

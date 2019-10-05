@@ -181,13 +181,13 @@ export class CombatSimulation {
         this.currentTime = currentEvent.timestampEnd
         this.log(2, "Processing event: " + currentEvent.constructor.name);
 
-        if (this.currentTime >= this.maxTime) {
-            return false; 
-        }
-
         await this.processEvent(currentEvent);
 
         this.nEventsProcessed++; 
+
+        if (this.currentTime >= this.maxTime) {
+            return false; 
+        }
         return true;
     }
 

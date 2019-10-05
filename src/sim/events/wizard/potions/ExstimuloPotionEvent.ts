@@ -27,6 +27,7 @@ export class ExstimuloPotionEvent extends PotionEvent {
     }
 
     onFinish(): void {
+        super.onFinish(); 
         // Check if stronger or existing version already active
         if (this.enemy.getExstimuloDamageBuff(this.wizard.playerIndex) >= this.damageBuff) {
             Logger.logT(2, this.timestampBegin, "ExstimuloPotionEvent: wizard id=" + this.wizard.playerIndex + " tried drinking exstimulo potion but version already active!");
@@ -36,6 +37,10 @@ export class ExstimuloPotionEvent extends PotionEvent {
         if (this.potionName === "normal") this.potions.nExstimuloAvailable--;
         else if (this.potionName === "strong") this.potions.nStrongExstimuloAvailable--;
         else if (this.potionName === "potent") this.potions.nPotentExstimuloAvailable--;
+    }
+
+    getPotionName(): string {
+        return this.potionName.charAt(0).toUpperCase() + this.potionName.substr(1) + " Exstimulo Potion"; 
     }
 
 }

@@ -18,8 +18,14 @@ export class FocusCharmEvent extends StrategicSpellEvent {
     }
 
     onFinish() {
+        super.onFinish(); 
         this.targetWizard.addFocus(this.focusIncrease);
         this.getCaster().processFocusCostStrategicSpell("focusCharm");
     }
+    
+    getStrategicSpellName(): string {
+        return "Focus Charm"; 
+    }
+
 
 }

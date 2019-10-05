@@ -13,8 +13,14 @@ export class StaminaCharmEvent extends StrategicSpellEvent {
     }
 
     onFinish() {
+        super.onFinish(); 
         this.targetWizard.addStaminaPercent(this.staminaRestorePercent);
         this.getCaster().processFocusCostStrategicSpell("staminaCharm");
     }
+
+    getStrategicSpellName(): string {
+        return "Stamina Charm"; 
+    }
+
 
 }

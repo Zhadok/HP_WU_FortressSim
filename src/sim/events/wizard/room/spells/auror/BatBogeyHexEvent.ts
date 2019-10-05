@@ -19,8 +19,13 @@ export class BatBogeyHexEvent extends StrategicSpellEvent {
     }
 
     onFinish() {
+        super.onFinish(); 
         this.targetEnemy.removeStamina(this.damage);
         this.getCaster().processFocusCostStrategicSpell("batBogeyHex");
+    }
+
+    getStrategicSpellName(): string {
+        return "Bat Bogey Hex"; 
     }
 
 }

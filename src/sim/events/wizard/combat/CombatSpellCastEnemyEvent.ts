@@ -53,9 +53,13 @@ export class CombatSpellCastEnemyEvent extends CombatEvent {
         
         let staminaBeforeDamage = this.wizard.getCurrentStamina();
         this.wizard.removeStamina(damage);        
-        Logger.logT(2, this.timestampEnd, "Wizard id=" + this.wizard.playerIndex + " was dealt " + damage + " damage by enemy id=" + this.enemy.enemyIndex + "!" + 
-                                            " (" +  staminaBeforeDamage + "/" + this.wizard.getMaxStamina() + " -> " + 
-                                            this.wizard.getCurrentStamina() + "/" + this.wizard.getMaxStamina() + ")");
+        
+        let message = this.enemy.toUserFriendlyDescription() + " dealt " + damage + 
+                      " damage to " + this.wizard.toUserFriendlyDescription() + ". ("  +
+                        staminaBeforeDamage + "/" + this.wizard.getMaxStamina() + " -> " + 
+                        this.wizard.getCurrentStamina() + "/" + this.wizard.getMaxStamina() + ")"
+        Logger.logT(2, this.timestampEnd, message);
+        Logger.logTUserFriendly(2, this.timestampEnd, message); 
     }
 
     // How much damage will enemy deal to wizard?

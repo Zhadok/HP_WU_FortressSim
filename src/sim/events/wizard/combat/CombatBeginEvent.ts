@@ -4,6 +4,7 @@ import { CombatEvent } from "./CombatEvent";
 
 import eventDurations from "../../../../data/events.json";
 import Prando from "prando";
+import { Logger } from "../../../../util/Logger";
 type eventNameType = keyof typeof eventDurations;
 
 
@@ -16,6 +17,11 @@ export class CombatBeginEvent extends CombatEvent {
 
     allowWizardFollowupAction() {
         return true; 
+    }
+
+    onFinish() {
+        Logger.logTUserFriendly(1, this.timestampEnd, this.wizard.toUserFriendlyDescription() + " has entered combat with " + 
+                this.enemy.toUserFriendlyDescription() + "."); 
     }
 
 }

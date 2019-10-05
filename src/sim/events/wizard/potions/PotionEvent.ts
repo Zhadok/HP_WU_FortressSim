@@ -2,6 +2,7 @@ import { SimEvent } from "../../SimEvent";
 import { WizardEvent } from "../WizardEvent";
 import { Wizard } from "../../../../model/player/Wizard";
 import { PotionAvailabilityParameters } from "../../../PotionAvailabilityParameters";
+import { Logger } from "../../../../util/Logger";
 
 
 export abstract class PotionEvent extends WizardEvent {
@@ -15,6 +16,13 @@ export abstract class PotionEvent extends WizardEvent {
 
     allowWizardFollowupAction() {
         return true; 
+    }
+
+    abstract getPotionName(): string; 
+
+    onFinish() {
+        Logger.logTUserFriendly(2, this.timestampEnd, 
+            this.wizard.toUserFriendlyDescription() + " drank: " + this.getPotionName()); 
     }
 
 }

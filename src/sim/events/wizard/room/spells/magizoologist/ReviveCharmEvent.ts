@@ -13,6 +13,7 @@ export class ReviveCharmEvent extends StrategicSpellEvent {
 
     onFinish() {
         if (this.targetWizard.getIsDefeated()) {
+            super.onFinish(); 
             this.getCaster().processFocusCostStrategicSpell("reviveCharm");
         }
     }
@@ -28,5 +29,10 @@ export class ReviveCharmEvent extends StrategicSpellEvent {
     getFollowupEvent() {
         return new WizardReviveEvent(this.timestampEnd, this.targetWizard);
     }
+
+    getStrategicSpellName(): string {
+        return "Revive Charm"; 
+    }
+
 
 }

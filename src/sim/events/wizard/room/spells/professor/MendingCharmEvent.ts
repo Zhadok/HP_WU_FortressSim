@@ -18,8 +18,13 @@ export class MendingCharmEvent extends StrategicSpellEvent {
     }
 
     onFinish() {
+        super.onFinish(); 
         this.targetWizard.addStamina(this.staminaRestore);
         this.getCaster().processFocusCostStrategicSpell("mendingCharm");
     }
+    getStrategicSpellName(): string {
+        return "Mending Charm (+" + this.staminaRestore + "hp)"; 
+    }
+
 
 }

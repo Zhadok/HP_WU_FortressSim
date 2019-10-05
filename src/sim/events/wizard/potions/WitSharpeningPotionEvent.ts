@@ -23,6 +23,7 @@ export class WitSharpeningPotionEvent extends PotionEvent {
     }
 
     onFinish(): void {
+        super.onFinish(); 
         if (this.enemy.getWitSharpeningDamageBuff(this.wizard.playerIndex) >= this.damageBuff) {
             Logger.logT(2, this.timestampBegin, "WitSharpeningPotionEvent: wizard id=" + this.wizard.playerIndex + " tried drinking WitSharpeningPotion but version already active!");
             return; 
@@ -33,6 +34,10 @@ export class WitSharpeningPotionEvent extends PotionEvent {
         }
         
         this.enemy.applyWitSharpeningPotion(this.wizard, this.uses, this.damageBuff); 
+    }
+
+    getPotionName(): string {
+        return "Wit Sharpening"; 
     }
 
 }

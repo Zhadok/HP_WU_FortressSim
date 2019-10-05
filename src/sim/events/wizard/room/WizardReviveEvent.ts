@@ -1,5 +1,6 @@
 import { WizardEvent } from "../WizardEvent";
 import { Wizard } from "../../../../model/player/Wizard";
+import { Logger } from "../../../../util/Logger";
 
 /**
  * Used ONLY for ReviveCharm of magizoologist (is used as followup event)
@@ -17,7 +18,7 @@ export class WizardReviveEvent extends WizardEvent {
             this.wizard.revive();
             this.revivedAfterThisEvent = true;
         }
-        
+        Logger.logTUserFriendly(1, this.timestampEnd, this.wizard.toUserFriendlyDescription() + " has been revived!"); 
     }
 
     allowWizardFollowupAction(): boolean {

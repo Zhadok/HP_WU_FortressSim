@@ -21,6 +21,7 @@ export class DeteriorationHexEvent extends StrategicSpellEvent {
 
     onFinish() {
         if (this.targetEnemy.deteriorationHexDamage < this.deteriorationHexDamage) {
+            super.onFinish(); 
             this.targetEnemy.hasDeteriorationHex = true;
             this.targetEnemy.deteriorationHexDamage = this.deteriorationHexDamage;
             Logger.logT(2, this.timestampEnd, "Added deterioration hex (damage=" + this.deteriorationHexDamage + ") on enemy id=" + 
@@ -28,5 +29,10 @@ export class DeteriorationHexEvent extends StrategicSpellEvent {
             this.getCaster().processFocusCostStrategicSpell("deteriorationHex");
         }
     }
+
+    getStrategicSpellName(): string {
+        return "Deterioration Hex (" + this.deteriorationHexDamage + " damage)"; 
+    }
+
 
 }
