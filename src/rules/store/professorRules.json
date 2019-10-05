@@ -1,411 +1,414 @@
-[
-    {
-        "event": {
-            "type": "strongInvigorationPotion"
-        },
-        "priority": 0,
-        "conditions": {
-            "all": [
-                {
-                    "fact": "wizard",
-                    "path": ".inCombat",
-                    "operator": "equal",
-                    "value": false
-                }, {
-                    "fact": "wizard",
-                    "path": ".focus",
-                    "operator": "lessThan",
-                    "value": {
+{
+    "author": "Zhadok",
+    "nameClass": "professor",
+    "rules": [{
+            "event": {
+                "type": "strongInvigorationPotion"
+            },
+            "priority": 0,
+            "conditions": {
+                "all": [
+                    {
                         "fact": "wizard",
-                        "path": ".stats.maxFocus"
-                    }
-                }, {
-                    "fact": "wizard", 
-                    "path": ".potions.nStrongInvigorationAvailable",
-                    "operator": "greaterThan",
-                    "value": 0
-                }
-            ]
-        }
-    }, {
-        "event": {
-            "type": "weakInvigorationPotion"
-        },
-        "priority": 0,
-        "conditions": {
-            "all": [
-                {
-                    "fact": "wizard",
-                    "path": ".inCombat",
-                    "operator": "equal",
-                    "value": false
-                }, {
-                    "fact": "wizard",
-                    "path": ".focus",
-                    "operator": "lessThan",
-                    "value": {
+                        "path": ".inCombat",
+                        "operator": "equal",
+                        "value": false
+                    }, {
                         "fact": "wizard",
-                        "path": ".stats.maxFocus"
+                        "path": ".focus",
+                        "operator": "lessThan",
+                        "value": {
+                            "fact": "wizard",
+                            "path": ".stats.maxFocus"
+                        }
+                    }, {
+                        "fact": "wizard", 
+                        "path": ".potions.nStrongInvigorationAvailable",
+                        "operator": "greaterThan",
+                        "value": 0
                     }
-                }, {
-                    "fact": "wizard", 
-                    "path": ".potions.nWeakInvigorationAvailable",
-                    "operator": "greaterThan",
-                    "value": 0
-                }
-            ]
-        }
-    }, {
-        "event": {
-            "type": "defenceCharm",
-            "params": {
-                "targetWizardIndex": 0
+                ]
             }
-        },
-        "priority": 0,
-        "conditions": {
-            "all": [
-                {
-                    "fact": "wizard",
-                    "path": ".inCombat",
-                    "operator": "equal",
-                    "value": false
-                }, {
-                    "fact": "wizard",
-                    "path": ".focus",
-                    "operator": "greaterThanInclusive",
-                    "value": {
+        }, {
+            "event": {
+                "type": "weakInvigorationPotion"
+            },
+            "priority": 0,
+            "conditions": {
+                "all": [
+                    {
                         "fact": "wizard",
-                        "path": ".focusCostData.defenceCharm"
-                    }
-                }, {
-                    "fact": "wizard",
-                    "path": ".hasDefenceCharm",
-                    "operator": "equal",
-                    "value": false
-                }, {
-                    "fact": "wizard",
-                    "path": ".triggers.defenceCharm",
-                    "operator": "notEqual",
-                    "value": null
-                }
-            ]
-        }
-    }, {
-        "event": {
-            "type": "proficiencyPowerCharm"
-        },
-        "priority": 0,
-        "conditions": {
-            "all": [
-                {
-                    "fact": "wizard",
-                    "path": ".inCombat",
-                    "operator": "equal",
-                    "value": false
-                }, {
-                    "fact": "wizard",
-                    "path": ".focus",
-                    "operator": "greaterThanInclusive",
-                    "value": {
+                        "path": ".inCombat",
+                        "operator": "equal",
+                        "value": false
+                    }, {
                         "fact": "wizard",
-                        "path": ".focusCostData.proficiencyPowerCharm"
+                        "path": ".focus",
+                        "operator": "lessThan",
+                        "value": {
+                            "fact": "wizard",
+                            "path": ".stats.maxFocus"
+                        }
+                    }, {
+                        "fact": "wizard", 
+                        "path": ".potions.nWeakInvigorationAvailable",
+                        "operator": "greaterThan",
+                        "value": 0
                     }
-                }, {
-                    "fact": "wizard",
-                    "path": ".hasProficiencyPowerCharm",
-                    "operator": "equal",
-                    "value": false
-                }, {
-                    "fact": "wizard",
-                    "path": ".triggers.proficiencyPowerCharm",
-                    "operator": "notEqual",
-                    "value": null
+                ]
+            }
+        }, {
+            "event": {
+                "type": "defenceCharm",
+                "params": {
+                    "targetWizardIndex": 0
                 }
-            ]
-        }
-    }, {
-        "event": {
-            "type": "deteriorationHex"
-        },
-        "priority": 0,
-        "conditions": {
-            "all": [
-                {
-                    "fact": "wizard",
-                    "path": ".inCombat",
-                    "operator": "equal",
-                    "value": false
-                }, {
-                    "fact": "wizard",
-                    "path": ".focus",
-                    "operator": "greaterThanInclusive",
-                    "value": {
+            },
+            "priority": 0,
+            "conditions": {
+                "all": [
+                    {
                         "fact": "wizard",
-                        "path": ".focusCostData.deteriorationHex"
+                        "path": ".inCombat",
+                        "operator": "equal",
+                        "value": false
+                    }, {
+                        "fact": "wizard",
+                        "path": ".focus",
+                        "operator": "greaterThanInclusive",
+                        "value": {
+                            "fact": "wizard",
+                            "path": ".focusCostData.defenceCharm"
+                        }
+                    }, {
+                        "fact": "wizard",
+                        "path": ".hasDefenceCharm",
+                        "operator": "equal",
+                        "value": false
+                    }, {
+                        "fact": "wizard",
+                        "path": ".triggers.defenceCharm",
+                        "operator": "notEqual",
+                        "value": null
                     }
-                }, {
-                    "fact": "highestPriorityAvailableEnemy",
-                    "path": ".hasDeteriorationHex",
-                    "operator": "equal",
-                    "value": false
-                }, {
-                    "fact": "wizard",
-                    "path": ".triggers.deteriorationHex",
-                    "operator": "notEqual",
-                    "value": null
-                }
-            ]
-        }
-    }, {
-        "event": {
-            "type": "enterCombatWithHighestPriorityAvailableEnemy"
-        },
-        "priority": 0,
-        "conditions": {
-            "all": [
-                {
-                    "fact": "wizard",
-                    "path": ".inCombat",
-                    "operator": "equal",
-                    "value": false
-                }, {
-                    "fact": "highestPriorityAvailableEnemy",
-                    "path": ".inCombat",
-                    "operator": "equal",
-                    "value": false
-                }
-            ]
-        }
-    }, 
+                ]
+            }
+        }, {
+            "event": {
+                "type": "proficiencyPowerCharm"
+            },
+            "priority": 0,
+            "conditions": {
+                "all": [
+                    {
+                        "fact": "wizard",
+                        "path": ".inCombat",
+                        "operator": "equal",
+                        "value": false
+                    }, {
+                        "fact": "wizard",
+                        "path": ".focus",
+                        "operator": "greaterThanInclusive",
+                        "value": {
+                            "fact": "wizard",
+                            "path": ".focusCostData.proficiencyPowerCharm"
+                        }
+                    }, {
+                        "fact": "wizard",
+                        "path": ".hasProficiencyPowerCharm",
+                        "operator": "equal",
+                        "value": false
+                    }, {
+                        "fact": "wizard",
+                        "path": ".triggers.proficiencyPowerCharm",
+                        "operator": "notEqual",
+                        "value": null
+                    }
+                ]
+            }
+        }, {
+            "event": {
+                "type": "deteriorationHex"
+            },
+            "priority": 0,
+            "conditions": {
+                "all": [
+                    {
+                        "fact": "wizard",
+                        "path": ".inCombat",
+                        "operator": "equal",
+                        "value": false
+                    }, {
+                        "fact": "wizard",
+                        "path": ".focus",
+                        "operator": "greaterThanInclusive",
+                        "value": {
+                            "fact": "wizard",
+                            "path": ".focusCostData.deteriorationHex"
+                        }
+                    }, {
+                        "fact": "highestPriorityAvailableEnemy",
+                        "path": ".hasDeteriorationHex",
+                        "operator": "equal",
+                        "value": false
+                    }, {
+                        "fact": "wizard",
+                        "path": ".triggers.deteriorationHex",
+                        "operator": "notEqual",
+                        "value": null
+                    }
+                ]
+            }
+        }, {
+            "event": {
+                "type": "enterCombatWithHighestPriorityAvailableEnemy"
+            },
+            "priority": 0,
+            "conditions": {
+                "all": [
+                    {
+                        "fact": "wizard",
+                        "path": ".inCombat",
+                        "operator": "equal",
+                        "value": false
+                    }, {
+                        "fact": "highestPriorityAvailableEnemy",
+                        "path": ".inCombat",
+                        "operator": "equal",
+                        "value": false
+                    }
+                ]
+            }
+        }, 
 
-    {
-        "event": {
-            "type": "exitCombat",
-            "params": {
-                "description": "Professor should exit and check for better enemies available (disabled for now)"
+        {
+            "event": {
+                "type": "exitCombat",
+                "params": {
+                    "description": "Professor should exit and check for better enemies available (disabled for now)"
+                }
+            },
+            "priority": 0,
+            "conditions": {
+                "all": [
+                    {
+                        "fact": "wizard",
+                        "path": ".inCombat",
+                        "operator": "equal",
+                        "value": true
+                    }, {
+                        "fact": "wizard",
+                        "path": ".inCombatWith.inCombat",
+                        "operator": "equal",
+                        "value": true
+                    }, {
+                        "fact": "wizard", 
+                        "path": ".inCombat",
+                        "operator": "equal",
+                        "value": null
+                    }
+                ]
             }
-        },
-        "priority": 0,
-        "conditions": {
-            "all": [
-                {
-                    "fact": "wizard",
-                    "path": ".inCombat",
-                    "operator": "equal",
-                    "value": true
-                }, {
-                    "fact": "wizard",
-                    "path": ".inCombatWith.inCombat",
-                    "operator": "equal",
-                    "value": true
-                }, {
-                    "fact": "wizard", 
-                    "path": ".inCombat",
-                    "operator": "equal",
-                    "value": null
-                }
-            ]
-        }
-    }, {
-        "event": {
-            "type": "potentExstimuloPotion"
-        },
-        "priority": 0,
-        "conditions": {
-            "all": [
-                {
-                    "fact": "wizard",
-                    "path": ".inCombat",
-                    "operator": "equal",
-                    "value": true
-                }, {
-                    "fact": "wizard", 
-                    "path": ".potions.nPotentExstimuloAvailable",
-                    "operator": "greaterThan",
-                    "value": 0
-                }, {
-                    "fact": "wizard", 
-                    "path": ".exstimuloPotionDamageBuff",
-                    "operator": "lessThan",
-                    "value": {
+        }, {
+            "event": {
+                "type": "potentExstimuloPotion"
+            },
+            "priority": 0,
+            "conditions": {
+                "all": [
+                    {
                         "fact": "wizard",
-                        "path": ".potionData.potentExstimuloPotionDamageBuff"
+                        "path": ".inCombat",
+                        "operator": "equal",
+                        "value": true
+                    }, {
+                        "fact": "wizard", 
+                        "path": ".potions.nPotentExstimuloAvailable",
+                        "operator": "greaterThan",
+                        "value": 0
+                    }, {
+                        "fact": "wizard", 
+                        "path": ".exstimuloPotionDamageBuff",
+                        "operator": "lessThan",
+                        "value": {
+                            "fact": "wizard",
+                            "path": ".potionData.potentExstimuloPotionDamageBuff"
+                        }
                     }
-                }
-            ]
-        }
-    },  {
-        "event": {
-            "type": "strongExstimuloPotion"
-        },
-        "priority": 0,
-        "conditions": {
-            "all": [
-                {
-                    "fact": "wizard",
-                    "path": ".inCombat",
-                    "operator": "equal",
-                    "value": true
-                }, {
-                    "fact": "wizard", 
-                    "path": ".potions.nStrongExstimuloAvailable",
-                    "operator": "greaterThan",
-                    "value": 0
-                }, {
-                    "fact": "wizard", 
-                    "path": ".exstimuloPotionDamageBuff",
-                    "operator": "lessThan",
-                    "value": {
+                ]
+            }
+        },  {
+            "event": {
+                "type": "strongExstimuloPotion"
+            },
+            "priority": 0,
+            "conditions": {
+                "all": [
+                    {
                         "fact": "wizard",
-                        "path": ".potionData.strongExstimuloPotionDamageBuff"
+                        "path": ".inCombat",
+                        "operator": "equal",
+                        "value": true
+                    }, {
+                        "fact": "wizard", 
+                        "path": ".potions.nStrongExstimuloAvailable",
+                        "operator": "greaterThan",
+                        "value": 0
+                    }, {
+                        "fact": "wizard", 
+                        "path": ".exstimuloPotionDamageBuff",
+                        "operator": "lessThan",
+                        "value": {
+                            "fact": "wizard",
+                            "path": ".potionData.strongExstimuloPotionDamageBuff"
+                        }
                     }
-                }
-            ]
-        }
-    }, {
-        "event": {
-            "type": "exstimuloPotion"
-        },
-        "priority": 0,
-        "conditions": {
-            "all": [
-                {
-                    "fact": "wizard",
-                    "path": ".inCombat",
-                    "operator": "equal",
-                    "value": true
-                }, {
-                    "fact": "wizard", 
-                    "path": ".potions.nExstimuloAvailable",
-                    "operator": "greaterThan",
-                    "value": 0
-                }, {
-                    "fact": "wizard", 
-                    "path": ".exstimuloPotionDamageBuff",
-                    "operator": "lessThan",
-                    "value": {
+                ]
+            }
+        }, {
+            "event": {
+                "type": "exstimuloPotion"
+            },
+            "priority": 0,
+            "conditions": {
+                "all": [
+                    {
                         "fact": "wizard",
-                        "path": ".potionData.exstimuloPotionDamageBuff"
+                        "path": ".inCombat",
+                        "operator": "equal",
+                        "value": true
+                    }, {
+                        "fact": "wizard", 
+                        "path": ".potions.nExstimuloAvailable",
+                        "operator": "greaterThan",
+                        "value": 0
+                    }, {
+                        "fact": "wizard", 
+                        "path": ".exstimuloPotionDamageBuff",
+                        "operator": "lessThan",
+                        "value": {
+                            "fact": "wizard",
+                            "path": ".potionData.exstimuloPotionDamageBuff"
+                        }
                     }
-                }
-            ]
-        }
-    }, {
-        "event": {
-            "type": "witSharpeningPotion"
-        },
-        "priority": 0,
-        "conditions": {
-            "all": [
-                {
-                    "fact": "wizard",
-                    "path": ".inCombat",
-                    "operator": "equal",
-                    "value": true
-                }, {
-                    "fact": "wizard", 
-                    "path": ".potions.nWitSharpeningAvailable",
-                    "operator": "greaterThan",
-                    "value": 0
-                }, {
-                    "fact": "wizard", 
-                    "path": ".witSharpeningPotionDamageBuff",
-                    "operator": "lessThan",
-                    "value": {
+                ]
+            }
+        }, {
+            "event": {
+                "type": "witSharpeningPotion"
+            },
+            "priority": 0,
+            "conditions": {
+                "all": [
+                    {
                         "fact": "wizard",
-                        "path": ".potionData.witSharpeningPotionDamageBuff"
+                        "path": ".inCombat",
+                        "operator": "equal",
+                        "value": true
+                    }, {
+                        "fact": "wizard", 
+                        "path": ".potions.nWitSharpeningAvailable",
+                        "operator": "greaterThan",
+                        "value": 0
+                    }, {
+                        "fact": "wizard", 
+                        "path": ".witSharpeningPotionDamageBuff",
+                        "operator": "lessThan",
+                        "value": {
+                            "fact": "wizard",
+                            "path": ".potionData.witSharpeningPotionDamageBuff"
+                        }
+                    }, {
+                        "fact": "wizard",
+                        "path": ".inCombatWith.isElite", 
+                        "operator": "equal",
+                        "value": true
                     }
-                }, {
-                    "fact": "wizard",
-                    "path": ".inCombatWith.isElite", 
-                    "operator": "equal",
-                    "value": true
-                }
-            ]
-        }
-    }, 
-    {
-        "event": {
-            "type": "healthPotion"
-        },
-        "priority": 0,
-        "conditions": {
-            "all": [
-                {
-                    "fact": "wizard",
-                    "path": ".inCombat",
-                    "operator": "equal",
-                    "value": true
-                }, {
-                    "fact": "wizard", 
-                    "path": ".potions.nHealingPotionsAvailable",
-                    "operator": "greaterThan",
-                    "value": 0
-                }, {
-                    "fact": "wizard", 
-                    "path": ".currentStaminaPercent",
-                    "operator": "lessThan",
-                    "value": 0.65
-                }
-            ]
-        }
-    }, 
+                ]
+            }
+        }, 
+        {
+            "event": {
+                "type": "healthPotion"
+            },
+            "priority": 0,
+            "conditions": {
+                "all": [
+                    {
+                        "fact": "wizard",
+                        "path": ".inCombat",
+                        "operator": "equal",
+                        "value": true
+                    }, {
+                        "fact": "wizard", 
+                        "path": ".potions.nHealingPotionsAvailable",
+                        "operator": "greaterThan",
+                        "value": 0
+                    }, {
+                        "fact": "wizard", 
+                        "path": ".currentStaminaPercent",
+                        "operator": "lessThan",
+                        "value": 0.65
+                    }
+                ]
+            }
+        }, 
 
-    {
-        "event": {
-            "type": "combatSpellCastWizard"
-        },
-        "priority": 0,
-        "conditions": {
-            "all": [
-                {
-                    "fact": "wizard",
-                    "path": ".inCombat",
-                    "operator": "equal",
-                    "value": true
-                }, {
-                    "fact": "wizard",
-                    "path": ".inCombatWith",
-                    "operator": "notEqual",
-                    "value": null
-                }
-            ]
-        }
-    }, {
-        "event": {
-            "type": "mendingCharm",
-            "params": {
-                "targetWizard": "lowestHP"
+        {
+            "event": {
+                "type": "combatSpellCastWizard"
+            },
+            "priority": 0,
+            "conditions": {
+                "all": [
+                    {
+                        "fact": "wizard",
+                        "path": ".inCombat",
+                        "operator": "equal",
+                        "value": true
+                    }, {
+                        "fact": "wizard",
+                        "path": ".inCombatWith",
+                        "operator": "notEqual",
+                        "value": null
+                    }
+                ]
             }
-        },
-        "priority": 0,
-        "conditions": {
-            "all": [
-                {
-                    "fact": "wizard",
-                    "path": ".inCombat",
-                    "operator": "equal",
-                    "value": false
-                }, {
-                    "fact": "highestPriorityAvailableEnemy",
-                    "operator": "equal",
-                    "value": null
-                }, {
-                    "fact": "wizard",
-                    "path": ".triggers.mendingCharm",
-                    "operator": "notEqual",
-                    "value": null
+        }, {
+            "event": {
+                "type": "mendingCharm",
+                "params": {
+                    "targetWizard": "lowestHP"
                 }
-            ]
+            },
+            "priority": 0,
+            "conditions": {
+                "all": [
+                    {
+                        "fact": "wizard",
+                        "path": ".inCombat",
+                        "operator": "equal",
+                        "value": false
+                    }, {
+                        "fact": "highestPriorityAvailableEnemy",
+                        "operator": "equal",
+                        "value": null
+                    }, {
+                        "fact": "wizard",
+                        "path": ".triggers.mendingCharm",
+                        "operator": "notEqual",
+                        "value": null
+                    }
+                ]
+            }
+        }, {
+            "event": {
+                "type": "noAction"
+            },
+            "priority": 0,
+            "conditions": {
+                "all": []
+            }
         }
-    }, {
-        "event": {
-            "type": "noAction"
-        },
-        "priority": 0,
-        "conditions": {
-            "all": []
-        }
-    }
-]
+    ]
+}

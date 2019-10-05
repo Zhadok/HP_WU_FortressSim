@@ -207,6 +207,10 @@ export abstract class Wizard extends Combatant {
         return this.potions!; 
     }
 
+    toUserFriendlyDescription(): string {
+        return this.nameClassUserFriendly + " (id=" + this.playerIndex + ")"; 
+    }
+
     abstract isProficientAgainst(enemy: Enemy): boolean;
 
 }

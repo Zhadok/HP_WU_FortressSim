@@ -1,6 +1,7 @@
-[
-
-    {
+{
+    "author": "Zhadok",
+    "nameClass": "magizoologist",
+    "rules": [{
         "event": {
             "type": "enterCombatWithHighestPriorityAvailableEnemy"
         },
@@ -73,3 +74,4 @@
     }
 
 ]
+}

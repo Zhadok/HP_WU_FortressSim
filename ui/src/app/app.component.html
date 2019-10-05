@@ -400,7 +400,16 @@
 
             <br>
             <mat-form-field  class="inputAdvancedSetting">
-                <textarea matInput id="inputSimulationLog" type="text" disabled="true" placeholder="Simulation log" [(value)]="simulationLog"></textarea>
+                <mat-select placeholder="Select log channel" name="selectLogChannel" 
+                                                [(ngModel)]="simAdvancedSettings.simulationLogChannel"
+                                                class="inputPotion">
+                                                
+                    <mat-option *ngFor="let item of simulationLogChannelStore | keyvalue" 
+                                value="{{item.key}}">{{item.key}}</mat-option>
+                </mat-select>
+                <textarea matInput id="inputSimulationLog" type="text" disabled="true" 
+                        placeholder="Simulation log" 
+                        [(value)]="simulationLogChannelStore[simAdvancedSettings.simulationLogChannel]"></textarea>
             </mat-form-field> 
 
         </mat-expansion-panel>

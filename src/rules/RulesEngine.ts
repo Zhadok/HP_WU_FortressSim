@@ -1,4 +1,4 @@
-import { Engine } from "truegin";
+import { Engine, Rule } from "truegin";
 import { Almanac } from "truegin/dist/lib/almanac";
 import { Wizard } from "../model/player/Wizard";
 
@@ -7,7 +7,7 @@ import aurorRules from "./store/aurorRules.json";
 import magizoologistRules from "./store/magizoologistRules.json";
 
 import potionsData from "../data/potions.json"; 
-import { nameClassType, nameClassUserFriendlyType, strategicSpellNameType, ruleFactType, actionNameType, ruleOperatorMapType } from "../types";
+import { nameClassType, nameClassUserFriendlyType, strategicSpellNameType, ruleFactType, actionNameType, ruleOperatorMapType, ruleContainerType, ruleType } from "../types";
 import { SimEvent } from "../sim/events/SimEvent";
 import { DefenceCharmEvent } from "../sim/events/wizard/room/spells/professor/DefenceCharmEvent";
 import { Enemy } from "../model/env/enemies/Enemy";
@@ -24,6 +24,7 @@ import { InvigorationPotionEvent } from "../sim/events/wizard/potions/Invigorati
 import { ExstimuloPotionEvent } from "../sim/events/wizard/potions/ExstimuloPotionEvent";
 import { WitSharpeningPotionEvent } from "../sim/events/wizard/potions/WitSharpeningPotionEvent";
 import { HealthPotionEvent } from "../sim/events/wizard/potions/HealthPotionEvent";
+import { RuleConstructorOptions } from "truegin/dist/lib/rule";
 
 
 export class RulesEngine {
@@ -40,23 +41,26 @@ export class RulesEngine {
     readonly engine: Engine    
     readonly rng: Prando; 
 
-    constructor(nameClass: nameClassType, rng: Prando) {
+    constructor(ruleContainer: ruleContainerType, rng: Prando) {
         this.engine = new Engine();
         this.rng = rng;
-        let rules;
-        switch (nameClass) {
-            case "professor": rules = professorRules; break;
-            case "magizoologist": rules = magizoologistRules; break;
-            case "auror": rules = aurorRules; break;
-            default: return; 
-        }
+        let rules = ruleContainer.rules; 
+        
         rules.forEach((rule, index) => {
             rule.priority = 10000 - index; 
             this.engine.addRule(rule);
         });
     }
 
-
+    static buildFromStandard(nameClass: nameClassType, rng: Prando): RulesEngine {
+        let ruleContainer: ruleContainerType; 
+        switch (nameClass) {
+            case "professor": ruleContainer = professorRules as ruleContainerType; break;
+            case "magizoologist": ruleContainer = magizoologistRules as ruleContainerType; break;
+            case "auror": ruleContainer = aurorRules as ruleContainerType; break;
+        }
+        return new RulesEngine(ruleContainer!, rng)
+    }
 
     async getNextAction(timestampBegin: number, facts: ruleFactType): Promise<SimEvent | null> {
         //console.log(facts);

@@ -5,7 +5,7 @@ import Prando from 'prando';
 import { TestData } from "../../../tests/TestData";
 import { CombatSimulationParameters } from '../../../src/sim/CombatSimulationParameters';
 import { nameClassType, nameClassUserFriendlyType, simGoalType as simGoalType, simAdvancedSettingsType,
-     simProgressType, simulationResultsGroupedType, localStorageDataType, ruleVisDataRowType, ruleVisDataContainerType } from '../../../src/types';
+     simProgressType, simulationResultsGroupedType, localStorageDataType, ruleVisDataRowType, ruleVisDataContainerType, simulationLogChannelStoreType, simulationLogChannelType, ruleContainerType } from '../../../src/types';
 import { PotionAvailabilityParameters } from '../../../src/sim/PotionAvailabilityParameters';
 import { PersistedSkillTree } from '../../../src/model/player/SkillTree/PersistedSkillTree';
 import { SkillTreeNode } from '../../../src/model/player/SkillTree/SkillTreeNode';
@@ -52,12 +52,17 @@ export class AppComponent {
         numberSimulations: 10,
         simGoal: "single",
         runParallel: false,
-        secondsBetweenSimulations: 40
+        secondsBetweenSimulations: 40, 
+        simulationLogChannel: "Debug"
     }; 
     
 
     // For showing results of simulations
-    simulationLog: string = "";
+    //simulationLog: string = "";
+    simulationLogChannelStore: simulationLogChannelStoreType = {
+        "Debug": "",
+        "User friendly": ""
+    }
     simulationSingleResults: CombatSimulationResults | null; 
     simulationMultipleResults: CombatSimulationResults[]; 
     //simulationMultipleResultsGrouped: simulationResultsGroupedType[]; 
@@ -103,10 +108,11 @@ export class AppComponent {
         }); 
         
 
-        //this.simAdvancedSettings = new Proxy(this.simAdvancedSettings, localStorageHandler); 
         Logger.callbackFunction = function(messageLine: string) {
-            self.simulationLog += messageLine + "\n";
-            //console.log(messageLine);
+            self.simulationLogChannelStore["Debug"] += messageLine + "\n"; 
+        }
+        Logger.callbackFunctionUserFriendly = function(messageLine: string) {
+            self.simulationLogChannelStore["User friendly"] += messageLine + "\n"; 
         }
         this.simulationSingleResults = null; 
         this.simulationMultipleResultsGrouped = new MatTableDataSource(); 
@@ -116,20 +122,21 @@ export class AppComponent {
     }
 
     buildAllPlayerRulesData(): void {
-        this.playerRulesData.push(this.buildPlayerRulesData(professorRules, "Professor")); 
+        this.playerRulesData.push(this.buildPlayerRulesData(aurorRules as ruleContainerType, "Auror")); 
+        this.playerRulesData.push(this.buildPlayerRulesData(magizoologistRules as ruleContainerType, "Magizoologist")); 
+        this.playerRulesData.push(this.buildPlayerRulesData(professorRules as ruleContainerType, "Professor")); 
         //console.log(this.playerRulesData); 
     }
     // Convert rules json to table ready data
-    buildPlayerRulesData(rulesJSONArray, nameClassUserFriendly: nameClassUserFriendlyType): ruleVisDataContainerType {
+    buildPlayerRulesData(ruleContainer: ruleContainerType, nameClassUserFriendly: nameClassUserFriendlyType): ruleVisDataContainerType {
         let rulesDataRaw: ruleVisDataRowType[] = []; 
 
-        rulesJSONArray.forEach((ruleJSON, index) => {
+        ruleContainer.rules.forEach((ruleJSON, index) => {
             let conditionsString = ""; 
             ruleJSON.conditions.all.forEach((condition, indexCondition) => {
                 let leftSide = condition.fact + "" + condition.path;
                 let operator = RulesEngine.ruleOperatorMap[condition.operator]; 
                 let rightSide = "";
-
                 if (Utils_UI.isObject(condition.value)) {
                     rightSide = condition.value.fact + condition.value.path; 
                 }
@@ -242,7 +249,8 @@ export class AppComponent {
     }
 
     resetSimulationResults() {
-        this.simulationLog = "";
+        this.simulationLogChannelStore["Debug"] = "";
+        this.simulationLogChannelStore["User friendly"] = "";
         this.closeSettingsPanels();
         
     }
@@ -301,6 +309,11 @@ export class AppComponent {
             this.simProgress = null; 
             this.updateSimulationMultipleResultsGrouped(); 
         }
+    }
+
+    onChangeSelectSimulationLogChannel(event) {
+        //console.log(event);
+        this.simAdvancedSettings.simulationLogChannel = event.value; 
     }
 
     async onFinishOneSimulation(simComparison: CombatSimulationComparison) {

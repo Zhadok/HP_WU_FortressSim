@@ -3,6 +3,7 @@ import { Wizard } from "../../../model/player/Wizard";
 
 import eventDurations from "../../../data/events.json";
 import { EnvEvent } from "./EnvEvent";
+import { Logger } from "../../../util/Logger";
 type eventNameType = keyof typeof eventDurations;
 
 
@@ -28,6 +29,11 @@ export class EnemyDefeatEvent extends EnvEvent {
         this.wizard.inCombatWith = null;
         this.wizard.exstimuloPotionDamageBuff = 0; 
         this.wizard.witSharpeningPotionDamageBuff = 0; 
+
+        let message = this.wizard.toUserFriendlyDescription() + " has defeated " + this.enemy.toUserFriendlyDescription() + "!"; 
+        Logger.logTUserFriendly(1, this.timestampEnd, message); 
     }
 }
+
+
 

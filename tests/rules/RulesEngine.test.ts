@@ -39,7 +39,7 @@ describe("RulesEngine", function() {
             highestPriorityAvailableEnemy: enemy,
             allWizards: [wizard]
         };
-        rulesEngine = new RulesEngine(wizard.nameClass, rng);
+        rulesEngine = RulesEngine.buildFromStandard(wizard.nameClass, rng);
 
     });
 

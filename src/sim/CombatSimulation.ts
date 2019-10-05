@@ -73,9 +73,9 @@ export class CombatSimulation {
             this.wizards.push(wizard);
         }
 
-        this.rulesEngineAuror = new RulesEngine("auror", rng);
-        this.rulesEngineMagizoologist = new RulesEngine("magizoologist", rng);
-        this.rulesEngineProfessor = new RulesEngine("professor", rng);
+        this.rulesEngineAuror = RulesEngine.buildFromStandard("auror", rng);
+        this.rulesEngineMagizoologist = RulesEngine.buildFromStandard("magizoologist", rng);
+        this.rulesEngineProfessor = RulesEngine.buildFromStandard("professor", rng);
     }
 
     init() {

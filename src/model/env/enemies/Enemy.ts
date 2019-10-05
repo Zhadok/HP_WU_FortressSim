@@ -222,4 +222,11 @@ export class Enemy extends Combatant {
 
     }
 
+    toUserFriendlyDescription(): string {
+        let eliteString = this.isElite ? "elite " : "";  
+        let starString = "";
+        for (let i=0; i<this.difficulty; i++) starString += "★"; 
+        return this.nameUserFriendly + " (" + eliteString + this.level + " " + 
+                starString + ", id=" + this.enemyIndex + ")"; 
+    }
 }

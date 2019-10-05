@@ -62,6 +62,34 @@ declare type ruleOperatorType = "equal" | "notEqual" |
 declare type ruleOperatorShortType = "==" | "!=" | "<" | "<=" | ">" | ">=";
 declare type ruleOperatorMapType = { [key in ruleOperatorType]: ruleOperatorShortType }; 
 
+/*declare type ruleValueType = {
+    fact: string,
+    path: string
+} | boolean;  */
+declare type ruleValueType = any; 
+declare type ruleType = {
+    event: {
+        type: string;
+        params?: any;
+    }, 
+    priority?: number, 
+    conditions: {
+        all: [{
+            fact: string;
+            path: string;
+            operator: ruleOperatorType;
+            value: ruleValueType;
+        }]
+    }
+};
+
+declare type ruleContainerType = {
+    author: string,
+    nameClass: nameClassType, 
+    rules: Array<ruleType>
+}
+
+
 // Visualizing rules in frontend
 declare type ruleVisDataContainerType = {
     nameClassUserFriendly: nameClassUserFriendlyType,
@@ -80,13 +108,17 @@ declare type simAdvancedSettingsType = {
     simGoal: simGoalType,
     numberSimulations: number,
     runParallel: boolean,
-    secondsBetweenSimulations: number
+    secondsBetweenSimulations: number,
+    simulationLogChannel: simulationLogChannelType
 }; 
 declare type localStorageDataType = {
     simParameters: CombatSimulationParameters, 
     simAdvancedSettings: simAdvancedSettingsType
 }
 
+// Single simulation
+declare type simulationLogChannelType = "Debug" | "User friendly"; 
+declare type simulationLogChannelStoreType = { [key in simulationLogChannelType]: string }; 
 
 // Multiple simulations
 declare type simProgressType = {
