@@ -8,5 +8,6 @@ export interface CombatSimulationResultsWizard {
     totalDamage: number, 
     averageDamage: number,
 
+    runestoneLevel: number,
     challengeXPReward: number; 
 }

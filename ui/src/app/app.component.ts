@@ -274,9 +274,16 @@ export class AppComponent {
         console.log(this.simulationSingleResults); 
     }
 
-    async onClickButtonStartMultipleSimulations()  {
+    async onClickButtonStartMultipleSimulations_compareRoomLevels() {
+        await this.onClickButtonStartMultipleSimulations("multiple_compare_roomLevels"); 
+    }
+    async onClickButtonStartMultipleSimulations_compareSkillTreeNodes() {
+        await this.onClickButtonStartMultipleSimulations("multiple_compare_skillTreeNodes"); 
+    }
+
+    async onClickButtonStartMultipleSimulations(simGoal: simGoalType)  {
         this.resetSimulationResults(); 
-        this.simAdvancedSettings.simGoal = "multiple_compare_roomLevels";
+        this.simAdvancedSettings.simGoal = simGoal; 
         var self = this; 
         let simComparison = new CombatSimulationComparison(this.getSimParametersCopy(), this.simAdvancedSettings.simGoal, this.simAdvancedSettings.numberSimulations);
         this.simProgress = {

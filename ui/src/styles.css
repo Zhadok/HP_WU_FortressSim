@@ -88,7 +88,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     position: fixed; 
     bottom: 10px; 
     display: block; 
-    width: 410px;
+    width: 210px;
     z-index: 1000; 
     left: 50%;
     margin-left: -70px; 

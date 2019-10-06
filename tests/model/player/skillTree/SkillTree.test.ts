@@ -161,5 +161,35 @@ describe("SkillTree", function() {
 
     });
 
+    it("skillTree_nextPossibleLessons_shouldBeAll", function() {
+        let skillTree = new SkillTree("professor");
+        let nextPossibleLessons = skillTree.getNextPossibleLessons(); 
+        expect(nextPossibleLessons.size).to.equal(55); 
+        nextPossibleLessons.forEach((level, node) => {
+            expect(level).to.equal(1); 
+        });
+    });
+
+    it("skillTree_nextPossibleLessons_shouldBeSome", function() {
+        let skillTree = new SkillTree("professor");
+        skillTree.setNodeLevelByTriggerName("idealExchange", 1); 
+        expect(skillTree.getNextPossibleLessons().size).to.equal(55 - 1); 
+
+        let nodeName = "N.E.W.T.S Preparation"; 
+        skillTree.setNodeLevelByName(nodeName, 1) // has 2 levels
+        expect(skillTree.getNextPossibleLessons().size).to.equal(55 - 1); 
+        expect(skillTree.getNextPossibleLessons().get(skillTree.getNodeByName(nodeName))).to.equal(2); // studied level is 1. next possible level would be 2
+
+        skillTree.setNodeLevelByName(nodeName, 2) // has 2 levels
+        expect(skillTree.getNextPossibleLessons().size).to.equal(55 - 2); 
+
+    }); 
+
+    it("skillTree_nextPossibleLessons_shouldBeEmpty", function() {
+        let skillTree = new SkillTree("auror");
+        skillTree.learnAllLessons(); 
+        let nextPossibleLessons = skillTree.getNextPossibleLessons(); 
+        expect(nextPossibleLessons.size).to.be.equal(0); 
+    });
 
 });

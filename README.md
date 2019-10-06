@@ -56,6 +56,12 @@ Data on fortresses:
 
 
 
+## Changelog
+See [CHANGELOG.md](CHANGELOG.md) 
+
+
+
+
 ## Rules
 - Allowed logical operators: [link](https://github.com/CacheControl/json-rules-engine/blob/f1d2f052d7738ca2ff55ef66f16b5cc2d2927f9d/docs/rules.md#operators)
 

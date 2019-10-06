@@ -10,8 +10,11 @@
             <button (click)="onClickButtonStartSingleSimulation()" class="buttonStartSimulation" mat-raised-button large color="primary" >
                 Start single simulation
             </button>
-            <button (click)="onClickButtonStartMultipleSimulations()" class="buttonStartSimulation" mat-raised-button large color="primary" >
-                Simulate different room levels
+            <button (click)="onClickButtonStartMultipleSimulations_compareRoomLevels()" class="buttonStartSimulation" mat-raised-button large color="primary" >
+                Simulate room levels
+            </button>
+            <button (click)="onClickButtonStartMultipleSimulations_compareSkillTreeNodes()" class="buttonStartSimulation" mat-raised-button large color="primary" >
+                Simulate lessons
             </button>
         </div>
 
@@ -265,6 +268,7 @@
                     Real world time passed: {{(simulationSingleResults.durationWallTimeMS / 1000).toFixed(3)}}s <br>
                     Simulation time: {{simulationSingleResults.durationGameTimeMS / 1000}}s <br>
                     <!-- Number of events: {{simulationSingleResults.nEvents}} <br> -->
+                    Room level: {{getChamberName(simulationSingleResults.simParameters.roomLevel)}} <br>
                     {{simulationSingleResults.isWin === false ? 'Challenge was not won.' : 'Challenge was won!'}}<br>
                     
                     <div class="divSimulationSingleResultAllEnemies">
@@ -317,7 +321,7 @@
                             {{wizardResult.numberOfCasts}} hits ({{wizardResult.numberOfCriticalCasts}} critical, {{wizardResult.numberOfDodgedCasts}} dodged)<br>
                             {{wizardResult.averageDamage.toFixed(2)}} average damage<br>
                             {{wizardResult.totalDamage}} total damage<br>
-                            {{wizardResult.challengeXPReward}} challenge XP
+                            {{wizardResult.challengeXPReward}} challenge XP (runestone level {{wizardResult.runestoneLevel}})
                             <div class="divSimulationSingleResultAllCombatantBuffs">
                                 <div class="divSimulationSingleResultCombatantBuff">
                                     <img src="assets/img/defenceCharm.png" 

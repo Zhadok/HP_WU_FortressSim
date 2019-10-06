@@ -359,7 +359,8 @@ export class CombatSimulation {
                 numberOfCriticalCasts: wizard.numberCriticalCasts,
                 totalDamage: wizard.totalDamage,
                 averageDamage: wizard.totalDamage / wizard.numberAttackCasts,
-                challengeXPReward: challengeXPRewards[wizard.playerIndex]
+                challengeXPReward: challengeXPRewards[wizard.playerIndex],
+                runestoneLevel: this.params.runestoneLevels[wizard.playerIndex]
             }
         });
         return {

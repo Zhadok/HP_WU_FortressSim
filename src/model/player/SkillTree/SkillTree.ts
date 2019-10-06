@@ -34,7 +34,7 @@ export class SkillTree {
             let node: SkillTreeNode = jsonNode as SkillTreeNode;
             this.nodesStudied.set(node, 0);
         }  
-        
+        //console.log("init with " + this.nodesStudied.size + " nodes"); 
     }   
 
     static fromPersisted(persistedSkillTree: PersistedSkillTree): SkillTree {
@@ -119,6 +119,18 @@ export class SkillTree {
             throw new Error("Tried to set invalid node with triggerName=" + triggerName);
         }
     }
+    getNodeByName(nodeName: string): SkillTreeNode {
+        let result = null; 
+        this.nodesStudied.forEach((level, node) => {
+            if (node.name == nodeName) {
+                result = node; 
+            }
+        });
+        if (result === null) {
+            throw new Error("Tried to get invalid node with name=" + nodeName);
+        }
+        return result; 
+    }
 
     applyTriggers(wizard: Wizard) {
         this.nodesStudied.forEach((level, node) => {
@@ -197,6 +209,20 @@ export class SkillTree {
         this.nodesStudied.forEach((level, node) => {
             this.nodesStudied.set(node, 0); 
         });
+    }
+
+    // What lessons can still be learnt? 
+    // (where is node not max level)
+    getNextPossibleLessons(): Map<SkillTreeNode, number> {
+        let nextPossibleLessons: Map<SkillTreeNode, number> = new Map<SkillTreeNode, number>(); 
+        this.nodesStudied.forEach((level, node) => {
+            if (level < node.levels.length) {
+                if (nextPossibleLessons.get(node) === undefined) {
+                    nextPossibleLessons.set(node, level+1); 
+                }
+            }
+        });
+        return nextPossibleLessons;
     }
 
 
