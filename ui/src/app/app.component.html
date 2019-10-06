@@ -13,9 +13,10 @@
             <button (click)="onClickButtonStartMultipleSimulations_compareRoomLevels()" class="buttonStartSimulation" mat-raised-button large color="primary" >
                 Simulate room levels
             </button>
-            <button (click)="onClickButtonStartMultipleSimulations_compareSkillTreeNodes()" class="buttonStartSimulation" mat-raised-button large color="primary" >
+            <!-- <button (click)="onClickButtonStartMultipleSimulations_compareSkillTreeNodes()" class="buttonStartSimulation" mat-raised-button large color="primary" >
                 Simulate lessons
-            </button>
+            </button> -->
+                
         </div>
 
     <mat-accordion [multi]="true">
@@ -321,6 +322,7 @@
                             {{wizardResult.numberOfCasts}} hits ({{wizardResult.numberOfCriticalCasts}} critical, {{wizardResult.numberOfDodgedCasts}} dodged)<br>
                             {{wizardResult.averageDamage.toFixed(2)}} average damage<br>
                             {{wizardResult.totalDamage}} total damage<br>
+                            {{(wizardResult.timeSpentDefeated/1000).toFixed(0)}}s spent defeated<br>
                             {{wizardResult.challengeXPReward}} challenge XP (runestone level {{wizardResult.runestoneLevel}})
                             <div class="divSimulationSingleResultAllCombatantBuffs">
                                 <div class="divSimulationSingleResultCombatantBuff">

@@ -10,4 +10,6 @@ export interface CombatSimulationResultsWizard {
 
     runestoneLevel: number,
     challengeXPReward: number; 
+
+    timeSpentDefeated: number; 
 }

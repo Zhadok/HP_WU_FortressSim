@@ -3,4 +3,5 @@
     - Changed "triggers" to "conditional buffs" and filtered the list by strategic spells
     - Added health potions to UI
     - Added a first version of player AI rules under advanced settings
-    - Addded a more user friendly version of the simulation log
+    - Added a more user friendly version of the simulation log
+    - Added wizard "time spent defeated" statistic 

@@ -2,7 +2,7 @@ export abstract class Combatant {
 
     inCombat: boolean = false; // Is in combat? Enemies in combat cannot be entered into combat with by other players
     protected isDefeated: boolean = false; // Is dead? Enemies are permanently dead, players are revived after a while
-    
+
     private currentStamina: number; // How much hp? Start at full
     private currentStaminaPercent: number; // How much hp in % (between 0 and 1)? 
     private readonly maxStamina: number; 
@@ -31,8 +31,7 @@ export abstract class Combatant {
     removeStamina(stamina: number) {
         this.setStamina(this.currentStamina - stamina); 
         if (this.currentStamina <= 0) {
-            this.setStamina(0); 
-            this.isDefeated = true;
+            this.setDefeated(); 
         }
     }
 
@@ -40,9 +39,9 @@ export abstract class Combatant {
         return this.isDefeated;
     }
 
-    revive(): void {
-        this.isDefeated = false;
-        this.addStamina(this.getMaxStamina());
+    setDefeated(): void {
+        this.isDefeated = true; 
+        this.setStamina(0); 
     }
 
     getCurrentStamina(): number {

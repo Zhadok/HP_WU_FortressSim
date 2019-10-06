@@ -15,7 +15,7 @@ export class WizardReviveEvent extends WizardEvent {
 
     onFinish() {
         if (this.wizard.getIsDefeated() === true) {
-            this.wizard.revive();
+            this.wizard.revive(this.timestampEnd);
             this.revivedAfterThisEvent = true;
         }
         Logger.logTUserFriendly(1, this.timestampEnd, this.wizard.toUserFriendlyDescription() + " has been revived!"); 

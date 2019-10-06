@@ -32,6 +32,11 @@ export abstract class Wizard extends Combatant {
     exstimuloPotionDamageBuff: number = 0; 
     witSharpeningPotionDamageBuff: number = 0; 
 
+    // Used for calculating time spent defeated
+    timestampDefeated: number = -1;  // When was combatant defeated?
+    timeSpentDefeated: number = 0; 
+
+
 
     // Potions
     private potions: PotionAvailabilityParameters | undefined; 
@@ -131,6 +136,14 @@ export abstract class Wizard extends Combatant {
     }
     getFocus(): number {
         return this.focus;
+    }
+
+    revive(timestampRevived: number): void {
+        this.isDefeated = false;
+        this.addStamina(this.getMaxStamina());
+        if (this.timestampDefeated > -1 && timestampRevived > -1 && timestampRevived > this.timestampDefeated) {
+            this.timeSpentDefeated += timestampRevived - this.timestampDefeated; 
+        }
     }
 
     getProficiencyPowerAfterModifications() {

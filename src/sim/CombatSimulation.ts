@@ -153,6 +153,11 @@ export class CombatSimulation {
                 this.log(2, "Simulation reached max time (" + this.maxTime/1000 + "s). Wizard(s) were defeated!");
                 this.isWin = false; 
                 this.emptyEventQueue(); 
+                this.wizards.forEach((wizard) => {
+                    if (wizard.getIsDefeated() === true) {
+                        wizard.timeSpentDefeated += this.currentTime - wizard.timestampDefeated; // Need to add here because otherwise it would only be added on revive
+                    }
+                });
                 break; 
             }
         }
@@ -360,7 +365,8 @@ export class CombatSimulation {
                 totalDamage: wizard.totalDamage,
                 averageDamage: wizard.totalDamage / wizard.numberAttackCasts,
                 challengeXPReward: challengeXPRewards[wizard.playerIndex],
-                runestoneLevel: this.params.runestoneLevels[wizard.playerIndex]
+                runestoneLevel: this.params.runestoneLevels[wizard.playerIndex],
+                timeSpentDefeated: wizard.timeSpentDefeated
             }
         });
         return {

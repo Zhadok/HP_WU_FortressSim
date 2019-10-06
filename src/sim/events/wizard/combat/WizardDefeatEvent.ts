@@ -21,13 +21,14 @@ export class WizardDefeatEvent extends CombatEvent {
         this.enemy.inCombatWith = null;
         this.wizard.inCombat = false;
         this.wizard.inCombatWith = null;
+        this.wizard.timestampDefeated = this.timestampBegin; 
 
         Logger.logTUserFriendly(1, this.timestampBegin, this.wizard.toUserFriendlyDescription() + " has been defeated."); 
     }
 
     onFinish() {
         if (this.wizard.getIsDefeated() === true) {
-            this.wizard.revive();
+            this.wizard.revive(this.timestampEnd);
             this.revivedAfterThisEvent = true;
             Logger.logTUserFriendly(1, this.timestampEnd, this.wizard.toUserFriendlyDescription() + " has been revived!"); 
         }

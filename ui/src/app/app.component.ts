@@ -53,7 +53,7 @@ export class AppComponent {
         simGoal: "single",
         runParallel: false,
         secondsBetweenSimulations: 40, 
-        simulationLogChannel: "Debug"
+        simulationLogChannel: "User friendly"
     }; 
     
 
