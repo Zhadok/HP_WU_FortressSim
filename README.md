@@ -1,7 +1,21 @@
-## Harry Potter - Wizards Unite Fortress Simulator
+## Table of contents
+- [About](#about)
+- [FAQ](#faq)
+  * [How does this simulation work?](#how-does-this-simulation-work)
+  * [How are enemies generated?](#how-are-enemies-generated)
+  * [What is a "seed" and why are fortress runs reproducible?](#what-is-a-seed-and-why-are-fortress-runs-reproducible)
+  * [How are RNG "seeds" used when comparing multiple simulations?](#how-are-rng-seeds-used-when-comparing-multiple-simulations)
+  * [How does the player AI work? How do wizards decide which action to take?](#how-does-the-player-ai-work-how-do-wizards-decide-which-action-to-take)
+  * [What happens to my data?](#what-happens-to-my-data)
+- [Sources for equations and data](#sources-for-equations-and-data)
+- [Changelog](#changelog)
+- [Rules](#rules)
+- [License](#license)
 
+## About
+Welcome to the source code repository for the Harry Potter - Wizards Unite simulator! 
 
-
+A running version of the simulator can be found [here](https://zhadok.github.io/HP_WU_FortressSim/).
 
 ## FAQ
 ### How does this simulation work?
