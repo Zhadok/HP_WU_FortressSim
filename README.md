@@ -18,8 +18,20 @@ The implementation of enemy generation can be found [here](https://github.com/Zh
 More data is definitely required to accurately generate realistic fortress rooms! Currently, there is a lot of guesswork involved. 
 
 
-### How are fortress runs reproducible? 
-Many components of this simulation require a random number generator (RNG). However, an RNG is usually initialized with a "seed". This seed ensures that the RNG will always produce the same sequence of results. This ensures that each fortress run will be exactly the same given the same seed. 
+### What is a "seed" / how are fortress runs reproducible? 
+Many components of this simulation require a random number generator (RNG). An RNG is usually initialized with a "seed". This seed ensures that the RNG will always produce the same sequence of results. This ensures that each fortress run will be exactly the same given the same seed and parameters. 
+
+For example, an RNG initialized with seed `0` might produce a sequence of random numbers: 
+```
+58 -> 9 -> 30 -> 50
+```
+The same RNG initialized with seed `1` would produce a completely different sequence of random numbers: 
+```
+92 -> 44 -> 32 -> 21
+```
+Importantly, the RNG will **always** produce the exact same sequence of random numbers given the same initial seed. 
+
+[Further reading](https://www.statisticshowto.datasciencecentral.com/random-seed-definition/)
 
 
 ### How does the player AI work? How do wizards decide which action to take?
