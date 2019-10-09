@@ -34,6 +34,21 @@ Importantly, the RNG will **always** produce the exact same sequence of random n
 [Further reading](https://www.statisticshowto.datasciencecentral.com/random-seed-definition/)
 
 
+### How are RNG "seeds" used when comparing multiple simulations?
+One of the questions addressed by this simulator is: Which room level is optimal for me?
+As such we want to run a simulation for each chamber level. 
+
+However, what we actually want to do is run *multiple* simulations per chamber level. This lets us say "On average, the success rate for chamber level X is Y%." 
+This means we need to use different seeds for the simulations of chamber level X. If we used the same seed `0` multiple times for the same chamber level X we would get exactly the same results! 
+
+As such the seed is incremented by 1 for each simulation. This means chamber level X is run with seed `0`, seed `1`, seed `2` and so on. 
+
+The code for this process can be found [here](https://github.com/Zhadok/HP_WU_FortressSim/blob/master/src/sim/parallel/CombatSimulationComparison.ts#L44). 
+
+
+
+
+
 ### How does the player AI work? How do wizards decide which action to take?
 The game is comparatively complex and allows players to choose from many actions such as potions, stragic spells or simply attacking. This simulation uses a rules engine to decide which action each wizard should take. A sample action would be to cast a strategic spell: 
 
