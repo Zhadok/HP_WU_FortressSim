@@ -1,5 +1,5 @@
 import { WizardStats } from "../model/player/WizardStats";
-import { nameClassType } from "../types";
+import { nameClassType, ruleContainerType } from "../types";
 import { PotionAvailabilityParameters } from "./PotionAvailabilityParameters";
 import { PersistedSkillTree } from "../model/player/SkillTree/PersistedSkillTree";
 
@@ -14,4 +14,5 @@ export interface CombatSimulationParameters {
     //wizardStats: Array<WizardStats> | null
     skillTrees: Array<PersistedSkillTree>
 
+    ruleContainers?: Array<ruleContainerType>
 }

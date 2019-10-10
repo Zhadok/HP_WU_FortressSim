@@ -18,6 +18,8 @@ import { Professor } from "./model/player/Professor";
 import { Wizard } from "./model/player/Wizard";
 import { Enemy } from "./model/env/enemies/Enemy";
 import { CombatSimulationParameters } from "./sim/CombatSimulationParameters.js";
+import { PotionAvailabilityParameters } from "./sim/PotionAvailabilityParameters.js";
+import { PersistedSkillTree } from "./model/player/SkillTree/PersistedSkillTree.js";
 declare type triggerNameType = 
             // Auror triggers
             "aurorAdvantage" | "playingDirty" | "dancingWithDummies" | "trickWithDeathEaters" |
@@ -87,6 +89,17 @@ declare type ruleContainerType = {
     author: string,
     nameClass: nameClassType, 
     rules: Array<ruleType>
+}
+
+//////////////
+// FRONTEND //
+//////////////
+declare type wizardSettingsType = {
+    nameClass: nameClassType, 
+    potions: PotionAvailabilityParameters, 
+    runestoneLevel: number, 
+    skillTree: PersistedSkillTree,
+    ruleContainer: ruleContainerType
 }
 
 

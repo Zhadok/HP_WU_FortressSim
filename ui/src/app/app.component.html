@@ -169,9 +169,48 @@
                                                     [(ngModel)]="simParameters.runestoneLevels[playerIndex]">
                                     </mat-form-field>
                                 </div>
+
+
+                                <div class="divSettingsPlayerRules">
+                                    <mat-expansion-panel [expanded]="false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                Player AI
+                                            </mat-panel-title>
+                                            <mat-panel-description>
+                                                Rules that determine the player AI's next action
+                                            </mat-panel-description>
+                                        </mat-expansion-panel-header>
+                                        <mat-tab-group id="matTabGroupRules">
+                                            <div class="divPlayerRulesContainer">
+
+                                               <table mat-table matSort [dataSource]="simParameters.ruleContainers[playerIndex].rules" class="mat-elevation-z8">
+                                                    
+                                                    <ng-container matColumnDef="priority">
+                                                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Priority </th>
+                                                            <td mat-cell *matCellDef="let row"> {{row.priority}} </td>
+                                                    </ng-container>
+                                                    <!--<ng-container matColumnDef="action">
+                                                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Action </th>
+                                                            <td mat-cell *matCellDef="let row"> {{formatUserFriendlyStat(row.action)}} </td>
+                                                    </ng-container>
+                                                    <ng-container matColumnDef="conditionsString">
+                                                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Conditions </th>
+                                                            <td mat-cell *matCellDef="let row"> {{row.conditionsString}} </td>
+                                                    </ng-container> -->
+                                                    
+                                
+                                                    <tr mat-header-row *matHeaderRowDef="columnNamesPlayerRules"></tr>
+                                                    <tr mat-row *matRowDef="let row; columns: columnNamesPlayerRules;"></tr>
+                                                </table> 
+                                            </div> 
+                                        </mat-tab-group>
+                                    </mat-expansion-panel>
+                                </div>
+                                
             
                                 <br>
-                                <button id="buttonRemoveWizard" mat-raised-button (click)="onClickRemoveWizard(playerIndex)">Remove</button>
+                                <button id="buttonRemoveWizard" mat-raised-button (click)="onClickRemoveWizard(playerIndex)">Remove wizard</button>
                             </div>
                             <div *ngIf="simParameters.nameClasses.length<5" class="divSingleWizardSettings">
                                 <button id="buttonAddWizard"  mat-raised-button (click)="onClickAddWizard($event)" matTooltip="Add another wizard" >Add wizard</button> 
@@ -214,42 +253,6 @@
                 <button class="buttonSkillTreeControl" id="buttonImportDataFromFile"  mat-raised-button  (click)="importDataFromFile()">Import data from file</button>
                 <button class="buttonSkillTreeControl" id="buttonExportDataToFile" mat-raised-button (click)="exportDataToFile()">Export data as file</button>
             </div>
-
-            <mat-expansion-panel [expanded]="false">
-                    <mat-expansion-panel-header>
-                        <mat-panel-title>
-                            Player AI
-                        </mat-panel-title>
-                        <mat-panel-description>
-                            Rules that determine the player AI's next action
-                        </mat-panel-description>
-                    </mat-expansion-panel-header>
-                    <mat-tab-group id="matTabGroupRules">
-                        <mat-tab *ngFor="let playerRules of playerRulesData" [label]="playerRules.nameClassUserFriendly">
-                            <div class="divRulesContainer">
-                                <table mat-table matSort [dataSource]="playerRules.rules" class="mat-elevation-z8">
-                                    
-                                    <ng-container matColumnDef="priority">
-                                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Priority </th>
-                                            <td mat-cell *matCellDef="let row"> {{row.priority}} </td>
-                                    </ng-container>
-                                    <ng-container matColumnDef="action">
-                                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Action </th>
-                                            <td mat-cell *matCellDef="let row"> {{formatUserFriendlyStat(row.action)}} </td>
-                                    </ng-container>
-                                    <ng-container matColumnDef="conditionsString">
-                                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Conditions </th>
-                                            <td mat-cell *matCellDef="let row"> {{row.conditionsString}} </td>
-                                    </ng-container>
-                
-                                    <tr mat-header-row *matHeaderRowDef="columnNamesPlayerRules"></tr>
-                                    <tr mat-row *matRowDef="let row; columns: columnNamesPlayerRules;"></tr>
-                                </table>
-                            </div>
-                        </mat-tab>
-                    </mat-tab-group>
-                </mat-expansion-panel>
-    
 
         </mat-expansion-panel>
 

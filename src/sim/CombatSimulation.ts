@@ -30,9 +30,7 @@ export class CombatSimulation {
     readonly fortressRoom: FortressRoom;
     readonly rng: Prando
     
-    readonly rulesEngineAuror: RulesEngine;
-    readonly rulesEngineMagizoologist: RulesEngine;
-    readonly rulesEngineProfessor: RulesEngine;
+    readonly rulesEngines: Array<RulesEngine>; // 1 ruleEngine per player (it might be that 2 professors in team but that they should follow different strategy)
 
     currentTime: number;
     readonly maxTime: number; 
@@ -73,9 +71,19 @@ export class CombatSimulation {
             this.wizards.push(wizard);
         }
 
-        this.rulesEngineAuror = RulesEngine.buildFromStandard("auror", rng);
-        this.rulesEngineMagizoologist = RulesEngine.buildFromStandard("magizoologist", rng);
-        this.rulesEngineProfessor = RulesEngine.buildFromStandard("professor", rng);
+        this.rulesEngines = []; 
+        if (params.ruleContainers === undefined) {
+            for (let nameClass of params.nameClasses) {
+                this.rulesEngines.push(RulesEngine.buildFromStandard(nameClass, rng)); 
+            }
+        }
+        else {
+            for (let ruleContainer of params.ruleContainers) {
+                this.rulesEngines.push(new RulesEngine(ruleContainer, rng)); 
+            }
+        }
+
+        
     }
 
     init() {
@@ -291,12 +299,8 @@ export class CombatSimulation {
         }
     }    
 
-    getRulesEngine(nameClass: nameClassType) {
-        switch (nameClass){
-            case "auror": return this.rulesEngineAuror;
-            case "magizoologist": return this.rulesEngineMagizoologist;
-            case "professor": return this.rulesEngineProfessor;
-        }
+    getRulesEngine(playerIndex: number): RulesEngine {
+        return this.rulesEngines[playerIndex]; 
     }
 
     // Priority based next action
@@ -316,7 +320,7 @@ export class CombatSimulation {
             highestPriorityAvailableEnemy: highestPriorityAvailableEnemy,  
             allWizards: this.wizards
         }
-        let nextEvent = await this.getRulesEngine(wizard.nameClass).getNextAction(timestampBegin, facts);
+        let nextEvent = await this.getRulesEngine(wizard.playerIndex).getNextAction(timestampBegin, facts);
         if (nextEvent !== null) {
             // event can be null, for example, if professor has not studied mending charm and no enemies available
             this.addEvent(nextEvent);

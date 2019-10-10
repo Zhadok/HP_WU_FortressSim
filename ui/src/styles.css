@@ -77,6 +77,14 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     clear: both; 
 }
 
+/******** Player rules editor ********/
+.divSettingsPlayerRules {
+    float: left; 
+    clear: both; 
+}
+
+
+
 #buttonRemoveWizard {
     margin-top: 20px;
     float: left; 

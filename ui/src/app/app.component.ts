@@ -5,7 +5,7 @@ import Prando from 'prando';
 import { TestData } from "../../../tests/TestData";
 import { CombatSimulationParameters } from '../../../src/sim/CombatSimulationParameters';
 import { nameClassType, nameClassUserFriendlyType, simGoalType as simGoalType, simAdvancedSettingsType,
-     simProgressType, simulationResultsGroupedType, localStorageDataType, ruleVisDataRowType, ruleVisDataContainerType, simulationLogChannelStoreType, simulationLogChannelType, ruleContainerType } from '../../../src/types';
+     simProgressType, simulationResultsGroupedType, localStorageDataType, ruleVisDataRowType, ruleVisDataContainerType, simulationLogChannelStoreType, simulationLogChannelType, ruleContainerType, wizardSettingsType } from '../../../src/types';
 import { PotionAvailabilityParameters } from '../../../src/sim/PotionAvailabilityParameters';
 import { PersistedSkillTree } from '../../../src/model/player/SkillTree/PersistedSkillTree';
 import { SkillTreeNode } from '../../../src/model/player/SkillTree/SkillTreeNode';
@@ -101,6 +101,11 @@ export class AppComponent {
             this.initFromLocalStorage(); 
         }
 
+        console.log("Initial sim parameters: ");
+        console.log(this.simParameters); 
+        console.log("Initial advanced settings: "); 
+        console.log(this.simAdvancedSettings); 
+
         // Apply initial observer functions
         this.applyObserverFunctions({
             simAdvancedSettings: this.simAdvancedSettings, 
@@ -118,7 +123,8 @@ export class AppComponent {
         this.simulationMultipleResultsGrouped = new MatTableDataSource(); 
         //this.simulationMultipleResultsGrouped.sort = this.simulationMultipleResultsGroupedSort; 
 
-        this.buildAllPlayerRulesData(); 
+        //this.columnNamesPlayerRules = Object.keys(this.simParameters.ruleContainers[0].rules[0]); 
+        this.columnNamesPlayerRules = ["priority"]; 
     }
 
     buildAllPlayerRulesData(): void {
@@ -184,11 +190,12 @@ export class AppComponent {
         this.addWizardSettings(initialWizardSettings);
     }
 
-    addWizardSettings(settings: {nameClass: nameClassType, potions: PotionAvailabilityParameters, runestoneLevel: number, skillTree: PersistedSkillTree}): void {
+    addWizardSettings(settings: wizardSettingsType): void {
         this.simParameters.nameClasses.push(settings.nameClass);
         this.simParameters.potions.push(settings.potions);
         this.simParameters.runestoneLevels.push(settings.runestoneLevel);
         this.simParameters.skillTrees.push(settings.skillTree);
+        this.simParameters.ruleContainers.push(settings.ruleContainer); 
         this.skillTrees.push(new SkillTree(settings.nameClass));
     }
 
@@ -198,6 +205,7 @@ export class AppComponent {
         this.simParameters.potions.splice(playerIndex, 1);
         this.simParameters.runestoneLevels.splice(playerIndex, 1);
         this.simParameters.skillTrees.splice(playerIndex, 1);
+        this.simParameters.ruleContainers.splice(playerIndex, 1); 
         this.skillTrees.splice(playerIndex, 1);
     }
 
@@ -504,16 +512,18 @@ export class AppComponent {
             nameClasses: [],
             potions: [],
             runestoneLevels: [],
-            skillTrees: []
+            skillTrees: [],
+            ruleContainers: []
         }; 
     }
 
-    getInitialWizardSettings(): {nameClass: nameClassType, potions: PotionAvailabilityParameters, runestoneLevel: number, skillTree: PersistedSkillTree} {
+    getInitialWizardSettings(): wizardSettingsType {
         return {
             nameClass: "professor" ,
             potions: this.getInitialPotionAvailability(),
             runestoneLevel: 1,
-            skillTree: {nameClass: "professor", nodesStudied: []}
+            skillTree: {nameClass: "professor", nodesStudied: []},
+            ruleContainer: professorRules as ruleContainerType
         }
     }
     getInitialPotionAvailability(): PotionAvailabilityParameters {
