@@ -17,7 +17,7 @@ import { MatCheckboxModule } from "@angular/material";
 import { MatTableModule } from "@angular/material"; 
 import { MatProgressBarModule } from "@angular/material"; 
 import {MatSortModule}from "@angular/material"; 
-
+import {MatPaginatorModule } from "@angular/material"; 
 
 @NgModule({
   declarations: [
@@ -39,7 +39,8 @@ import {MatSortModule}from "@angular/material";
     MatCheckboxModule,
     MatTableModule,
     MatProgressBarModule,
-    MatSortModule
+    MatSortModule, 
+    MatPaginatorModule
   ],
   providers: [],
   bootstrap: [AppComponent]

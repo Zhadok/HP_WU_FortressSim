@@ -81,7 +81,31 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .divSettingsPlayerRules {
     float: left; 
     clear: both; 
+    width: 100%
 }
+
+tr.expandedRule-row {
+    height: 0 !important; 
+}
+  
+tr.rule-row-static:hover {
+    background: #777;
+}
+  
+tr.rule-row:not(.expandedRule-row):active {
+    background: #efefef;
+}
+  
+.rule-row td {
+    border-bottom-width: 0;
+}
+  
+.rule-detail {
+    overflow: hidden;
+    display: flex;
+}
+  
+
 
 
 

@@ -5,7 +5,7 @@ import Prando from 'prando';
 import { TestData } from "../../../tests/TestData";
 import { CombatSimulationParameters } from '../../../src/sim/CombatSimulationParameters';
 import { nameClassType, nameClassUserFriendlyType, simGoalType as simGoalType, simAdvancedSettingsType,
-     simProgressType, simulationResultsGroupedType, localStorageDataType, ruleVisDataRowType, ruleVisDataContainerType, simulationLogChannelStoreType, simulationLogChannelType, ruleContainerType, wizardSettingsType } from '../../../src/types';
+     simProgressType, simulationResultsGroupedType, localStorageDataType, ruleVisDataRowType, ruleVisDataContainerType, simulationLogChannelStoreType, simulationLogChannelType, ruleContainerType, wizardSettingsType, ruleType } from '../../../src/types';
 import { PotionAvailabilityParameters } from '../../../src/sim/PotionAvailabilityParameters';
 import { PersistedSkillTree } from '../../../src/model/player/SkillTree/PersistedSkillTree';
 import { SkillTreeNode } from '../../../src/model/player/SkillTree/SkillTreeNode';
@@ -19,21 +19,29 @@ import { Logger } from '../../../src/util/Logger';
 import { CombatSimulationResults } from '../../../src/sim/CombatSimulationResults';
 import { CombatSimulationComparison } from '../../../src/sim//parallel/CombatSimulationComparison';
 import {MatTable, MatTab } from "@angular/material"; 
-import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import * as ObservableSlim from "observable-slim"; 
+import {MatSortModule}from "@angular/material"; 
+import {MatSort} from '@angular/material/sort';
 
 import professorRules from "../../../src/rules/store/professorRules.json";
 import aurorRules from "../../../src/rules/store/aurorRules.json";
 import magizoologistRules from "../../../src/rules/store/magizoologistRules.json";
 import { RulesEngine } from '../../../src/rules/RulesEngine';
 import { Utils_UI } from './utils_ui';
-
+import {animate, state, style, transition, trigger} from '@angular/animations';
 
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
-    styleUrls: ['./app.component.css']
+    styleUrls: ['./app.component.css'], 
+    animations: [
+        trigger('detailExpand', [
+          state('collapsed', style({height: '0px', minHeight: '0'})),
+          state('expanded', style({height: '*'})),
+          transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+        ])
+    ]
 })
 export class AppComponent {
     
@@ -79,7 +87,7 @@ export class AppComponent {
     @ViewChild("tableMultipleSimulationResults", {static: false}) matTableMultipleSimulationResults: MatTable<simulationResultsGroupedType>;
     //@ViewChild(MatSort, {static: false}) simulationMultipleResultsGroupedSort: MatSort
     
-    columnNamesPlayerRules = []; 
+    columnNamesPlayerRules = ["priority", "event.type"]; 
     playerRulesData: ruleVisDataContainerType[] = []; // 3 containers of rule data
 
     constructor() {
@@ -124,10 +132,9 @@ export class AppComponent {
         //this.simulationMultipleResultsGrouped.sort = this.simulationMultipleResultsGroupedSort; 
 
         //this.columnNamesPlayerRules = Object.keys(this.simParameters.ruleContainers[0].rules[0]); 
-        this.columnNamesPlayerRules = ["priority"]; 
     }
 
-    buildAllPlayerRulesData(): void {
+    /*buildAllPlayerRulesData(): void {
         this.playerRulesData.push(this.buildPlayerRulesData(aurorRules as ruleContainerType, "Auror")); 
         this.playerRulesData.push(this.buildPlayerRulesData(magizoologistRules as ruleContainerType, "Magizoologist")); 
         this.playerRulesData.push(this.buildPlayerRulesData(professorRules as ruleContainerType, "Professor")); 
@@ -169,7 +176,32 @@ export class AppComponent {
             nameClassUserFriendly: nameClassUserFriendly, 
             rules: rulesDataRaw
         };
+    }*/
+
+    @ViewChild(MatSort, {static: true}) playerRulesTableSort: MatSort
+    //playerRulesDataSources: Array<MatTableDataSource<ruleType>>; 
+    ngOnInit() {
+        console.log("In ngOnInit..."); 
+        //this.playerRulesDataSources = []; 
+        console.log(this.playerRulesTableSort); 
+        //this.getPlayerRulesForTable(0).sort = this.playerRulesTableSort; 
     }
+    
+    getPlayerRulesForTable(playerIndex: number): MatTableDataSource<ruleType> {
+        let result = new MatTableDataSource(this.simParameters.ruleContainers[playerIndex].rules); 
+        result.sortingDataAccessor = (rule: ruleType, property) => {
+            console.log("called with property=" + property); 
+            switch(property) {
+              case 'event.type': return rule.event.type; 
+              default: return rule[property];
+            }
+          };
+        
+        //this.playerRulesTableSort.sortChange.subscribe(v=> console.log(v) )
+        
+        return result; 
+    }
+
 
 
     applyObserverFunctions(data: localStorageDataType) {
@@ -265,6 +297,11 @@ export class AppComponent {
 
     getSimParametersCopy(): CombatSimulationParameters {
         return JSON.parse(JSON.stringify(this.simParameters)); 
+    }
+    unproxy(proxy: any): Object {
+        let result = JSON.parse(JSON.stringify(proxy)); 
+        console.log(result); 
+        return result; 
     }
 
     async onClickButtonStartSingleSimulation() {
