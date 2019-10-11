@@ -50,7 +50,7 @@
                                     <mat-label>Class</mat-label>
                                     <mat-select placeholder="Select class..." name="selectWizardClass" 
                                                 (selectionChange)="onChangeSelectWizardClass($event, playerIndex)"
-                                                [(value)]="nameClass"
+                                                [(ngModel)]="simParameters.nameClasses[playerIndex]"
                                                 class="inputPotion">
                                                 
                                         <mat-option *ngFor="let item of allowedClasses | keyvalue" value="{{item.key}}">{{item.value}}</mat-option>
@@ -194,20 +194,55 @@
                                                         <th mat-header-cell *matHeaderCellDef mat-sort-header> Action </th>
                                                         <td mat-cell *matCellDef="let rule"> {{formatUserFriendlyStat(rule.event.type)}} </td>
                                                 </ng-container>
-                                                <!--<ng-container matColumnDef="conditionsString">
-                                                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Conditions </th>
-                                                        <td mat-cell *matCellDef="let row"> {{row.conditionsString}} </td>
-                                                </ng-container> -->
+
                                                 <ng-container matColumnDef="expandedRuleColumn">
                                                     <td mat-cell *matCellDef="let rule" [attr.colspan]="columnNamesPlayerRules.length">
                                                         <div class="rule-detail"
                                                             [@detailExpand]="rule == expandedRule ? 'expanded' : 'collapsed'">
-                                                            Rule priority: {{rule.priority}}
-                                                            Rule type: {{rule.event.type}}
-                                                            Rule conditions: {{rule.conditions.all.length}}
-                                                            <div *ngFor="let condition of rule.conditions.all">
-                                                                condition.fact
+
+                                                            <div class="rule-detail-inner-container">
+                                                                <mat-form-field class="inputRulePriority">
+                                                                    <mat-label>Priority</mat-label>
+                                                                    <input matInput type="number" placeholder="Priority" [(ngModel)]="rule.priority">
+                                                                </mat-form-field>
+                                                                <mat-form-field class="inputRuleAction">
+                                                                    <mat-label>Action</mat-label>
+                                                                    <mat-select placeholder="Action" name="selectRuleType" 
+                                                                            [(ngModel)]="rule.event.type">
+                                                                        <mat-option *ngFor="let action of getActionNameMap(playerIndex) | keyvalue" 
+                                                                                    value="{{action.key}}">{{action.value}}</mat-option>
+                                                                    </mat-select>
+                                                                </mat-form-field><br>
+                                                                
+                                                                <h3 class="mat-h3">Conditions (number: {{rule.conditions.all.length}})</h3>
+                                                                <div *ngFor="let condition of rule.conditions.all">
+                                                                        <mat-form-field class="inputRuleFactObject inputRuleConditionElement">
+                                                                            <mat-label>Fact</mat-label>
+                                                                            <mat-select placeholder="Fact" name="selectFactObject" 
+                                                                                    [(ngModel)]="condition.fact">
+                                                                                <mat-option *ngFor="let allowedFact of getAllowedRuleFactNames() | keyvalue" 
+                                                                                            value="{{allowedFact.key}}">{{allowedFact.value.label}}</mat-option>
+                                                                            </mat-select>
+                                                                        </mat-form-field>
+                                                                        <mat-form-field class="inputRuleFactPath inputRuleConditionElement">
+                                                                            <mat-label>Attribute</mat-label>
+                                                                            <mat-select placeholder="Attribute" name="selectFactObject" 
+                                                                                    [(ngModel)]="condition.path">
+                                                                                <mat-option *ngFor="let path of getAllowedRuleFactPaths(playerIndex, condition.fact)" 
+                                                                                            value="{{path}}">{{path}}</mat-option>
+                                                                            </mat-select>
+                                                                        </mat-form-field>
+                                                                        <mat-form-field class="inputRuleOperator">
+                                                                            <mat-label>Operator</mat-label>
+                                                                            <mat-select placeholder="Operator" name="selectOperator" 
+                                                                                    [(ngModel)]="condition.operator">
+                                                                                <mat-option *ngFor="let operator of getRuleOperatorMap() | keyvalue" 
+                                                                                            value="{{operator.key}}">{{operator.value}}</mat-option>
+                                                                            </mat-select>
+                                                                        </mat-form-field>
+                                                                </div>
                                                             </div>
+                                                            
                                                         </div>
                                                     </td>
                                                 </ng-container>
@@ -219,7 +254,9 @@
                                                     (click)="expandedRule = expandedRule === rule ? null : rule">
                                                  </tr>
                                                  <tr mat-row *matRowDef="let row; columns: ['expandedRuleColumn']" class="expandedRule-row"></tr>
-                                            </table> 
+                                            </table> <!-- end table player rules-->
+
+                                            <button class="buttonSkillTreeControl" mat-raised-button color="accent" (click)="onClickResetPlayerRules(playerIndex)">Reset rules to default</button>
                                         </div> 
                                     </mat-expansion-panel>
                                 </div>

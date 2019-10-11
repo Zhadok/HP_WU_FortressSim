@@ -6,6 +6,7 @@ import { nameClassType, triggerNameType } from "../../types";
 import { Wizard } from "./Wizard";
 import { SkillTree } from "./SkillTree/SkillTree";
 import { PotionAvailabilityParameters } from "../../sim/PotionAvailabilityParameters";
+import { Enemy } from "../env/enemies/Enemy";
 
 
 export class WizardFactory {
@@ -33,6 +34,19 @@ export class WizardFactory {
         wizard.setPotions(potions); 
         skillTree.applyTriggers(wizard);
         return wizard;
+    }
+
+    static buildDemoWizard(nameClass: nameClassType): Wizard {
+        let wizard = this.buildWizardWithSkillTree(SkillTree.fromPersisted({nameClass: nameClass, nodesStudied: []}), 0, 0, {
+            nExstimuloAvailable: 0, nHealingPotionsAvailable: 0, nPotentExstimuloAvailable: 0, nStrongExstimuloAvailable: 0, nStrongInvigorationAvailable: 0,
+            nWeakInvigorationAvailable: 0, nWitSharpeningAvailable: 0 }
+        ); 
+        let enemy = Enemy.buildDemoEnemy(); 
+        wizard.inCombat = true; 
+        wizard.inCombatWith = enemy; 
+        enemy.inCombat = true; 
+        enemy.inCombatWith = wizard;
+        return wizard; 
     }
 
 }

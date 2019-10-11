@@ -51,14 +51,22 @@ declare type ruleFactType = {
     allWizards: Array<Wizard>,
     highestPriorityAvailableEnemy: Enemy | null
 }
+
+declare type ruleFactNameType = "wizard" | "highestPriorityAvailableEnemy"; 
+declare type ruleFactNameMapType = { [key in ruleFactNameType]: {
+    label: string,
+    allowedPaths: Array<string>
+}};
+
 declare type actionNameType = strategicSpellNameType | 
                               "strongInvigorationPotion" | "weakInvigorationPotion" |
                               "potentExstimuloPotion" | "strongExstimuloPotion" | "exstimuloPotion" | 
                               "witSharpeningPotion" | "healthPotion" |
                               "enterCombatWithHighestPriorityAvailableEnemy" | "exitCombat" | 
                               "combatSpellCastWizard" | "noAction";
+declare type actionNameMapType = { [key in actionNameType]: string }; 
 
-
+                              
 declare type ruleOperatorType = "equal" | "notEqual" |
                                 "lessThan" | "lessThanInclusive" | "greaterThan" | "greaterThanInclusive"; 
 declare type ruleOperatorShortType = "==" | "!=" | "<" | "<=" | ">" | ">=";

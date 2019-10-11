@@ -222,6 +222,10 @@ export class Enemy extends Combatant {
 
     }
 
+    static buildDemoEnemy(): Enemy {
+        return Enemy.buildEnemy("acromantula", 0, false, 3, 50, 3); 
+    }
+
     toUserFriendlyDescription(): string {
         let eliteString = this.isElite ? "elite " : "";  
         let starString = "";

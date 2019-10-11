@@ -7,7 +7,7 @@ import aurorRules from "./store/aurorRules.json";
 import magizoologistRules from "./store/magizoologistRules.json";
 
 import potionsData from "../data/potions.json"; 
-import { nameClassType, nameClassUserFriendlyType, strategicSpellNameType, ruleFactType, actionNameType, ruleOperatorMapType, ruleContainerType, ruleType } from "../types";
+import { nameClassType, nameClassUserFriendlyType, strategicSpellNameType, ruleFactType, actionNameType, ruleOperatorMapType, ruleContainerType, ruleType, actionNameMapType, ruleFactNameMapType, ruleFactNameType } from "../types";
 import { SimEvent } from "../sim/events/SimEvent";
 import { DefenceCharmEvent } from "../sim/events/wizard/room/spells/professor/DefenceCharmEvent";
 import { Enemy } from "../model/env/enemies/Enemy";
@@ -25,9 +25,50 @@ import { ExstimuloPotionEvent } from "../sim/events/wizard/potions/ExstimuloPoti
 import { WitSharpeningPotionEvent } from "../sim/events/wizard/potions/WitSharpeningPotionEvent";
 import { HealthPotionEvent } from "../sim/events/wizard/potions/HealthPotionEvent";
 import { RuleConstructorOptions } from "truegin/dist/lib/rule";
+import { Utils } from "../util/Utils";
+import { WizardFactory } from "../model/player/WizardFactory";
 
 
 export class RulesEngine {
+
+    static actionNameMap: actionNameMapType = {
+        "weakeningHex": "Weakening Hex",
+        "confusionHex": "Confusion Hex",
+        "focusCharm": "Focus Charm",
+        "batBogeyHex": "Bat Bogey Hex",
+        
+        "staminaCharm": "Stamina Charm",
+        "reviveCharm": "Revive Charm",
+        "braveryCharm": "Bravery Charm",
+    
+        "defenceCharm": "Defence Charm",
+        "deteriorationHex": "Deterioration Hex",
+        "proficiencyPowerCharm": "Proficiency Power Charm",
+        "mendingCharm": "Mending Charm",
+
+        "strongInvigorationPotion": "Strong Invigoration Potion",
+        "weakInvigorationPotion": "Weak Invigoration Potion",
+        "potentExstimuloPotion": "Potent Exstimulo Potion",
+        "strongExstimuloPotion": "Strong Exstimulo Potion", 
+        "exstimuloPotion": "Exstimulo Potion",
+        "witSharpeningPotion": "Wit Sharpening Potion",
+        "healthPotion": "Health Potion",
+        "enterCombatWithHighestPriorityAvailableEnemy": "Enter combat with highest priority available enemy",
+        "exitCombat": "Exit combat", 
+        "combatSpellCastWizard": "Attack",
+        "noAction": "No action"
+    }; 
+
+    static allowedFactObjects: ruleFactNameMapType = {
+        "wizard": {
+            "label": "Wizard",
+            "allowedPaths": RulesEngine.getAllowedPaths("wizard")
+        },
+        "highestPriorityAvailableEnemy": {
+            "label": "Highest priority available enemy",
+            "allowedPaths": RulesEngine.getAllowedPaths("highestPriorityAvailableEnemy")
+        }
+    };
 
     static ruleOperatorMap: ruleOperatorMapType = {
         "equal": "==",
@@ -38,6 +79,8 @@ export class RulesEngine {
         "greaterThanInclusive": ">="
     };
 
+
+
     readonly engine: Engine    
     readonly rng: Prando; 
 
@@ -47,6 +90,7 @@ export class RulesEngine {
         let rules = ruleContainer.rules; 
         
         rules.forEach((rule, index) => {
+            // First rule should have highest priority (10000 is most important)
             rule.priority = 10000 - index; 
             this.engine.addRule(rule);
         });
@@ -60,6 +104,16 @@ export class RulesEngine {
             case "auror": ruleContainer = aurorRules as ruleContainerType; break;
         }
         return new RulesEngine(ruleContainer!, rng)
+    }
+
+    static getAllowedPaths(ruleFactName: ruleFactNameType): Array<string> {
+        switch (ruleFactName) {
+            case "wizard":
+                let tempWizard: Wizard = WizardFactory.buildDemoWizard("professor");  
+                let paths = Utils.getAllPrimitiveFieldNames(tempWizard, "", []); 
+                return paths; 
+            case "highestPriorityAvailableEnemy": return []; 
+        }
     }
 
     async getNextAction(timestampBegin: number, facts: ruleFactType): Promise<SimEvent | null> {

@@ -5,7 +5,7 @@ import Prando from 'prando';
 import { TestData } from "../../../tests/TestData";
 import { CombatSimulationParameters } from '../../../src/sim/CombatSimulationParameters';
 import { nameClassType, nameClassUserFriendlyType, simGoalType as simGoalType, simAdvancedSettingsType,
-     simProgressType, simulationResultsGroupedType, localStorageDataType, ruleVisDataRowType, ruleVisDataContainerType, simulationLogChannelStoreType, simulationLogChannelType, ruleContainerType, wizardSettingsType, ruleType } from '../../../src/types';
+     simProgressType, simulationResultsGroupedType, localStorageDataType, ruleVisDataRowType, ruleVisDataContainerType, simulationLogChannelStoreType, simulationLogChannelType, ruleContainerType, wizardSettingsType, ruleType, actionNameMapType, ruleOperatorType, ruleOperatorMapType, ruleFactNameType } from '../../../src/types';
 import { PotionAvailabilityParameters } from '../../../src/sim/PotionAvailabilityParameters';
 import { PersistedSkillTree } from '../../../src/model/player/SkillTree/PersistedSkillTree';
 import { SkillTreeNode } from '../../../src/model/player/SkillTree/SkillTreeNode';
@@ -30,6 +30,7 @@ import magizoologistRules from "../../../src/rules/store/magizoologistRules.json
 import { RulesEngine } from '../../../src/rules/RulesEngine';
 import { Utils_UI } from './utils_ui';
 import {animate, state, style, transition, trigger} from '@angular/animations';
+import { Wizard } from '../../../src/model/player/Wizard';
 
 @Component({
     selector: 'app-root',
@@ -89,6 +90,7 @@ export class AppComponent {
     
     columnNamesPlayerRules = ["priority", "event.type"]; 
     playerRulesData: ruleVisDataContainerType[] = []; // 3 containers of rule data
+    
 
     constructor() {
         //let sim = new CombatSimulation(this.simParameters, new Prando(0));
@@ -200,6 +202,32 @@ export class AppComponent {
         //this.playerRulesTableSort.sortChange.subscribe(v=> console.log(v) )
         
         return result; 
+    }
+
+    // Which actions are allowed?
+    getActionNameMap(playerIndex: number): actionNameMapType {
+        // Todo: filter by class
+        return RulesEngine.actionNameMap; 
+    }
+
+    // Which fact objects are allowed (wizard, highest priority available enemy)
+    getAllowedRuleFactObjectsMap() {
+        return RulesEngine.allowedFactObjects;
+    }
+     // Which path is allowed for object (e.g., .stats.power)
+    getAllowedRuleFactPaths(playerIndex: number, ruleFactName: ruleFactNameType) {
+        let result = RulesEngine.allowedFactObjects[ruleFactName].allowedPaths; 
+        return result; 
+    }
+
+    // Which operators are allowed? (>, <, >= and so on)
+    getRuleOperatorMap(): ruleOperatorMapType{
+        return RulesEngine.ruleOperatorMap; 
+    }
+
+    onClickResetPlayerRules(playerIndex: number) {
+        console.log("Resetting player rules for playerIndex=" + playerIndex + "..."); 
+        this.simParameters.ruleContainers[playerIndex] = this.getDefaultRuleContainer(this.simParameters.nameClasses[playerIndex]); 
     }
 
 
@@ -560,9 +588,19 @@ export class AppComponent {
             potions: this.getInitialPotionAvailability(),
             runestoneLevel: 1,
             skillTree: {nameClass: "professor", nodesStudied: []},
-            ruleContainer: professorRules as ruleContainerType
+            ruleContainer: this.getDefaultRuleContainer("professor")
         }
     }
+    getDefaultRuleContainer(nameClass: nameClassType): ruleContainerType {
+        let result: ruleContainerType; 
+        switch (nameClass) {
+            case "auror": result = aurorRules as ruleContainerType;
+            case "magizoologist": result = magizoologistRules as ruleContainerType;
+            case "professor": result = professorRules as ruleContainerType; 
+        }
+        return JSON.parse(JSON.stringify(result));
+    }
+
     getInitialPotionAvailability(): PotionAvailabilityParameters {
         return {
             nExstimuloAvailable: 0,

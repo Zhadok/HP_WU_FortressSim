@@ -12,6 +12,7 @@ import { enemyNameType, nameClassType } from "../src/types";
 import { CombatSimulation } from "../src/sim/CombatSimulation";
 import { SkillTree } from "../src/model/player/SkillTree/SkillTree";
 import { PersistedSkillTree } from "../src/model/player/SkillTree/PersistedSkillTree";
+import { Wizard } from "../src/model/player/Wizard";
 
 export class TestRNG_0 extends Prando {
     next(): number {
@@ -178,6 +179,13 @@ export class TestData {
             FortressRoom.computeKnockoutTimeStatic(this.getDefaultRoomLevel()), this.buildDefaultPotionParameters()) as Professor;
         wizard.stats.maxFocus = 7;
         return wizard;
+    }
+    static buildDefaultClass(nameClass: nameClassType): Wizard {
+        switch (nameClass) {
+            case "auror": return TestData.buildDefaultAuror(); 
+            case "magizoologist": return TestData.buildDefaultMagizoologist(); 
+            case "professor": return TestData.buildDefaultProfessor(); 
+        }
     }
 
 

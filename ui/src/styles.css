@@ -100,12 +100,37 @@ tr.rule-row:not(.expandedRule-row):active {
     border-bottom-width: 0;
 }
   
-.rule-detail {
+.rule-detail { /* div that is expanded and collapsed by animation */
     overflow: hidden;
     display: flex;
 }
-  
-
+.rule-detail-inner-container { /* div that contains actual elements */
+    display: block; /* this overrides rule-detail flex */
+    padding: 10px; 
+    width: 100%; 
+    text-align: left; 
+}
+.inputRulePriority { /* number */
+    width: 30%;
+    float: left; 
+}
+.inputRuleAction { /* Strong invigoration potion */
+    width: 65%; 
+    float: right; 
+}
+.inputRuleConditionElement { /* All of the below inputs*/
+    margin-right: 5px; 
+    float: left;
+}
+.inputRuleFactObject { /* Wizard */
+    width: 15%; 
+}
+.inputRuleFactPath { /* .stats.power */
+    width: 20%;
+}
+.inputRuleOperator {
+    width: 5%; 
+}
 
 
 

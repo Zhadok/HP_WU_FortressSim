@@ -7,4 +7,6 @@ export class Utils_UI {
         if (val === null) { return false;}
         return ( (typeof val === 'function') || (typeof val === 'object') );
     }
+
+
 }
