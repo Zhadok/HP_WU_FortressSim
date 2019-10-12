@@ -72,6 +72,13 @@ declare type ruleOperatorType = "equal" | "notEqual" |
 declare type ruleOperatorShortType = "==" | "!=" | "<" | "<=" | ">" | ">=";
 declare type ruleOperatorMapType = { [key in ruleOperatorType]: ruleOperatorShortType }; 
 
+
+declare type ruleConditionType = {
+    fact: string;
+    path: string;
+    operator: ruleOperatorType;
+    value: ruleValueType;
+}; 
 /*declare type ruleValueType = {
     fact: string,
     path: string
@@ -84,12 +91,7 @@ declare type ruleType = {
     }, 
     priority?: number, 
     conditions: {
-        all: [{
-            fact: string;
-            path: string;
-            operator: ruleOperatorType;
-            value: ruleValueType;
-        }]
+        all: [ruleConditionType]
     }
 };
 

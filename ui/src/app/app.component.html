@@ -220,7 +220,7 @@
                                                                             <mat-label>Fact</mat-label>
                                                                             <mat-select placeholder="Fact" name="selectFactObject" 
                                                                                     [(ngModel)]="condition.fact">
-                                                                                <mat-option *ngFor="let allowedFact of getAllowedRuleFactNames() | keyvalue" 
+                                                                                <mat-option *ngFor="let allowedFact of getAllowedRuleFactObjectsMap() | keyvalue" 
                                                                                             value="{{allowedFact.key}}">{{allowedFact.value.label}}</mat-option>
                                                                             </mat-select>
                                                                         </mat-form-field>
@@ -232,7 +232,7 @@
                                                                                             value="{{path}}">{{path}}</mat-option>
                                                                             </mat-select>
                                                                         </mat-form-field>
-                                                                        <mat-form-field class="inputRuleOperator">
+                                                                        <mat-form-field class="inputRuleOperator inputRuleConditionElement">
                                                                             <mat-label>Operator</mat-label>
                                                                             <mat-select placeholder="Operator" name="selectOperator" 
                                                                                     [(ngModel)]="condition.operator">
@@ -240,6 +240,23 @@
                                                                                             value="{{operator.key}}">{{operator.value}}</mat-option>
                                                                             </mat-select>
                                                                         </mat-form-field>
+                                                                        <!-- primitive value comparison -->
+                                                                        <mat-form-field *ngIf="isConditionValuePrimitive(condition)" 
+                                                                            class="inputRulePrimitiveValue inputRuleConditionElement" >
+                                                                            <mat-label>Primitive value</mat-label>
+                                                                            <input matInput type="text" placeholder="Value" 
+                                                                                    value="{{stringifyPrimitiveValue(condition.value)}}" 
+                                                                                    (keyup)="onChangeConditionPrimitiveValue(condition, $event)" >
+                                                                        </mat-form-field>
+
+                                                                        
+
+                                                                        <mat-checkbox #checkbox class="checkboxConditionValuePrimitive" 
+                                                                            (change)="toggleConditionPrimitiveValue(condition, checkbox.checked)"
+                                                                            [checked]="isConditionValuePrimitive(condition)">
+                                                                            Primitive value
+                                                                        </mat-checkbox>
+
                                                                 </div>
                                                             </div>
                                                             

@@ -107,13 +107,17 @@ export class RulesEngine {
     }
 
     static getAllowedPaths(ruleFactName: ruleFactNameType): Array<string> {
+        let tempWizard: Wizard = WizardFactory.buildDemoWizard("professor");  
+        let paths: Array<string> = []; 
         switch (ruleFactName) {
             case "wizard":
-                let tempWizard: Wizard = WizardFactory.buildDemoWizard("professor");  
-                let paths = Utils.getAllPrimitiveFieldNames(tempWizard, "", []); 
-                return paths; 
-            case "highestPriorityAvailableEnemy": return []; 
+                paths = Utils.getAllFieldNames(tempWizard, "", []); 
+                break; 
+            case "highestPriorityAvailableEnemy": 
+                paths = Utils.getAllFieldNames(tempWizard.inCombatWith, "", []);  
+                break; 
         }
+        return paths; 
     }
 
     async getNextAction(timestampBegin: number, facts: ruleFactType): Promise<SimEvent | null> {

@@ -24,25 +24,30 @@ export class Utils {
      *     }
      * }
      * 
-     * should return [".a", ".b", ".c.d"]
+     * should return [".a", ".b", ".c", ".c.d"]
      */
-    static getAllPrimitiveFieldNames(object: any, currentPath: string, exploredPaths: Array<string>): Array<string> {
+    static getAllFieldNames(object: any, currentPath: string, exploredPaths: Array<string>): Array<string> {
         if (Utils.isObject(object) === false) {
             return [currentPath]; 
         }
         let result: Array<string> = []; 
+        if (currentPath !== "") {
+            // push path to this object itself as well
+            result.push(currentPath); 
+        }
         for (let key of Object.getOwnPropertyNames(object)) {
+            // check if key is already in path somewhere to avoid circular references
+            let pathSections = currentPath.split(".");
             let childPath = currentPath + "." + key; 
-            if (exploredPaths.indexOf(childPath) == -1) {
+            if (pathSections.indexOf(key) === -1) {
                 exploredPaths.push(childPath); 
-                let childKeys = Utils.getAllPrimitiveFieldNames(object[key], childPath, exploredPaths);
-               
+                let childKeys = Utils.getAllFieldNames(object[key], childPath, exploredPaths);
                 result = result.concat(childKeys); 
             }
             else {
-                console.log("Not exploring " + childPath); 
+                //console.log("Not exploring " + childPath); 
             }
-            console.log(exploredPaths); 
+            //console.log(exploredPaths); 
         }
         return result; 
     }

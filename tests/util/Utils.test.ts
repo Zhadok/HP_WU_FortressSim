@@ -14,7 +14,7 @@ describe("Utils", function() {
             "b": true, 
             "c": "asd"
         };
-        let result = Utils.getAllPrimitiveFieldNames(obj, "", []); 
+        let result = Utils.getAllFieldNames(obj, "", []); 
         expect(result).to.deep.equal([".a", ".b", ".c"]); 
     }); 
 
@@ -26,8 +26,8 @@ describe("Utils", function() {
                 "d": "asd"
             }
         };
-        let result = Utils.getAllPrimitiveFieldNames(obj, "", []); 
-        expect(result).to.deep.equal([".a", ".b", ".c.d"]); 
+        let result = Utils.getAllFieldNames(obj, "", []); 
+        expect(result).to.deep.equal([".a", ".b", ".c", ".c.d"]); 
     }); 
 
     it("getPrimitiveAttributeNames_nested_circular_references", function() {
@@ -51,15 +51,16 @@ describe("Utils", function() {
         obj2.otherReference = obj1; 
 
         //console.log(JSON.stringify(obj1)); // prints "circular" 
-        let result = Utils.getAllPrimitiveFieldNames(obj1, "", []); 
-        console.log(result); 
-        expect(result).to.deep.equal([".a", ".b", ".shared.abc", 
-                                      ".otherReference.aa", ".otherReference.bb", ".otherReference.shared.abc"]); 
+        let result = Utils.getAllFieldNames(obj1, "", []); 
+        //console.log(result); 
+        expect(result).to.deep.equal([".a", ".b", ".shared", ".shared.abc", 
+                                      ".otherReference", ".otherReference.aa", ".otherReference.bb", ".otherReference.shared", ".otherReference.shared.abc"]); 
     });
 
     it("getPrimitiveAttributeNames_demo_wizard", function() {
         let wizard = WizardFactory.buildDemoWizard("professor");
-        //console.log(wizard); 
+        let result = Utils.getAllFieldNames(wizard, "", []); 
+        //console.log(result.length); 
     });
 
 }); 

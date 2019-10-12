@@ -5,7 +5,7 @@ import Prando from 'prando';
 import { TestData } from "../../../tests/TestData";
 import { CombatSimulationParameters } from '../../../src/sim/CombatSimulationParameters';
 import { nameClassType, nameClassUserFriendlyType, simGoalType as simGoalType, simAdvancedSettingsType,
-     simProgressType, simulationResultsGroupedType, localStorageDataType, ruleVisDataRowType, ruleVisDataContainerType, simulationLogChannelStoreType, simulationLogChannelType, ruleContainerType, wizardSettingsType, ruleType, actionNameMapType, ruleOperatorType, ruleOperatorMapType, ruleFactNameType } from '../../../src/types';
+     simProgressType, simulationResultsGroupedType, localStorageDataType, ruleVisDataRowType, ruleVisDataContainerType, simulationLogChannelStoreType, simulationLogChannelType, ruleContainerType, wizardSettingsType, ruleType, actionNameMapType, ruleOperatorType, ruleOperatorMapType, ruleFactNameType, ruleConditionType } from '../../../src/types';
 import { PotionAvailabilityParameters } from '../../../src/sim/PotionAvailabilityParameters';
 import { PersistedSkillTree } from '../../../src/model/player/SkillTree/PersistedSkillTree';
 import { SkillTreeNode } from '../../../src/model/player/SkillTree/SkillTreeNode';
@@ -18,7 +18,7 @@ import { statNameType } from '../../../src/types';
 import { Logger } from '../../../src/util/Logger';
 import { CombatSimulationResults } from '../../../src/sim/CombatSimulationResults';
 import { CombatSimulationComparison } from '../../../src/sim//parallel/CombatSimulationComparison';
-import {MatTable, MatTab } from "@angular/material"; 
+import {MatTable, MatTab, ErrorStateMatcher } from "@angular/material"; 
 import {MatTableDataSource} from '@angular/material/table';
 import * as ObservableSlim from "observable-slim"; 
 import {MatSortModule}from "@angular/material"; 
@@ -31,6 +31,16 @@ import { RulesEngine } from '../../../src/rules/RulesEngine';
 import { Utils_UI } from './utils_ui';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import { Wizard } from '../../../src/model/player/Wizard';
+import { FormControl, FormGroupDirective, NgForm } from '@angular/forms';
+
+
+/** Error when invalid control is dirty, touched, or submitted. */
+export class RuleErrorStateMatcher implements ErrorStateMatcher {
+    isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+        console.log(control); 
+        return true; 
+    }
+  }
 
 @Component({
     selector: 'app-root',
@@ -90,7 +100,7 @@ export class AppComponent {
     
     columnNamesPlayerRules = ["priority", "event.type"]; 
     playerRulesData: ruleVisDataContainerType[] = []; // 3 containers of rule data
-    
+    ruleErrorStateMatcher = new RuleErrorStateMatcher(); 
 
     constructor() {
         //let sim = new CombatSimulation(this.simParameters, new Prando(0));
@@ -223,6 +233,35 @@ export class AppComponent {
     // Which operators are allowed? (>, <, >= and so on)
     getRuleOperatorMap(): ruleOperatorMapType{
         return RulesEngine.ruleOperatorMap; 
+    }
+
+    // rule conditions are allowed to use primitive values for comparison but also object values with paths
+    isConditionValuePrimitive(condition: ruleConditionType): boolean {
+        //console.log(condition.value+ ", result=" + Utils_UI.isObject(condition.value)); 
+        return Utils_UI.isObject(condition.value) === false; 
+    }
+
+    toggleConditionPrimitiveValue(condition: ruleConditionType, isChecked: boolean) {
+        console.log("checked: " + isChecked); 
+        if (isChecked) {
+            // Then use primitive value
+            condition.value = null;
+        }
+        else {
+            condition.value = {
+                fact: null,
+                path: null
+            };
+        }
+    }
+    stringifyPrimitiveValue(value: any) {
+        return JSON.stringify(value); 
+    }
+    onChangeConditionPrimitiveValue(condition: ruleConditionType, event) {
+        try {
+            condition.value = JSON.parse(event.target.value); 
+        }
+        catch (e) {}
     }
 
     onClickResetPlayerRules(playerIndex: number) {

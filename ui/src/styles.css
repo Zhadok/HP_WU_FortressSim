@@ -122,16 +122,22 @@ tr.rule-row:not(.expandedRule-row):active {
     margin-right: 5px; 
     float: left;
 }
-.inputRuleFactObject { /* Wizard */
+.inputRuleFactObject { /* Wizard, highest prio enemy */
     width: 15%; 
+    clear: both; 
 }
 .inputRuleFactPath { /* .stats.power */
-    width: 20%;
+    width: 30%;
 }
 .inputRuleOperator {
-    width: 5%; 
+    width: 10%; 
 }
-
+.inputRulePrimitiveValue { /* null, false, 3, ...*/
+    width: 20%; 
+}
+.checkboxConditionValuePrimitive {
+    float: left; 
+}
 
 
 #buttonRemoveWizard {
