@@ -1,6 +1,7 @@
 - 0.2.0
     - Revised player AI rules under "Player AI" under each player: Rules are visualized and can be edited
     - Reworked professor default rules for strong/weak invigoration potions to only be drunk "when needed" (this required nested rules)
+    - Added "Reset all data" button under Advanced simulation settings (for simple solution to data version migration problems)
 - 0.1.0
     - Added more user friendly chamber level name
     - Changed "triggers" to "conditional buffs" and filtered the list by strategic spells
