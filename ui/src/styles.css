@@ -114,6 +114,10 @@ tr.rule-row:not(.expandedRule-row):active {
     width: 30%;
     float: left; 
 }
+.divRuleConditionGroupContainer { /* Container for nested inputs below */
+    border: 1px solid black; 
+    padding: 5px; 
+}
 .inputRuleAction { /* Strong invigoration potion */
     width: 65%; 
     float: right; 
@@ -258,11 +262,20 @@ table {
 
 
 
-
 /*** Generic stuff ****/
 .myMatTooltip {
     white-space: pre-line;
 }
-
-
+.floatLeft {
+    float: left; 
+}
+.clearBoth {
+    clear: both; 
+}
+.marginRight5px {
+    margin-right: 5px !important;
+}
+.padding5px {
+    padding: 5px; 
+}
 

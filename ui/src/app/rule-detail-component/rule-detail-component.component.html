@@ -1,0 +1,92 @@
+
+<div [style.marginLeft.px]="depth*5" class="divRuleConditionGroupContainer floatLeft ">
+    <div class="floatLeft">
+        Conditions: <b>{{toUpperCase(ruleConditionGroupName)}} </b> of the following
+    </div>
+    <div class="padding5px floatLeft clearBoth">
+        <button mat-raised-button color="primary" (click)="onClickAddCondition()" class="floatLeft clearBoth marginRight5px">Add condition</button>
+        <button mat-raised-button color="primary" (click)="onClickAddConditionGroup('any')" class="floatLeft marginRight5px">Add subgroup (any)</button>
+        <button mat-raised-button color="primary" (click)="onClickAddConditionGroup('all')" class="floatLeft marginRight5px">Add subgroup (all)</button>
+        
+        <button *ngIf="depth>0" mat-raised-button color="accent" (click)="onClickRemoveConditionGroup()" class="floatLeft">Remove group</button>
+    </div>
+    <div *ngFor="let condition of conditionGroup; let conditionIndex=index"
+        
+        > <!-- element is either a condition (fact, operator, value) or "any"/"all", which is a subgroup on its own-->
+        <div *ngIf="condition.any === undefined && condition.all === undefined"> <!-- element is a condition and has no children -->
+            <mat-form-field class="inputRuleFactObject inputRuleConditionElement">
+                    <mat-label>Fact</mat-label>
+                    <mat-select placeholder="Fact" name="selectFactObject" 
+                            [(ngModel)]="condition.fact">
+                        <mat-option *ngFor="let allowedFact of getAllowedRuleFactObjectsMap() | keyvalue" 
+                                    value="{{allowedFact.key}}">{{allowedFact.value.label}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field class="inputRuleFactPath inputRuleConditionElement">
+                    <mat-label>Attribute</mat-label>
+                    <mat-select placeholder="Attribute" name="selectFactObject" 
+                            [(ngModel)]="condition.path">
+                        <mat-option *ngFor="let path of getAllowedRuleFactPaths(playerIndex, condition.fact)" 
+                                    value="{{path}}">{{path}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field class="inputRuleOperator inputRuleConditionElement">
+                    <mat-label>Operator</mat-label>
+                    <mat-select placeholder="Operator" name="selectOperator" 
+                            [(ngModel)]="condition.operator">
+                        <mat-option *ngFor="let operator of getRuleOperatorMap() | keyvalue" 
+                                    value="{{operator.key}}">{{operator.value}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <!-- primitive value comparison -->
+                <mat-form-field *ngIf="isConditionValuePrimitive(condition)" 
+                    class="inputRulePrimitiveValue inputRuleConditionElement" >
+                    <mat-label>Primitive value</mat-label>
+                    <input matInput type="text" placeholder="Value" 
+                            value="{{stringifyPrimitiveValue(condition.value)}}" 
+                            (keyup)="onChangeConditionPrimitiveValue(condition, $event)" >
+                </mat-form-field>
+            
+                <!-- object value comparison -->
+                <mat-form-field *ngIf="isConditionValuePrimitive(condition) === false" 
+                    class="inputRuleValueFactObject inputRuleConditionElement" >
+                    <mat-label>Value fact</mat-label>
+                    <mat-select placeholder="Fact" name="selectFactObject" 
+                            [(ngModel)]="condition.value.fact">
+                        <mat-option *ngFor="let allowedFact of getAllowedRuleFactObjectsMap() | keyvalue" 
+                                    value="{{allowedFact.key}}">{{allowedFact.value.label}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field *ngIf="isConditionValuePrimitive(condition) === false && condition.value.fact !== null"
+                    class="inputRuleFactPath inputRuleConditionElement" >
+                    <mat-label>Value attribute</mat-label>
+                    <mat-select placeholder="Attribute" name="selectFactObject" 
+                            [(ngModel)]="condition.value.path">
+                        <mat-option *ngFor="let path of getAllowedRuleFactPaths(playerIndex, condition.value.fact)" 
+                                    value="{{path}}">{{path}}</mat-option>
+                    </mat-select>
+                </mat-form-field> 
+                <mat-checkbox #checkbox class="checkboxConditionValuePrimitive" 
+                    (change)="toggleConditionPrimitiveValue(condition, checkbox.checked)"
+                    [checked]="isConditionValuePrimitive(condition)">
+                    Primitive value
+                </mat-checkbox>
+            
+                <button class="buttonSkillTreeControl" mat-icon-button color="accent" 
+                    (click)="onClickRemoveCondition(conditionIndex)"
+                    class="inputRuleConditionElement"><mat-icon>clear</mat-icon></button>
+                
+        </div>
+        <div *ngIf="condition.any !== undefined">
+            <app-rule-detail-component [conditionGroup]="condition.any" [depth]="depth+1" [ruleConditionGroupName]="'any'"
+                                       [parentConditionGroup]="conditionGroup" [parentConditionGroupIndex]="conditionIndex"></app-rule-detail-component>
+        </div>
+        <div *ngIf="condition.all !== undefined">
+            <app-rule-detail-component [conditionGroup]="condition.all" [depth]="depth+1" [ruleConditionGroupName]="'all'"
+                                       [parentConditionGroup]="conditionGroup" [parentConditionGroupIndex]="conditionIndex"></app-rule-detail-component>
+        </div>
+        
+
+    </div> <!-- End div per condition-->
+
+</div>

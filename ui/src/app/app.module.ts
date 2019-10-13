@@ -18,11 +18,13 @@ import { MatTableModule } from "@angular/material";
 import { MatProgressBarModule } from "@angular/material"; 
 import {MatSortModule}from "@angular/material"; 
 import {MatPaginatorModule } from "@angular/material"; 
-import {MatIconModule} from "@angular/material"; 
+import {MatIconModule} from "@angular/material";
+import { RuleDetailComponentComponent } from './rule-detail-component/rule-detail-component.component'; 
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    RuleDetailComponentComponent
   ],
   imports: [
     BrowserModule,

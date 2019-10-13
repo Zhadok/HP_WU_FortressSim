@@ -91,7 +91,6 @@ export class RulesEngine {
         
         rules.forEach((rule, index) => {
             // First rule should have highest priority (10000 is most important)
-            rule.priority = 10000 - index; 
             this.engine.addRule(rule);
         });
     }

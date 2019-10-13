@@ -202,95 +202,29 @@
 
                                                             <div class="rule-detail-inner-container">
                                                                 <mat-form-field class="inputRulePriority">
-                                                                    <mat-label>Priority</mat-label>
-                                                                    <input matInput type="number" placeholder="Priority" [(ngModel)]="rule.priority">
-                                                                </mat-form-field>
-                                                                <mat-form-field class="inputRuleAction">
-                                                                    <mat-label>Action</mat-label>
-                                                                    <mat-select placeholder="Action" name="selectRuleType" 
-                                                                            [(ngModel)]="rule.event.type">
-                                                                        <mat-option *ngFor="let action of getActionNameMap(playerIndex) | keyvalue" 
-                                                                                    value="{{action.key}}">{{action.value}}</mat-option>
-                                                                    </mat-select>
-                                                                </mat-form-field><br>
+                                                                        <mat-label>Priority</mat-label>
+                                                                        <input matInput type="number" placeholder="Priority" [(ngModel)]="rule.priority">
+                                                                    </mat-form-field>
+                                                                    <mat-form-field class="inputRuleAction">
+                                                                        <mat-label>Action</mat-label>
+                                                                        <mat-select placeholder="Action" name="selectRuleType" 
+                                                                                [(ngModel)]="rule.event.type">
+                                                                            <mat-option *ngFor="let action of getActionNameMap(playerIndex) | keyvalue" 
+                                                                                        value="{{action.key}}">{{action.value}}</mat-option>
+                                                                        </mat-select>
+                                                                    </mat-form-field><br>
+                                                                    
+                                                                    <h3 class="mat-h3">Conditions (total: {{rule.conditions.all.length}})</h3>
+                                                                    <app-rule-detail-component [conditionGroup]="rule.conditions.all"
+                                                                        [ruleConditionGroupName]="'all'"
+                                                                        [depth]="0"
+                                                                        [parentConditionGroup]="rule.conditions.all" [parentConditionGroupIndex]="0"
+                                                                    ></app-rule-detail-component>
+                                                                    
+                                                                    <button class="buttonSkillTreeControl" mat-raised-button color="accent" 
+                                                                        (click)="onClickRemoveRule(playerIndex, rule)"
+                                                                        class="buttonRemoveRule">Remove rule</button>
                                                                 
-                                                                <h3 class="mat-h3">Conditions (total: {{rule.conditions.all.length}})</h3>
-                                                                <div *ngFor="let conditionGroup of rule.conditions; let conditionIndex=index | keyvalue">
-                                                                
-                                                                </div>
-                                                                <div *ngFor="let condition of rule.conditions.all; let conditionIndex=index">
-                                                                    <mat-form-field class="inputRuleFactObject inputRuleConditionElement">
-                                                                        <mat-label>Fact</mat-label>
-                                                                        <mat-select placeholder="Fact" name="selectFactObject" 
-                                                                                [(ngModel)]="condition.fact">
-                                                                            <mat-option *ngFor="let allowedFact of getAllowedRuleFactObjectsMap() | keyvalue" 
-                                                                                        value="{{allowedFact.key}}">{{allowedFact.value.label}}</mat-option>
-                                                                        </mat-select>
-                                                                    </mat-form-field>
-                                                                    <mat-form-field class="inputRuleFactPath inputRuleConditionElement">
-                                                                        <mat-label>Attribute</mat-label>
-                                                                        <mat-select placeholder="Attribute" name="selectFactObject" 
-                                                                                [(ngModel)]="condition.path">
-                                                                            <mat-option *ngFor="let path of getAllowedRuleFactPaths(playerIndex, condition.fact)" 
-                                                                                        value="{{path}}">{{path}}</mat-option>
-                                                                        </mat-select>
-                                                                    </mat-form-field>
-                                                                    <mat-form-field class="inputRuleOperator inputRuleConditionElement">
-                                                                        <mat-label>Operator</mat-label>
-                                                                        <mat-select placeholder="Operator" name="selectOperator" 
-                                                                                [(ngModel)]="condition.operator">
-                                                                            <mat-option *ngFor="let operator of getRuleOperatorMap() | keyvalue" 
-                                                                                        value="{{operator.key}}">{{operator.value}}</mat-option>
-                                                                        </mat-select>
-                                                                    </mat-form-field>
-                                                                    <!-- primitive value comparison -->
-                                                                    <mat-form-field *ngIf="isConditionValuePrimitive(condition)" 
-                                                                        class="inputRulePrimitiveValue inputRuleConditionElement" >
-                                                                        <mat-label>Primitive value</mat-label>
-                                                                        <input matInput type="text" placeholder="Value" 
-                                                                                value="{{stringifyPrimitiveValue(condition.value)}}" 
-                                                                                (keyup)="onChangeConditionPrimitiveValue(condition, $event)" >
-                                                                    </mat-form-field>
-
-                                                                    <!-- object value comparison -->
-                                                                    <mat-form-field *ngIf="isConditionValuePrimitive(condition) === false" 
-                                                                        class="inputRuleValueFactObject inputRuleConditionElement" >
-                                                                        <mat-label>Value fact</mat-label>
-                                                                        <mat-select placeholder="Fact" name="selectFactObject" 
-                                                                                [(ngModel)]="condition.value.fact">
-                                                                            <mat-option *ngFor="let allowedFact of getAllowedRuleFactObjectsMap() | keyvalue" 
-                                                                                        value="{{allowedFact.key}}">{{allowedFact.value.label}}</mat-option>
-                                                                        </mat-select>
-                                                                    </mat-form-field>
-                                                                    <mat-form-field *ngIf="isConditionValuePrimitive(condition) === false && condition.value.fact !== null"
-                                                                        class="inputRuleFactPath inputRuleConditionElement" >
-                                                                        <mat-label>Value attribute</mat-label>
-                                                                        <mat-select placeholder="Attribute" name="selectFactObject" 
-                                                                                [(ngModel)]="condition.value.path">
-                                                                            <mat-option *ngFor="let path of getAllowedRuleFactPaths(playerIndex, condition.value.fact)" 
-                                                                                        value="{{path}}">{{path}}</mat-option>
-                                                                        </mat-select>
-                                                                    </mat-form-field> 
-                                                                    <mat-checkbox #checkbox class="checkboxConditionValuePrimitive" 
-                                                                        (change)="toggleConditionPrimitiveValue(condition, checkbox.checked)"
-                                                                        [checked]="isConditionValuePrimitive(condition)">
-                                                                        Primitive value
-                                                                    </mat-checkbox>
-
-                                                                    <button class="buttonSkillTreeControl" mat-icon-button color="accent" 
-                                                                        (click)="onClickRemoveCondition(rule, conditionIndex)"
-                                                                        class="inputRuleConditionElement"><mat-icon>clear</mat-icon></button>
-
-
-                                                            </div> <!-- End div per condition-->
-                                                               
-
-                                                                <button class="buttonSkillTreeControl" mat-raised-button color="primary" 
-                                                                    (click)="onClickAddCondition(rule)"
-                                                                    class="buttonAddRuleCondition">Add condition</button>
-                                                                <button class="buttonSkillTreeControl" mat-raised-button color="accent" 
-                                                                    (click)="onClickRemoveRule(rule)"
-                                                                    class="buttonRemoveRule">Remove rule</button>
                                                             </div> 
                                                             
                                                         </div>
@@ -342,7 +276,7 @@
                     Advanced simulation settings
                 </mat-panel-title>
                 <mat-panel-description>
-                    Seed, number of simulations, view player AI rules...
+                    Seed, number of simulations...
                 </mat-panel-description>
             </mat-expansion-panel-header>
         

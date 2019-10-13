@@ -173,65 +173,12 @@ export class AppComponent {
     // Which actions are allowed?
     getActionNameMap(playerIndex: number): actionNameMapType {
         // Todo: filter by class
-        return RulesEngine.actionNameMap; 
+        return RulesEngine.actionNameMap;
     }
-
-    // Which fact objects are allowed (wizard, highest priority available enemy)
-    getAllowedRuleFactObjectsMap() {
-        return RulesEngine.allowedFactObjects;
-    }
-     // Which path is allowed for object (e.g., .stats.power)
-    getAllowedRuleFactPaths(playerIndex: number, ruleFactName: ruleFactNameType) {
-        if (ruleFactName != "highestPriorityAvailableEnemy" && ruleFactName != "wizard") {
-            throw new Error("Invalid ruleFactName=" + ruleFactName); 
-        }
-        let result = RulesEngine.allowedFactObjects[ruleFactName].allowedPaths; 
-        return result; 
-    }
-
-    // Which operators are allowed? (>, <, >= and so on)
-    getRuleOperatorMap(): ruleOperatorMapType{
-        return RulesEngine.ruleOperatorMap; 
-    }
-
-    // rule conditions are allowed to use primitive values for comparison but also object values with paths
-    isConditionValuePrimitive(condition: ruleConditionType): boolean {
-        //console.log(condition.value+ ", result=" + Utils_UI.isObject(condition.value)); 
-        return Utils_UI.isObject(condition.value) === false; 
-    }
-
-    toggleConditionPrimitiveValue(condition: ruleConditionType, isChecked: boolean) {
-        console.log("checked: " + isChecked); 
-        if (isChecked) {
-            // Then use primitive value
-            condition.value = null;
-        }
-        else {
-            condition.value = {
-                fact: null,
-                path: null
-            };
-        }
-    }
-    stringifyPrimitiveValue(value: any) {
-        return JSON.stringify(value); 
-    }
-    onChangeConditionPrimitiveValue(condition: ruleConditionType, event) {
-        try {
-            condition.value = JSON.parse(event.target.value); 
-        }
-        catch (e) {}
-    }
-    onClickAddCondition(rule: ruleType) {
-        rule.conditions.all.push({
-            fact: "wizard",
-            path: null,
-            operator: "equal",
-            value: null 
-        }); 
-    }
-    onClickRemoveCondition(rule: ruleType, conditionIndex: number) {
-        rule.conditions.all.splice(conditionIndex, 1); 
+    onClickRemoveRule(playerIndex: number, rule: ruleType) {
+        let ruleIndex = this.simParameters.ruleContainers[playerIndex].rules.indexOf(rule); 
+        console.log("Removing ruleIndex=" + ruleIndex + " for playerIndex=" + playerIndex + "..."); 
+        this.simParameters.ruleContainers[playerIndex].rules.splice(ruleIndex, 1); 
     }
 
     onClickResetPlayerRules(playerIndex: number) {
@@ -247,7 +194,7 @@ export class AppComponent {
         console.log(this.simParameters.ruleContainers[playerIndex]); 
         this.createFileDownload(this.simParameters.ruleContainers[playerIndex].author + "_" + 
                                 this.simParameters.ruleContainers[playerIndex].nameClass + "_rules.json", 
-                                JSON.stringify(this.simParameters.ruleContainers[playerIndex], null, 2)); 
+                                JSON.stringify(this.simParameters.ruleContainers[playerIndex], null, 4)); 
     }
 
 
