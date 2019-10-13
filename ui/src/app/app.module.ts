@@ -18,6 +18,7 @@ import { MatTableModule } from "@angular/material";
 import { MatProgressBarModule } from "@angular/material"; 
 import {MatSortModule}from "@angular/material"; 
 import {MatPaginatorModule } from "@angular/material"; 
+import {MatIconModule} from "@angular/material"; 
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import {MatPaginatorModule } from "@angular/material";
     MatTableModule,
     MatProgressBarModule,
     MatSortModule, 
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatIconModule
   ],
   providers: [],
   bootstrap: [AppComponent]

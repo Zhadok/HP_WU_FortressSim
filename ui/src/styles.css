@@ -129,14 +129,27 @@ tr.rule-row:not(.expandedRule-row):active {
 .inputRuleFactPath { /* .stats.power */
     width: 30%;
 }
-.inputRuleOperator {
+.inputRuleOperator { /* >, >=, <= */
     width: 10%; 
 }
 .inputRulePrimitiveValue { /* null, false, 3, ...*/
     width: 20%; 
 }
+.inputRuleValueFactObject { /* Wizard, highest prio enemy but for value types that are object (and not primitive) */
+    width: 15%; 
+    clear: both; 
+    margin-left: 15%; 
+}
 .checkboxConditionValuePrimitive {
     float: left; 
+}
+.buttonAddRuleCondition {
+    float: left; 
+    clear: both; 
+}
+.buttonRemoveRule {
+    float: left; 
+    clear: both; 
 }
 
 

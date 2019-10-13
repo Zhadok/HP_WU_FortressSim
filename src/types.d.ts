@@ -73,8 +73,9 @@ declare type ruleOperatorShortType = "==" | "!=" | "<" | "<=" | ">" | ">=";
 declare type ruleOperatorMapType = { [key in ruleOperatorType]: ruleOperatorShortType }; 
 
 
+declare type ruleConditionGroupType = "all" | "any";
 declare type ruleConditionType = {
-    fact: string;
+    fact: ruleFactNameType;
     path: string;
     operator: ruleOperatorType;
     value: ruleValueType;
@@ -83,6 +84,7 @@ declare type ruleConditionType = {
     fact: string,
     path: string
 } | boolean;  */
+
 declare type ruleValueType = any; 
 declare type ruleType = {
     event: {

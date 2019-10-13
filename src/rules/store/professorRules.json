@@ -3,62 +3,6 @@
     "nameClass": "professor",
     "rules": [{
             "event": {
-                "type": "strongInvigorationPotion"
-            },
-            "priority": 0,
-            "conditions": {
-                "all": [
-                    {
-                        "fact": "wizard",
-                        "path": ".inCombat",
-                        "operator": "equal",
-                        "value": false
-                    }, {
-                        "fact": "wizard",
-                        "path": ".focus",
-                        "operator": "lessThan",
-                        "value": {
-                            "fact": "wizard",
-                            "path": ".stats.maxFocus"
-                        }
-                    }, {
-                        "fact": "wizard", 
-                        "path": ".potions.nStrongInvigorationAvailable",
-                        "operator": "greaterThan",
-                        "value": 0
-                    }
-                ]
-            }
-        }, {
-            "event": {
-                "type": "weakInvigorationPotion"
-            },
-            "priority": 0,
-            "conditions": {
-                "all": [
-                    {
-                        "fact": "wizard",
-                        "path": ".inCombat",
-                        "operator": "equal",
-                        "value": false
-                    }, {
-                        "fact": "wizard",
-                        "path": ".focus",
-                        "operator": "lessThan",
-                        "value": {
-                            "fact": "wizard",
-                            "path": ".stats.maxFocus"
-                        }
-                    }, {
-                        "fact": "wizard", 
-                        "path": ".potions.nWeakInvigorationAvailable",
-                        "operator": "greaterThan",
-                        "value": 0
-                    }
-                ]
-            }
-        }, {
-            "event": {
                 "type": "defenceCharm",
                 "params": {
                     "targetWizardIndex": 0
@@ -156,6 +100,77 @@
                         "path": ".triggers.deteriorationHex",
                         "operator": "notEqual",
                         "value": null
+                    }
+                ]
+            }
+        }, {
+            "event": {
+                "type": "strongInvigorationPotion"
+            },
+            "priority": 0,
+            "conditions": {
+                "all": [{
+                        "fact": "wizard",
+                        "path": ".inCombat",
+                        "operator": "equal",
+                        "value": false
+                    }, {
+                        "fact": "wizard",
+                        "path": ".focus",
+                        "operator": "lessThan",
+                        "value": {
+                            "fact": "wizard",
+                            "path": ".stats.maxFocus"
+                        }
+                    }, {
+                        "fact": "wizard", 
+                        "path": ".potions.nStrongInvigorationAvailable",
+                        "operator": "greaterThan",
+                        "value": 0
+                    }, {
+                        "any": [{
+                            "fact": "wizard",
+                            "path": ".hasDefenceCharm",
+                            "operator": "equal",
+                            "value": false
+                        }, {
+                            "fact": "wizard",
+                            "path": ".hasProficiencyPowerCharm",
+                            "operator": "equal",
+                            "value": false
+                        }, {
+                            "fact": "highestPriorityAvailableEnemy",
+                            "path": ".hasDeteriorationHex",
+                            "operator": "equal",
+                            "value": false
+                        }]
+                    }]
+            }
+        }, {
+            "event": {
+                "type": "weakInvigorationPotion"
+            },
+            "priority": 0,
+            "conditions": {
+                "all": [
+                    {
+                        "fact": "wizard",
+                        "path": ".inCombat",
+                        "operator": "equal",
+                        "value": false
+                    }, {
+                        "fact": "wizard",
+                        "path": ".focus",
+                        "operator": "lessThan",
+                        "value": {
+                            "fact": "wizard",
+                            "path": ".stats.maxFocus"
+                        }
+                    }, {
+                        "fact": "wizard", 
+                        "path": ".potions.nWeakInvigorationAvailable",
+                        "operator": "greaterThan",
+                        "value": 0
                     }
                 ]
             }

@@ -146,50 +146,6 @@ export class AppComponent {
         //this.columnNamesPlayerRules = Object.keys(this.simParameters.ruleContainers[0].rules[0]); 
     }
 
-    /*buildAllPlayerRulesData(): void {
-        this.playerRulesData.push(this.buildPlayerRulesData(aurorRules as ruleContainerType, "Auror")); 
-        this.playerRulesData.push(this.buildPlayerRulesData(magizoologistRules as ruleContainerType, "Magizoologist")); 
-        this.playerRulesData.push(this.buildPlayerRulesData(professorRules as ruleContainerType, "Professor")); 
-        //console.log(this.playerRulesData); 
-    }
-    // Convert rules json to table ready data
-    buildPlayerRulesData(ruleContainer: ruleContainerType, nameClassUserFriendly: nameClassUserFriendlyType): ruleVisDataContainerType {
-        let rulesDataRaw: ruleVisDataRowType[] = []; 
-
-        ruleContainer.rules.forEach((ruleJSON, index) => {
-            let conditionsString = ""; 
-            ruleJSON.conditions.all.forEach((condition, indexCondition) => {
-                let leftSide = condition.fact + "" + condition.path;
-                let operator = RulesEngine.ruleOperatorMap[condition.operator]; 
-                let rightSide = "";
-                if (Utils_UI.isObject(condition.value)) {
-                    rightSide = condition.value.fact + condition.value.path; 
-                }
-                else {
-                    rightSide = condition.value; 
-                }
-                conditionsString += leftSide + operator + rightSide;
-                if (indexCondition < ruleJSON.conditions.all.length - 1)
-                    conditionsString += " AND ";   
-            }); 
-            
-            rulesDataRaw.push({
-                priority: 10000 - index, 
-                action: ruleJSON.event.type, 
-                conditionsString: conditionsString
-            }); 
-        });
-
-        this.columnNamesPlayerRules = Object.keys(rulesDataRaw[0]); 
-
-        //console.log(rulesDataRaw); 
-        //let rulesDataSource = new MatTableDataSource(rulesDataRaw); 
-        return {
-            nameClassUserFriendly: nameClassUserFriendly, 
-            rules: rulesDataRaw
-        };
-    }*/
-
     @ViewChild(MatSort, {static: true}) playerRulesTableSort: MatSort
     //playerRulesDataSources: Array<MatTableDataSource<ruleType>>; 
     ngOnInit() {
@@ -226,6 +182,9 @@ export class AppComponent {
     }
      // Which path is allowed for object (e.g., .stats.power)
     getAllowedRuleFactPaths(playerIndex: number, ruleFactName: ruleFactNameType) {
+        if (ruleFactName != "highestPriorityAvailableEnemy" && ruleFactName != "wizard") {
+            throw new Error("Invalid ruleFactName=" + ruleFactName); 
+        }
         let result = RulesEngine.allowedFactObjects[ruleFactName].allowedPaths; 
         return result; 
     }
@@ -263,12 +222,33 @@ export class AppComponent {
         }
         catch (e) {}
     }
-
-    onClickResetPlayerRules(playerIndex: number) {
-        console.log("Resetting player rules for playerIndex=" + playerIndex + "..."); 
-        this.simParameters.ruleContainers[playerIndex] = this.getDefaultRuleContainer(this.simParameters.nameClasses[playerIndex]); 
+    onClickAddCondition(rule: ruleType) {
+        rule.conditions.all.push({
+            fact: "wizard",
+            path: null,
+            operator: "equal",
+            value: null 
+        }); 
+    }
+    onClickRemoveCondition(rule: ruleType, conditionIndex: number) {
+        rule.conditions.all.splice(conditionIndex, 1); 
     }
 
+    onClickResetPlayerRules(playerIndex: number) {
+        console.log("Resetting player rules to default for playerIndex=" + playerIndex + "..."); 
+        this.simParameters.ruleContainers[playerIndex] = this.getDefaultRuleContainer(this.simParameters.nameClasses[playerIndex]); 
+    }
+    onClickRemovePlayerRules(playerIndex: number) {
+        console.log("Removing all player rules for playerIndex=" + playerIndex + "..."); 
+        this.simParameters.ruleContainers[playerIndex].rules = []; 
+    }
+    onClickExportPlayerRules(playerIndex: number) {
+        console.log("Exporting player rules to JSON for playerIndex=" + playerIndex + "..."); 
+        console.log(this.simParameters.ruleContainers[playerIndex]); 
+        this.createFileDownload(this.simParameters.ruleContainers[playerIndex].author + "_" + 
+                                this.simParameters.ruleContainers[playerIndex].nameClass + "_rules.json", 
+                                JSON.stringify(this.simParameters.ruleContainers[playerIndex], null, 2)); 
+    }
 
 
     applyObserverFunctions(data: localStorageDataType) {

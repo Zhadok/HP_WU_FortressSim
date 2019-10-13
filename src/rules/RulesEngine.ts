@@ -123,7 +123,8 @@ export class RulesEngine {
     async getNextAction(timestampBegin: number, facts: ruleFactType): Promise<SimEvent | null> {
         //console.log(facts);
         let results = await this.engine.run(facts).catch((error) => {
-            throw new Error("Error processing rules");
+            console.log("Error processing rules!"); 
+            throw error; 
         }); 
         if (results.length === 0) {
             throw new Error("Could not find a next action for wizard id=" + facts.wizard.playerIndex + 

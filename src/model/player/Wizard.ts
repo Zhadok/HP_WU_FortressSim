@@ -23,6 +23,7 @@ export abstract class Wizard extends Combatant {
     readonly knockoutTime: number; 
 
     private focus: number;
+    private maximumFocusMinusCurrentFocus: number; // Needed for rules (e.g. 15 max focus, 12 current focus, value of this variable is 3)
 
     // Skill tree triggers (e.g. more power when X happens)
     private triggers: triggerMapType;
@@ -70,8 +71,8 @@ export abstract class Wizard extends Combatant {
         this.knockoutTime = knockoutTime;
 
         this.focus = 0;
+        this.maximumFocusMinusCurrentFocus = this.stats.maxFocus; 
         this.addFocus(this.stats.initialFocus);
-        //this.triggers = new Map<triggerNameType, number>();
         
         this.triggers = {
             // Auror
@@ -123,15 +124,20 @@ export abstract class Wizard extends Combatant {
     }
 
     addFocus(delta: number) {
-        this.focus += delta;
-        if (this.focus > this.stats.maxFocus) {
-            this.focus = this.stats.maxFocus;
-        }
+        this.setFocus(this.focus + delta); 
     }
     removeFocus(delta: number) {
-        this.focus -= delta;
+        this.setFocus(this.focus - delta); 
+    }
+    setFocus(focus: number) {
+        this.focus = focus; 
+        this.maximumFocusMinusCurrentFocus = this.stats.maxFocus - this.focus; 
+        if (this.focus > this.stats.maxFocus) {
+            this.focus = this.stats.maxFocus;
+            this.maximumFocusMinusCurrentFocus = 0; 
+        }
         if (this.focus < 0) {
-            throw new Error("Tried using too much focus, this.focus=" + this.focus + ", delta=" + delta + ", maxFocus=" + this.stats.maxFocus);
+            throw new Error("Tried using too much focus, this.focus=" + this.focus +  + ", maxFocus=" + this.stats.maxFocus);
         }
     }
     getFocus(): number {
