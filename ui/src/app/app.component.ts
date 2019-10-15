@@ -39,7 +39,7 @@ import { FormControl, FormGroupDirective, NgForm } from '@angular/forms';
 
 const cookieConfig: any = {
     "cookie": {
-        "domain": "zhadok.github.io/HP_WU_FortressSim"
+        "domain": "zhadok.github.io"
     },
     "position": "bottom",
     "theme": "classic",
