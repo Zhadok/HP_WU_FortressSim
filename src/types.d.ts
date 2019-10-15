@@ -151,8 +151,10 @@ declare type simProgressType = {
     nFinished: number, 
     nRemaining: number
 };
-// Results of multiple simulations (table)
+// Results of multiple simulations (table). One of these types is one row
 declare type simulationResultsGroupedType = {
+    groupByAttributeValue: string | number, // could be room level (1, 2, 3, ..) or next skill tree node 
+
     roomLevel: number, 
     winPercentage: number,
     

@@ -376,9 +376,14 @@ export class AppComponent {
             nRemaining: simComparison.getNumberSimulationsTotal(),
             nTotal: simComparison.getNumberSimulationsTotal()
         };
+        let lastProgressUpdate = (new Date()).getTime(); // Progress update should only be more than every 250ms because thats how long css animation of progress bar takes. otherwise animation is choppy
         simComparison.setListenerSimProgress((simProgress: simProgressType) => {
-            //console.log(simProgress); 
+            //console.log(simProgress);
+            //let currentTime = (new Date()).getTime();  
+            //if (currentTime - lastProgressUpdate > 250) {// have at least 250ms passed?
             self.simProgress = simProgress;
+            //lastProgressUpdate = currentTime; 
+            //}
         });
 
         Logger.verbosity = 1;
@@ -460,6 +465,8 @@ export class AppComponent {
                 let averageChallengeXPRewardPerHour = averageChallengeXPReward * (3600 * 1000 / (averageGameTimeMS + this.simAdvancedSettings.secondsBetweenSimulations));
 
                 resultsGrouped.push({
+                    groupByAttributeValue: roomLevel + " " + (roomLevel === this.simParameters.roomLevel ? "(base)" : ""),
+
                     roomLevel: roomLevel,
                     winPercentage: nWins / nRuns,
                     averageDamage: totalDamage / totalCasts, // Average damage per cast

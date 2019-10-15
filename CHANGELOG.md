@@ -1,6 +1,7 @@
 - 0.2.1
     - Added potions brew time under potion input
     - Slightly changed player AI rules layout
+    - Added analytics
 - 0.2.0
     - Revised player AI rules under "Player AI" under each player: Rules are visualized and can be edited
     - Reworked professor default rules for strong/weak invigoration potions to only be drunk "when needed" (this required nested rules)
