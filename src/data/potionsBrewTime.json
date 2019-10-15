@@ -1,0 +1,14 @@
+{
+
+    "healthPotion": 2,
+
+    "weakInvigorationPotion": 4,
+    "strongInvigorationPotion": 6,
+
+    "exstimuloPotion": 2,
+    "strongExstimuloPotion": 4,
+    "potentExstimuloPotion": 8,
+
+    "witSharpeningPotion": 6
+
+}

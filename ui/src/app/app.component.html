@@ -129,7 +129,11 @@
                                 </div>
             
                                 <div class="divSettingsPotions">
-                                    <p>Potions: </p>
+                                    <p>
+                                        Potions (brew time: {{getPotionsBrewTimeRaw(simParameters.potions[playerIndex])}},
+                                        with master notes: {{getPotionsBrewTimeMasterNotes(simParameters.potions[playerIndex])}}):
+                                        
+                                    </p>
                                     <form class="potionsForm">
                                         <mat-form-field class="inputPotion">
                                             <input type="number" min="0" matInput placeholder="Regular exstimulo" name="exstimulo"

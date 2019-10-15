@@ -141,8 +141,8 @@ tr.rule-row:not(.expandedRule-row):active {
 }
 .inputRuleValueFactObject { /* Wizard, highest prio enemy but for value types that are object (and not primitive) */
     width: 15%; 
-    clear: both; 
-    margin-left: 15%; 
+    /* clear: both; 
+    margin-left: 15%; */ 
 }
 .checkboxConditionValuePrimitive {
     float: left; 

@@ -26,6 +26,7 @@ import * as ObservableSlim from "observable-slim";
 import { MatSortModule } from "@angular/material";
 import { MatSort } from '@angular/material/sort';
 
+import potionsBrewTime from "../../../src/data/potionsBrewTime.json"; 
 import professorRules from "../../../src/rules/store/professorRules.json";
 import aurorRules from "../../../src/rules/store/aurorRules.json";
 import magizoologistRules from "../../../src/rules/store/magizoologistRules.json";
@@ -586,6 +587,44 @@ export class AppComponent {
             nStrongInvigorationAvailable: 0,
             nWitSharpeningAvailable: 0
         };
+    }
+
+    getPotionsBrewTime(potions: PotionAvailabilityParameters) {
+        let hours = potions.nExstimuloAvailable * potionsBrewTime.exstimuloPotion + 
+                    potions.nStrongExstimuloAvailable * potionsBrewTime.strongExstimuloPotion +
+                    potions.nPotentExstimuloAvailable * potionsBrewTime.potentExstimuloPotion + 
+                    potions.nHealingPotionsAvailable * potionsBrewTime.healthPotion + 
+                    potions.nWeakInvigorationAvailable * potionsBrewTime.weakInvigorationPotion + 
+                    potions.nStrongInvigorationAvailable * potionsBrewTime.strongInvigorationPotion +  
+                    potions.nWitSharpeningAvailable * potionsBrewTime.witSharpeningPotion;
+        return hours; 
+    }
+
+    getPotionsBrewTimeRaw(potions: PotionAvailabilityParameters) {
+        return this.formatHoursDecimal(this.getPotionsBrewTime(potions)); 
+    }
+
+    getPotionsBrewTimeMasterNotes(potions: PotionAvailabilityParameters) {
+        return this.formatHoursDecimal(this.getPotionsBrewTime(potions) * 0.85); 
+    }
+
+    formatHoursDecimal(hoursParam: number) {
+        let decimalTime = hoursParam * 60 * 60;
+        let hours: number | string  = Math.floor((decimalTime / (60 * 60)));
+        decimalTime = decimalTime - (hours * 60 * 60);
+        let minutes: number | string  = Math.floor((decimalTime / 60));
+        decimalTime = decimalTime - (minutes * 60);
+        let seconds: number | string  = Math.round(decimalTime);
+        if(hours < 10) {
+            hours = "0" + hours;
+        }
+        if(minutes < 10) {
+            minutes = "0" + minutes;
+        }
+        if(seconds < 10) {
+            seconds = "0" + seconds;
+        }
+        return hours + "h" + minutes + "m"; 
     }
 
     initFromLocalStorage(): void {
