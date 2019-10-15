@@ -37,6 +37,35 @@ import { Wizard } from '../../../src/model/player/Wizard';
 import { FormControl, FormGroupDirective, NgForm } from '@angular/forms';
 
 
+const cookieConfig: any = {
+    "cookie": {
+        "domain": "zhadok.github.io/HP_WU_FortressSim"
+    },
+    "position": "bottom",
+    "theme": "classic",
+    "palette": {
+        "popup": {
+            "background": "#000000",
+            "text": "#ffffff",
+            "link": "#ffffff"
+        },
+        "button": {
+            "background": "#f1d600",
+            "text": "#000000",
+            "border": "transparent"
+        }
+    },
+    "type": "info",
+    "content": {
+        "message": "This website uses cookies to ensure you get the best experience on our website.",
+        "dismiss": "Got it!",
+        "deny": "Refuse cookies",
+        "link": "Learn more",
+        "href": "https://cookiesandyou.com",
+        "policy": "Cookie Policy"
+    }
+}; 
+
 /** Error when invalid control is dirty, touched, or submitted. */
 export class RuleErrorStateMatcher implements ErrorStateMatcher {
     isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -153,9 +182,16 @@ export class AppComponent {
     //playerRulesDataSources: Array<MatTableDataSource<ruleType>>; 
     ngOnInit() {
         console.log("In ngOnInit...");
-        //this.playerRulesDataSources = []; 
-        console.log(this.playerRulesTableSort);
-        //this.getPlayerRulesForTable(0).sort = this.playerRulesTableSort; 
+        var host = window.location.hostname;
+        if (host != "localhost") {
+            console.log("Initializing cookie config..."); 
+            let cc = window as any;
+            cc.cookieconsent.initialise(cookieConfig); 
+        } 
+        else {
+            console.log("Not initializing cookie config since we are in localhost. ")
+        }
+        
     }
 
     getPlayerRulesForTable(playerIndex: number): MatTableDataSource<ruleType> {
