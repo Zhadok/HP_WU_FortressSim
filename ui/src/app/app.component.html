@@ -174,8 +174,8 @@
                                     </mat-form-field>
                                 </div>
 
-
-                                <div class="divSettingsPlayerRules">
+                                
+                                <div *ngIf="true" class="divSettingsPlayerRules">
                                     <mat-expansion-panel [expanded]="false">
                                         <mat-expansion-panel-header>
                                             <mat-panel-title>
@@ -223,7 +223,7 @@
                                                                         [ruleConditionGroupName]="'all'"
                                                                         [depth]="0"
                                                                         [parentConditionGroup]="rule.conditions.all" [parentConditionGroupIndex]="0"
-                                                                    ></app-rule-detail-component>
+                                                                    ></app-rule-detail-component> 
                                                                     
                                                                     <button class="buttonSkillTreeControl" mat-raised-button color="accent" 
                                                                         (click)="onClickRemoveRule(playerIndex, rule)"
@@ -242,7 +242,7 @@
                                                     (click)="expandedRule = expandedRule === rule ? null : rule">
                                                  </tr>
                                                  <tr mat-row *matRowDef="let row; columns: ['expandedRuleColumn']" class="expandedRule-row"></tr>
-                                            </table> <!-- end table player rules-->
+                                            </table>
                                             
 
                                             <button class="buttonSkillTreeControl" mat-raised-button color="accent" (click)="onClickResetPlayerRules(playerIndex)">Reset rules to default</button>
@@ -256,7 +256,7 @@
                                             
                                         </div> 
                                     </mat-expansion-panel>
-                                </div>
+                                </div> 
                                 
             
                                 <br>

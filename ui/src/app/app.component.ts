@@ -202,18 +202,20 @@ export class AppComponent {
 
     }
 
-    getPlayerRulesForTable(playerIndex: number): MatTableDataSource<ruleType> {
+    getPlayerRulesForTable(playerIndex: number): MatTableDataSource<ruleType> | ruleType[] {
         let result = new MatTableDataSource(this.simParameters.ruleContainers[playerIndex].rules);
-        result.sortingDataAccessor = (rule: ruleType, property) => {
+        //let result = this.simParameters.ruleContainers[playerIndex].rules; 
+        
+        /*result.sortingDataAccessor = (rule: ruleType, property) => {
             console.log("called with property=" + property);
             switch (property) {
                 case 'event.type': return rule.event.type;
                 default: return rule[property];
             }
-        };
+        };*/
 
         //this.playerRulesTableSort.sortChange.subscribe(v=> console.log(v) )
-
+        
         return result;
     }
 
