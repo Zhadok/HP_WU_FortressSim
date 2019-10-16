@@ -1,3 +1,5 @@
+- 0.3.0 
+    - Added button to compare next possible skill tree nodes
 - 0.2.1
     - Added potions brew time under potion input
     - Slightly changed player AI rules layout

@@ -387,6 +387,4 @@ export class CombatSimulation {
         };
     }
     
-    // In combat: Drink potion, attack, exit combat
-
 }

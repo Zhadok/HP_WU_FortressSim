@@ -68,6 +68,10 @@ export class SkillTree {
         };
     }
 
+    copy(): SkillTree {
+        return SkillTree.fromPersisted(this.persist()); 
+    }
+
     validateNodeLevel(node: SkillTreeNode, levelToCheck: number): void {
         if (levelToCheck > node.levels.length) {
             throw new Error("Tried to set invalid level=" + levelToCheck + " for node ID=" + node.rowIndex + "/" + node.columnIndex + ", max level=" + node.levels.length);

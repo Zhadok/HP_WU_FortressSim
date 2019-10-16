@@ -14,5 +14,6 @@ export interface CombatSimulationParameters {
     //wizardStats: Array<WizardStats> | null
     skillTrees: Array<PersistedSkillTree>
 
-    ruleContainers?: Array<ruleContainerType>
+    ruleContainers?: Array<ruleContainerType> // Player rule containers are optional (defaults are used if none are given here)
+    groupByValue?: string | number; // Used for comparing multiple simulations: Can be a roomLevel or a skillTreeNode. SimulationResults will be grouped by and compared based on this attribute
 }

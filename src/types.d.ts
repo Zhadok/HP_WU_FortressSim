@@ -129,6 +129,7 @@ declare type ruleVisDataRowType = {
 
 // Sim modes for frontend
 declare type simGoalType = "single" | "multiple_compare_roomLevels" | "multiple_compare_skillTreeNodes";
+declare type simGoalMapType = { [key in simGoalType]: string }; 
 declare type simAdvancedSettingsType = {
     simGoal: simGoalType,
     numberSimulations: number,
@@ -153,14 +154,14 @@ declare type simProgressType = {
 };
 // Results of multiple simulations (table). One of these types is one row
 declare type simulationResultsGroupedType = {
-    groupByAttributeValue: string | number, // could be room level (1, 2, 3, ..) or next skill tree node 
+    groupByValue: string | number | undefined, // could be room level (1, 2, 3, ..) or next skill tree node 
 
-    roomLevel: number, 
+    //roomLevel: number, 
     winPercentage: number,
     
     averageNumberOfCasts: number,
-    averageNumberOfCriticalCasts: number,
-    averageNumberOfDodgedCasts: number,
+    averageCritPercent: number,
+    averageDodgePercent: number,
     averageTotalDamage: number, 
     averageDamage: number
 

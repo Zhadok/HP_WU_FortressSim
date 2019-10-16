@@ -1,16 +1,17 @@
 import { CombatSimulationParameters } from "../CombatSimulationParameters";
-import { simGoalType as simGoalType } from "../../types";
+import { simGoalType as simGoalType, simulationResultsGroupedType } from "../../types";
 import * as workerpool from 'workerpool';
 import { CombatSimulationResults } from '../CombatSimulationResults';
 import { combatSimulationWorker } from "./CombatSimulationWorker";
 import { CombatSimulation } from "../CombatSimulation"; 
 import Prando from 'prando';
 import { Logger } from "../../util/Logger";
+import { SkillTree } from '../../model/player/SkillTree/SkillTree';
 
 export class CombatSimulationComparison {
 
     readonly simGoal: simGoalType; 
-    readonly numberSimulationsPerSeed: number; 
+    readonly numberSimulationsPerSettings: number; 
     readonly baseSimParameters: CombatSimulationParameters; 
     readonly allSimParams: CombatSimulationParameters[]; 
     readonly pool: workerpool.WorkerPool; 
@@ -18,38 +19,71 @@ export class CombatSimulationComparison {
 
     currentRunID: number = 0; 
 
-    constructor(simParameters: CombatSimulationParameters, simGoal: simGoalType, numberSimulationsPerSeed: number) {
+    constructor(simParameters: CombatSimulationParameters, simGoal: simGoalType, numberSimulationsPerSetting: number) {
         this.baseSimParameters = simParameters;
         this.simGoal = simGoal; 
-        this.numberSimulationsPerSeed = numberSimulationsPerSeed;
+        this.numberSimulationsPerSettings = numberSimulationsPerSetting;
         //this.pool = workerpool.pool(__dirname + "/CombatSimulationWorker.ts");
         this.pool = workerpool.pool(undefined); 
-        this.allSimParams = this.getSimParametersToCompare(this.baseSimParameters, this.numberSimulationsPerSeed, this.simGoal); 
+        this.allSimParams = this.getSimParametersToCompare(this.baseSimParameters, this.numberSimulationsPerSettings, this.simGoal); 
     }
 
-    getSimParametersToCompare(baseSimParameters: CombatSimulationParameters, numberSimulationsPerSeed: number, simMode: simGoalType): CombatSimulationParameters[] {
+    getSimParametersToCompare(baseSimParameters: CombatSimulationParameters, numberSimulationsPerSettings: number, simMode: simGoalType): CombatSimulationParameters[] {
         if (simMode === "multiple_compare_roomLevels") {
-            return this.getSimParametersToCompare_RoomLevels(baseSimParameters, numberSimulationsPerSeed); 
+            return this.getSimParametersToCompare_RoomLevels(baseSimParameters, numberSimulationsPerSettings); 
         }
         if (simMode === "multiple_compare_skillTreeNodes") {
             // What should my next skill tree node be?
+            return this.getSimParametersToCompare_SkillTreeNodes(baseSimParameters, 0, numberSimulationsPerSettings); 
         }
         throw new Error("not implemented"); 
     }
 
-    getSimParametersToCompare_RoomLevels(baseSimParameters: CombatSimulationParameters, numberSimulationsPerSeed: number): CombatSimulationParameters[] {
+    getSimParametersToCompare_RoomLevels(baseSimParameters: CombatSimulationParameters, numberSimulationsPerSettings: number): CombatSimulationParameters[] {
         // Use current settings as basis
-        let result = [];
+        let result: CombatSimulationParameters[] = [];
         
         for (let roomLevel = 1; roomLevel <= 20; roomLevel++) {
-            for (let seed=baseSimParameters.seed; seed<baseSimParameters.seed + numberSimulationsPerSeed;seed++) {
-                let simParamsLoop = JSON.parse(JSON.stringify(this.baseSimParameters)); 
+            for (let seed=baseSimParameters.seed; seed<baseSimParameters.seed + numberSimulationsPerSettings;seed++) {
+                let simParamsLoop: CombatSimulationParameters = JSON.parse(JSON.stringify(this.baseSimParameters)); 
                 simParamsLoop.seed = seed;
                 simParamsLoop.roomLevel = roomLevel;
+                simParamsLoop.groupByValue = roomLevel + "" + (roomLevel === baseSimParameters.roomLevel ? " (base)" : ""); 
                 result.push(simParamsLoop);
             }
         }
         return result; 
+    }
+
+    // Only compare skill tree nodes for single player (else computationally very big)
+    getSimParametersToCompare_SkillTreeNodes(baseSimParameters: CombatSimulationParameters, playerIndex: number, numberSimulationsPerSeed: number): CombatSimulationParameters[] {
+        let result: CombatSimulationParameters[] = [];
+        let baseSkillTree = SkillTree.fromPersisted(baseSimParameters.skillTrees[playerIndex]); 
+        let nextPossibleLessons = baseSkillTree.getNextPossibleLessons(); 
+
+        // Push once for base (no changes in lessons)
+        for (let seed=baseSimParameters.seed; seed<baseSimParameters.seed + numberSimulationsPerSeed;seed++) {
+            let simParamsLoop: CombatSimulationParameters = JSON.parse(JSON.stringify(this.baseSimParameters)); 
+            simParamsLoop.seed = seed;
+            simParamsLoop.groupByValue = "Base"; 
+            result.push(simParamsLoop); 
+        }
+
+        nextPossibleLessons.forEach((level, skillTreeNode) => {
+            let skillTreeWithNextLesson = baseSkillTree.copy(); // What would the skill tree be with this lesson learned? 
+            skillTreeWithNextLesson.setNodeLevelByName(skillTreeNode.name, level); 
+
+            for (let seed=baseSimParameters.seed; seed<baseSimParameters.seed + numberSimulationsPerSeed;seed++) {
+                let simParamsLoop: CombatSimulationParameters = JSON.parse(JSON.stringify(this.baseSimParameters)); 
+                simParamsLoop.seed = seed;
+                simParamsLoop.skillTrees[playerIndex] = skillTreeWithNextLesson.persist(); 
+                simParamsLoop.groupByValue = skillTreeNode.name + " (" + level + ")"; 
+                result.push(simParamsLoop); 
+            }
+            
+        });
+
+        return result;  
     }
 
     setListenerSimProgress(listener: Function) {
@@ -145,5 +179,60 @@ export class CombatSimulationComparison {
 
     
 
+    static groupResults(simulationMultipleResults: CombatSimulationResults[], secondsBetweenSimulations: number): simulationResultsGroupedType[] {
+        let uniqueGroupByValues = Array.from(new Set(simulationMultipleResults.map(result => result.simParameters.groupByValue)));
 
+        let resultsGrouped: simulationResultsGroupedType[] = [];
+
+        for (let uniqueGroupByValue of uniqueGroupByValues) { // Could be roomLevel or next skill tree node
+            // All  results for X simulations of this room level (example runs: 10)
+            let resultsFiltered = simulationMultipleResults.filter((results) => results.simParameters.groupByValue === uniqueGroupByValue);
+            let nRuns = resultsFiltered.length;
+            let nWins = resultsFiltered.map(r => r.isWin).map(isWin => Number(isWin)).reduce((a, b) => (a += b));
+            let totalDamage = 0;
+            let totalCasts = 0;
+            let totalCritPercent = 0;
+            let totalDodgePercent = 0;
+            let nWizards = resultsFiltered[0].wizardResults.length;
+            let totalChallengeXPReward = 0;
+            let totalGameTimeMSPassed = resultsFiltered.map(r => r.durationGameTimeMS).reduce((a, b) => a += b);
+            for (let wizardResultArray of resultsFiltered.map(r => r.wizardResults)) {
+                // Results for X wizards of 1 concrete simulation
+                for (let wizardResult of wizardResultArray) {
+                    // Result for 1 wizard of 1 concrete simulation
+                    totalDamage += wizardResult.totalDamage;
+                    totalCasts += wizardResult.numberOfCasts;
+                    totalCritPercent += wizardResult.numberOfCriticalCasts / wizardResult.numberOfCasts;
+                    totalDodgePercent += wizardResult.numberOfDodgedCasts / wizardResult.numberOfCasts;
+                    // Wizard 1 and wizard 2 might have different number of casts, so averages must be weighted for averageNumberOfCritCasts
+                    totalChallengeXPReward += wizardResult.challengeXPReward;
+                }
+            }
+
+            let averageGameTimeMS = totalGameTimeMSPassed / nRuns;
+            let averageChallengeXPReward = totalChallengeXPReward / (nRuns * nWizards);
+            let averageChallengeXPRewardPerHour = averageChallengeXPReward * (3600 * 1000 / (averageGameTimeMS + secondsBetweenSimulations));
+
+            resultsGrouped.push({
+                groupByValue: uniqueGroupByValue,
+
+                //roomLevel: roomLevel,
+                winPercentage: nWins / nRuns,
+                averageDamage: totalDamage / totalCasts, // Average damage per cast
+                averageNumberOfCasts: totalCasts / (nRuns * nWizards), // Average number of casts a wizard made 
+                averageCritPercent: totalCritPercent / (nRuns * nWizards),
+                averageDodgePercent: totalDodgePercent / (nRuns * nWizards),
+                averageTotalDamage: totalDamage / (nRuns * nWizards),
+                averageGameTimeMS: averageGameTimeMS,
+
+                averageChallengeXPReward: averageChallengeXPReward,
+                averageChallengeXPRewardPerHour: averageChallengeXPRewardPerHour,
+
+                numberOfRuns: nRuns
+            });
+        }
+
+        return resultsGrouped; 
+
+    }
 }

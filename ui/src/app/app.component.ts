@@ -6,7 +6,7 @@ import { TestData } from "../../../tests/TestData";
 import { CombatSimulationParameters } from '../../../src/sim/CombatSimulationParameters';
 import {
     nameClassType, nameClassUserFriendlyType, simGoalType as simGoalType, simAdvancedSettingsType,
-    simProgressType, simulationResultsGroupedType, localStorageDataType, ruleVisDataRowType, ruleVisDataContainerType, simulationLogChannelStoreType, simulationLogChannelType, ruleContainerType, wizardSettingsType, ruleType, actionNameMapType, ruleOperatorType, ruleOperatorMapType, ruleFactNameType, ruleConditionType
+    simProgressType, simulationResultsGroupedType, localStorageDataType, ruleVisDataRowType, ruleVisDataContainerType, simulationLogChannelStoreType, simulationLogChannelType, ruleContainerType, wizardSettingsType, ruleType, actionNameMapType, ruleOperatorType, ruleOperatorMapType, ruleFactNameType, ruleConditionType, simGoalMapType
 } from '../../../src/types';
 import { PotionAvailabilityParameters } from '../../../src/sim/PotionAvailabilityParameters';
 import { PersistedSkillTree } from '../../../src/model/player/SkillTree/PersistedSkillTree';
@@ -26,7 +26,7 @@ import * as ObservableSlim from "observable-slim";
 import { MatSortModule } from "@angular/material";
 import { MatSort } from '@angular/material/sort';
 
-import potionsBrewTime from "../../../src/data/potionsBrewTime.json"; 
+import potionsBrewTime from "../../../src/data/potionsBrewTime.json";
 import professorRules from "../../../src/rules/store/professorRules.json";
 import aurorRules from "../../../src/rules/store/aurorRules.json";
 import magizoologistRules from "../../../src/rules/store/magizoologistRules.json";
@@ -64,7 +64,7 @@ const cookieConfig: any = {
         "href": "https://cookiesandyou.com",
         "policy": "Cookie Policy"
     }
-}; 
+};
 
 /** Error when invalid control is dirty, touched, or submitted. */
 export class RuleErrorStateMatcher implements ErrorStateMatcher {
@@ -108,6 +108,18 @@ export class AppComponent {
     };
 
 
+
+
+    // Base sim parameters shown in UI
+    simParameters: CombatSimulationParameters;
+    skillTrees: Array<SkillTree> = [];
+
+    // Player rules
+    columnNamesPlayerRules = ["priority", "event.type"];
+    playerRulesData: ruleVisDataContainerType[] = []; // 3 containers of rule data
+    ruleErrorStateMatcher = new RuleErrorStateMatcher();
+
+
     // For showing results of simulations
     //simulationLog: string = "";
     simulationLogChannelStore: simulationLogChannelStoreType = {
@@ -120,19 +132,15 @@ export class AppComponent {
     simulationMultipleResultsGrouped: MatTableDataSource<simulationResultsGroupedType>;
     simProgress: simProgressType | null = null;
 
-    // Base sim parameters shown in UI
-    simParameters: CombatSimulationParameters;
-    skillTrees: Array<SkillTree> = [];
-
-
-
+    // Multiple sim results comparison
     columnNamesMultipleSimulationsResultsGrouped = [];
     @ViewChild("tableMultipleSimulationResults", { static: false }) matTableMultipleSimulationResults: MatTable<simulationResultsGroupedType>;
     //@ViewChild(MatSort, {static: false}) simulationMultipleResultsGroupedSort: MatSort
-
-    columnNamesPlayerRules = ["priority", "event.type"];
-    playerRulesData: ruleVisDataContainerType[] = []; // 3 containers of rule data
-    ruleErrorStateMatcher = new RuleErrorStateMatcher();
+    simGoalMap: simGoalMapType = { // Label of column for groupByAttributeValue
+        single: "Single",
+        multiple_compare_roomLevels: "Room level",
+        multiple_compare_skillTreeNodes: "Lesson"
+    };
 
     constructor() {
         //let sim = new CombatSimulation(this.simParameters, new Prando(0));
@@ -184,14 +192,14 @@ export class AppComponent {
         console.log("In ngOnInit...");
         var host = window.location.hostname;
         if (host != "localhost") {
-            console.log("Initializing cookie config..."); 
+            console.log("Initializing cookie config...");
             let cc = window as any;
-            cc.cookieconsent.initialise(cookieConfig); 
-        } 
+            cc.cookieconsent.initialise(cookieConfig);
+        }
         else {
             console.log("Not initializing cookie config since we are in localhost. ")
         }
-        
+
     }
 
     getPlayerRulesForTable(playerIndex: number): MatTableDataSource<ruleType> {
@@ -431,66 +439,15 @@ export class AppComponent {
 
     updateSimulationMultipleResultsGrouped() {
 
-        let uniqueRoomLevels: number[] = Array.from(new Set(this.simulationMultipleResults.map(result => result.simParameters.roomLevel)));
-        let resultsGrouped: simulationResultsGroupedType[] = [];
-        if (this.simAdvancedSettings.simGoal === "multiple_compare_roomLevels") {
-            // Group by room level (example total runs: 200)
-            for (let roomLevel of uniqueRoomLevels) {
-                // All  results for X simulations of this room level (example runs: 10)
-                let resultsFiltered = this.simulationMultipleResults.filter((results) => results.simParameters.roomLevel === roomLevel);
-                let nRuns = resultsFiltered.length;
-                let nWins = resultsFiltered.map(r => r.isWin).map(isWin => Number(isWin)).reduce((a, b) => (a += b));
-                let totalDamage = 0;
-                let totalCasts = 0;
-                let totalCritCasts = 0;
-                let totalDodgeCasts = 0;
-                let nWizards = resultsFiltered[0].wizardResults.length;
-                let totalChallengeXPReward = 0;
-                let totalGameTimeMSPassed = resultsFiltered.map(r => r.durationGameTimeMS).reduce((a, b) => a += b);
-                for (let wizardResultArray of resultsFiltered.map(r => r.wizardResults)) {
-                    // Results for X wizards of 1 concrete simulation
-                    for (let wizardResult of wizardResultArray) {
-                        // Result for 1 wizard of 1 concrete simulation
-                        totalDamage += wizardResult.totalDamage;
-                        totalCasts += wizardResult.numberOfCasts;
-                        totalCritCasts += wizardResult.numberOfCriticalCasts;
-                        totalDodgeCasts += wizardResult.numberOfDodgedCasts;
-                        // Wizard 1 and wizard 2 might have different number of casts, so averages must be weighted for averageNumberOfCritCasts
-                        totalChallengeXPReward += wizardResult.challengeXPReward;
-                    }
-                }
+        let resultsGrouped: simulationResultsGroupedType[] = CombatSimulationComparison.groupResults(this.simulationMultipleResults, this.simAdvancedSettings.secondsBetweenSimulations);
 
-                let averageGameTimeMS = totalGameTimeMSPassed / nRuns;
-                let averageChallengeXPReward = totalChallengeXPReward / (nRuns * nWizards);
-                let averageChallengeXPRewardPerHour = averageChallengeXPReward * (3600 * 1000 / (averageGameTimeMS + this.simAdvancedSettings.secondsBetweenSimulations));
-
-                resultsGrouped.push({
-                    groupByAttributeValue: roomLevel + " " + (roomLevel === this.simParameters.roomLevel ? "(base)" : ""),
-
-                    roomLevel: roomLevel,
-                    winPercentage: nWins / nRuns,
-                    averageDamage: totalDamage / totalCasts, // Average damage per cast
-                    averageNumberOfCasts: totalCasts / (nRuns * nWizards), // Average number of casts a wizard made 
-                    averageNumberOfCriticalCasts: totalCritCasts / (nRuns * nWizards),
-                    averageNumberOfDodgedCasts: totalDodgeCasts / (nRuns * nWizards),
-                    averageTotalDamage: totalDamage / (nRuns * nWizards),
-                    averageGameTimeMS: averageGameTimeMS,
-
-                    averageChallengeXPReward: averageChallengeXPReward,
-                    averageChallengeXPRewardPerHour: averageChallengeXPRewardPerHour,
-
-                    numberOfRuns: nRuns
-                });
-            }
-            //this.simulationMultipleResultsGrouped.data = resultsGrouped; 
-            this.simulationMultipleResultsGrouped = new MatTableDataSource(resultsGrouped);
-            //this.simulationMultipleResultsGrouped.sort = this.simulationMultipleResultsGroupedSort; 
-            this.columnNamesMultipleSimulationsResultsGrouped = Object.keys(resultsGrouped[0]);
-
-            //console.log(this.simulationMultipleResultsGrouped); 
-            //console.log(this.columnNamesMultipleSimulationsResultsGrouped); 
-            //this.matTableMultipleSimulationResults.renderRows(); 
-        }
+        //this.simulationMultipleResultsGrouped.data = resultsGrouped; 
+        this.simulationMultipleResultsGrouped = new MatTableDataSource(resultsGrouped);
+        //this.simulationMultipleResultsGrouped.sort = this.simulationMultipleResultsGroupedSort; 
+        this.columnNamesMultipleSimulationsResultsGrouped = Object.keys(resultsGrouped[0]);
+        //console.log(this.simulationMultipleResultsGrouped); 
+        //console.log(this.columnNamesMultipleSimulationsResultsGrouped); 
+        //this.matTableMultipleSimulationResults.renderRows(); 
     }
 
 
@@ -633,41 +590,41 @@ export class AppComponent {
     }
 
     getPotionsBrewTime(potions: PotionAvailabilityParameters) {
-        let hours = potions.nExstimuloAvailable * potionsBrewTime.exstimuloPotion + 
-                    potions.nStrongExstimuloAvailable * potionsBrewTime.strongExstimuloPotion +
-                    potions.nPotentExstimuloAvailable * potionsBrewTime.potentExstimuloPotion + 
-                    potions.nHealingPotionsAvailable * potionsBrewTime.healthPotion + 
-                    potions.nWeakInvigorationAvailable * potionsBrewTime.weakInvigorationPotion + 
-                    potions.nStrongInvigorationAvailable * potionsBrewTime.strongInvigorationPotion +  
-                    potions.nWitSharpeningAvailable * potionsBrewTime.witSharpeningPotion;
-        return hours; 
+        let hours = potions.nExstimuloAvailable * potionsBrewTime.exstimuloPotion +
+            potions.nStrongExstimuloAvailable * potionsBrewTime.strongExstimuloPotion +
+            potions.nPotentExstimuloAvailable * potionsBrewTime.potentExstimuloPotion +
+            potions.nHealingPotionsAvailable * potionsBrewTime.healthPotion +
+            potions.nWeakInvigorationAvailable * potionsBrewTime.weakInvigorationPotion +
+            potions.nStrongInvigorationAvailable * potionsBrewTime.strongInvigorationPotion +
+            potions.nWitSharpeningAvailable * potionsBrewTime.witSharpeningPotion;
+        return hours;
     }
 
     getPotionsBrewTimeRaw(potions: PotionAvailabilityParameters) {
-        return this.formatHoursDecimal(this.getPotionsBrewTime(potions)); 
+        return this.formatHoursDecimal(this.getPotionsBrewTime(potions));
     }
 
     getPotionsBrewTimeMasterNotes(potions: PotionAvailabilityParameters) {
-        return this.formatHoursDecimal(this.getPotionsBrewTime(potions) * 0.85); 
+        return this.formatHoursDecimal(this.getPotionsBrewTime(potions) * 0.85);
     }
 
     formatHoursDecimal(hoursParam: number) {
         let decimalTime = hoursParam * 60 * 60;
-        let hours: number | string  = Math.floor((decimalTime / (60 * 60)));
+        let hours: number | string = Math.floor((decimalTime / (60 * 60)));
         decimalTime = decimalTime - (hours * 60 * 60);
-        let minutes: number | string  = Math.floor((decimalTime / 60));
+        let minutes: number | string = Math.floor((decimalTime / 60));
         decimalTime = decimalTime - (minutes * 60);
-        let seconds: number | string  = Math.round(decimalTime);
-        if(hours < 10) {
+        let seconds: number | string = Math.round(decimalTime);
+        if (hours < 10) {
             hours = "0" + hours;
         }
-        if(minutes < 10) {
+        if (minutes < 10) {
             minutes = "0" + minutes;
         }
-        if(seconds < 10) {
+        if (seconds < 10) {
             seconds = "0" + seconds;
         }
-        return hours + "h" + minutes + "m"; 
+        return hours + "h" + minutes + "m";
     }
 
     initFromLocalStorage(): void {

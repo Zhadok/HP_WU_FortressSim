@@ -605,7 +605,7 @@
             "statChange": 0.16,
             "costScrolls": 18
         }],
-        "dependencies": ["9/1"]
+        "dependencies": ["9/1", "10/3"]
     }, {
         "rowIndex": 10,
         "columnIndex": 3,
@@ -619,7 +619,7 @@
             "statChange": 0.14,
             "costScrolls": 18
         }],
-        "dependencies": ["9/3"]
+        "dependencies": ["9/3", "9/4", "10/2"]
     },
 
     {

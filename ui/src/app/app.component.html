@@ -412,14 +412,14 @@
                     <table #tableMultipleSimulationResults mat-table matSort [dataSource]="simulationMultipleResultsGrouped" class="mat-elevation-z8">
 
                         
-                            <ng-container matColumnDef="groupByAttributeValue">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Variable setting </th>
-                                <td mat-cell *matCellDef="let row"> {{row.groupByAttributeValue}} </td>
+                            <ng-container matColumnDef="groupByValue">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header> {{simGoalMap[simAdvancedSettings.simGoal]}} </th>
+                                <td mat-cell *matCellDef="let row"> {{row.groupByValue}} </td>
                             </ng-container>
-                            <ng-container matColumnDef="roomLevel">
+                            <!-- <ng-container matColumnDef="roomLevel">
                                     <th mat-header-cell *matHeaderCellDef mat-sort-header> Room level </th>
                                     <td mat-cell *matCellDef="let row"> {{row.roomLevel}} </td>
-                            </ng-container>
+                            </ng-container> -->
                             <ng-container matColumnDef="winPercentage">
                                     <th mat-header-cell *matHeaderCellDef mat-sort-header> Win % </th>
                                     <td mat-cell *matCellDef="let row"> {{row.winPercentage.toFixed(2)}} </td>
@@ -432,13 +432,13 @@
                                     <th mat-header-cell *matHeaderCellDef> Average damage (per cast) </th>
                                     <td mat-cell *matCellDef="let row"> {{row.averageDamage.toFixed(2)}} </td>
                             </ng-container>
-                            <ng-container matColumnDef="averageNumberOfCriticalCasts">
-                                    <th mat-header-cell *matHeaderCellDef> Average crits </th>
-                                    <td mat-cell *matCellDef="let row"> {{row.averageNumberOfCriticalCasts.toFixed(2)}} </td>
+                            <ng-container matColumnDef="averageCritPercent">
+                                    <th mat-header-cell *matHeaderCellDef> Crit % </th>
+                                    <td mat-cell *matCellDef="let row"> {{row.averageCritPercent.toFixed(2)}} </td>
                             </ng-container>
-                            <ng-container matColumnDef="averageNumberOfDodgedCasts">
-                                    <th mat-header-cell *matHeaderCellDef> Average dodged </th>
-                                    <td mat-cell *matCellDef="let row"> {{row.averageNumberOfDodgedCasts.toFixed(2)}} </td>
+                            <ng-container matColumnDef="averageDodgePercent">
+                                    <th mat-header-cell *matHeaderCellDef> Dodge % </th>
+                                    <td mat-cell *matCellDef="let row"> {{row.averageDodgePercent.toFixed(2)}} </td>
                             </ng-container>
                             <ng-container matColumnDef="averageTotalDamage">
                                     <th mat-header-cell *matHeaderCellDef> Average total damage </th>

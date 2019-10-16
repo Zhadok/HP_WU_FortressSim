@@ -3,19 +3,40 @@ import { Logger } from "../../../src/util/Logger";
 import { CombatSimulationParameters } from "../../../src/sim/CombatSimulationParameters";
 import { CombatSimulationComparison } from "../../../src/sim/parallel/CombatSimulationComparison";
 import { expect } from "chai";
+import { SkillTree } from "../../../src/model/player/SkillTree/SkillTree";
 
 
 describe("CombatSimulationComparison", function() {
     
     let baseParams: CombatSimulationParameters; 
-    let numberSimulationsPerSeed: number; 
     beforeEach(() => {
         baseParams = TestData.buildDefaultSimParameters();
-        numberSimulationsPerSeed = 2;
         Logger.verbosity = 2; 
     });
     
-    
+    it("getSimParameters_roomLevels", function() {
+        let numberSimulationsPerSeed = 5; 
+        let comparison = new CombatSimulationComparison(baseParams, "multiple_compare_roomLevels", numberSimulationsPerSeed);
+        expect(comparison.allSimParams.length).to.equal(numberSimulationsPerSeed * 20);
+    });
+
+    it("getSimParameters_nextSkillTreeNodes", function() {
+        let numberSimulationsPerSeed = 1; 
+        baseParams.skillTrees[0] = {nameClass: baseParams.nameClasses[0], nodesStudied: []};  // Create empty tree
+        let comparison = new CombatSimulationComparison(baseParams, "multiple_compare_skillTreeNodes", numberSimulationsPerSeed);
+        let nextSkillTreeNodes = SkillTree.fromPersisted(baseParams.skillTrees[0]).getNextPossibleLessons(); 
+
+        expect(comparison.allSimParams.length).to.equal(numberSimulationsPerSeed * (nextSkillTreeNodes.size+1));
+
+        let skillTreeWithFirstNode = comparison.allSimParams[1].skillTrees[0]; 
+        expect(skillTreeWithFirstNode.nodesStudied.length).to.equal(1); 
+        expect(skillTreeWithFirstNode.nodesStudied[0].levelStudied).to.equal(1); 
+
+        let skillTreeWithDifferentNode = comparison.allSimParams[10].skillTrees[0]; 
+        expect(skillTreeWithDifferentNode.nodesStudied.length).to.equal(1); 
+        expect(skillTreeWithDifferentNode.nodesStudied[0].levelStudied).to.equal(1); 
+
+    });
 
     it('runSync', function() {
         Logger.verbosity = 0; 
