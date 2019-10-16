@@ -1,3 +1,5 @@
+- 0.3.1
+    - Bug fix: On changing wizard class rules are properly reset to default. 
 - 0.3.0 
     - Added button to compare next possible skill tree nodes
 - 0.2.1

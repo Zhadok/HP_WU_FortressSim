@@ -229,7 +229,7 @@ export class AppComponent {
     }
 
     onClickResetPlayerRules(playerIndex: number) {
-        console.log("Resetting player rules to default for playerIndex=" + playerIndex + "...");
+        console.log("Resetting player rules to default for playerIndex=" + playerIndex + " and class=" + this.simParameters.nameClasses[playerIndex] + "...");
         this.simParameters.ruleContainers[playerIndex] = this.getDefaultRuleContainer(this.simParameters.nameClasses[playerIndex]);
     }
     onClickRemovePlayerRules(playerIndex: number) {
@@ -291,12 +291,14 @@ export class AppComponent {
 
     onChangeSelectWizardClass(event, playerIndex: number): void {
         if (this.skillTrees[playerIndex].nameClass === event.value) {
+            // No change
             return;
         }
         else {
             console.log("Changing playerIndex=" + playerIndex + " class to " + event.value);
             this.simParameters.skillTrees[playerIndex] = { nameClass: event.value, nodesStudied: [] }
             this.skillTrees[playerIndex] = new SkillTree(event.value);
+            this.onClickResetPlayerRules(playerIndex); 
         }
     }
 
@@ -570,9 +572,9 @@ export class AppComponent {
     getDefaultRuleContainer(nameClass: nameClassType): ruleContainerType {
         let result: ruleContainerType;
         switch (nameClass) {
-            case "auror": result = aurorRules as ruleContainerType;
-            case "magizoologist": result = magizoologistRules as ruleContainerType;
-            case "professor": result = professorRules as ruleContainerType;
+            case "auror": result = aurorRules as ruleContainerType; break; 
+            case "magizoologist": result = magizoologistRules as ruleContainerType; break; 
+            case "professor": result = professorRules as ruleContainerType; break; 
         }
         return JSON.parse(JSON.stringify(result));
     }
