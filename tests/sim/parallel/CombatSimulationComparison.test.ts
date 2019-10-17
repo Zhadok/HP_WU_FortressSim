@@ -4,29 +4,35 @@ import { CombatSimulationParameters } from "../../../src/sim/CombatSimulationPar
 import { CombatSimulationComparison } from "../../../src/sim/parallel/CombatSimulationComparison";
 import { expect } from "chai";
 import { SkillTree } from "../../../src/model/player/SkillTree/SkillTree";
+import { simAdvancedSettingsType } from "../../types";
 
 
 describe("CombatSimulationComparison", function() {
     
     let baseParams: CombatSimulationParameters; 
+    let advancedSettings: simAdvancedSettingsType; 
     beforeEach(() => {
         baseParams = TestData.buildDefaultSimParameters();
         Logger.verbosity = 2; 
+        advancedSettings = TestData.buildDefaultSimAdvancedSettings(); 
     });
     
     it("getSimParameters_roomLevels", function() {
-        let numberSimulationsPerSeed = 5; 
-        let comparison = new CombatSimulationComparison(baseParams, "multiple_compare_roomLevels", numberSimulationsPerSeed);
-        expect(comparison.allSimParams.length).to.equal(numberSimulationsPerSeed * 20);
+        advancedSettings.numberSimulationsPerSetting = 5; 
+        advancedSettings.simGoal = "multiple_compare_roomLevels"; 
+        let comparison = new CombatSimulationComparison(baseParams, advancedSettings);
+        expect(comparison.allSimParams.length).to.equal(advancedSettings.numberSimulationsPerSetting * 20);
     });
 
     it("getSimParameters_nextSkillTreeNodes", function() {
-        let numberSimulationsPerSeed = 1; 
+        advancedSettings.numberSimulationsPerSetting = 1; 
+        advancedSettings.simGoal = "multiple_compare_skillTreeNodes"; 
+        
         baseParams.skillTrees[0] = {nameClass: baseParams.nameClasses[0], nodesStudied: []};  // Create empty tree
-        let comparison = new CombatSimulationComparison(baseParams, "multiple_compare_skillTreeNodes", numberSimulationsPerSeed);
+        let comparison = new CombatSimulationComparison(baseParams, advancedSettings);
         let nextSkillTreeNodes = SkillTree.fromPersisted(baseParams.skillTrees[0]).getNextPossibleLessons(); 
 
-        expect(comparison.allSimParams.length).to.equal(numberSimulationsPerSeed * (nextSkillTreeNodes.size+1));
+        expect(comparison.allSimParams.length).to.equal(advancedSettings.numberSimulationsPerSetting * (nextSkillTreeNodes.size+1));
 
         let skillTreeWithFirstNode = comparison.allSimParams[1].skillTrees[0]; 
         expect(skillTreeWithFirstNode.nodesStudied.length).to.equal(1); 
@@ -40,7 +46,11 @@ describe("CombatSimulationComparison", function() {
 
     it('runSync', function() {
         Logger.verbosity = 0; 
-        let comparison = new CombatSimulationComparison(baseParams, "multiple_compare_roomLevels", 1);
+
+        advancedSettings.numberSimulationsPerSetting = 1; 
+        advancedSettings.simGoal = "multiple_compare_roomLevels"; 
+       
+        let comparison = new CombatSimulationComparison(baseParams, advancedSettings);
         let result = comparison.runAllSync(); 
         return result.then((results) => {
             expect(results.length).to.equal(20); 
@@ -49,7 +59,11 @@ describe("CombatSimulationComparison", function() {
 
     it("runParallel", function() {
         Logger.verbosity = 0;
-        let comparison = new CombatSimulationComparison(baseParams, "multiple_compare_roomLevels", 1);
+
+        advancedSettings.numberSimulationsPerSetting = 1; 
+        advancedSettings.simGoal = "multiple_compare_roomLevels"; 
+
+        let comparison = new CombatSimulationComparison(baseParams, advancedSettings);
         let result = comparison.runParallel(); 
         return result.then((results) => {
             expect(results.length).to.equal(20); 

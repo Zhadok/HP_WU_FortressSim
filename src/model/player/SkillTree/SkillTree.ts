@@ -5,7 +5,7 @@ import { Logger } from "../../../util/Logger";
 import skillTreeProfessorData from "../../../data/skillTreeProfessor.json";
 import skillTreeAurorData from "../../../data/skillTreeAuror.json";
 import skillTreeMagizoologistData from "../../../data/skillTreeMagizoologist.json";
-import { nameClassType, triggerNameType, triggerMapType, skillTreeCostsType } from "../../../types";
+import { nameClassType, triggerNameType, triggerMapType, skillTreeCostsType, skillTreeFilterLessonsType } from "../../../types";
 import { PersistedSkillTreeNode } from "./PersistedSkillTreeNode";
 import { PersistedSkillTree } from "./PersistedSkillTree";
 
@@ -217,11 +217,24 @@ export class SkillTree {
 
     // What lessons can still be learnt? 
     // (where is node not max level)
-    getNextPossibleLessons(): Map<SkillTreeNode, number> {
+    getNextPossibleLessons(lessonFilter?: skillTreeFilterLessonsType): Map<SkillTreeNode, number> {
         let nextPossibleLessons: Map<SkillTreeNode, number> = new Map<SkillTreeNode, number>(); 
         this.nodesStudied.forEach((level, node) => {
-            if (level < node.levels.length) {
+            if (level < node.levels.length) { // Not last level yet
+                let nextLevel = node.levels[level]; // Cost to study this lesson
                 if (nextPossibleLessons.get(node) === undefined) {
+                    if (nextLevel.costRSB! > 0 && (lessonFilter === "onlyScrolls" || lessonFilter === "onlyScrollsAndRed")) {
+                        return; // Don't add if we want only scrolls or only red book lessons
+                    }
+                    if (nextLevel.costRedBooks! > 0 && (lessonFilter === "onlyScrolls" || lessonFilter === "onlyScrollsAndRSB")) {
+                        return; // Don't add if we want only scrolls or RSB lessons
+                    }
+                    if (lessonFilter === "onlyScrollsAndRed" && !(nextLevel.costRedBooks! > 0)) {
+                        return; // If we filter by red books, we want red book costs to be at least 1
+                    }
+                    if (lessonFilter === "onlyScrollsAndRSB" && !(nextLevel.costRSB! > 0)) {
+                        return; // If we filter by red books, we want red book costs to be at least 1
+                    }
                     nextPossibleLessons.set(node, level+1); 
                 }
             }

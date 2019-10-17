@@ -4,6 +4,7 @@ import { WizardStats } from "./WizardStats";
 import { SkillTree } from "./SkillTree/SkillTree";
 import { SkillTreeNode } from "./SkillTree/SkillTreeNode";
 import { statNameType } from '../../types';
+import { ENGINE_METHOD_PKEY_METHS } from "constants";
 
 
 export class Professor extends Wizard {
@@ -53,6 +54,9 @@ export class Professor extends Wizard {
 
     getDefenceAfterModifications(enemy: Enemy): number {
         let defenceBuffs = 0;
+        if (this.getTriggers().restrictedSection !== null && enemy.getNumberOfImpairments() >= 1) {
+            defenceBuffs += this.getTriggers().restrictedSection!; 
+        }
         if (this.getTriggers().sparringSpecifics !== null && enemy.getNumberOfImpairments() >= 2) {
             defenceBuffs += this.getTriggers().sparringSpecifics!;
         }

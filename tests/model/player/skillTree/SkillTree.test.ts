@@ -111,7 +111,7 @@ describe("SkillTree", function() {
         expect(stats.stamina).to.equal(397); 
         expect(stats.criticalPower).to.be.closeTo(1.11, deltaComparison); 
         expect(stats.initialFocus).to.equal(4); 
-        expect(stats.defence).to.equal(0.50); // "confidence" is not taken into account in gamepress page 
+        expect(stats.defence).to.be.closeTo(0.44, deltaComparison); 
         expect(stats.defenceBreach).to.be.closeTo(0.15, deltaComparison);  
 
     });
@@ -182,7 +182,6 @@ describe("SkillTree", function() {
 
         skillTree.setNodeLevelByName(nodeName, 2) // has 2 levels
         expect(skillTree.getNextPossibleLessons().size).to.equal(55 - 2); 
-
     }); 
 
     it("skillTree_nextPossibleLessons_shouldBeEmpty", function() {
@@ -190,6 +189,43 @@ describe("SkillTree", function() {
         skillTree.learnAllLessons(); 
         let nextPossibleLessons = skillTree.getNextPossibleLessons(); 
         expect(nextPossibleLessons.size).to.be.equal(0); 
+    });
+
+    it("skillTree_nextPossibleLessons_filterOnlyScrolls", function() {
+        let skillTree = new SkillTree("professor");
+        let nextLessons = skillTree.getNextPossibleLessons("onlyScrolls"); 
+
+        nextLessons.forEach((level, node) => {
+            // How much did studying the previous node cost?
+            let costs = node.levels[level-1]; 
+            expect(costs.costRedBooks === null || costs.costRedBooks === 0 || costs.costRedBooks === undefined).to.be.true; 
+            expect(costs.costRSB === null || costs.costRSB === 0 || costs.costRSB === undefined).to.be.true; 
+        })
+    });
+
+    it("skillTree_nextPossibleLessons_filterOnlyScrollsAndRed", function() {
+        let skillTree = new SkillTree("professor");
+        let nextLessons = skillTree.getNextPossibleLessons("onlyScrollsAndRed"); 
+
+        nextLessons.forEach((level, node) => {
+            // How much did studying the previous node cost?
+            let costs = node.levels[level-1]; 
+            console.log(node); 
+            expect(costs.costRedBooks).to.be.greaterThan(0);  
+            expect(costs.costRSB === null || costs.costRSB === 0 || costs.costRSB === undefined).to.be.true; 
+        })
+    });
+
+    it("skillTree_nextPossibleLessons_filterOnlyScrollsAndRSB", function() {
+        let skillTree = new SkillTree("professor");
+        let nextLessons = skillTree.getNextPossibleLessons("onlyScrollsAndRSB"); 
+
+        nextLessons.forEach((level, node) => {
+            // How much did studying the previous node cost?
+            let costs = node.levels[level-1]; 
+            expect(costs.costRedBooks === null || costs.costRedBooks === 0 || costs.costRedBooks === undefined).to.be.true; 
+            expect(costs.costRSB).to.be.greaterThan(0);  
+        })
     });
 
 });

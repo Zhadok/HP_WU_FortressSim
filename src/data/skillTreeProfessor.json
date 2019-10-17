@@ -117,8 +117,8 @@
         "rowIndex": 3,
         "columnIndex": 0,
         "name": "Restricted Section",
-        "statChangeDescription": "Defence",
-        "statChanged": "defence",
+        "triggerName": "restrictedSection",
+        "statChangeDescription": "Defence vs foes with 1 or greater impairments",
         "levels":[{
             "statChange": 0.06,
             "costScrolls": 5,

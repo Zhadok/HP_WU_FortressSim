@@ -28,7 +28,7 @@ declare type triggerNameType =
             "weakeningHex" | "batBogeyHex" | "focusCharm" | "confusionHex" |
 
             // Professor triggers
-            "idealExchange" | "strengthInNumbers" | "sparringSpecifics" | "teamworkMakesTheDreamWork" | "confidence" |
+            "idealExchange" | "restrictedSection" | "strengthInNumbers" | "sparringSpecifics" | "teamworkMakesTheDreamWork" | "confidence" |
             "teamTeaching" | "onSabbatical" | "peskyPixies" | "fullMoonHunter" |
             // Professor spells
             "deteriorationHex" | "mendingCharm" | "proficiencyPowerCharm" | "defenceCharm";
@@ -42,6 +42,8 @@ declare type skillTreeCostsType = {
     costRedBooks: number, 
     costRSB: number
 }; 
+declare type skillTreeFilterLessonsType = "all" | "onlyScrolls" | "onlyScrollsAndRed" | "onlyScrollsAndRSB"; 
+
 
 declare type statNameType = keyof WizardStats;
 
@@ -103,6 +105,8 @@ declare type ruleContainerType = {
     rules: Array<ruleType>
 }
 
+
+
 //////////////
 // FRONTEND //
 //////////////
@@ -132,7 +136,9 @@ declare type simGoalType = "single" | "multiple_compare_roomLevels" | "multiple_
 declare type simGoalMapType = { [key in simGoalType]: string }; 
 declare type simAdvancedSettingsType = {
     simGoal: simGoalType,
-    numberSimulations: number,
+    simGoalMultiple_filterSkillTreeNodes: skillTreeFilterLessonsType,
+
+    numberSimulationsPerSetting: number,
     runParallel: boolean,
     secondsBetweenSimulations: number,
     simulationLogChannel: simulationLogChannelType, // user friendly or debug, which log should be shown?
@@ -165,10 +171,12 @@ declare type simulationResultsGroupedType = {
     averageDodgePercent: number,
     averageTotalDamage: number, 
     averageDamage: number
+    averageChallengeXPReward: number,
 
     averageGameTimeMS: number; 
-    averageChallengeXPReward: number, 
+    averageRunsPerHour: number, 
     averageChallengeXPRewardPerHour: number; 
+    averageCastsPerHour: number,
 
     numberOfRuns: number
 }

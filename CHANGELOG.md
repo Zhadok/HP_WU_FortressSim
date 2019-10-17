@@ -1,3 +1,6 @@
+- 0.3.3 
+    - Added scrollbar for multiple simulations result table (for narrow screens)
+    - Added runs per hour and energy per hour to table for multiple simulations and tidied up the table
 - 0.3.2
     - Known performance problem caused by player AI rules table. Introduced checkbox (under advanced sim settings) to hide it 
 - 0.3.1

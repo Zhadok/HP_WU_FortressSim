@@ -97,6 +97,7 @@ export abstract class Wizard extends Combatant {
             onSabbatical: null,
             peskyPixies: null,
             proficiencyPowerCharm: null,
+            restrictedSection: null, 
             sparringSpecifics: null, 
             strengthInNumbers: null,
             teamTeaching: null,

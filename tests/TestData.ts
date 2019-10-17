@@ -8,7 +8,7 @@ import Prando from "prando";
 import { Auror } from "../src/model/player/Auror";
 import { Magizoologist } from "../src/model/player/Magizoloogist";
 import { PotionAvailabilityParameters } from "../src/sim/PotionAvailabilityParameters";
-import { enemyNameType, nameClassType } from "../src/types";
+import { enemyNameType, nameClassType, simAdvancedSettingsType } from "../src/types";
 import { CombatSimulation } from "../src/sim/CombatSimulation";
 import { SkillTree } from "../src/model/player/SkillTree/SkillTree";
 import { PersistedSkillTree } from "../src/model/player/SkillTree/PersistedSkillTree";
@@ -97,6 +97,18 @@ export class TestData {
     }
     static buildNewRNG_Sequence(sequence: Array<number>): Prando {
         return new TestRNG_Sequence(sequence);
+    }
+
+    static buildDefaultSimAdvancedSettings(): simAdvancedSettingsType {
+        return {
+            numberSimulationsPerSetting: 1, 
+            runParallel: false, 
+            secondsBetweenSimulations: 40,
+            showPlayerRules: false,
+            simGoal: "single",
+            simGoalMultiple_filterSkillTreeNodes: "all",
+            simulationLogChannel: "Debug"
+        }; 
     }
 
     static buildDefaultSimParameters(): CombatSimulationParameters {

@@ -291,7 +291,7 @@
             <br>
             <mat-form-field class="inputAdvancedSetting">
                 <mat-label>Number of simulations: For example, when comparing room level, will run each room level this many times (with different seeds). </mat-label>
-                <input matInput type="number" min="1" placeholder="Number of simulations" [(ngModel)]="simAdvancedSettings.numberSimulations">
+                <input matInput type="number" min="1" placeholder="Number of simulations" [(ngModel)]="simAdvancedSettings.numberSimulationsPerSetting">
             </mat-form-field>
             <mat-form-field class="inputAdvancedSetting">
                 <mat-label>Seconds between simulations: This field is only used for calculating challenge XP rewards per hour. </mat-label>
@@ -409,7 +409,7 @@
                     Simulation progress: {{ simProgress.nFinished }} / {{ simProgress.nTotal }}
                     <mat-progress-bar mode="determinate" [value]="simProgress.nFinished / simProgress.nTotal *100"></mat-progress-bar>
                 </div>
-                <div *ngIf="simProgress === null">
+                <div id="divContainerMultipleSimulationsTable" *ngIf="simProgress === null">
                     <table #tableMultipleSimulationResults mat-table matSort [dataSource]="simulationMultipleResultsGrouped" class="mat-elevation-z8">
 
                         
@@ -426,11 +426,11 @@
                                     <td mat-cell *matCellDef="let row"> {{row.winPercentage.toFixed(2)}} </td>
                             </ng-container>
                             <ng-container matColumnDef="averageNumberOfCasts">
-                                    <th mat-header-cell *matHeaderCellDef> Average casts </th>
+                                    <th mat-header-cell *matHeaderCellDef> Average energy (casts)</th>
                                     <td mat-cell *matCellDef="let row"> {{row.averageNumberOfCasts.toFixed(2)}} </td>
                             </ng-container>
                             <ng-container matColumnDef="averageDamage">
-                                    <th mat-header-cell *matHeaderCellDef> Average damage (per cast) </th>
+                                    <th mat-header-cell *matHeaderCellDef> Average damage </th>
                                     <td mat-cell *matCellDef="let row"> {{row.averageDamage.toFixed(2)}} </td>
                             </ng-container>
                             <ng-container matColumnDef="averageCritPercent">
@@ -446,19 +446,27 @@
                                     <td mat-cell *matCellDef="let row"> {{row.averageTotalDamage.toFixed(2)}} </td>
                             </ng-container>
                             <ng-container matColumnDef="averageGameTimeMS">
-                                    <th mat-header-cell *matHeaderCellDef> Average game time </th>
-                                    <td mat-cell *matCellDef="let row"> {{(row.averageGameTimeMS / 1000).toFixed(3)}}s </td>
+                                    <th mat-header-cell *matHeaderCellDef> Average time </th>
+                                    <td mat-cell *matCellDef="let row"> {{(row.averageGameTimeMS / 1000).toFixed(0)}}s </td>
                             </ng-container>
                             <ng-container matColumnDef="averageChallengeXPReward">
-                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Rewards </th>
-                                    <td mat-cell *matCellDef="let row"> {{row.averageChallengeXPReward}}XP </td>
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Reward </th>
+                                    <td mat-cell *matCellDef="let row"> {{row.averageChallengeXPReward}} CXP </td>
+                            </ng-container>
+                            <ng-container matColumnDef="averageRunsPerHour">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Runs per hour </th>
+                                <td mat-cell *matCellDef="let row"> {{row.averageRunsPerHour.toFixed(1) }} runs/hour </td>
                             </ng-container>
                             <ng-container matColumnDef="averageChallengeXPRewardPerHour">
-                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Rewards per hour </th>
-                                    <td mat-cell *matCellDef="let row"> {{row.averageChallengeXPRewardPerHour.toFixed(0) }}XP/hour </td>
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Rewards per hour </th>
+                                <td mat-cell *matCellDef="let row"> {{row.averageChallengeXPRewardPerHour.toFixed(0) }} CXP/hour </td>
+                            </ng-container>
+                            <ng-container matColumnDef="averageCastsPerHour">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Energy per hour </th>
+                                <td mat-cell *matCellDef="let row"> {{row.averageCastsPerHour.toFixed(0) }} energy/hour </td>
                             </ng-container>
                             <ng-container matColumnDef="numberOfRuns">
-                                    <th mat-header-cell *matHeaderCellDef> Runs </th>
+                                    <th mat-header-cell *matHeaderCellDef> Runs simulated </th>
                                     <td mat-cell *matCellDef="let row"> {{row.numberOfRuns}} </td>
                             </ng-container>
         

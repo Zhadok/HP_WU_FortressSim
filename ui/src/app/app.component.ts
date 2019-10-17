@@ -6,7 +6,7 @@ import { TestData } from "../../../tests/TestData";
 import { CombatSimulationParameters } from '../../../src/sim/CombatSimulationParameters';
 import {
     nameClassType, nameClassUserFriendlyType, simGoalType as simGoalType, simAdvancedSettingsType,
-    simProgressType, simulationResultsGroupedType, localStorageDataType, ruleVisDataRowType, ruleVisDataContainerType, simulationLogChannelStoreType, simulationLogChannelType, ruleContainerType, wizardSettingsType, ruleType, actionNameMapType, ruleOperatorType, ruleOperatorMapType, ruleFactNameType, ruleConditionType, simGoalMapType
+    simProgressType, simulationResultsGroupedType, localStorageDataType, ruleVisDataRowType, ruleVisDataContainerType, simulationLogChannelStoreType, simulationLogChannelType, ruleContainerType, wizardSettingsType, ruleType, actionNameMapType, ruleOperatorType, ruleOperatorMapType, ruleFactNameType, ruleConditionType, simGoalMapType, skillTreeFilterLessonsType
 } from '../../../src/types';
 import { PotionAvailabilityParameters } from '../../../src/sim/PotionAvailabilityParameters';
 import { PersistedSkillTree } from '../../../src/model/player/SkillTree/PersistedSkillTree';
@@ -101,8 +101,11 @@ export class AppComponent {
 
     // Advanced sim settings: Default settings
     simAdvancedSettings: simAdvancedSettingsType = {
-        numberSimulations: 10,
+        numberSimulationsPerSetting: 10,
+        
         simGoal: "single",
+        simGoalMultiple_filterSkillTreeNodes: "all",
+
         runParallel: false,
         secondsBetweenSimulations: 40,
         simulationLogChannel: "User friendly",
@@ -375,14 +378,18 @@ export class AppComponent {
         await this.onClickButtonStartMultipleSimulations("multiple_compare_roomLevels");
     }
     async onClickButtonStartMultipleSimulations_compareSkillTreeNodes() {
-        await this.onClickButtonStartMultipleSimulations("multiple_compare_skillTreeNodes");
+        await this.onClickButtonStartMultipleSimulations("multiple_compare_skillTreeNodes", "onlyScrollsAndRSB");
     }
 
-    async onClickButtonStartMultipleSimulations(simGoal: simGoalType) {
+    async onClickButtonStartMultipleSimulations(simGoal: simGoalType, filter?: skillTreeFilterLessonsType) {
         this.resetSimulationResults();
         this.simAdvancedSettings.simGoal = simGoal;
+        this.simAdvancedSettings.simGoalMultiple_filterSkillTreeNodes = filter; 
+
         var self = this;
-        let simComparison = new CombatSimulationComparison(this.getSimParametersCopy(), this.simAdvancedSettings.simGoal, this.simAdvancedSettings.numberSimulations);
+        let simComparison = new CombatSimulationComparison(this.getSimParametersCopy(), this.simAdvancedSettings);
+        console.log("Running with set of combat params: "); 
+        console.log(simComparison.allSimParams); 
         this.simProgress = {
             nFinished: 0,
             nRemaining: simComparison.getNumberSimulationsTotal(),
