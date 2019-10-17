@@ -8,6 +8,7 @@
   * [How are RNG "seeds" used when comparing multiple simulations?](#how-are-rng-seeds-used-when-comparing-multiple-simulations)
   * [How does the player AI work? How do wizards decide which action to take?](#how-does-the-player-ai-work-how-do-wizards-decide-which-action-to-take)
   * [What happens to my data?](#what-happens-to-my-data)
+  * [I have an idea! How can I reach you?]()
 - [Sources for equations and data](#sources-for-equations-and-data)
 - [Changelog](#changelog)
 - [Rules](#rules)
@@ -89,7 +90,8 @@ The implementation can be found [here](https://github.com/Zhadok/HP_WU_FortressS
 Simulation data is stored only locally, on your device. 
 
 
-
+### I have an idea! How can I reach you?
+First, please check the list of [issues](https://github.com/Zhadok/HP_WU_FortressSim/issues) to see whether this idea has already been proposed! If not, feel free to DM me (`Zhadok#3311`) on Discord. 
 
 ## Sources for equations and data
 This simulation would not be possible without the following prior work. 

@@ -1,6 +1,6 @@
 - 0.3.5
     - Clarified what data is included in import and export under advanced simulation settings
-    - Added damage from deterioration hex to simulation log
+    - Added damage from deterioration hex on enemy attack to simulation log
 - 0.3.4
     - Fixed a bug where enemies would not attack if the player AI chose not to act during combat
 - 0.3.3 
