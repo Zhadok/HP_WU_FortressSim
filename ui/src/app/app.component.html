@@ -175,7 +175,7 @@
                                 </div>
 
                                 
-                                <div *ngIf="true" class="divSettingsPlayerRules">
+                                <div *ngIf="simAdvancedSettings.showPlayerRules" class="divSettingsPlayerRules">
                                     <mat-expansion-panel [expanded]="false">
                                         <mat-expansion-panel-header>
                                             <mat-panel-title>
@@ -297,6 +297,7 @@
                 <mat-label>Seconds between simulations: This field is only used for calculating challenge XP rewards per hour. </mat-label>
                 <input matInput type="number" min="1" placeholder="Seconds between simulations" [(ngModel)]="simAdvancedSettings.secondsBetweenSimulations">
             </mat-form-field>
+            <mat-checkbox [(ngModel)]="simAdvancedSettings.showPlayerRules">Show player AI rules in wizard settings</mat-checkbox><br>
             <mat-checkbox [(ngModel)]="simAdvancedSettings.runParallel" [disabled]="true">Run parallel</mat-checkbox>
             
             <div class="divContainerSkillTreeButtons">

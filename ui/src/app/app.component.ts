@@ -104,10 +104,9 @@ export class AppComponent {
         simGoal: "single",
         runParallel: false,
         secondsBetweenSimulations: 40,
-        simulationLogChannel: "User friendly"
+        simulationLogChannel: "User friendly",
+        showPlayerRules: false
     };
-
-
 
 
     // Base sim parameters shown in UI

@@ -1,3 +1,5 @@
+- 0.3.2
+    - Known performance problem caused by player AI rules table. Introduced checkbox (under advanced sim settings) to hide it 
 - 0.3.1
     - Bug fix: On changing wizard class rules are properly reset to default. 
 - 0.3.0 
