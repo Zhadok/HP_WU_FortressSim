@@ -23,6 +23,8 @@ import Prando from "prando";
 import { FortressRoom } from "../../src/model/env/FortressRoom";
 import { WizardsOutOfTimeEvent } from "../../src/sim/events/env/WizardsOutOfTimeEvent";
 import { SkillTree } from "../../src/model/player/SkillTree/SkillTree";
+import professorRules_onlyDeteriorationHex from "../../src/rules/store/professorRules_onlyDeteriorationHex.json"; 
+import { ruleContainerType } from "../types";
 
 
 describe("CombatSimulation", function() {
@@ -312,6 +314,21 @@ describe("CombatSimulation", function() {
 
         expect(sim.toSimulationResults().isWin).to.equal(true); 
         
+    });
+
+    it("simulation_playerNoAction_enemyShouldAttack", async function() {
+        Logger.verbosity = 2; 
+        params1.roomLevel = 1; 
+        params1.ruleContainers = [professorRules_onlyDeteriorationHex as ruleContainerType]; 
+        let skillTree = new SkillTree("professor"); 
+        skillTree.learnAllLessons(); 
+        params1.skillTrees = [skillTree.persist()]; 
+        
+        let sim = new CombatSimulation(params1, new Prando(params1.seed));
+        sim.init(); 
+
+        await sim.simulate(); 
+        expect(sim.toSimulationResults().isWin).to.equal(true); 
     });
 
 });

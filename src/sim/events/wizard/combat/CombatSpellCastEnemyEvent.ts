@@ -14,12 +14,13 @@ export class CombatSpellCastEnemyEvent extends CombatEvent {
     readonly probabilityChainAttackEnemy: number = -1; 
     readonly isChainAttack: boolean;
 
-    constructor(eventTimestampBegin: number, targetEnemy: Enemy, wizard: Wizard, rng: Prando) {
-        super("spellCast_enemy", eventTimestampBegin, targetEnemy, wizard, rng);
+    // wizardActionTimeout: Did the wizard perform an action or is this attack because of a timeout?
+    constructor(eventTimestampBegin: number, targetEnemy: Enemy, wizard: Wizard, rng: Prando, wizardActionTimeout?: boolean) {
+        super(wizardActionTimeout ? "spellCast_enemy_after_no_wizard_action" : "spellCast_enemy", eventTimestampBegin, targetEnemy, wizard, rng);
 
         this.isChainAttack = this.probabilityChainAttackEnemy >= this.rng.next();
     }
-
+    
     // If the enemy is doing a chain attack:
     // Wizard is not allowed an action
     // If enemy is not doing a chain attack: 

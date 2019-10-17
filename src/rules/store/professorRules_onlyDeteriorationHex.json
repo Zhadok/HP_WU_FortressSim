@@ -1,0 +1,135 @@
+{
+    "author": "e-n-l",
+    "nameClass": "professor",
+    "rules": [
+        {
+            "event": {
+                "type": "deteriorationHex"
+            },
+            "priority": 9980,
+            "conditions": {
+                "all": [
+                    {
+                        "fact": "wizard",
+                        "path": ".inCombat",
+                        "operator": "equal",
+                        "value": false
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".focus",
+                        "operator": "greaterThanInclusive",
+                        "value": {
+                            "fact": "wizard",
+                            "path": ".focusCostData.deteriorationHex"
+                        }
+                    },
+                    {
+                        "fact": "highestPriorityAvailableEnemy",
+                        "path": ".hasDeteriorationHex",
+                        "operator": "equal",
+                        "value": false
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".triggers.deteriorationHex",
+                        "operator": "notEqual",
+                        "value": null
+                    }
+                ]
+            }
+        },
+        {
+            "event": {
+                "type": "enterCombatWithHighestPriorityAvailableEnemy"
+            },
+            "priority": 9900,
+            "conditions": {
+                "all": [
+                    {
+                        "fact": "wizard",
+                        "path": ".inCombat",
+                        "operator": "equal",
+                        "value": false
+                    },
+                    {
+                        "fact": "highestPriorityAvailableEnemy",
+                        "path": ".inCombat",
+                        "operator": "equal",
+                        "value": false
+                    }
+                ]
+            }
+        },
+        {
+            "event": {
+                "type": "exitCombat",
+                "params": {
+                    "description": "Professor should exit and check for better enemies available (disabled for now)"
+                }
+            },
+            "priority": 5000,
+            "conditions": {
+                "all": [
+                    {
+                        "fact": "wizard",
+                        "path": ".inCombat",
+                        "operator": "equal",
+                        "value": true
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".inCombatWith.inCombat",
+                        "operator": "equal",
+                        "value": true
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".inCombat",
+                        "operator": "equal",
+                        "value": null
+                    }
+                ]
+            }
+        },
+        {
+            "event": {
+                "type": "mendingCharm",
+                "params": {
+                    "targetWizard": "lowestHP"
+                }
+            },
+            "priority": 2000,
+            "conditions": {
+                "all": [
+                    {
+                        "fact": "wizard",
+                        "path": ".inCombat",
+                        "operator": "equal",
+                        "value": false
+                    },
+                    {
+                        "fact": "highestPriorityAvailableEnemy",
+                        "operator": "equal",
+                        "value": null
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".triggers.mendingCharm",
+                        "operator": "notEqual",
+                        "value": null
+                    }
+                ]
+            }
+        },
+        {
+            "event": {
+                "type": "noAction"
+            },
+            "priority": 0,
+            "conditions": {
+                "all": []
+            }
+        }
+    ]
+}

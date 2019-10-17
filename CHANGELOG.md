@@ -1,3 +1,5 @@
+- 0.3.4
+    - Fixed a bug where enemies would not attack if the player AI chose not to act during combat
 - 0.3.3 
     - Added scrollbar for multiple simulations result table (for narrow screens)
     - Added runs per hour and energy per hour to table for multiple simulations and tidied up the table

@@ -21,6 +21,7 @@ import { nameClassType, ruleFactType } from "../types.js";
 import { CombatSimulationResults } from "./CombatSimulationResults";
 import { WizardsOutOfTimeEvent } from "./events/env/WizardsOutOfTimeEvent";
 import { FortressRoom } from "../model/env/FortressRoom";
+import { CombatSpellCastEnemyEvent } from "./events/wizard/combat/CombatSpellCastEnemyEvent";
 
 
 export class CombatSimulation {
@@ -324,6 +325,14 @@ export class CombatSimulation {
         if (nextEvent !== null) {
             // event can be null, for example, if professor has not studied mending charm and no enemies available
             this.addEvent(nextEvent);
+        }
+        else {
+            this.log(2, "Player id=" + wizard.playerIndex + " chose 'no action'."); 
+            if (wizard.inCombat === true) {
+                // Enemy should attack if player did not chose an action
+                let enemyAttackEvent = new CombatSpellCastEnemyEvent(timestampBegin, wizard.inCombatWith!, wizard, this.rng, true); 
+                this.addEvent(enemyAttackEvent); 
+            }
         }
     }   
 
