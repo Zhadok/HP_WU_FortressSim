@@ -180,6 +180,13 @@ tr.rule-row:not(.expandedRule-row):active {
     margin: 3px !important; 
 }
 
+/* Button for skill tree upgrades needs more space 
+https://stackoverflow.com/questions/53497127/how-to-break-word-if-text-inside-angular-material-button-is-longer-than-the-widt */
+#buttonStartSimulationCompareSkillTreeNodes {
+    white-space: pre-wrap !important;
+    line-height: 15px; 
+}
+
 
 /**** Advanced settings ***/
 .inputAdvancedSetting {

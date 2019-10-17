@@ -43,7 +43,7 @@ declare type skillTreeCostsType = {
     costRSB: number
 }; 
 declare type skillTreeFilterLessonsType = "all" | "onlyScrolls" | "onlyScrollsAndRed" | "onlyScrollsAndRSB"; 
-
+declare type skillTreeFilterLessonsMapType = { [key in skillTreeFilterLessonsType]: string }; 
 
 declare type statNameType = keyof WizardStats;
 

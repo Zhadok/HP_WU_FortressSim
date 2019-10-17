@@ -13,10 +13,10 @@
             <button (click)="onClickButtonStartMultipleSimulations_compareRoomLevels()" class="buttonStartSimulation" mat-raised-button large color="primary" >
                 Simulate different room levels
             </button>
-            <button (click)="onClickButtonStartMultipleSimulations_compareSkillTreeNodes()" class="buttonStartSimulation" mat-raised-button large color="primary" >
-                Simulate skill tree upgrades
+            <button (click)="onClickButtonStartMultipleSimulations_compareSkillTreeNodes()" class="buttonStartSimulation" mat-raised-button large color="primary" 
+                    id="buttonStartSimulationCompareSkillTreeNodes">
+                Simulate skill tree upgrades ({{getSkillTreeFilterLessonsMap()[simAdvancedSettings.simGoalMultiple_filterSkillTreeNodes]}})
             </button>
-                
         </div>
 
     <mat-accordion [multi]="true">
@@ -298,6 +298,17 @@
                 <mat-label>Seconds between simulations: This field is only used for calculating challenge XP rewards per hour. </mat-label>
                 <input matInput type="number" min="1" placeholder="Seconds between simulations" [(ngModel)]="simAdvancedSettings.secondsBetweenSimulations">
             </mat-form-field>
+
+            <mat-form-field class="inputAdvancedSetting">
+                <mat-label>Skill tree upgrades filter</mat-label>
+                <mat-select placeholder="Select skill tree upgrades filter" name="selectTreeUpgradesFilter" 
+                            [(ngModel)]="simAdvancedSettings.simGoalMultiple_filterSkillTreeNodes"
+                            >
+                            
+                    <mat-option *ngFor="let item of getSkillTreeFilterLessonsMap() | keyvalue" value="{{item.key}}">{{item.value}}</mat-option>
+                </mat-select>
+            </mat-form-field><br>
+
             <mat-checkbox [(ngModel)]="simAdvancedSettings.showPlayerRules">Show player AI rules in wizard settings</mat-checkbox><br>
             <mat-checkbox [(ngModel)]="simAdvancedSettings.runParallel" [disabled]="true">Run parallel</mat-checkbox>
             

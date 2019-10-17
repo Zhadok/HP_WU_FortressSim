@@ -5,7 +5,7 @@ import { Logger } from "../../../util/Logger";
 import skillTreeProfessorData from "../../../data/skillTreeProfessor.json";
 import skillTreeAurorData from "../../../data/skillTreeAuror.json";
 import skillTreeMagizoologistData from "../../../data/skillTreeMagizoologist.json";
-import { nameClassType, triggerNameType, triggerMapType, skillTreeCostsType, skillTreeFilterLessonsType } from "../../../types";
+import { nameClassType, triggerNameType, triggerMapType, skillTreeCostsType, skillTreeFilterLessonsType, skillTreeFilterLessonsMapType } from "../../../types";
 import { PersistedSkillTreeNode } from "./PersistedSkillTreeNode";
 import { PersistedSkillTree } from "./PersistedSkillTree";
 
@@ -16,6 +16,14 @@ import focusCostData from "../../../data/focusCosts.json";
 // One skill tree is a concrete instance of a skill tree for one wizard (which lessons has the wizard learned and at which level?)
 export class SkillTree {
     
+    static skillTreeFilterLessonsMap: skillTreeFilterLessonsMapType = {
+        all: "All",
+        onlyScrolls: "Lessons with only scrolls",
+        onlyScrollsAndRSB: "Lessons with green books",
+        onlyScrollsAndRed: "Lessons with red books"
+    }; 
+
+
     readonly nameClass: nameClassType;; 
     readonly nodesStudied: Map<SkillTreeNode, number>;
 

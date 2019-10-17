@@ -350,6 +350,10 @@ export class AppComponent {
 
     }
 
+    getSkillTreeFilterLessonsMap() {
+        return SkillTree.skillTreeFilterLessonsMap; 
+    }
+
     getSimParametersCopy(): CombatSimulationParameters {
         return JSON.parse(JSON.stringify(this.simParameters));
     }
@@ -378,13 +382,12 @@ export class AppComponent {
         await this.onClickButtonStartMultipleSimulations("multiple_compare_roomLevels");
     }
     async onClickButtonStartMultipleSimulations_compareSkillTreeNodes() {
-        await this.onClickButtonStartMultipleSimulations("multiple_compare_skillTreeNodes", "all");
+        await this.onClickButtonStartMultipleSimulations("multiple_compare_skillTreeNodes");
     }
 
-    async onClickButtonStartMultipleSimulations(simGoal: simGoalType, filter?: skillTreeFilterLessonsType) {
+    async onClickButtonStartMultipleSimulations(simGoal: simGoalType) {
         this.resetSimulationResults();
         this.simAdvancedSettings.simGoal = simGoal;
-        this.simAdvancedSettings.simGoalMultiple_filterSkillTreeNodes = filter; 
 
         var self = this;
         let simComparison = new CombatSimulationComparison(this.getSimParametersCopy(), this.simAdvancedSettings);
