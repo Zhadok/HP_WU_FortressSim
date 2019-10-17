@@ -48,6 +48,8 @@ export class CombatSpellCastEnemyEvent extends CombatEvent {
 
     onFinish() {
         let damage = CombatSpellCastEnemyEvent.computeEnemyDamage(this.wizard, this.enemy, 1);
+        
+        let enemyStaminaBeforeDamage = this.enemy.getCurrentStamina(); 
         if (this.enemy.hasDeteriorationHex) {
             this.enemy.removeStamina( this.enemy.deteriorationHexDamage );
         }
@@ -56,9 +58,16 @@ export class CombatSpellCastEnemyEvent extends CombatEvent {
         this.wizard.removeStamina(damage);        
         
         let message = this.enemy.toUserFriendlyDescription() + " dealt " + damage + 
-                      " damage to " + this.wizard.toUserFriendlyDescription() + ". ("  +
+                      " damage to " + this.wizard.toUserFriendlyDescription() + " ("  +
                         staminaBeforeDamage + "/" + this.wizard.getMaxStamina() + " -> " + 
                         this.wizard.getCurrentStamina() + "/" + this.wizard.getMaxStamina() + ")"
+
+        if (this.enemy.hasDeteriorationHex) {
+            message += " and takes " + (enemyStaminaBeforeDamage - this.enemy.getCurrentStamina()) + " damage from hex " +
+                       " (" + enemyStaminaBeforeDamage + "/" + this.enemy.getMaxStamina() + " -> " + 
+                       this.enemy.getCurrentStamina() + "/" + this.enemy.getMaxStamina() + ")";
+        }
+
         Logger.logT(2, this.timestampEnd, message);
         Logger.logTUserFriendly(2, this.timestampEnd, message); 
     }

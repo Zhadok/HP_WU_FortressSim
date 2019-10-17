@@ -313,6 +313,9 @@
             <mat-checkbox [(ngModel)]="simAdvancedSettings.runParallel" [disabled]="true">Run parallel</mat-checkbox>
             
             <div class="divContainerSkillTreeButtons">
+                <p>
+                    Data imports and exports include skill trees, customized player AI rules and advanced simulation settings.
+                </p>
                 <button class="buttonSkillTreeControl" id="buttonImportDataFromFile"  mat-raised-button  (click)="importDataFromFile()">Import data from file</button>
                 <button class="buttonSkillTreeControl" id="buttonExportDataToFile" mat-raised-button (click)="exportDataToFile()">Export data as file</button>
                 <button class="buttonSkillTreeControl" id="buttonExportDataToFile" mat-raised-button color="accent" (click)="resetAllData()">Reset all data</button>
