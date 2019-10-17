@@ -35,7 +35,7 @@ import { Utils_UI } from './utils_ui';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Wizard } from '../../../src/model/player/Wizard';
 import { FormControl, FormGroupDirective, NgForm } from '@angular/forms';
-
+import { version as packageJsonVersion } from '../../package.json';
 
 const cookieConfig: any = {
     "cookie": {
@@ -88,6 +88,7 @@ export class RuleErrorStateMatcher implements ErrorStateMatcher {
 })
 export class AppComponent {
 
+    readonly packageJsonVersion = packageJsonVersion; 
     readonly skillTreeVis = {
         rowHeight: 80,
         columnWidth: 120,
