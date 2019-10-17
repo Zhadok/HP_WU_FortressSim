@@ -2,6 +2,7 @@
     - Added scrollbar for multiple simulations result table (for narrow screens)
     - Added runs per hour and energy per hour to table for multiple simulations and tidied up the table
     - Fixed restricted section for professors (not static 0.06 defence but conditional buff)
+    - Added a filter under advanced simulation settings for comparing next possible skill tree nodes
 - 0.3.2
     - Known performance problem caused by player AI rules table. Introduced checkbox (under advanced sim settings) to hide it 
 - 0.3.1

@@ -1,5 +1,6 @@
 ## Table of contents
 - [About](#about)
+- [Features](#features)
 - [FAQ](#faq)
   * [How does this simulation work?](#how-does-this-simulation-work)
   * [How are enemies generated?](#how-are-enemies-generated)
@@ -16,6 +17,16 @@
 Welcome to the source code repository for the Harry Potter - Wizards Unite simulator! 
 
 A running version of the simulator can be found [here](https://zhadok.github.io/HP_WU_FortressSim/).
+
+## Features
+
+- **Skill tree**: Easily try out different builds and check stats
+- **Player AI**: The simulation contains a rule-based AI which automatically decides on the best next action. Advanced users can also edit the rules to create a custom AI
+- **Detailed simulation output**: Simulate a single run and see who cast what spell, drank what potion and did how much damage to which enemy
+- **Compare room levels**: Find out which room level is best for you based on your build
+- **Compare your next skill tree lesson**: Find out which lesson in your skill tree you should pick next. Filter by lessons with only scrolls, red books or green books
+- **Data storage**: All changes made on the websites are stored immediately and automatically on your device. You can also export and import your data!
+
 
 ## FAQ
 ### How does this simulation work?
