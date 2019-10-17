@@ -57,7 +57,7 @@ describe("CombatSimulationComparison", function() {
         }); 
     });
 
-    it("runParallel", function() {
+    /*it("runParallel", function() {
         Logger.verbosity = 0;
 
         advancedSettings.numberSimulationsPerSetting = 1; 
@@ -68,7 +68,7 @@ describe("CombatSimulationComparison", function() {
         return result.then((results) => {
             expect(results.length).to.equal(20); 
         }); 
-    });
+    });*/
 
     // Disable for now since not used anyway
     /*it("runSync_shouldEqual_runParallel", async function() {
