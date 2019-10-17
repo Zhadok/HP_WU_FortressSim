@@ -378,7 +378,7 @@ export class AppComponent {
         await this.onClickButtonStartMultipleSimulations("multiple_compare_roomLevels");
     }
     async onClickButtonStartMultipleSimulations_compareSkillTreeNodes() {
-        await this.onClickButtonStartMultipleSimulations("multiple_compare_skillTreeNodes", "onlyScrollsAndRSB");
+        await this.onClickButtonStartMultipleSimulations("multiple_compare_skillTreeNodes", "all");
     }
 
     async onClickButtonStartMultipleSimulations(simGoal: simGoalType, filter?: skillTreeFilterLessonsType) {

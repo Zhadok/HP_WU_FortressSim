@@ -86,7 +86,8 @@
                                                 class="textSkillTreeNodeName">{{node.key.name}}</text>
                                             <circle [attr.cx]="node.key.columnIndex * skillTreeVis.columnWidth + skillTreeVis.marginLeft*2"
                                                     [attr.cy]="node.key.rowIndex * skillTreeVis.rowHeight + skillTreeVis.marginTop*2"
-                                                    [attr.r]="skillTreeVis.nodeCircleRadius" stroke="black" fill="gray" 
+                                                    [attr.r]="skillTreeVis.nodeCircleRadius" stroke="black"
+                                                    [attr.fill]="node.value===node.key.levels.length ? 'yellowgreen' : 'gray'"
                                                     (click)="onClickSkillTreeNode(node.key, playerIndex)"
                                                     matTooltip="{{getSkillTreeNodeTooltip(node.key)}}"
                                                     [matTooltipClass]="'myMatTooltip'"
