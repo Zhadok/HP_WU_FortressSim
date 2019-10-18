@@ -7,17 +7,19 @@
 
     
     <div id="divStartSimulationContainer">
-            <button (click)="onClickButtonStartSingleSimulation()" class="buttonStartSimulation" mat-raised-button large color="primary" >
-                Start single simulation
-            </button>
-            <button (click)="onClickButtonStartMultipleSimulations_compareRoomLevels()" class="buttonStartSimulation" mat-raised-button large color="primary" >
-                Simulate different room levels
-            </button>
-            <button (click)="onClickButtonStartMultipleSimulations_compareSkillTreeNodes()" class="buttonStartSimulation" mat-raised-button large color="primary" 
-                    id="buttonStartSimulationCompareSkillTreeNodes">
-                Simulate skill tree upgrades ({{getSkillTreeFilterLessonsMap()[simAdvancedSettings.simGoalMultiple_filterSkillTreeNodes]}})
-            </button>
-        </div>
+        <button (click)="onClickButtonStartSingleSimulation()" class="buttonStartSimulation" mat-raised-button large color="primary" >
+            Start single simulation
+        </button>
+        <button (click)="onClickButtonStartMultipleSimulations_compareRoomLevels()" class="buttonStartSimulation" mat-raised-button large color="primary" >
+            Simulate different room levels 
+            (Levels {{simAdvancedSettings.simGoalMultipleParams.simGoalMultiple_minRoomLevel}} to 
+            {{simAdvancedSettings.simGoalMultipleParams.simGoalMultiple_maxRoomLevel}})
+        </button>
+        <button (click)="onClickButtonStartMultipleSimulations_compareSkillTreeNodes()" class="buttonStartSimulation" mat-raised-button large color="primary" 
+                id="buttonStartSimulationCompareSkillTreeNodes">
+            Simulate skill tree upgrades ({{getSkillTreeFilterLessonsMap()[simAdvancedSettings.simGoalMultipleParams.simGoalMultiple_filterSkillTreeNodes]}})
+        </button>
+    </div>
 
     <mat-accordion [multi]="true">
         <!--<h2 class="mat-h2">Input parameters</h2> -->
@@ -285,34 +287,49 @@
                 </mat-panel-description>
             </mat-expansion-panel-header>
         
+            <h2 class="mat-h2">General</h2>
             <mat-form-field class="inputAdvancedSetting">
                 <mat-label>Seed: This will ensure reproducible results. For multiple simulations, the seed will increased by 1 for each simulation. </mat-label>
                 <input matInput type="number" placeholder="Seed" [(ngModel)]="simParameters.seed" [(value)]="simParameters.seed">
             </mat-form-field>
-            <br>
-            <mat-form-field class="inputAdvancedSetting">
-                <mat-label>Number of simulations: For example, when comparing room level, will run each room level this many times (with different seeds). </mat-label>
-                <input matInput type="number" min="1" placeholder="Number of simulations" [(ngModel)]="simAdvancedSettings.numberSimulationsPerSetting">
-            </mat-form-field>
-            <mat-form-field class="inputAdvancedSetting">
-                <mat-label>Seconds between simulations: This field is only used for calculating challenge XP rewards per hour. </mat-label>
-                <input matInput type="number" min="1" placeholder="Seconds between simulations" [(ngModel)]="simAdvancedSettings.secondsBetweenSimulations">
-            </mat-form-field>
-
-            <mat-form-field class="inputAdvancedSetting">
-                <mat-label>Skill tree upgrades filter</mat-label>
-                <mat-select placeholder="Select skill tree upgrades filter" name="selectTreeUpgradesFilter" 
-                            [(ngModel)]="simAdvancedSettings.simGoalMultiple_filterSkillTreeNodes"
-                            >
-                            
-                    <mat-option *ngFor="let item of getSkillTreeFilterLessonsMap() | keyvalue" value="{{item.key}}">{{item.value}}</mat-option>
-                </mat-select>
-            </mat-form-field><br>
-
             <mat-checkbox [(ngModel)]="simAdvancedSettings.showPlayerRules">Show player AI rules in wizard settings</mat-checkbox><br>
-            <mat-checkbox [(ngModel)]="simAdvancedSettings.runParallel" [disabled]="true">Run parallel</mat-checkbox>
+           
+
+            <div class="divContainerAdvancedSettingsSection">
+                <h2 class="mat-h2">Comparing multiple simulations</h2>
+                <mat-form-field class="inputAdvancedSetting">
+                    <mat-label>Number of simulations: For example, when comparing room level, will run each room level this many times (with different seeds). </mat-label>
+                    <input matInput type="number" min="1" placeholder="Number of simulations" [(ngModel)]="simAdvancedSettings.numberSimulationsPerSetting">
+                </mat-form-field>
+                <mat-form-field class="inputAdvancedSetting">
+                    <mat-label>Seconds between simulations: This field is only used for calculating challenge XP rewards per hour. </mat-label>
+                    <input matInput type="number" min="1" placeholder="Seconds between simulations" [(ngModel)]="simAdvancedSettings.secondsBetweenSimulations">
+                </mat-form-field>
+    
+                <mat-form-field class="inputAdvancedSetting floatLeft width48Percent">
+                    <mat-label>Simulate different room levels: Minimum room level </mat-label>
+                    <input matInput type="number" min="1" placeholder="Minimum room level" [(ngModel)]="simAdvancedSettings.simGoalMultipleParams.simGoalMultiple_minRoomLevel">
+                </mat-form-field>
+                <mat-form-field class="inputAdvancedSetting floatRight width48Percent">
+                    <mat-label>Simulate different room levels: Maximum room level </mat-label>
+                    <input matInput type="number" min="1" placeholder="Maximum room level" [(ngModel)]="simAdvancedSettings.simGoalMultipleParams.simGoalMultiple_maxRoomLevel">
+                </mat-form-field>
+                            
+                <mat-form-field class="inputAdvancedSetting">
+                    <mat-label>Simulate skill tree upgrades: Filter lessons by cost</mat-label>
+                    <mat-select placeholder="Select skill tree upgrades filter" name="selectTreeUpgradesFilter" 
+                                [(ngModel)]="simAdvancedSettings.simGoalMultipleParams.simGoalMultiple_filterSkillTreeNodes"
+                                >
+                                
+                        <mat-option *ngFor="let item of getSkillTreeFilterLessonsMap() | keyvalue" value="{{item.key}}">{{item.value}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-checkbox [(ngModel)]="simAdvancedSettings.runParallel" [disabled]="true">Run parallel</mat-checkbox>
+            </div>
             
-            <div class="divContainerSkillTreeButtons">
+
+            <div class="divContainerAdvancedSettingsSection">
+                <h2 class="mat-h2">Data on this website</h2>
                 <p>
                     Data imports and exports include skill trees, customized player AI rules and advanced simulation settings.
                 </p>

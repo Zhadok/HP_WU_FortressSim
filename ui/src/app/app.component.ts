@@ -36,6 +36,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { Wizard } from '../../../src/model/player/Wizard';
 import { FormControl, FormGroupDirective, NgForm } from '@angular/forms';
 import { version as packageJsonVersion } from '../../package.json';
+import { Utils } from '../../../src/util/Utils';
 
 const cookieConfig: any = {
     "cookie": {
@@ -104,7 +105,12 @@ export class AppComponent {
         numberSimulationsPerSetting: 10,
         
         simGoal: "single",
-        simGoalMultiple_filterSkillTreeNodes: "all",
+        simGoalMultipleParams: {
+            simGoalMultiple_filterSkillTreeNodes: "all",
+            simGoalMultiple_minRoomLevel: 1,
+            simGoalMultiple_maxRoomLevel: 20
+        },
+        
 
         runParallel: false,
         secondsBetweenSimulations: 40,
@@ -643,7 +649,18 @@ export class AppComponent {
 
     initFromLocalStorage(): void {
         let data = this.getDataFromLocalStorage();
-        this.simAdvancedSettings = data.simAdvancedSettings;
+
+        // For sim advanced settings: Check if we are using a different structure (=different keys) from an older version
+        if (Utils.deepCompareObjectSameKeys(this.simAdvancedSettings, data.simAdvancedSettings) === false) {
+            console.log("Older version of sim advanced settings detected in local storage:"); 
+            console.log(data.simAdvancedSettings); 
+            console.log("Using newer (default) version with different structure and overwriting old: "); 
+            console.log(this.simAdvancedSettings); 
+        } 
+        else {
+            this.simAdvancedSettings = data.simAdvancedSettings;
+        }
+
         this.simParameters = data.simParameters;
         for (let persistedSkillTree of this.simParameters.skillTrees) {
             this.skillTrees.push(SkillTree.fromPersisted(persistedSkillTree));

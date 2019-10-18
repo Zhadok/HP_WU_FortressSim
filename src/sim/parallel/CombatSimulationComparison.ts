@@ -47,7 +47,7 @@ export class CombatSimulationComparison {
         // Use current settings as basis
         let result: CombatSimulationParameters[] = [];
         
-        for (let roomLevel = 1; roomLevel <= 20; roomLevel++) {
+        for (let roomLevel = simAdvancedSettings.simGoalMultipleParams.simGoalMultiple_minRoomLevel; roomLevel <= simAdvancedSettings.simGoalMultipleParams.simGoalMultiple_maxRoomLevel; roomLevel++) {
             for (let seed=baseSimParameters.seed; seed<baseSimParameters.seed + simAdvancedSettings.numberSimulationsPerSetting;seed++) {
                 let simParamsLoop: CombatSimulationParameters = JSON.parse(JSON.stringify(this.baseSimParameters)); 
                 simParamsLoop.seed = seed;
@@ -64,7 +64,7 @@ export class CombatSimulationComparison {
     getSimParametersToCompare_SkillTreeNodes(baseSimParameters: CombatSimulationParameters, simAdvancedSettings: simAdvancedSettingsType, playerIndex: number): CombatSimulationParameters[] {
 
         let baseSkillTree = SkillTree.fromPersisted(baseSimParameters.skillTrees[playerIndex]); 
-        let nextPossibleLessons = baseSkillTree.getNextPossibleLessons(simAdvancedSettings.simGoalMultiple_filterSkillTreeNodes); 
+        let nextPossibleLessons = baseSkillTree.getNextPossibleLessons(simAdvancedSettings.simGoalMultipleParams.simGoalMultiple_filterSkillTreeNodes); 
 
         let result: CombatSimulationParameters[] = [];
         // Push once for base (no changes in lessons)

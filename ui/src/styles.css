@@ -182,15 +182,18 @@ tr.rule-row:not(.expandedRule-row):active {
 
 /* Button for skill tree upgrades needs more space 
 https://stackoverflow.com/questions/53497127/how-to-break-word-if-text-inside-angular-material-button-is-longer-than-the-widt */
-#buttonStartSimulationCompareSkillTreeNodes {
+.buttonStartSimulation {
     white-space: pre-wrap !important;
-    line-height: 15px; 
+    line-height: 15px !important; 
 }
 
 
 /**** Advanced settings ***/
 .inputAdvancedSetting {
     width: 100%;
+}
+.divContainerAdvancedSettingsSection {
+    margin-top: 10px; 
 }
 
 
@@ -279,6 +282,9 @@ table {
 .floatLeft {
     float: left; 
 }
+.floatRight {
+    float: right; 
+}
 .clearBoth {
     clear: both; 
 }
@@ -287,5 +293,11 @@ table {
 }
 .padding5px {
     padding: 5px; 
+}
+.width45Percent {
+    width: 45%; 
+}
+.width48Percent {
+    width: 48%; 
 }
 

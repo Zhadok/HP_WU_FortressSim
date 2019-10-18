@@ -17,11 +17,21 @@ describe("CombatSimulationComparison", function() {
         advancedSettings = TestData.buildDefaultSimAdvancedSettings(); 
     });
     
-    it("getSimParameters_roomLevels", function() {
+    it("getSimParameters_defaultRomLevels", function() {
         advancedSettings.numberSimulationsPerSetting = 5; 
         advancedSettings.simGoal = "multiple_compare_roomLevels"; 
         let comparison = new CombatSimulationComparison(baseParams, advancedSettings);
         expect(comparison.allSimParams.length).to.equal(advancedSettings.numberSimulationsPerSetting * 20);
+
+        
+    });
+    it("getSimParameters_customRoomLevels", function() {
+        advancedSettings.numberSimulationsPerSetting = 5;
+        advancedSettings.simGoalMultipleParams.simGoalMultiple_minRoomLevel = 10; 
+        advancedSettings.simGoalMultipleParams.simGoalMultiple_maxRoomLevel = 15;  
+        advancedSettings.simGoal = "multiple_compare_roomLevels"; 
+        let comparison = new CombatSimulationComparison(baseParams, advancedSettings);
+        expect(comparison.allSimParams.length).to.equal(advancedSettings.numberSimulationsPerSetting * 6);
     });
 
     it("getSimParameters_nextSkillTreeNodes", function() {

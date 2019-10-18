@@ -106,7 +106,11 @@ export class TestData {
             secondsBetweenSimulations: 40,
             showPlayerRules: false,
             simGoal: "single",
-            simGoalMultiple_filterSkillTreeNodes: "all",
+            simGoalMultipleParams: {
+                simGoalMultiple_filterSkillTreeNodes: "all",
+                simGoalMultiple_minRoomLevel: 1,
+                simGoalMultiple_maxRoomLevel: 20
+            }, 
             simulationLogChannel: "Debug"
         }; 
     }

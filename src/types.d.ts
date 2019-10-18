@@ -136,7 +136,11 @@ declare type simGoalType = "single" | "multiple_compare_roomLevels" | "multiple_
 declare type simGoalMapType = { [key in simGoalType]: string }; 
 declare type simAdvancedSettingsType = {
     simGoal: simGoalType,
-    simGoalMultiple_filterSkillTreeNodes: skillTreeFilterLessonsType,
+    simGoalMultipleParams: {
+        simGoalMultiple_minRoomLevel: number,
+        simGoalMultiple_maxRoomLevel: number, 
+        simGoalMultiple_filterSkillTreeNodes: skillTreeFilterLessonsType
+    }
 
     numberSimulationsPerSetting: number,
     runParallel: boolean,

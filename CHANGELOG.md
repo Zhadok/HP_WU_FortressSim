@@ -1,3 +1,6 @@
+- 0.3.6
+    - Restructured advanced simulation settings
+    - Added min/max room level for comparing different room levels
 - 0.3.5
     - Clarified what data is included in import and export under advanced simulation settings
     - Added damage from deterioration hex on enemy attack to simulation log
