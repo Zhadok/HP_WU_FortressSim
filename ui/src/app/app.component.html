@@ -277,7 +277,9 @@
                 </mat-tab-group>
         </mat-expansion-panel>
 
-        <mat-expansion-panel #matPanelAdvancedSimulationSettings [expanded]="false">
+        <mat-expansion-panel #matPanelAdvancedSimulationSettings [expanded]="simAdvancedSettings.isAdvancedSettingsTabExpanded"
+        (opened)="simAdvancedSettings.isAdvancedSettingsTabExpanded = true"
+        (closed)="simAdvancedSettings.isAdvancedSettingsTabExpanded = false">
             <mat-expansion-panel-header>
                 <mat-panel-title>
                     Advanced simulation settings

@@ -145,8 +145,11 @@ declare type simAdvancedSettingsType = {
     numberSimulationsPerSetting: number,
     runParallel: boolean,
     secondsBetweenSimulations: number,
+
+    // Frontend settings
     simulationLogChannel: simulationLogChannelType, // user friendly or debug, which log should be shown?
-    showPlayerRules: boolean
+    showPlayerRules: boolean,
+    isAdvancedSettingsTabExpanded: boolean
 }; 
 declare type localStorageDataType = {
     simParameters: CombatSimulationParameters, 

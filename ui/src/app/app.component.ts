@@ -111,11 +111,11 @@ export class AppComponent {
             simGoalMultiple_maxRoomLevel: 20
         },
         
-
         runParallel: false,
         secondsBetweenSimulations: 40,
         simulationLogChannel: "User friendly",
-        showPlayerRules: false
+        showPlayerRules: false,
+        isAdvancedSettingsTabExpanded: false
     };
 
 
