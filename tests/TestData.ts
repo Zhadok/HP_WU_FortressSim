@@ -142,7 +142,10 @@ export class TestData {
             nStrongExstimuloAvailable: 1,
             nPotentExstimuloAvailable: 2,
 
-            nWitSharpeningAvailable: 1
+            nWitSharpeningAvailable: 1,
+            
+            hasBaruffiosBrainElixir: false, 
+            hasTonicForTraceDetection: false
         };
     }
     static buildDefaultPotionParameters_noPotions(): PotionAvailabilityParameters {
@@ -156,7 +159,10 @@ export class TestData {
             nStrongExstimuloAvailable: 0,
             nPotentExstimuloAvailable: 0,
 
-            nWitSharpeningAvailable: 0
+            nWitSharpeningAvailable: 0,
+            
+            hasBaruffiosBrainElixir: false, 
+            hasTonicForTraceDetection: false
         };
     }
 

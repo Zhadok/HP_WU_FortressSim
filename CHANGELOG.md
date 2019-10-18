@@ -1,3 +1,5 @@
+- 0.3.8
+    - Added toggle for barrufio's brain elixir and tonic for trace detection (increases number of enhancements for professors)
 - 0.3.7
     - Implemented cooldown for mending charm and bat bogey hex
     - Professor default AI casts mending charm once before entering combat

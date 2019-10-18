@@ -39,7 +39,7 @@ export class WizardFactory {
     static buildDemoWizard(nameClass: nameClassType): Wizard {
         let wizard = this.buildWizardWithSkillTree(SkillTree.fromPersisted({nameClass: nameClass, nodesStudied: []}), 0, 0, {
             nExstimuloAvailable: 0, nHealingPotionsAvailable: 0, nPotentExstimuloAvailable: 0, nStrongExstimuloAvailable: 0, nStrongInvigorationAvailable: 0,
-            nWeakInvigorationAvailable: 0, nWitSharpeningAvailable: 0 }
+            nWeakInvigorationAvailable: 0, nWitSharpeningAvailable: 0, hasBaruffiosBrainElixir: false, hasTonicForTraceDetection: false}
         ); 
         let enemy = Enemy.buildDemoEnemy(); 
         wizard.inCombat = true; 

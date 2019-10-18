@@ -616,7 +616,9 @@ export class AppComponent {
             nHealingPotionsAvailable: 0,
             nWeakInvigorationAvailable: 0,
             nStrongInvigorationAvailable: 0,
-            nWitSharpeningAvailable: 0
+            nWitSharpeningAvailable: 0,
+            hasBaruffiosBrainElixir: false, 
+            hasTonicForTraceDetection: false
         };
     }
 

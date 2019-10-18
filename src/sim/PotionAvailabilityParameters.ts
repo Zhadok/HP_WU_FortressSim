@@ -10,5 +10,9 @@ export interface PotionAvailabilityParameters {
     nStrongExstimuloAvailable: number,
     nPotentExstimuloAvailable: number,
 
-    nWitSharpeningAvailable: number
+    nWitSharpeningAvailable: number,
+
+    // Buffs (outside combat)
+    hasBaruffiosBrainElixir: boolean,
+    hasTonicForTraceDetection: boolean
 }

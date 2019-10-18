@@ -219,7 +219,11 @@ export abstract class Wizard extends Combatant {
                (this.hasDefenceCharm ? 1 : 0) + 
                (this.hasProficiencyPowerCharm ? 1 : 0) +
                // Potions count as enhancements. But only exstimulo OR wit sharpening, not both
-               (enemy.getExstimuloDamageBuff(this.playerIndex) > 0 || enemy.getWitSharpeningDamageBuff(this.playerIndex) > 0 ? 1 : 0); 
+               ((enemy.getExstimuloDamageBuff(this.playerIndex) > 0 || enemy.getWitSharpeningDamageBuff(this.playerIndex) > 0) ? 1 : 0) +
+               // Potions from outside combat count too
+               (this.hasBaruffiosBrainElixir() ? 1 : 0) + 
+               (this.hasTonicForTraceDetection() ? 1 : 0)
+               ; 
     }
 
     setPotions(potions: PotionAvailabilityParameters) {
@@ -227,6 +231,13 @@ export abstract class Wizard extends Combatant {
     }
     getPotions(): PotionAvailabilityParameters {
         return this.potions!; 
+    }
+
+    hasBaruffiosBrainElixir(): boolean {
+        return this.potions!.hasBaruffiosBrainElixir; 
+    }
+    hasTonicForTraceDetection(): boolean {
+        return this.potions!.hasTonicForTraceDetection; 
     }
 
     toUserFriendlyDescription(): string {

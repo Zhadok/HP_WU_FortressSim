@@ -166,6 +166,18 @@
                                             <input type="number" min="0" matInput placeholder="Health" name="health"
                                                     [(ngModel)]="simParameters.potions[playerIndex].nHealingPotionsAvailable">
                                         </mat-form-field>
+                                        <mat-form-field class="inputPotion">
+                                            <input type="number" min="0" matInput placeholder="Health" name="health"
+                                                    [(ngModel)]="simParameters.potions[playerIndex].nHealingPotionsAvailable">
+                                        </mat-form-field>
+                                        <mat-checkbox [(ngModel)]="simParameters.potions[playerIndex].hasBaruffiosBrainElixir" name="checkboxBaruffios">
+                                            Use Baruffio's Brain Elixir
+                                        </mat-checkbox>
+                                        <mat-checkbox [(ngModel)]="simParameters.potions[playerIndex].hasTonicForTraceDetection" name="checkboxTonic">
+                                            Use Tonic for Trace Detection
+                                        </mat-checkbox>
+
+
                                     </form>
                                 </div>
                                 <br>
