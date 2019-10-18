@@ -1,5 +1,6 @@
 - 0.3.7
     - Implemented cooldown for mending charm and bat bogey hex
+    - Professor default AI casts mending charm once before entering combat
 - 0.3.6
     - Restructured advanced simulation settings
     - Added min/max room level for comparing different room levels

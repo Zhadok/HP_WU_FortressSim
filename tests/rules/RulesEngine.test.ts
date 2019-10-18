@@ -71,10 +71,23 @@ describe("RulesEngine", function() {
         });
     });
 
+    it("professor_shouldCastMendingCharm_beforeCombat", function() {
+        wizard.inCombat = false;
+        wizard.removeFocus(wizard.getFocus());
+        wizard.removeStamina(1); 
+
+        return rulesEngine.getNextAction(0, facts).then(simEvent => {
+            expect(simEvent instanceof MendingCharmEvent).to.be.true; 
+            expect((simEvent as MendingCharmEvent).wizard).to.equal(wizard);
+            expect((simEvent as MendingCharmEvent).targetWizard).to.equal(wizard);
+        }); 
+    });
     it("professor_shouldEnterCombat", function() {
         wizard.inCombat = false; 
         enemy.inCombat = false; 
         wizard.removeFocus(wizard.getFocus());
+        wizard.mendingCharmOnCooldown = true; 
+        wizard.removeStamina(1); 
 
         return rulesEngine.getNextAction(0, facts).then(simEvent => {
             expect(simEvent instanceof EnterCombatEvent).to.be.true; 

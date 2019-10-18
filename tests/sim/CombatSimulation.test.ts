@@ -27,6 +27,8 @@ import professorRules_onlyDeteriorationHex from "../../src/rules/store/professor
 import professorRules_onlyMendingCharm from "../../src/rules/store/professorRules_onlyMendingCharm.json"; 
 import aurorRules_onlyBatBogeyHex from "../../src/rules/store/aurorRules_onlyBatBogeyHex.json";
 import { ruleContainerType } from "../types";
+import { MendingCharmEvent } from "../../src/sim/events/wizard/room/spells/professor/MendingCharmEvent";
+import { MendingCharmCooldownFinishedEvent } from "../../src/sim/events/wizard/room/spells/professor/MendingCharmCooldownFinishedEvent";
 
 
 describe("CombatSimulation", function() {
@@ -230,6 +232,12 @@ describe("CombatSimulation", function() {
         expect(sim1.currentTime).to.equals(shouldBeTime);
         expect(defaultEnemies[1].hasDeteriorationHex).to.be.true;
         expect(defaultEnemies[1].deteriorationHexDamage).to.be.greaterThan(0);
+        expect(sim1.peekNextEvent() instanceof MendingCharmEvent).to.be.true; // wizard with non-full hp should cast mending charm
+        
+        await sim1.processNextEvent(); // Processing mending charm event 
+        shouldBeTime += eventData.strategicSpellDragAndCastAnimation;
+        expect(sim1.currentTime).to.equals(shouldBeTime);
+        expect(sim1.wizards[0].mendingCharmOnCooldown).to.be.true; 
         expect(sim1.peekNextEvent() instanceof EnterCombatEvent).to.be.true; // wizard should enter combat
         
         await sim1.processNextEvent(); // Processing enter combat
@@ -237,7 +245,12 @@ describe("CombatSimulation", function() {
         expect(sim1.currentTime).to.equals(shouldBeTime);
         expect(defaultEnemies[1].inCombat).to.be.true;
         expect(sim1.wizards[0].inCombat).to.be.true;
+        expect(sim1.peekNextEvent() instanceof MendingCharmCooldownFinishedEvent).to.be.true; // This was running in the back
         
+        await sim1.processNextEvent(); // Processing mending charm cooldown finished
+        expect(sim1.wizards[0].mendingCharmOnCooldown).to.be.false; 
+        expect(sim1.peekNextEvent() instanceof CombatBeginEvent).to.be.true; // This was running in the back
+
         await sim1.processNextEvent(); // Processing combat begin animation
         shouldBeTime += eventData.combatBeginAnimation_pixie;
         expect(sim1.currentTime).to.equals(shouldBeTime);
