@@ -57,7 +57,7 @@ declare type ruleFactType = {
 declare type ruleFactNameType = "wizard" | "highestPriorityAvailableEnemy"; 
 declare type ruleFactNameMapType = { [key in ruleFactNameType]: {
     label: string,
-    allowedPaths: Array<string>
+    allowedPaths: Array<string | null>
 }};
 
 declare type actionNameType = strategicSpellNameType | 
@@ -90,12 +90,12 @@ declare type ruleConditionType = {
 declare type ruleValueType = any; 
 declare type ruleType = {
     event: {
-        type: string;
+        type: actionNameType;
         params?: any;
     }, 
     priority?: number, 
     conditions: {
-        all: [ruleConditionType]
+        all: Array<ruleConditionType>
     }
 };
 

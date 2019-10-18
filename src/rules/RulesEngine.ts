@@ -105,9 +105,9 @@ export class RulesEngine {
         return new RulesEngine(ruleContainer!, rng)
     }
 
-    static getAllowedPaths(ruleFactName: ruleFactNameType): Array<string> {
+    static getAllowedPaths(ruleFactName: ruleFactNameType): Array<string | null> {
         let tempWizard: Wizard = WizardFactory.buildDemoWizard("professor");  
-        let paths: Array<string> = []; 
+        let paths: Array<string | null> = []; 
         switch (ruleFactName) {
             case "wizard":
                 paths = Utils.getAllFieldNames(tempWizard, "", []); 
@@ -116,6 +116,7 @@ export class RulesEngine {
                 paths = Utils.getAllFieldNames(tempWizard.inCombatWith, "", []);  
                 break; 
         }
+        //paths.push(null); // Allowed to compare with object itself as well. In UI will appear as empty
         return paths; 
     }
 

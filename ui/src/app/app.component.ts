@@ -239,6 +239,17 @@ export class AppComponent {
         this.simParameters.ruleContainers[playerIndex].rules.splice(ruleIndex, 1);
     }
 
+    onClickAddPlayerRule(playerIndex: number) {
+        this.simParameters.ruleContainers[playerIndex].rules.push({
+            event: {
+                type: "noAction"
+            },
+            priority: 0,
+            conditions: {
+                all: []
+            }
+        }); 
+    }
     onClickResetPlayerRules(playerIndex: number) {
         console.log("Resetting player rules to default for playerIndex=" + playerIndex + " and class=" + this.simParameters.nameClasses[playerIndex] + "...");
         this.simParameters.ruleContainers[playerIndex] = this.getDefaultRuleContainer(this.simParameters.nameClasses[playerIndex]);

@@ -247,7 +247,7 @@
                                                  <tr mat-row *matRowDef="let row; columns: ['expandedRuleColumn']" class="expandedRule-row"></tr>
                                             </table>
                                             
-
+                                            <button class="buttonSkillTreeControl" mat-raised-button color="primary" (click)="onClickAddPlayerRule(playerIndex)">Add rule</button>
                                             <button class="buttonSkillTreeControl" mat-raised-button color="accent" (click)="onClickResetPlayerRules(playerIndex)">Reset rules to default</button>
                                             <button class="buttonSkillTreeControl" mat-raised-button color="accent" (click)="onClickRemovePlayerRules(playerIndex)">Remove all rules</button><br>
 

@@ -26,6 +26,7 @@
                     <mat-label>Attribute</mat-label>
                     <mat-select placeholder="Attribute" name="selectFactObject" 
                             [(ngModel)]="condition.path">
+                        <mat-option [value]="null"></mat-option>      <!-- Allow to select self  (no path) -->
                         <mat-option *ngFor="let path of getAllowedRuleFactPaths(playerIndex, condition.fact)" 
                                     value="{{path}}">{{path}}</mat-option>
                     </mat-select>
@@ -62,6 +63,7 @@
                     <mat-label>Value attribute</mat-label>
                     <mat-select placeholder="Attribute" name="selectFactObject" 
                             [(ngModel)]="condition.value.path">
+                        <mat-option [value]="null"></mat-option>    <!-- Allow to select self  (no path) -->
                         <mat-option *ngFor="let path of getAllowedRuleFactPaths(playerIndex, condition.value.fact)" 
                                     value="{{path}}">{{path}}</mat-option>
                     </mat-select>
