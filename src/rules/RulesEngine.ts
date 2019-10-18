@@ -27,6 +27,7 @@ import { HealthPotionEvent } from "../sim/events/wizard/potions/HealthPotionEven
 import { RuleConstructorOptions } from "truegin/dist/lib/rule";
 import { Utils } from "../util/Utils";
 import { WizardFactory } from "../model/player/WizardFactory";
+import { BatBogeyHexEvent } from "../sim/events/wizard/room/spells/auror/BatBogeyHexEvent";
 
 
 export class RulesEngine {
@@ -132,20 +133,34 @@ export class RulesEngine {
         } 
         //console.log(results);
         let event = results[0];
+
         let highestPriorityAvailableEnemy = facts.highestPriorityAvailableEnemy;
+        let targetEnemy = null; // for casting spells at
+
         let wizard = facts.wizard;
         let targetWizard = null; 
-        let targetWizardLowestHP = null; 
         if (event.params !== undefined) {
             if (event.params.targetWizardIndex !== undefined) {
                 targetWizard = facts.allWizards.filter(wizard => wizard.playerIndex === event.params.targetWizardIndex)[0];
             }
             if (event.params.targetWizard === "lowestHP") {
-                targetWizardLowestHP = facts.allWizards.sort(function(v1, v2) {
-                    return v1.getCurrentStamina() - v2.getCurrentStamina();
+                targetWizard = facts.allWizards.sort(function(v1, v2) {
+                    return v2.getCurrentStamina() - v1.getCurrentStamina();
                 })[0];
-
             }
+            switch (event.params.targetEnemy) {
+                case "highestPriorityAvailableEnemy":
+                    targetEnemy = highestPriorityAvailableEnemy; 
+                    break; 
+                case "lowestHP": 
+                    targetEnemy = facts.allActiveEnemies.sort(function(v1, v2) {
+                        return v2.getCurrentStamina() - v1.getCurrentStamina();
+                    })[0];
+                    break;
+                default: 
+                    targetEnemy = highestPriorityAvailableEnemy; 
+                    break; 
+            }   
         }
         switch (event.type as actionNameType) {
             // Invigoration potion
@@ -154,6 +169,10 @@ export class RulesEngine {
             case "weakInvigorationPotion": 
                 return new InvigorationPotionEvent(timestampBegin, wizard, wizard.getPotions(), potionsData.weakInvigorationPotionFocus, "weak");
             
+            // Auror
+            case "batBogeyHex": 
+                return new BatBogeyHexEvent(timestampBegin, wizard.stats.batBogeyHexDamage, targetEnemy!, wizard); 
+
             // Professor    
             case "defenceCharm": 
                 //console.log(event);
@@ -161,9 +180,9 @@ export class RulesEngine {
             case "proficiencyPowerCharm":
                 return new ProficiencyPowerCharmEvemt(timestampBegin, wizard.stats.proficiencyPowerCharmIncrease, facts.allWizards, wizard);
             case "deteriorationHex": 
-                return new DeteriorationHexEvent(timestampBegin, wizard.stats.deteriorationHexDamage, highestPriorityAvailableEnemy!, wizard);
+                return new DeteriorationHexEvent(timestampBegin, wizard.stats.deteriorationHexDamage, targetEnemy!, wizard);
             case "mendingCharm": 
-                return new MendingCharmEvent(timestampBegin, wizard.stats.mendingCharmStaminaRestore, targetWizardLowestHP!, wizard);
+                return new MendingCharmEvent(timestampBegin, wizard.stats.mendingCharmStaminaRestore, targetWizard!, wizard);
             
             // Combat
             case "enterCombatWithHighestPriorityAvailableEnemy": 

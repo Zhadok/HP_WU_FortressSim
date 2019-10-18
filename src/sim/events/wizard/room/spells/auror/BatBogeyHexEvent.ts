@@ -2,6 +2,9 @@ import { StrategicSpellEvent } from "../StrategicSpellEvent";
 import { Wizard } from "../../../../../../model/player/Wizard";
 import { Enemy } from "../../../../../../model/env/enemies/Enemy";
 import { Auror } from "../../../../../../model/player/Auror";
+import { SimEvent } from "../../../../SimEvent";
+import { BatBogeyHexCooldownFinishedEvent } from "./BatBogeyHexCooldownFinishedEvent";
+import spellCooldownData from "../../../../../../data/spellCooldowns.json"; 
 
 export class BatBogeyHexEvent extends StrategicSpellEvent {
 
@@ -16,6 +19,13 @@ export class BatBogeyHexEvent extends StrategicSpellEvent {
         if ((caster as Auror).hasStudiedBatBogeyHex() === false) {
             throw new Error("Wizard id=" + caster.playerIndex + " has not studied bat bogey hex but tried casting it!");
         }
+        if (caster.batBogeyHexOnCooldown === true) {
+            throw new Error(caster.toUserFriendlyDescription() + " tried casting bat bogey hex while it was still on cooldown!"); 
+        }
+    }
+    
+    onStart() {
+        this.getCaster().batBogeyHexOnCooldown = true;
     }
 
     onFinish() {
@@ -25,7 +35,15 @@ export class BatBogeyHexEvent extends StrategicSpellEvent {
     }
 
     getStrategicSpellName(): string {
-        return "Bat Bogey Hex"; 
+        return "Bat Bogey Hex (" + this.damage + " damage)"; 
     }
+
+    hasFollowupEvent(): boolean {
+        return true; 
+    }   
+    
+    getFollowupEvent(): SimEvent {
+        return new BatBogeyHexCooldownFinishedEvent(this.timestampEnd, spellCooldownData.batBogeyHex - (this.duration), this.getCaster()); 
+    }   
 
 }

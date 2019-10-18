@@ -4,7 +4,10 @@
     "rules": [
         {
             "event": {
-                "type": "deteriorationHex"
+                "type": "deteriorationHex",
+                "params": {
+                    "targetEnemy": "highestPriorityAvailableEnemy"
+                }
             },
             "priority": 9980,
             "conditions": {

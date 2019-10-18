@@ -50,8 +50,9 @@ declare type statNameType = keyof WizardStats;
 // Rule engine
 declare type ruleFactType = {
     wizard: Wizard,
+    highestPriorityAvailableEnemy: Enemy | null,
     allWizards: Array<Wizard>,
-    highestPriorityAvailableEnemy: Enemy | null
+    allActiveEnemies: Array<Enemy>
 }
 
 declare type ruleFactNameType = "wizard" | "highestPriorityAvailableEnemy"; 

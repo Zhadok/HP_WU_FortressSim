@@ -334,7 +334,8 @@ export class CombatSimulation {
         let facts: ruleFactType = {
             wizard: wizard,
             highestPriorityAvailableEnemy: highestPriorityAvailableEnemy,  
-            allWizards: this.wizards
+            allWizards: this.wizards,
+            allActiveEnemies: this.fortressRoom.enemiesActive
         }
         let nextEvent = await this.getRulesEngine(wizard.playerIndex).getNextAction(timestampBegin, facts);
         if (nextEvent !== null) {
@@ -342,7 +343,7 @@ export class CombatSimulation {
             this.addEvent(nextEvent);
         }
         else {
-            this.log(2, "Player id=" + wizard.playerIndex + " chose 'no action'."); 
+            this.log(2, "Player id=" + wizard.playerIndex + " chose 'no action' as followup."); 
             if (wizard.inCombat === true) {
                 // Enemy should attack if player did not chose an action
                 let enemyAttackEvent = new CombatSpellCastEnemyEvent(timestampBegin, wizard.inCombatWith!, wizard, this.rng, true); 

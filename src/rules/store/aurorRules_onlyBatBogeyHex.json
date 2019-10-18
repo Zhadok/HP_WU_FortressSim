@@ -1,0 +1,46 @@
+{
+    "author": "Zhadok",
+    "nameClass": "auror",
+    "rules": [
+        {
+            "event": {
+                "type": "batBogeyHex",
+                "params": {
+                    "targetEnemy": "lowestHP"
+                }
+            },
+            "priority": 2000,
+            "conditions": {
+                "all": [
+                    {
+                        "fact": "wizard",
+                        "path": ".inCombat",
+                        "operator": "equal",
+                        "value": false
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".batBogeyHexOnCooldown",
+                        "operator": "equal",
+                        "value": false
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".triggers.batBogeyHex",
+                        "operator": "notEqual",
+                        "value": null
+                    }
+                ]
+            }
+        },
+        {
+            "event": {
+                "type": "noAction"
+            },
+            "priority": 0,
+            "conditions": {
+                "all": []
+            }
+        }
+    ]
+}

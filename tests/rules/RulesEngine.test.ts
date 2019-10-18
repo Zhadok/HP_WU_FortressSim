@@ -37,7 +37,8 @@ describe("RulesEngine", function() {
         facts = {
             wizard: wizard,
             highestPriorityAvailableEnemy: enemy,
-            allWizards: [wizard]
+            allWizards: [wizard],
+            allActiveEnemies: [enemy]
         };
         rulesEngine = RulesEngine.buildFromStandard(wizard.nameClass, rng);
 
@@ -93,7 +94,7 @@ describe("RulesEngine", function() {
             expect((simEvent as CombatSpellCircleEvent).enemy).to.equal(enemy);
         }); 
     });
-    it("professor_shouldCastMendingCharm", function() {
+    it("professor_shouldCastMendingCharm_ifNoOtherAction", function() {
         wizard.inCombat = false;
         wizard.removeFocus(wizard.getFocus());
         facts.highestPriorityAvailableEnemy = null;

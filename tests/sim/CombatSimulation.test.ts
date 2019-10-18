@@ -25,6 +25,7 @@ import { WizardsOutOfTimeEvent } from "../../src/sim/events/env/WizardsOutOfTime
 import { SkillTree } from "../../src/model/player/SkillTree/SkillTree";
 import professorRules_onlyDeteriorationHex from "../../src/rules/store/professorRules_onlyDeteriorationHex.json"; 
 import professorRules_onlyMendingCharm from "../../src/rules/store/professorRules_onlyMendingCharm.json"; 
+import aurorRules_onlyBatBogeyHex from "../../src/rules/store/aurorRules_onlyBatBogeyHex.json";
 import { ruleContainerType } from "../types";
 
 
@@ -348,7 +349,29 @@ describe("CombatSimulation", function() {
         await sim.simulate(); 
 
         // 300s, exactly 50 casts (1 every 6s)
-        expect(sim.wizards[0].getCurrentStamina()).to.be.equal(1 + 50*4);  
+        expect(sim.wizards[0].getCurrentStamina()).to.be.equal(1 + 50*sim.wizards[0].stats.mendingCharmStaminaRestore);  
+    });
+
+
+    it("simulation_playerSpamBatBogeyHex", async function() {
+        // Auror should cast bat bogey hex every 6s
+        Logger.verbosity = 0;  
+        params1.roomLevel = 20; 
+        params1.ruleContainers = [aurorRules_onlyBatBogeyHex as ruleContainerType]; 
+        let skillTree = new SkillTree("auror"); 
+        skillTree.learnAllLessons(); 
+        params1.skillTrees = [skillTree.persist()]; 
+        
+        let sim = new CombatSimulation(params1, new Prando(params1.seed));
+        sim.init(); 
+
+        await sim.simulate(); 
+
+        let enemy = sim.fortressRoom.enemiesAll[0]; 
+        //console.log(enemy.getCurrentStamina() + "/" + enemy.getMaxStamina()); 
+        
+        // 600s, exactly 100 casts (1 every 6s)
+        expect(enemy.getCurrentStamina()).to.be.equal(enemy.getMaxStamina() - 100*sim.wizards[0].stats.batBogeyHexDamage);  
     });
 
 });

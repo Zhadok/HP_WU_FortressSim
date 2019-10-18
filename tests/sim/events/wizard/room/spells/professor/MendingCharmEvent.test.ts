@@ -12,7 +12,7 @@ describe("MendingCharmEvent", function() {
         wizard = TestData.buildDefaultProfessor();
     }); 
 
-    it("shouldRestoreHP", function() {
+    it("mendingCharm_shouldRestoreHP", function() {
         wizard.removeStamina(10); 
         let event = new MendingCharmEvent(0, 4, wizard, wizard);
         event.onStart(); 
@@ -21,7 +21,7 @@ describe("MendingCharmEvent", function() {
         expect(wizard.getCurrentStamina()).to.equal(wizard.getMaxStamina() - 6);
     });
 
-    it("shouldBeOnCooldown", function() {
+    it("mendingCharm_shouldBeOnCooldown", function() {
         let event = new MendingCharmEvent(0, 4, wizard, wizard);
         event.onStart(); 
         event.onFinish();
