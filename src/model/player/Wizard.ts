@@ -37,17 +37,19 @@ export abstract class Wizard extends Combatant {
     timestampDefeated: number = -1;  // When was combatant defeated?
     timeSpentDefeated: number = 0; 
 
-
-
     // Potions
     private potions: PotionAvailabilityParameters | undefined; 
 
     // Buffs
+    // Auror
+    batBogeyHexOnCooldown: boolean = false; 
+
     // Professor
     hasDefenceCharm: boolean = false;
     defenceCharmValue: number = 0;
     hasProficiencyPowerCharm: boolean = false;    
     proficiencyPowerCharmValue: number = 0;
+    mendingCharmOnCooldown: boolean = false; 
 
     // Magizoologist
     hasBraveryCharm: boolean = false;

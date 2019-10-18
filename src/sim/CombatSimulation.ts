@@ -22,6 +22,7 @@ import { CombatSimulationResults } from "./CombatSimulationResults";
 import { WizardsOutOfTimeEvent } from "./events/env/WizardsOutOfTimeEvent";
 import { FortressRoom } from "../model/env/FortressRoom";
 import { CombatSpellCastEnemyEvent } from "./events/wizard/combat/CombatSpellCastEnemyEvent";
+import { CooldownFinishedEvent } from "./events/wizard/room/spells/CooldownFinishedEvent";
 
 
 export class CombatSimulation {
@@ -131,7 +132,8 @@ export class CombatSimulation {
     addEvent(newEvent: SimEvent) {
         
         if (this.currentTime > newEvent.timestampBegin) {
-            throw new Error("Attempted to add event at eventTimestamp=" + newEvent.timestampBegin + " with currentTime=" + this.currentTime);
+            throw new Error("Attempted to add event at eventTimestamp=" + newEvent.timestampBegin + " with currentTime=" + this.currentTime + ", " + 
+                            newEvent.eventName);
         }
         // Stack based implementation: top of stack (=last element) is next event 
         // (FIFO queue)
@@ -252,12 +254,16 @@ export class CombatSimulation {
             return; 
         }
 
-        if (event.hasFollowupEvent()) {
-            this.addEvent(event.getFollowupEvent());
-        }
         if (event.allowWizardFollowupAction()) {
             // Wizard is allowed to perform action
             await this.addNextWizardEvent((event as WizardEvent).wizard);
+        }
+        if (event.hasFollowupEvent()) {
+            this.addEvent(event.getFollowupEvent());
+        }
+        if (event instanceof CooldownFinishedEvent) {
+            // trigger this specific wizard
+            await this.triggerIdleWizard(event.getCaster()); 
         }
     }
 
@@ -292,13 +298,22 @@ export class CombatSimulation {
                hasBlockingEvent === false; 
     }
 
+
     async triggerIdleWizards() {
         for (let wizard of this.wizards) {
-            if (this.isWizardIdle(wizard)) {
-                await this.addNextWizardEvent(wizard);
-            }
+            /*if (this.isWizardIdle(wizard)) {
+                await this.addNextWizardEvent(wizard); 
+            } */
+            await this.triggerIdleWizard(wizard);   
         }
     }    
+
+    async triggerIdleWizard(wizard: Wizard) {
+        if (this.isWizardIdle(wizard)) {
+            this.log(2, "Player id=" + wizard.playerIndex + " was idle and an action has been triggered."); 
+            await this.addNextWizardEvent(wizard); 
+        }   
+    }
 
     getRulesEngine(playerIndex: number): RulesEngine {
         return this.rulesEngines[playerIndex]; 

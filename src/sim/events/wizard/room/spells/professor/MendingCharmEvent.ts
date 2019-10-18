@@ -1,6 +1,9 @@
 import { StrategicSpellEvent } from "../StrategicSpellEvent";
 import { Wizard } from "../../../../../../model/player/Wizard";
 import { Professor } from "../../../../../../model/player/Professor";
+import { SimEvent } from "../../../../SimEvent";
+import { MendingCharmCooldownFinishedEvent } from "./MendingCharmCooldownFinishedEvent";
+import spellCooldownData from "../../../../../../data/spellCooldowns.json"; 
 
 export class MendingCharmEvent extends StrategicSpellEvent {
 
@@ -13,8 +16,15 @@ export class MendingCharmEvent extends StrategicSpellEvent {
         this.targetWizard = targetWizard;
 
         if ((caster as Professor).hasStudiedMendingCharm() === false) {
-            throw new Error("Wizard id=" + caster.playerIndex + " has not studied mending charm but tried casting it!");
+            throw new Error(caster.toUserFriendlyDescription() + " has not studied mending charm but tried casting it!");
         }
+        if (caster.mendingCharmOnCooldown === true) {
+            throw new Error(caster.toUserFriendlyDescription() + " tried casting mending charm while it was still on cooldown!"); 
+        }
+    }
+
+    onStart() {
+        this.getCaster().mendingCharmOnCooldown = true;
     }
 
     onFinish() {
@@ -25,6 +35,15 @@ export class MendingCharmEvent extends StrategicSpellEvent {
     getStrategicSpellName(): string {
         return "Mending Charm (+" + this.staminaRestore + "hp)"; 
     }
+
+    hasFollowupEvent(): boolean {
+        return true; 
+    }
+    
+    getFollowupEvent(): SimEvent {
+        return new MendingCharmCooldownFinishedEvent(this.timestampEnd, spellCooldownData.mendingCharm - (this.duration), this.getCaster()); 
+    }   
+
 
 
 }

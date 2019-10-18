@@ -1,0 +1,46 @@
+{
+    "author": "Zhadok",
+    "nameClass": "professor",
+    "rules": [
+      {
+        "event": {
+          "type": "mendingCharm",
+          "params": {
+            "targetWizard": "lowestHP"
+          }
+        },
+        "priority": 2000,
+        "conditions": {
+          "all": [
+            {
+              "fact": "wizard",
+              "path": ".inCombat",
+              "operator": "equal",
+              "value": false
+            },
+            {
+                "fact": "wizard",
+                "path": ".mendingCharmOnCooldown",
+                "operator": "equal",
+                "value": false
+            },
+            {
+              "fact": "wizard",
+              "path": ".triggers.mendingCharm",
+              "operator": "notEqual",
+              "value": null
+            }
+          ]
+        }
+      },
+      {
+        "event": {
+          "type": "noAction"
+        },
+        "priority": 0,
+        "conditions": {
+          "all": []
+        }
+      }
+    ]
+  }

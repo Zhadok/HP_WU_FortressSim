@@ -24,6 +24,7 @@ import { FortressRoom } from "../../src/model/env/FortressRoom";
 import { WizardsOutOfTimeEvent } from "../../src/sim/events/env/WizardsOutOfTimeEvent";
 import { SkillTree } from "../../src/model/player/SkillTree/SkillTree";
 import professorRules_onlyDeteriorationHex from "../../src/rules/store/professorRules_onlyDeteriorationHex.json"; 
+import professorRules_onlyMendingCharm from "../../src/rules/store/professorRules_onlyMendingCharm.json"; 
 import { ruleContainerType } from "../types";
 
 
@@ -317,7 +318,7 @@ describe("CombatSimulation", function() {
     });
 
     it("simulation_playerNoAction_enemyShouldAttack", async function() {
-        Logger.verbosity = 2; 
+        Logger.verbosity = 0; 
         params1.roomLevel = 1; 
         params1.ruleContainers = [professorRules_onlyDeteriorationHex as ruleContainerType]; 
         let skillTree = new SkillTree("professor"); 
@@ -329,6 +330,25 @@ describe("CombatSimulation", function() {
 
         await sim.simulate(); 
         expect(sim.toSimulationResults().isWin).to.equal(true); 
+    });
+
+    it("simulation_playerSpamMendingCharm", async function() {
+        // Professor should cast mending charm every 6s
+        Logger.verbosity = 0;  
+        params1.roomLevel = 1; 
+        params1.ruleContainers = [professorRules_onlyMendingCharm as ruleContainerType]; 
+        let skillTree = new SkillTree("professor"); 
+        skillTree.learnAllLessons(); 
+        params1.skillTrees = [skillTree.persist()]; 
+        
+        let sim = new CombatSimulation(params1, new Prando(params1.seed));
+        sim.init(); 
+
+        sim.wizards[0].removeStamina(sim.wizards[0].getMaxStamina() - 1);
+        await sim.simulate(); 
+
+        // 300s, exactly 50 casts (1 every 6s)
+        expect(sim.wizards[0].getCurrentStamina()).to.be.equal(1 + 50*4);  
     });
 
 });
