@@ -32,7 +32,7 @@
     "spellCast_enemy": 4740,
     "spellCast_enemy_after_no_wizard_action": 5000,
 
-    "enemyDeathAnimation": 5215,
+    "enemyDeathAnimation": 500,
 
     "rewardsAnimation": 500,
 

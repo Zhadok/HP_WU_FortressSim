@@ -1,3 +1,5 @@
+- 0.3.7
+    - Implemented cooldown for mending charm and bat bogey hex
 - 0.3.6
     - Restructured advanced simulation settings
     - Added min/max room level for comparing different room levels

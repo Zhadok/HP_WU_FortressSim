@@ -6,7 +6,7 @@
             "event": {
                 "type": "defenceCharm",
                 "params": {
-                    "targetWizardIndex": 0
+                    "targetWizard": "self"
                 }
             },
             "priority": 10000,
@@ -221,6 +221,47 @@
                                 "value": false
                             }
                         ]
+                    }
+                ]
+            }
+        },
+        {
+            "event": {
+                "type": "mendingCharm",
+                "params": {
+                    "targetWizard": "self",
+                    "description": "Professor should cast mending charm once before entering combat"
+                }
+            },
+            "priority": 9950,
+            "conditions": {
+                "all": [
+                    {
+                        "fact": "wizard",
+                        "path": ".inCombat",
+                        "operator": "equal",
+                        "value": false
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".currentStamina",
+                        "operator": "lessThan",
+                        "value": {
+                            "fact": "wizard",
+                            "path": ".maxStamina"
+                        }
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".triggers.mendingCharm",
+                        "operator": "notEqual",
+                        "value": null
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".mendingCharmOnCooldown",
+                        "operator": "equal",
+                        "value": false
                     }
                 ]
             }

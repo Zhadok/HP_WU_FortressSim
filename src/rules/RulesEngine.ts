@@ -143,11 +143,20 @@ export class RulesEngine {
             if (event.params.targetWizardIndex !== undefined) {
                 targetWizard = facts.allWizards.filter(wizard => wizard.playerIndex === event.params.targetWizardIndex)[0];
             }
-            if (event.params.targetWizard === "lowestHP") {
-                targetWizard = facts.allWizards.sort(function(v1, v2) {
-                    return v2.getCurrentStamina() - v1.getCurrentStamina();
-                })[0];
+            switch (event.params.targetWizard) {
+                case "lowestHP":
+                    targetWizard = facts.allWizards.sort(function(v1, v2) {
+                        return v2.getCurrentStamina() - v1.getCurrentStamina();
+                    })[0];
+                    break; 
+                case "self": 
+                    targetWizard = wizard; 
+                    break; 
+                default: 
+                    targetWizard = wizard; 
+                    break; 
             }
+            
             switch (event.params.targetEnemy) {
                 case "highestPriorityAvailableEnemy":
                     targetEnemy = highestPriorityAvailableEnemy; 
@@ -161,6 +170,11 @@ export class RulesEngine {
                     targetEnemy = highestPriorityAvailableEnemy; 
                     break; 
             }   
+        }
+        else {
+            // Still set defaults if people forget them
+            targetWizard = wizard; 
+            targetEnemy = highestPriorityAvailableEnemy; 
         }
         switch (event.type as actionNameType) {
             // Invigoration potion
