@@ -421,7 +421,8 @@ export class CombatSimulation {
             simParameters: this.params,
             wizardResults: wizardResults,
             enemies: this.fortressRoom.enemiesAll,
-            wizards: this.wizards
+            wizards: this.wizards,
+            energyReward: this.fortressRoom.getEnergyReward(this.params.useSponsoredFortressRewards)
         };
     }
     

@@ -42,7 +42,8 @@
                     </mat-form-field>
                     <mat-checkbox class="floatLeft clearBoth" [(ngModel)]="simParameters.useSponsoredFortressRewards">
                         Sponsored fortress rewards 
-                        ({{(fortressRewardData.sponsoredFortressRewardsChallengeXPIncrease*100).toFixed(0)}}% more challenge XP)
+                        ({{(fortressRewardData.sponsoredFortressRewardsChallengeXPIncrease*100).toFixed(0)}}% more challenge XP and 
+                        {{getEnergyReward()}} energy)
                     </mat-checkbox>
                 </div>
 
@@ -416,7 +417,9 @@
                             <b>Player {{wizardResult.playerIndex+1}} </b>
                             ({{ simulationSingleResults.wizards[wizardResult.playerIndex].nameClassUserFriendly }})<br>
                             {{wizardResult.challengeXPReward}} challenge XP (runestone level {{wizardResult.runestoneLevel}})<br>
-
+                            <span *ngIf="simulationSingleResults.simParameters.useSponsoredFortressRewards">
+                                {{simulationSingleResults.energyReward}} energy rewarded from sponsored fortress
+                            </span><br>
                             <b>Attacks</b>
                             <ul>
                                 <li>{{wizardResult.numberOfCasts}} hits ({{wizardResult.numberOfCriticalCasts}} critical, {{wizardResult.numberOfDodgedCasts}} dodged)</li>
@@ -554,9 +557,9 @@
                                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Rewards per hour </th>
                                 <td mat-cell *matCellDef="let row"> {{row.averageChallengeXPRewardPerHour.toFixed(0) }} CXP/hour </td>
                             </ng-container>
-                            <ng-container matColumnDef="averageCastsPerHour">
+                            <ng-container matColumnDef="averageEnergyPerHour">
                                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Energy per hour </th>
-                                <td mat-cell *matCellDef="let row"> {{row.averageCastsPerHour.toFixed(0) }} energy/hour </td>
+                                <td mat-cell *matCellDef="let row"> {{row.averageEnergyPerHour.toFixed(0) }} energy/hour </td>
                             </ng-container>
                             <ng-container matColumnDef="numberOfRuns">
                                     <th mat-header-cell *matHeaderCellDef> Runs simulated </th>

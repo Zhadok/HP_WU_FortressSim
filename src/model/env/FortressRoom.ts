@@ -208,6 +208,19 @@ export class FortressRoom {
         return rewards;
     }
 
+    getEnergyReward(isSponsoredFortress: boolean): number {
+        return FortressRoom.getEnergyRewardStatic(this.roomLevel, isSponsoredFortress); 
+    }
+
+    static getEnergyRewardStatic(roomLevel: number, isSponsoredFortress: boolean) {
+        if (isSponsoredFortress === false) {
+            return 0; 
+        }
+        else {
+            return Math.ceil(roomLevel / 2); 
+        }
+    }
+
     // Elites count as double 
     getNEnemiesElitesCountDouble(): number {
         return this.enemiesAll.length + this.enemiesAll.filter(enemy => enemy.isElite).length;

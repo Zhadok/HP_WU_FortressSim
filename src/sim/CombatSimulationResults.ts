@@ -12,6 +12,7 @@ export interface CombatSimulationResults {
     readonly enemies: Array<Enemy>; 
     readonly nEvents: number;
     readonly isWin: boolean; 
+    readonly energyReward: number; 
 
     wallTimeStart: number; 
     wallTimeEnd: number; 

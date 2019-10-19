@@ -192,7 +192,7 @@ export class CombatSimulationComparison {
 
         for (let uniqueGroupByValue of uniqueGroupByValues) { // Could be roomLevel or next skill tree node
             // All  results for X simulations of this room level (example runs: 10)
-            let resultsFiltered = simulationMultipleResults.filter((results) => results.simParameters.groupByValue === uniqueGroupByValue);
+            let resultsFiltered: CombatSimulationResults[] = simulationMultipleResults.filter((results) => results.simParameters.groupByValue === uniqueGroupByValue);
             let nRuns = resultsFiltered.length;
             let nWins = resultsFiltered.map(r => r.isWin).map(isWin => Number(isWin)).reduce((a, b) => (a += b));
             let totalDamage = 0;
@@ -204,9 +204,12 @@ export class CombatSimulationComparison {
             let totalTimeSpentDeadMS = 0; 
             let totalGameTimeMSPassed = resultsFiltered.map(r => r.durationGameTimeMS).reduce((a, b) => a += b);
             let totalBrewTimeHours = 0; 
-            for (let wizardResultArray of resultsFiltered.map(r => r.wizardResults)) {
+            let totalEnergyReward = 0; 
+            for (let combatSimulationResults of resultsFiltered) {
+                totalEnergyReward += combatSimulationResults.energyReward;
+
                 // Results for X wizards of 1 concrete simulation
-                for (let wizardResult of wizardResultArray) {
+                for (let wizardResult of combatSimulationResults.wizardResults) {
                     // Result for 1 wizard of 1 concrete simulation
                     totalDamage += wizardResult.totalDamage;
                     totalCasts += wizardResult.numberOfCasts;
@@ -222,9 +225,11 @@ export class CombatSimulationComparison {
             let averageNumberOfCasts = totalCasts / (nRuns * nWizards); 
             let averageGameTimeMS = totalGameTimeMSPassed / nRuns;
             let averageChallengeXPReward = totalChallengeXPReward / (nRuns * nWizards);
+
             let averageRunsPerHour = 3600 * 1000 / (averageGameTimeMS + 1000*secondsBetweenSimulations); 
             let averageChallengeXPRewardPerHour = averageChallengeXPReward * averageRunsPerHour; 
             let averageCastsPerHour = averageNumberOfCasts * averageRunsPerHour; 
+            let averageEnergyRewardPerHour = totalEnergyReward * averageRunsPerHour; 
 
             resultsGrouped.push({
                 groupByValue: uniqueGroupByValue,
@@ -243,7 +248,7 @@ export class CombatSimulationComparison {
 
                 averageRunsPerHour: averageRunsPerHour,
                 averageChallengeXPRewardPerHour: averageChallengeXPRewardPerHour,
-                averageCastsPerHour: averageCastsPerHour,
+                averageEnergyPerHour: averageCastsPerHour - averageEnergyRewardPerHour,
 
                 numberOfRuns: nRuns
             });

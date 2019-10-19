@@ -37,6 +37,7 @@ import { Wizard } from '../../../src/model/player/Wizard';
 import { FormControl, FormGroupDirective, NgForm } from '@angular/forms';
 import { version as packageJsonVersion } from '../../package.json';
 import { Utils } from '../../../src/util/Utils';
+import { FortressRoom } from '../../../src/model/env/FortressRoom';
 
 const cookieConfig: any = {
     "cookie": {
@@ -493,6 +494,10 @@ export class AppComponent {
         //console.log(this.simulationMultipleResultsGrouped); 
         //console.log(this.columnNamesMultipleSimulationsResultsGrouped); 
         //this.matTableMultipleSimulationResults.renderRows(); 
+    }
+
+    getEnergyReward() {
+        return FortressRoom.getEnergyRewardStatic(this.simParameters.roomLevel, true); 
     }
 
 
