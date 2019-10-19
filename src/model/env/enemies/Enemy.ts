@@ -87,7 +87,7 @@ export class Enemy extends Combatant {
         }
         // Wit sharpening potion
         if (this.witSharpeningPotionUsesRemaining[wizard.playerIndex] > 0) {
-            this.witSharpeningPotionUsesRemaining[wizard.playerIndex];
+            this.witSharpeningPotionUsesRemaining[wizard.playerIndex]--;
         }
         if (this.witSharpeningPotionUsesRemaining[wizard.playerIndex] === 0) {
             // Potion used up

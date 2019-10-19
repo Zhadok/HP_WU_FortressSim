@@ -181,8 +181,12 @@ declare type simulationResultsGroupedType = {
     averageDamage: number
     averageChallengeXPReward: number,
 
+    // time statistics
     averageTimeSpentDeadMS: number, 
     averageGameTimeMS: number; 
+    averageBrewTimeHours: number, 
+
+    // Per hour statistics
     averageRunsPerHour: number, 
     averageChallengeXPRewardPerHour: number; 
     averageCastsPerHour: number,

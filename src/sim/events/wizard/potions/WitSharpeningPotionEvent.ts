@@ -11,13 +11,13 @@ export class WitSharpeningPotionEvent extends PotionEvent {
     readonly damageBuff: number;
     readonly uses: number;
 
-    constructor(timestampBegin: number, wizard: Wizard, enemy: Enemy, damageBuff: number, uses: number, potionAvailability: PotionAvailabilityParameters) {
-        super(timestampBegin, wizard, potionAvailability);
+    constructor(timestampBegin: number, wizard: Wizard, enemy: Enemy, damageBuff: number, uses: number, potions: PotionAvailabilityParameters) {
+        super(timestampBegin, wizard, potions);
         this.enemy = enemy; 
         this.damageBuff = damageBuff;
         this.uses = uses;
 
-        if (potionAvailability.nWitSharpeningAvailable === 0) {
+        if (potions.nWitSharpeningAvailable === 0) {
             throw new Error("Tried drinking wit sharpening potion but none available by wizard id=" + wizard.playerIndex + "!");
         }
     }
@@ -34,6 +34,7 @@ export class WitSharpeningPotionEvent extends PotionEvent {
         }
         
         this.enemy.applyWitSharpeningPotion(this.wizard, this.uses, this.damageBuff); 
+        this.potions.nWitSharpeningAvailable--; 
     }
 
     getPotionName(): string {

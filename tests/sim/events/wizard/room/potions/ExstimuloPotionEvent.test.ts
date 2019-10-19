@@ -62,6 +62,14 @@ describe("ExstimuloPotionEvent", function() {
         let newDamage = CombatSpellCastWizardEvent.computeWizardDamage(wizard, enemy, 0);
         expect(Math.ceil(previousDamage * (1+2.25))).to.equal(newDamage);
     });
+    
+    it("potion_decreaseAvailable", function() {
+        potions.nPotentExstimuloAvailable = 2; 
+        let eventPotion = new ExstimuloPotionEvent(0, wizard, enemy, potions, potionData.potentExstimuloPotionDamageBuff, potionData.potentExstimuloPotionUses, "potent");
+        eventPotion.onFinish();
+        expect(potions.nPotentExstimuloAvailable).to.equal(1); 
+
+    });
 
     it("potion_alreadyActive", function() {
 
@@ -99,5 +107,6 @@ describe("ExstimuloPotionEvent", function() {
         }
         catch (e) {}
     });
+
 
 });

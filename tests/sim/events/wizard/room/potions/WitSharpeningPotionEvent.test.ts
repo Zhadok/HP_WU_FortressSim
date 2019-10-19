@@ -42,6 +42,13 @@ describe("WitSharpeningPotionEvent", function() {
         expect(wizard.witSharpeningPotionDamageBuff).to.be.equal(0);  
     });
 
+    it("decreaseAvailable", function() {
+        potions.nWitSharpeningAvailable = 2; 
+        let eventPotion = new WitSharpeningPotionEvent(0, wizard, enemy, potionData.witSharpeningPotionDamageBuff, potionData.witSharpeningPotionUses, potions); 
+        eventPotion.onFinish();
+        expect(potions.nWitSharpeningAvailable).to.equal(1); 
+    });
+
 
 
 }); 

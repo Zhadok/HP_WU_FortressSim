@@ -376,7 +376,7 @@
                                 <img src="assets/img/enemies/{{enemy.name}}.png" />
                             </div>
                             {{ enemy.nameUserFriendly }}
-                            ({{ enemy.level }})
+                            ({{ enemy.level }}{{ enemy.isElite === true ? ', elite' : ''}})
                             <mat-progress-bar mode="determinate" color="warn" 
                                  [value]="enemy.currentStamina  / enemy.maxStamina *100"></mat-progress-bar>
                             <span class="spanEnemyDifficultyStar" *ngFor="let difficulty of [].constructor(enemy.difficulty)">★</span>
@@ -485,7 +485,7 @@
                             </ng-container> -->
                             <ng-container matColumnDef="winPercentage">
                                     <th mat-header-cell *matHeaderCellDef mat-sort-header> Win % </th>
-                                    <td mat-cell *matCellDef="let row"> {{(row.winPercentage*100).toFixed(2)}} </td>
+                                    <td mat-cell *matCellDef="let row"> {{(row.winPercentage*100).toFixed(2)}}% </td>
                             </ng-container>
                             <ng-container matColumnDef="averageNumberOfCasts">
                                     <th mat-header-cell *matHeaderCellDef> Average energy (casts)</th>
@@ -497,11 +497,11 @@
                             </ng-container>
                             <ng-container matColumnDef="averageCritPercent">
                                     <th mat-header-cell *matHeaderCellDef> Crit % </th>
-                                    <td mat-cell *matCellDef="let row"> {{(row.averageCritPercent*100).toFixed(2) }}% </td>
+                                    <td mat-cell *matCellDef="let row"> {{(row.averageCritPercent*100).toFixed(0)}}% </td>
                             </ng-container>
                             <ng-container matColumnDef="averageDodgePercent">
                                     <th mat-header-cell *matHeaderCellDef> Dodge % </th>
-                                    <td mat-cell *matCellDef="let row"> {{(row.averageDodgePercent*100).toFixed(2)}}% </td>
+                                    <td mat-cell *matCellDef="let row"> {{(row.averageDodgePercent*100).toFixed(0)}}% </td>
                             </ng-container>
                             <ng-container matColumnDef="averageTotalDamage">
                                     <th mat-header-cell *matHeaderCellDef> Average total damage </th>
@@ -512,8 +512,12 @@
                                 <td mat-cell *matCellDef="let row"> {{(row.averageTimeSpentDeadMS / 1000).toFixed(0)}}s </td>
                             </ng-container>
                             <ng-container matColumnDef="averageGameTimeMS">
-                                    <th mat-header-cell *matHeaderCellDef> Average time </th>
+                                    <th mat-header-cell *matHeaderCellDef> Average sim time </th>
                                     <td mat-cell *matCellDef="let row"> {{(row.averageGameTimeMS / 1000).toFixed(0)}}s </td>
+                            </ng-container>
+                            <ng-container matColumnDef="averageBrewTimeHours">
+                                <th mat-header-cell *matHeaderCellDef> Average brew time </th>
+                                <td mat-cell *matCellDef="let row"> {{formatHoursDecimal(row.averageBrewTimeHours)}}</td>
                             </ng-container>
                             <ng-container matColumnDef="averageChallengeXPReward">
                                     <th mat-header-cell *matHeaderCellDef mat-sort-header> Reward </th>

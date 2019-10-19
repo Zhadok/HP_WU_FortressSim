@@ -203,6 +203,7 @@ export class CombatSimulationComparison {
             let totalChallengeXPReward = 0;
             let totalTimeSpentDeadMS = 0; 
             let totalGameTimeMSPassed = resultsFiltered.map(r => r.durationGameTimeMS).reduce((a, b) => a += b);
+            let totalBrewTimeHours = 0; 
             for (let wizardResultArray of resultsFiltered.map(r => r.wizardResults)) {
                 // Results for X wizards of 1 concrete simulation
                 for (let wizardResult of wizardResultArray) {
@@ -214,6 +215,7 @@ export class CombatSimulationComparison {
                     // Wizard 1 and wizard 2 might have different number of casts, so averages must be weighted for averageNumberOfCritCasts
                     totalChallengeXPReward += wizardResult.challengeXPReward;
                     totalTimeSpentDeadMS += wizardResult.timeSpentDefeated; 
+                    totalBrewTimeHours += wizardResult.potionsUsedBrewTimeHoursWithMasterNotes; 
                 }
             }
 
@@ -237,6 +239,8 @@ export class CombatSimulationComparison {
                 averageChallengeXPReward: averageChallengeXPReward,
                 averageTimeSpentDeadMS: totalTimeSpentDeadMS / (nRuns * nWizards), 
                 averageGameTimeMS: averageGameTimeMS,
+                averageBrewTimeHours: totalBrewTimeHours / (nRuns * nWizards),
+
                 averageRunsPerHour: averageRunsPerHour,
                 averageChallengeXPRewardPerHour: averageChallengeXPRewardPerHour,
                 averageCastsPerHour: averageCastsPerHour,

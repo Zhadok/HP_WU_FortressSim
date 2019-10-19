@@ -1,4 +1,5 @@
 - 0.4.0 
+    - Added "potions used" to wizard result of simulation
     - Added "brewing time spent" result to wizard result of simulation (if 2/5 healing potions were used, only 4h of brewing time, not 10h)
     - Added "average time spend dead" statistic when comparing multiple simulations
 - 0.3.8
