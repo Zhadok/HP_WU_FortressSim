@@ -1,7 +1,7 @@
 
 <div id="divContainer">
     <h1 class="mat-h1">
-        Harry Potter - Wizards Unite Fortress Simulator v{{packageJsonVersion}} <br>
+        Harry Potter - Wizards Unite Fortress Simulator v{{simAdvancedSettings.simulationVersion}} <br>
         <a target="_blank" href="https://github.com/Zhadok/HP_WU_FortressSim">(source code and documentation)</a>
     </h1>
 
@@ -35,11 +35,15 @@
 
                 <div id="divSettingsRoomLevel">
                     <h2 class="mat-h2">Overall parameters: </h2>
-                    <mat-form-field class="inputRoomLevel" appearance="outline">
+                    <mat-form-field class="inputRoomLevel floatLeft" appearance="outline">
                         <mat-label>Room level: {{getChamberName(simParameters.roomLevel)}}</mat-label>
                         <input type="number" min="1" max="20" matInput placeholder="Room level" name="roomLevel"
                                     [(ngModel)]="simParameters.roomLevel">
                     </mat-form-field>
+                    <mat-checkbox class="floatLeft clearBoth" [(ngModel)]="simParameters.useSponsoredFortressRewards">
+                        Sponsored fortress rewards 
+                        ({{(fortressRewardData.sponsoredFortressRewardsChallengeXPIncrease*100).toFixed(0)}}% more challenge XP)
+                    </mat-checkbox>
                 </div>
 
                 <mat-tab-group id="matTabGroupWizardSettings">
@@ -334,12 +338,12 @@
                         <mat-option *ngFor="let item of getSkillTreeFilterLessonsMap() | keyvalue" value="{{item.key}}">{{item.value}}</mat-option>
                     </mat-select>
                 </mat-form-field>
-                <mat-checkbox [(ngModel)]="simAdvancedSettings.runParallel" [disabled]="true">Run parallel</mat-checkbox>
+                <mat-checkbox [(ngModel)]="simAdvancedSettings.runParallel" [disabled]="true">Run parallel (not implemented)</mat-checkbox>
             </div>
             
 
             <div class="divContainerAdvancedSettingsSection">
-                <h2 class="mat-h2">Data on this website</h2>
+                <h2 class="mat-h2">Data on this website (v{{simAdvancedSettings.simulationVersion}})</h2>
                 <p>
                     Data imports and exports include skill trees, customized player AI rules and advanced simulation settings.
                 </p>

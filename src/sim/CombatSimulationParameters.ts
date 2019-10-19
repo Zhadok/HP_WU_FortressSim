@@ -7,6 +7,8 @@ export interface CombatSimulationParameters {
 
     seed: number, 
     roomLevel: number,
+    useSponsoredFortressRewards: false, 
+
     runestoneLevels: Array<number>,
 
     nameClasses: Array<nameClassType>,

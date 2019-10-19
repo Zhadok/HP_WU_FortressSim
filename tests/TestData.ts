@@ -101,6 +101,7 @@ export class TestData {
 
     static buildDefaultSimAdvancedSettings(): simAdvancedSettingsType {
         return {
+            simulationVersion: "test",
             numberSimulationsPerSetting: 1, 
             runParallel: false, 
             secondsBetweenSimulations: 40,
@@ -118,6 +119,8 @@ export class TestData {
 
     static buildDefaultSimParameters(): CombatSimulationParameters {
         return {
+            useSponsoredFortressRewards: false, 
+
             roomLevel: this.getDefaultRoomLevel(),
             runestoneLevels: [1], 
 
@@ -168,8 +171,10 @@ export class TestData {
 
     static buildDefaultSimParametersTwoWizards(): CombatSimulationParameters {
         return {
+            useSponsoredFortressRewards: false, 
+
             roomLevel: this.getDefaultRoomLevel(),
-            runestoneLevels: [1], 
+            runestoneLevels: [1, 1], 
 
             nameClasses: ["professor", "magizoologist"],
             //wizardStats: [ this.buildDefaultWizardStats(), this.buildDefaultWizardStats() ],

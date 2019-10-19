@@ -26,6 +26,7 @@ import * as ObservableSlim from "observable-slim";
 import { MatSortModule } from "@angular/material";
 import { MatSort } from '@angular/material/sort';
 
+import fortressRewardData from "../../../src/data/fortressRewards.json"; 
 import professorRules from "../../../src/rules/store/professorRules.json";
 import aurorRules from "../../../src/rules/store/aurorRules.json";
 import magizoologistRules from "../../../src/rules/store/magizoologistRules.json";
@@ -88,7 +89,7 @@ export class RuleErrorStateMatcher implements ErrorStateMatcher {
 })
 export class AppComponent {
 
-    readonly packageJsonVersion = packageJsonVersion; 
+    readonly fortressRewardData = fortressRewardData; 
     readonly skillTreeVis = {
         rowHeight: 80,
         columnWidth: 120,
@@ -101,6 +102,9 @@ export class AppComponent {
 
     // Advanced sim settings: Default settings
     simAdvancedSettings: simAdvancedSettingsType = {
+        simulationVersion: packageJsonVersion,
+
+        showPlayerRules: false,
         numberSimulationsPerSetting: 10,
         
         simGoal: "single",
@@ -113,7 +117,6 @@ export class AppComponent {
         runParallel: false,
         secondsBetweenSimulations: 40,
         simulationLogChannel: "User friendly",
-        showPlayerRules: false,
         isAdvancedSettingsTabExpanded: false
     };
 
@@ -169,6 +172,8 @@ export class AppComponent {
             this.initFromLocalStorage();
         }
 
+        this.simParameters = this.sanitizeSimParametersOldVersions(this.simParameters); 
+
         console.log("Initial sim parameters: ");
         console.log(this.simParameters);
         console.log("Initial advanced settings: ");
@@ -207,6 +212,10 @@ export class AppComponent {
         else {
             console.log("Not initializing cookie config since we are in localhost. ")
         }
+    }
+
+    sanitizeSimParametersOldVersions(simParameters: CombatSimulationParameters) {
+        return simParameters; 
     }
 
     getPlayerRulesForTable(playerIndex: number): MatTableDataSource<ruleType> | ruleType[] {
@@ -590,7 +599,8 @@ export class AppComponent {
             potions: [],
             runestoneLevels: [],
             skillTrees: [],
-            ruleContainers: []
+            ruleContainers: [],
+            useSponsoredFortressRewards: false
         };
     }
 

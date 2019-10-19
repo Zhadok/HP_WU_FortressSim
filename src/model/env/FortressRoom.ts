@@ -183,12 +183,12 @@ export class FortressRoom {
         return 1000 * (30+(roomLevel-1)*2);
     }
 
-    computeChallengeXPRewards(isWin: boolean): number[] {
-        return FortressRoom.computeChallengeXPRewardsStatic(this.roomLevel, this.runestoneLevels, isWin); 
+    computeChallengeXPRewards(isWin: boolean, isSponsoredFortress?: boolean): number[] {
+        return FortressRoom.computeChallengeXPRewardsStatic(this.roomLevel, this.runestoneLevels, isWin, isSponsoredFortress); 
     }    
 
     // https://i.redd.it/wz2vwfh5u4k31.jpg
-    static computeChallengeXPRewardsStatic(roomLevel: number, runestoneLevels: number[], isWin: boolean): number[] {
+    static computeChallengeXPRewardsStatic(roomLevel: number, runestoneLevels: number[], isWin: boolean, isSponsoredFortress?: boolean): number[] {
         let baseXP = fortressRewardData.data.baseXP[roomLevel-1]; 
         let rewards: number[] = []; 
         let nWizards = runestoneLevels.length;
@@ -197,7 +197,12 @@ export class FortressRoom {
         // Assumes all wizards in group are friends
         for (let runestoneLevel of runestoneLevels) {
             let xp = (baseXP * runestoneLevel) + baseXP * (friendBonus + groupBonus); 
-            if (isWin === false) xp *= 0.1; 
+            if (isWin === false) {
+                xp *= 0.1; 
+            }
+            if (isSponsoredFortress === true) {
+                xp *= 1 + fortressRewardData.sponsoredFortressRewardsChallengeXPIncrease; 
+            }
             rewards.push(Math.round(xp)); 
         }
         return rewards;

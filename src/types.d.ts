@@ -136,6 +136,8 @@ declare type ruleVisDataRowType = {
 declare type simGoalType = "single" | "multiple_compare_roomLevels" | "multiple_compare_skillTreeNodes";
 declare type simGoalMapType = { [key in simGoalType]: string }; 
 declare type simAdvancedSettingsType = {
+    simulationVersion: string,
+
     simGoal: simGoalType,
     simGoalMultipleParams: {
         simGoalMultiple_minRoomLevel: number,
@@ -150,7 +152,7 @@ declare type simAdvancedSettingsType = {
     // Frontend settings
     simulationLogChannel: simulationLogChannelType, // user friendly or debug, which log should be shown?
     showPlayerRules: boolean,
-    isAdvancedSettingsTabExpanded: boolean
+    isAdvancedSettingsTabExpanded: boolean,
 }; 
 declare type localStorageDataType = {
     simParameters: CombatSimulationParameters, 

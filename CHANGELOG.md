@@ -1,5 +1,6 @@
 - 0.4.2
     - Bug fix: Fixed bug where rules and sim settings would not get correctly loaded with old versions of website data
+    - Added toggle for sponsored fortress rewards
 - 0.4.1 
     - Added statistics "X attacks with Y enhancements/impairments" to single simulation results
     - Added attacks received statistics to single simulation results
