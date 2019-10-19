@@ -8,6 +8,13 @@ export interface CombatSimulationResultsWizard {
     numberOfDodgedCasts: number,
     totalDamage: number, 
     averageDamage: number,
+    numberEnhancementsDuringAttacks: Array<number>, 
+    numberImpairmentsDuringAttacks: Array<number>,
+
+    totalDamageReceived: number, 
+    numberAttacksReceived: number, 
+    numberEnhancementsDuringAttacksReceived: Array<number>; 
+    numberImpairmentsDuringAttacksReceived: Array<number>,
 
     runestoneLevel: number,
     challengeXPReward: number; 

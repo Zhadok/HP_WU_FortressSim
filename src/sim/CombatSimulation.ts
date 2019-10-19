@@ -394,9 +394,18 @@ export class CombatSimulation {
                 numberOfCriticalCasts: wizard.numberCriticalCasts,
                 totalDamage: wizard.totalDamage,
                 averageDamage: wizard.totalDamage / wizard.numberAttackCasts,
+                numberEnhancementsDuringAttacks: wizard.numberEnhancementsDuringAttacks, 
+                numberImpairmentsDuringAttacks: wizard.numberImpairmentsDuringAttacks, 
+
+                totalDamageReceived: wizard.totalDamageReceived,
+                numberAttacksReceived: wizard.numberAttacksReceived,
+                numberEnhancementsDuringAttacksReceived: wizard.numberEnhancementsDuringAttacksReceived, 
+                numberImpairmentsDuringAttacksReceived: wizard.numberImpairmentsDuringAttacksReceived, 
+
                 challengeXPReward: challengeXPRewards[wizard.playerIndex],
                 runestoneLevel: this.params.runestoneLevels[wizard.playerIndex],
                 timeSpentDefeated: wizard.timeSpentDefeated,
+
                 potionsUsed: wizard.getPotionsUsed(),
                 potionsUsedBrewTimeHours: wizard.getPotionsUsedBrewTime(false),
                 potionsUsedBrewTimeHoursWithMasterNotes: wizard.getPotionsUsedBrewTime(true)

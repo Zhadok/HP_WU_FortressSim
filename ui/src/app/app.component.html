@@ -411,16 +411,35 @@
                              *ngFor="let wizardResult of simulationSingleResults.wizardResults">
                             <b>Player {{wizardResult.playerIndex+1}} </b>
                             ({{ simulationSingleResults.wizards[wizardResult.playerIndex].nameClassUserFriendly }})<br>
-
-                            <!-- 
-                            <mat-progress-bar mode="determinate" color="warn" 
-                                              [value]="simulationSingleResults.wizards[wizardResult.playerIndex].currentStaminaPercent*100"></mat-progress-bar>
-                            -->
-                            {{wizardResult.numberOfCasts}} hits ({{wizardResult.numberOfCriticalCasts}} critical, {{wizardResult.numberOfDodgedCasts}} dodged)<br>
-                            {{wizardResult.averageDamage.toFixed(2)}} average damage<br>
-                            {{wizardResult.totalDamage}} total damage<br>
-                            {{(wizardResult.timeSpentDefeated/1000).toFixed(0)}}s spent defeated<br>
                             {{wizardResult.challengeXPReward}} challenge XP (runestone level {{wizardResult.runestoneLevel}})<br>
+
+                            <b>Attacks</b>
+                            <ul>
+                                <li>{{wizardResult.numberOfCasts}} hits ({{wizardResult.numberOfCriticalCasts}} critical, {{wizardResult.numberOfDodgedCasts}} dodged)</li>
+                                <li>{{wizardResult.averageDamage.toFixed(0)}} average damage ({{wizardResult.totalDamage}} total)</li>
+                                <li>{{(wizardResult.totalDamage/wizardResult.numberAttacksReceived).toFixed(0)}} average damage received ({{wizardResult.totalDamageReceived}} total)</li>
+                                <li>{{(wizardResult.timeSpentDefeated/1000).toFixed(0)}}s spent defeated</li>
+                            </ul>
+                            <b>Enhancements</b>
+                            <ul>
+                                <li *ngFor="let numberAttacks of wizardResult.numberEnhancementsDuringAttacks; let numberEnhancements=index"
+                                    [hidden]="numberAttacks === 0">
+                                    <b>{{numberEnhancements}}</b> enhancements: 
+                                    <b>{{numberAttacks}}</b> ({{(100*numberAttacks/wizardResult.numberOfCasts).toFixed(0)}}%) attacks made,
+                                    <b>{{wizardResult.numberEnhancementsDuringAttacksReceived[numberEnhancements]}}</b> attacks received 
+                                        
+                                </li>
+                            </ul>
+                            <b>Impairments</b>
+                            <ul>
+                                <li *ngFor="let numberAttacks of wizardResult.numberImpairmentsDuringAttacks; let numberImpairments=index"
+                                    [hidden]="numberAttacks === 0">
+                                    <b>{{numberImpairments}}</b> impairments: 
+                                    <b>{{numberAttacks}}</b> ({{(100*numberAttacks/wizardResult.numberOfCasts).toFixed(0)}}%) attacks made,
+                                    <b>{{wizardResult.numberImpairmentsDuringAttacksReceived[numberImpairments]}}</b> attacks received 
+                                        
+                                </li>
+                            </ul>
 
                             <b>Potions used</b> (brew time: {{formatHoursDecimal(wizardResult.potionsUsedBrewTimeHours)}}, 
                                                  with master notes: {{formatHoursDecimal(wizardResult.potionsUsedBrewTimeHoursWithMasterNotes)}})

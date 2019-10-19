@@ -56,6 +56,7 @@ export class CombatSpellCastEnemyEvent extends CombatEvent {
         
         let staminaBeforeDamage = this.wizard.getCurrentStamina();
         this.wizard.removeStamina(damage);        
+        this.wizard.receiveAttack(damage, this.enemy); 
         
         let message = this.enemy.toUserFriendlyDescription() + " dealt " + damage + 
                       " damage to " + this.wizard.toUserFriendlyDescription() + " ("  +

@@ -1,3 +1,6 @@
+- 0.4.1 
+    - Added statistics "X attacks with Y enhancements/impairments" to single simulation results
+    - Added attacks received statistics to single simulation results
 - 0.4.0 
     - Added "potions used" to wizard result of simulation
     - Added "brewing time spent" result to wizard result of simulation (if 2/5 healing potions were used, only 4h of brewing time, not 10h)

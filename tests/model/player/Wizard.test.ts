@@ -54,6 +54,39 @@ describe("Wizard", function() {
     });
 
 
+    it("performAttackCast_stats", function() {
+        expect(wizard.numberEnhancementsDuringAttacks).to.deep.equal([0, 0, 0, 0, 0, 0, 0]); 
+        expect(wizard.numberImpairmentsDuringAttacks).to.deep.equal([0, 0, 0, 0]); 
+
+        wizard.performAttackCast(50, false, false, enemy); 
+
+        expect(wizard.totalDamage).to.equal(50); 
+        expect(wizard.numberAttackCasts).to.equal(1); 
+        expect(wizard.numberCriticalCasts).to.equal(0); 
+        expect(wizard.numberDodgedCasts).to.equal(0); 
+        expect(wizard.numberEnhancementsDuringAttacks).to.deep.equal([1, 0, 0, 0, 0, 0, 0]); 
+        expect(wizard.numberImpairmentsDuringAttacks).to.deep.equal([1, 0, 0, 0]); 
+        
+        wizard.hasDefenceCharm = true; 
+        enemy.hasConfusionHex = true; 
+        wizard.performAttackCast(75, true, false, enemy); 
+        expect(wizard.totalDamage).to.equal(125); 
+        expect(wizard.numberAttackCasts).to.equal(2); 
+        expect(wizard.numberCriticalCasts).to.equal(1); 
+        expect(wizard.numberDodgedCasts).to.equal(0); 
+        expect(wizard.numberEnhancementsDuringAttacks).to.deep.equal([1, 1, 0, 0, 0, 0, 0]); 
+        expect(wizard.numberImpairmentsDuringAttacks).to.deep.equal([1, 1, 0, 0]); 
+      
+        enemy.hasDeteriorationHex = true; 
+        wizard.performAttackCast(0, false, true, enemy); 
+        expect(wizard.totalDamage).to.equal(125); 
+        expect(wizard.numberAttackCasts).to.equal(3); 
+        expect(wizard.numberCriticalCasts).to.equal(1); 
+        expect(wizard.numberDodgedCasts).to.equal(1); 
+        expect(wizard.numberEnhancementsDuringAttacks).to.deep.equal([1, 2, 0, 0, 0, 0, 0]); 
+        expect(wizard.numberImpairmentsDuringAttacks).to.deep.equal([1, 1, 1, 0]); 
+      
+    });
 
     it("timeSpentDead_raw", function() {
         wizard.removeStamina(999); 

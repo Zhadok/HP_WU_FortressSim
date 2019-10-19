@@ -11,6 +11,7 @@ import { SkillTreeNode } from "./SkillTree/SkillTreeNode";
 import { Logger } from "../../util/Logger";
 import { PotionAvailabilityParameters } from "../../sim/PotionAvailabilityParameters";
 import potionsBrewTime from "../../../src/data/potionsBrewTime.json";
+import { CombatSimulationResultsWizard } from "../../sim/CombatSimulationResultsWizard";
 
 export abstract class Wizard extends Combatant {
 
@@ -62,6 +63,14 @@ export abstract class Wizard extends Combatant {
     numberAttackCasts: number = 0;
     numberCriticalCasts: number = 0;
     numberDodgedCasts: number = 0;
+    numberEnhancementsDuringAttacks: Array<number> = [0, 0, 0, 0, 0, 0, 0]; // up to 6
+    numberImpairmentsDuringAttacks: Array<number> = [0, 0, 0, 0]; // up to 3
+
+    totalDamageReceived: number = 0; 
+    numberAttacksReceived: number = 0; 
+    numberEnhancementsDuringAttacksReceived: Array<number> = [0, 0, 0, 0, 0, 0, 0]; // up to 6
+    numberImpairmentsDuringAttacksReceived: Array<number> = [0, 0, 0, 0]; // up to 3
+
 
     constructor(stats: WizardStats, 
         nameClass: nameClassType,
@@ -205,8 +214,29 @@ export abstract class Wizard extends Combatant {
         this.numberAttackCasts++;
         if (isCritical) this.numberCriticalCasts++;
         if (isDodge) this.numberDodgedCasts++;
+        this.incrementNumberEnhancementsDuringAttacks(this.getNumberOfEnhancements(enemy)); 
+        this.incrementNumberImpairmentsDuringAttacks(enemy.getNumberOfImpairments()); 
     }
 
+    receiveAttack(damage: number, enemy: Enemy) {
+        this.totalDamageReceived += damage; 
+        this.numberAttacksReceived++; 
+        this.incrementNumberEnhancementsDuringAttacksReceived(this.getNumberOfEnhancements(enemy)); 
+        this.incrementNumberImpairmentsDuringAttacksReceived(enemy.getNumberOfImpairments()); 
+    }
+
+    incrementNumberEnhancementsDuringAttacks(nEnhancements: number): void {
+        this.numberEnhancementsDuringAttacks[nEnhancements]++; 
+    }
+    incrementNumberImpairmentsDuringAttacks(nImpairments: number): void {
+        this.numberImpairmentsDuringAttacks[nImpairments]++; 
+    }
+    incrementNumberEnhancementsDuringAttacksReceived(nEnhancements: number): void {
+        this.numberEnhancementsDuringAttacksReceived[nEnhancements]++; 
+    }
+    incrementNumberImpairmentsDuringAttacksReceived(nImpairments: number): void {
+        this.numberImpairmentsDuringAttacksReceived[nImpairments]++; 
+    }
 
     hasEnoughFocusForStrategicSpell(strategicSpellName: strategicSpellNameType): boolean {
         return this.getFocus() >= focusCostData[strategicSpellName];
