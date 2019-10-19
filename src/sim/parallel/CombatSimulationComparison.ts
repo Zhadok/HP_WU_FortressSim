@@ -201,6 +201,7 @@ export class CombatSimulationComparison {
             let totalDodgePercent = 0;
             let nWizards = resultsFiltered[0].wizardResults.length;
             let totalChallengeXPReward = 0;
+            let totalTimeSpentDeadMS = 0; 
             let totalGameTimeMSPassed = resultsFiltered.map(r => r.durationGameTimeMS).reduce((a, b) => a += b);
             for (let wizardResultArray of resultsFiltered.map(r => r.wizardResults)) {
                 // Results for X wizards of 1 concrete simulation
@@ -212,6 +213,7 @@ export class CombatSimulationComparison {
                     totalDodgePercent += wizardResult.numberOfDodgedCasts / wizardResult.numberOfCasts;
                     // Wizard 1 and wizard 2 might have different number of casts, so averages must be weighted for averageNumberOfCritCasts
                     totalChallengeXPReward += wizardResult.challengeXPReward;
+                    totalTimeSpentDeadMS += wizardResult.timeSpentDefeated; 
                 }
             }
 
@@ -233,7 +235,7 @@ export class CombatSimulationComparison {
                 averageDodgePercent: totalDodgePercent / (nRuns * nWizards),
                 averageTotalDamage: totalDamage / (nRuns * nWizards),
                 averageChallengeXPReward: averageChallengeXPReward,
-
+                averageTimeSpentDeadMS: totalTimeSpentDeadMS / (nRuns * nWizards), 
                 averageGameTimeMS: averageGameTimeMS,
                 averageRunsPerHour: averageRunsPerHour,
                 averageChallengeXPRewardPerHour: averageChallengeXPRewardPerHour,

@@ -1,3 +1,6 @@
+- 0.4.0 
+    - Added "brewing time spent" result to wizard result of simulation (if 2/5 healing potions were used, only 4h of brewing time, not 10h)
+    - Added "average time spend dead" statistic when comparing multiple simulations
 - 0.3.8
     - Added toggle for barrufio's brain elixir and tonic for trace detection (increases number of enhancements for professors)
 - 0.3.7
