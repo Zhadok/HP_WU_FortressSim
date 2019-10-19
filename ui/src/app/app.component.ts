@@ -207,10 +207,16 @@ export class AppComponent {
         else {
             console.log("Not initializing cookie config since we are in localhost. ")
         }
-
     }
 
     getPlayerRulesForTable(playerIndex: number): MatTableDataSource<ruleType> | ruleType[] {
+        if (this.simParameters.ruleContainers === undefined) {// With old versions 
+            this.simParameters.ruleContainers = []; 
+            for (let nameClass of this.simParameters.nameClasses) {
+                this.simParameters.ruleContainers.push(this.getDefaultRuleContainer(nameClass)); 
+            }
+        }
+
         let result = new MatTableDataSource(this.simParameters.ruleContainers[playerIndex].rules);
         //let result = this.simParameters.ruleContainers[playerIndex].rules; 
         
@@ -701,20 +707,36 @@ export class AppComponent {
 
     importDataFromFile(): void {
 
-        this.createFileUpload();
+        var self = this; 
+        this.createFileUpload(function(fileContent) {
+            console.log("Importing data from file: ");
+            console.log(fileContent);
+            let importedData: localStorageDataType = JSON.parse(fileContent);
+
+            if (Utils.deepCompareObjectSameKeys(this.simAdvancedSettings, importedData.simAdvancedSettings) === false) {
+                console.log("Older version of sim advanced settings detected in imported data:"); 
+                console.log(importedData.simAdvancedSettings); 
+                console.log("Using current version with different structure and overwriting old: "); 
+                console.log(this.simAdvancedSettings); 
+                importedData.simAdvancedSettings = this.simAdvancedSettings; 
+            } 
+
+            this.applyObserverFunctions.call(self, importedData);
+            this.persistToLocalStorage();
+        });
     }
 
     exportDataToFile(): void {
         let data = this.getDataFromLocalStorage();
-        this.createFileDownload("simulationParameters.json", JSON.stringify(data));
+        this.createFileDownload("simulationParameters.json", JSON.stringify(data, null, 4));
     }
 
-    createFileUpload() {
+    createFileUpload(callbackFunction) {
         var element = document.createElement("input");
         element.setAttribute("type", "file");
         var self = this;
         element.addEventListener("change", function (event) {
-            self.onUploadFileSelect.call(self, event);
+            self.onUploadFileSelect.call(self, event, callbackFunction);
         });
 
         element.style.display = 'none';
@@ -726,7 +748,7 @@ export class AppComponent {
 
 
     // https://stackoverflow.com/questions/16505333/get-the-data-of-uploaded-file-in-javascript
-    onUploadFileSelect(event) {
+    onUploadFileSelect(event, callbackFunction) {
         var files = event.target.files; // FileList object
 
         // use the 1st file from the list
@@ -737,14 +759,7 @@ export class AppComponent {
         // Closure to capture the file information.
         reader.onload = (function (theFile) {
             return function (e) {
-                console.log("Importing data from file: ");
-                console.log(e.target.result);
-                let importedData: localStorageDataType = JSON.parse(e.target.result);
-                //console.log(self.simAdvancedSettings); 
-                self.applyObserverFunctions.call(self, importedData);
-                self.persistToLocalStorage();
-                //self.simAdvancedSettings = data.simAdvancedSettings; 
-                //self.simParameters = data.simParameters; 
+                callbackFunction.call(self, e.target.result); 
             };
         })(f);
 
