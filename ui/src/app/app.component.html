@@ -114,9 +114,11 @@
                                     <button class="buttonSkillTreeControl" mat-raised-button color="accent" (click)="onClickButtonLearnAllLessonsScrolls(playerIndex)">Learn all lessons (scrolls only)</button>
                                     <button class="buttonSkillTreeControl" mat-raised-button color="accent" (click)="onClickButtonLearnAllLessons(playerIndex)">Learn all lessons</button>
                                     <button class="buttonSkillTreeControl" mat-raised-button color="accent" (click)="onClickButtonResetSkillTree(playerIndex)">Reset skill tree</button>
+                                    <button class="buttonSkillTreeControl" mat-raised-button (click)="onClickButtonImportSkillTree(playerIndex)">Import skill tree from file</button>
+                                    <button class="buttonSkillTreeControl" mat-raised-button (click)="onClickButtonExportSkillTree(playerIndex)">Export skill tree as file</button>
                                     <p>Costs: {{ skillTrees[playerIndex].getCostsString() }}</p>
                                 </div>
-                                
+                                                                
                                 <div class="divSettingsOutputWizardStats">
                                     <h2 class="mat-h2">Stats:</h2>
                                     <div *ngFor="let stat of skillTrees[playerIndex].toWizardStats() | keyvalue">
@@ -348,7 +350,7 @@
                 <p>
                     Data imports and exports include skill trees, customized player AI rules and advanced simulation settings.
                 </p>
-                <button class="buttonSkillTreeControl" id="buttonImportDataFromFile"  mat-raised-button  (click)="importDataFromFile()">Import data from file</button>
+                <button class="buttonSkillTreeControl" id="buttonImportDataFromFile"  mat-raised-button (click)="importDataFromFile()">Import data from file</button>
                 <button class="buttonSkillTreeControl" id="buttonExportDataToFile" mat-raised-button (click)="exportDataToFile()">Export data as file</button>
                 <button class="buttonSkillTreeControl" id="buttonExportDataToFile" mat-raised-button color="accent" (click)="resetAllData()">Reset all data</button>
             </div>

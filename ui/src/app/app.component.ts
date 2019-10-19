@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild, ElementRef, NgZone } from '@angular/core';
 
 import { CombatSimulation } from "../../../src/sim/CombatSimulation";
 import Prando from 'prando';
@@ -38,6 +38,7 @@ import { FormControl, FormGroupDirective, NgForm } from '@angular/forms';
 import { version as packageJsonVersion } from '../../package.json';
 import { Utils } from '../../../src/util/Utils';
 import { FortressRoom } from '../../../src/model/env/FortressRoom';
+import { ChangeDetectorRef } from '@angular/core';
 
 const cookieConfig: any = {
     "cookie": {
@@ -154,7 +155,7 @@ export class AppComponent {
         multiple_compare_skillTreeNodes: "Lesson"
     };
 
-    constructor() {
+    constructor(private cdr: ChangeDetectorRef, private zone: NgZone) {
         //let sim = new CombatSimulation(this.simParameters, new Prando(0));
         this.allowedClasses = {
             "auror": "Auror",
@@ -374,6 +375,26 @@ export class AppComponent {
     persistSkillTree(skillTree: SkillTree, playerIndex: number) {
         this.simParameters.skillTrees[playerIndex] = skillTree.persist();
     }
+
+    onClickButtonImportSkillTree(playerIndex: number) {
+        var self = this; 
+        this.createFileUpload(function(fileContent) {
+        
+            console.log("Importing skill tree from file: ");
+            console.log(fileContent);
+            let importedSkillTree: PersistedSkillTree = JSON.parse(fileContent);
+            this.simParameters.skillTrees[playerIndex] = importedSkillTree; 
+            this.skillTrees[playerIndex] = SkillTree.fromPersisted(importedSkillTree); 
+            
+        });
+       
+    }
+
+    onClickButtonExportSkillTree(playerIndex: number) {
+        let persistedSkillTree = this.simParameters.skillTrees[playerIndex]; 
+        this.createFileDownload("skillTree.json", JSON.stringify(persistedSkillTree, null, 4));
+    }
+
 
     resetSimulationResults() {
         this.simulationLogChannelStore["Debug"] = "";
@@ -738,6 +759,9 @@ export class AppComponent {
 
             this.applyObserverFunctions.call(self, importedData);
             this.persistToLocalStorage();
+
+            // Update UI
+            this.skillTrees = importedData.simParameters.skillTrees.map(persistedSkillTree => SkillTree.fromPersisted(persistedSkillTree)); 
         });
     }
 

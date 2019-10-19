@@ -1,3 +1,6 @@
+- 0.4.3
+    - Add button for import/export skill tree data
+    - Fix bug with data import where UI does not get updated
 - 0.4.2
     - Bug fix: Fixed bug where rules and sim settings would not get correctly loaded with old versions of website data
     - Added toggle for sponsored fortress rewards (25% more CXP, energy bonus)
