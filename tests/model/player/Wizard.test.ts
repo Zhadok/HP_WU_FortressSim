@@ -6,6 +6,7 @@ import { WizardDefeatEvent } from "../../../src/sim/events/wizard/combat/WizardD
 import { Enemy } from "../../../src/model/env/enemies/Enemy";
 import { ExstimuloPotionEvent } from "../../../src/sim/events/wizard/potions/ExstimuloPotionEvent";
 import { WitSharpeningPotionEvent } from "../../../src/sim/events/wizard/potions/WitSharpeningPotionEvent";
+import { PotionAvailabilityParameters } from "../../../src/sim/PotionAvailabilityParameters";
 
 
 
@@ -75,6 +76,40 @@ describe("Wizard", function() {
         event1.onFinish();
         
         expect(wizard.timeSpentDefeated).to.equal(wizard.knockoutTime); 
+    });
+
+    it("potionsUsed", function() {
+        let potionsAtBeginning: PotionAvailabilityParameters = {
+            hasBaruffiosBrainElixir: true, 
+            hasTonicForTraceDetection: false, 
+
+            nExstimuloAvailable: 5,
+            nStrongExstimuloAvailable: 4,
+            nPotentExstimuloAvailable: 10,
+            nHealingPotionsAvailable: 14,
+            nWeakInvigorationAvailable: 25,
+            nStrongInvigorationAvailable: 45,
+            nWitSharpeningAvailable: 95
+        };
+        wizard.setPotions(potionsAtBeginning); 
+        wizard.getPotions().nExstimuloAvailable -= 1; 
+        wizard.getPotions().nStrongExstimuloAvailable -= 2; 
+        wizard.getPotions().nPotentExstimuloAvailable -= 3; 
+        wizard.getPotions().nHealingPotionsAvailable -= 4; 
+        wizard.getPotions().nWeakInvigorationAvailable -= 5; 
+        wizard.getPotions().nStrongInvigorationAvailable -= 6; 
+        wizard.getPotions().nWitSharpeningAvailable -= 7; 
+        
+
+        let potionsUsed = wizard.getPotionsUsed(); 
+        expect(potionsUsed.nExstimuloAvailable).to.equal(1); 
+        expect(potionsUsed.nStrongExstimuloAvailable).to.equal(2); 
+        expect(potionsUsed.nPotentExstimuloAvailable).to.equal(3); 
+        expect(potionsUsed.nHealingPotionsAvailable).to.equal(4); 
+        expect(potionsUsed.nWeakInvigorationAvailable).to.equal(5); 
+        expect(potionsUsed.nStrongInvigorationAvailable).to.equal(6); 
+        expect(potionsUsed.nWitSharpeningAvailable).to.equal(7); 
+
     });
 
 }); 

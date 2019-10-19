@@ -226,7 +226,8 @@ https://stackoverflow.com/questions/53497127/how-to-break-word-if-text-inside-an
     font-size: 25px; 
 }
 .divSimulationSingleResultWizard {
-    width: 300px; 
+    /*width: 300px; */
+    width: 100%
 }
 
 .divSimulationSingleResultCombatantBuff { /** Each div contains one picture of the hex or the buff **/

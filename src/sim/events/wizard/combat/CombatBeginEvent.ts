@@ -19,7 +19,9 @@ export class CombatBeginEvent extends CombatEvent {
         return true; 
     }
 
+
     onFinish() {
+        this.enemy.refreshWizardPotionBuffs(this.wizard); 
         Logger.logTUserFriendly(1, this.timestampEnd, this.wizard.toUserFriendlyDescription() + " has entered combat with " + 
                 this.enemy.toUserFriendlyDescription() + "."); 
     }

@@ -10,6 +10,7 @@ import { SkillTree } from "./SkillTree/SkillTree";
 import { SkillTreeNode } from "./SkillTree/SkillTreeNode";
 import { Logger } from "../../util/Logger";
 import { PotionAvailabilityParameters } from "../../sim/PotionAvailabilityParameters";
+import potionsBrewTime from "../../../src/data/potionsBrewTime.json";
 
 export abstract class Wizard extends Combatant {
 
@@ -38,6 +39,7 @@ export abstract class Wizard extends Combatant {
     timeSpentDefeated: number = 0; 
 
     // Potions
+    private potionsAtBeginning: PotionAvailabilityParameters | undefined; 
     private potions: PotionAvailabilityParameters | undefined; 
 
     // Buffs
@@ -226,11 +228,39 @@ export abstract class Wizard extends Combatant {
                ; 
     }
 
+    removePotionBuffs(): void {
+        this.exstimuloPotionDamageBuff = 0; 
+        this.witSharpeningPotionDamageBuff = 0; 
+    }
+
     setPotions(potions: PotionAvailabilityParameters) {
+        this.potionsAtBeginning = JSON.parse(JSON.stringify(potions)); 
         this.potions = potions; 
     }
     getPotions(): PotionAvailabilityParameters {
         return this.potions!; 
+    }
+    getPotionsUsed(): PotionAvailabilityParameters {
+        // Diff between original potions and new potions
+        return {
+            nHealingPotionsAvailable: this.potionsAtBeginning!.nHealingPotionsAvailable - this.getPotions().nHealingPotionsAvailable,
+
+            nWeakInvigorationAvailable: this.potionsAtBeginning!.nWeakInvigorationAvailable - this.getPotions().nWeakInvigorationAvailable,
+            nStrongInvigorationAvailable: this.potionsAtBeginning!.nStrongInvigorationAvailable - this.getPotions().nStrongInvigorationAvailable,
+        
+            nExstimuloAvailable: this.potionsAtBeginning!.nExstimuloAvailable - this.getPotions().nExstimuloAvailable,
+            nStrongExstimuloAvailable: this.potionsAtBeginning!.nStrongExstimuloAvailable - this.getPotions().nStrongExstimuloAvailable,
+            nPotentExstimuloAvailable: this.potionsAtBeginning!.nPotentExstimuloAvailable - this.getPotions().nPotentExstimuloAvailable,
+        
+            nWitSharpeningAvailable: this.potionsAtBeginning!.nWitSharpeningAvailable - this.getPotions().nWitSharpeningAvailable,
+        
+            // Buffs (outside combat)
+            hasBaruffiosBrainElixir: this.potionsAtBeginning!.hasBaruffiosBrainElixir,
+            hasTonicForTraceDetection: this.potionsAtBeginning!.hasTonicForTraceDetection
+        }
+    }
+    getPotionsUsedBrewTime(useMasterNotes: boolean): number {
+        return Wizard.getPotionsBrewTime(this.getPotionsUsed(), useMasterNotes); 
     }
 
     hasBaruffiosBrainElixir(): boolean {
@@ -245,5 +275,20 @@ export abstract class Wizard extends Combatant {
     }
 
     abstract isProficientAgainst(enemy: Enemy): boolean;
+
+    static getPotionsBrewTime(potions: PotionAvailabilityParameters, useMasterNotes: boolean): number {
+        let hours = potions.nExstimuloAvailable * potionsBrewTime.exstimuloPotion +
+            potions.nStrongExstimuloAvailable * potionsBrewTime.strongExstimuloPotion +
+            potions.nPotentExstimuloAvailable * potionsBrewTime.potentExstimuloPotion +
+            potions.nHealingPotionsAvailable * potionsBrewTime.healthPotion +
+            potions.nWeakInvigorationAvailable * potionsBrewTime.weakInvigorationPotion +
+            potions.nStrongInvigorationAvailable * potionsBrewTime.strongInvigorationPotion +
+            potions.nWitSharpeningAvailable * potionsBrewTime.witSharpeningPotion;
+
+        if (useMasterNotes === true) {
+            hours *= potionsBrewTime.masterNotesDecrease; 
+        }
+        return hours;
+    }
 
 }

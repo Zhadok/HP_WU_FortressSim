@@ -9,6 +9,8 @@
     "strongExstimuloPotion": 4,
     "potentExstimuloPotion": 8,
 
-    "witSharpeningPotion": 6
+    "witSharpeningPotion": 6,
+
+    "masterNotesDecrease": 0.85
 
 }

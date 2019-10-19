@@ -26,7 +26,6 @@ import * as ObservableSlim from "observable-slim";
 import { MatSortModule } from "@angular/material";
 import { MatSort } from '@angular/material/sort';
 
-import potionsBrewTime from "../../../src/data/potionsBrewTime.json";
 import professorRules from "../../../src/rules/store/professorRules.json";
 import aurorRules from "../../../src/rules/store/aurorRules.json";
 import magizoologistRules from "../../../src/rules/store/magizoologistRules.json";
@@ -622,23 +621,14 @@ export class AppComponent {
         };
     }
 
-    getPotionsBrewTime(potions: PotionAvailabilityParameters) {
-        let hours = potions.nExstimuloAvailable * potionsBrewTime.exstimuloPotion +
-            potions.nStrongExstimuloAvailable * potionsBrewTime.strongExstimuloPotion +
-            potions.nPotentExstimuloAvailable * potionsBrewTime.potentExstimuloPotion +
-            potions.nHealingPotionsAvailable * potionsBrewTime.healthPotion +
-            potions.nWeakInvigorationAvailable * potionsBrewTime.weakInvigorationPotion +
-            potions.nStrongInvigorationAvailable * potionsBrewTime.strongInvigorationPotion +
-            potions.nWitSharpeningAvailable * potionsBrewTime.witSharpeningPotion;
-        return hours;
-    }
+
 
     getPotionsBrewTimeRaw(potions: PotionAvailabilityParameters) {
-        return this.formatHoursDecimal(this.getPotionsBrewTime(potions));
+        return this.formatHoursDecimal(Wizard.getPotionsBrewTime(potions, false));
     }
 
     getPotionsBrewTimeMasterNotes(potions: PotionAvailabilityParameters) {
-        return this.formatHoursDecimal(this.getPotionsBrewTime(potions) * 0.85);
+        return this.formatHoursDecimal(Wizard.getPotionsBrewTime(potions, true));
     }
 
     formatHoursDecimal(hoursParam: number) {

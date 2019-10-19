@@ -1,3 +1,4 @@
+import { PotionAvailabilityParameters } from "./PotionAvailabilityParameters";
 
 
 export interface CombatSimulationResultsWizard {
@@ -10,6 +11,10 @@ export interface CombatSimulationResultsWizard {
 
     runestoneLevel: number,
     challengeXPReward: number; 
+
+    potionsUsed: PotionAvailabilityParameters; 
+    potionsUsedBrewTimeHours: number; 
+    potionsUsedBrewTimeHoursWithMasterNotes: number; 
 
     timeSpentDefeated: number; 
 }

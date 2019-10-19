@@ -166,10 +166,6 @@
                                             <input type="number" min="0" matInput placeholder="Health" name="health"
                                                     [(ngModel)]="simParameters.potions[playerIndex].nHealingPotionsAvailable">
                                         </mat-form-field>
-                                        <mat-form-field class="inputPotion">
-                                            <input type="number" min="0" matInput placeholder="Health" name="health"
-                                                    [(ngModel)]="simParameters.potions[playerIndex].nHealingPotionsAvailable">
-                                        </mat-form-field>
                                         <mat-checkbox [(ngModel)]="simParameters.potions[playerIndex].hasBaruffiosBrainElixir" name="checkboxBaruffios">
                                             Use Baruffio's Brain Elixir
                                         </mat-checkbox>
@@ -424,7 +420,27 @@
                             {{wizardResult.averageDamage.toFixed(2)}} average damage<br>
                             {{wizardResult.totalDamage}} total damage<br>
                             {{(wizardResult.timeSpentDefeated/1000).toFixed(0)}}s spent defeated<br>
-                            {{wizardResult.challengeXPReward}} challenge XP (runestone level {{wizardResult.runestoneLevel}})
+                            {{wizardResult.challengeXPReward}} challenge XP (runestone level {{wizardResult.runestoneLevel}})<br>
+
+                            <b>Potions used</b> (brew time: {{formatHoursDecimal(wizardResult.potionsUsedBrewTimeHours)}}, 
+                                                 with master notes: {{formatHoursDecimal(wizardResult.potionsUsedBrewTimeHoursWithMasterNotes)}})
+                            <ul>
+                                <li>{{wizardResult.potionsUsed.nExstimuloAvailable}}/{{simulationSingleResults.wizards[wizardResult.playerIndex].potionsAtBeginning.nExstimuloAvailable}}
+                                    Exstimulo Potion</li>
+                                <li>{{wizardResult.potionsUsed.nStrongExstimuloAvailable}}/{{simulationSingleResults.wizards[wizardResult.playerIndex].potionsAtBeginning.nStrongExstimuloAvailable}}
+                                    Strong Exstimulo Potion</li>
+                                <li>{{wizardResult.potionsUsed.nPotentExstimuloAvailable}}/{{simulationSingleResults.wizards[wizardResult.playerIndex].potionsAtBeginning.nPotentExstimuloAvailable}}
+                                    Potent Exstimulo Potion</li>
+                                <li>{{wizardResult.potionsUsed.nWitSharpeningAvailable}}/{{simulationSingleResults.wizards[wizardResult.playerIndex].potionsAtBeginning.nWitSharpeningAvailable}}
+                                    Wit Sharpening Potion</li>
+                                <li>{{wizardResult.potionsUsed.nWeakInvigorationAvailable}}/{{simulationSingleResults.wizards[wizardResult.playerIndex].potionsAtBeginning.nWeakInvigorationAvailable}}
+                                    Weak Invigoration Potion</li>
+                                <li>{{wizardResult.potionsUsed.nStrongInvigorationAvailable}}/{{simulationSingleResults.wizards[wizardResult.playerIndex].potionsAtBeginning.nStrongInvigorationAvailable}}
+                                    Strong Invigoration Potion</li>
+                                <li>{{wizardResult.potionsUsed.nHealingPotionsAvailable}}/{{simulationSingleResults.wizards[wizardResult.playerIndex].potionsAtBeginning.nHealingPotionsAvailable}}
+                                    Health</li>
+                            </ul>
+
                             <div class="divSimulationSingleResultAllCombatantBuffs">
                                 <div class="divSimulationSingleResultCombatantBuff">
                                     <img src="assets/img/defenceCharm.png" 

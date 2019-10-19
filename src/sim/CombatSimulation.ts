@@ -23,6 +23,7 @@ import { WizardsOutOfTimeEvent } from "./events/env/WizardsOutOfTimeEvent";
 import { FortressRoom } from "../model/env/FortressRoom";
 import { CombatSpellCastEnemyEvent } from "./events/wizard/combat/CombatSpellCastEnemyEvent";
 import { CooldownFinishedEvent } from "./events/wizard/room/spells/CooldownFinishedEvent";
+import { CombatSimulationResultsWizard } from "./CombatSimulationResultsWizard.js";
 
 
 export class CombatSimulation {
@@ -385,7 +386,7 @@ export class CombatSimulation {
         }
 
         let challengeXPRewards = this.fortressRoom.computeChallengeXPRewards(this.isWin!); 
-        let wizardResults = this.wizards.map(wizard => {
+        let wizardResults: Array<CombatSimulationResultsWizard> = this.wizards.map(wizard => {
             return {
                 playerIndex: wizard.playerIndex,
                 numberOfCasts: wizard.numberAttackCasts,
@@ -395,8 +396,11 @@ export class CombatSimulation {
                 averageDamage: wizard.totalDamage / wizard.numberAttackCasts,
                 challengeXPReward: challengeXPRewards[wizard.playerIndex],
                 runestoneLevel: this.params.runestoneLevels[wizard.playerIndex],
-                timeSpentDefeated: wizard.timeSpentDefeated
-            }
+                timeSpentDefeated: wizard.timeSpentDefeated,
+                potionsUsed: wizard.getPotionsUsed(),
+                potionsUsedBrewTimeHours: wizard.getPotionsUsedBrewTime(false),
+                potionsUsedBrewTimeHoursWithMasterNotes: wizard.getPotionsUsedBrewTime(true)
+            };
         });
         return {
             wallTimeStart: this.timeStart,
