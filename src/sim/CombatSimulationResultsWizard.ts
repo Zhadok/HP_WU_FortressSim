@@ -1,8 +1,12 @@
 import { PotionAvailabilityParameters } from "./PotionAvailabilityParameters";
+import { nameClassType, nameClassUserFriendlyType } from '../types';
 
 
 export interface CombatSimulationResultsWizard {
     playerIndex: number, 
+    nameClass: nameClassType,
+    nameClassUserFriendly: nameClassUserFriendlyType,
+
     numberOfCasts: number,
     numberOfCriticalCasts: number,
     numberOfDodgedCasts: number,
@@ -19,9 +23,16 @@ export interface CombatSimulationResultsWizard {
     runestoneLevel: number,
     challengeXPReward: number; 
 
+    potionsAtBeginning: PotionAvailabilityParameters,
     potionsUsed: PotionAvailabilityParameters; 
     potionsUsedBrewTimeHours: number; 
     potionsUsedBrewTimeHoursWithMasterNotes: number; 
 
     timeSpentDefeated: number; 
+    hasDefenceCharm: boolean;
+    defenceCharmValue: number; 
+    hasProficiencyPowerCharm: boolean;
+    proficiencyPowerCharmValue: number;  
+    hasBraveryCharm: boolean; 
+    braveryCharmValue: number; 
 }

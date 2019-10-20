@@ -8,7 +8,6 @@ export interface CombatSimulationResults {
 
     readonly simParameters: CombatSimulationParameters;
     readonly wizardResults: Array<CombatSimulationResultsWizard>; 
-    readonly wizards: Array<Wizard>; 
     readonly enemies: Array<Enemy>; 
     readonly nEvents: number;
     readonly isWin: boolean; 

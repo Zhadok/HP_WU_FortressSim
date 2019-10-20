@@ -270,6 +270,9 @@ export abstract class Wizard extends Combatant {
     getPotions(): PotionAvailabilityParameters {
         return this.potions!; 
     }
+    getPotionsAtBeginning(): PotionAvailabilityParameters {
+        return this.potionsAtBeginning!;
+    }
     getPotionsUsed(): PotionAvailabilityParameters {
         // Diff between original potions and new potions
         return {

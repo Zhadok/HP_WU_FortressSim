@@ -341,7 +341,11 @@
                         <mat-option *ngFor="let item of getSkillTreeFilterLessonsMap() | keyvalue" value="{{item.key}}">{{item.value}}</mat-option>
                     </mat-select>
                 </mat-form-field>
-                <mat-checkbox [(ngModel)]="simAdvancedSettings.runParallel" [disabled]="true">Run parallel (not implemented)</mat-checkbox>
+                <mat-checkbox [(ngModel)]="simAdvancedSettings.runParallel">Run simulations in parallel</mat-checkbox>
+                <mat-form-field class="inputAdvancedSetting" *ngIf="simAdvancedSettings.runParallel">
+                    <mat-label>Number of worker threads (if unsure, use the number of your CPU physical cores -1)</mat-label>
+                    <input matInput type="number" min="1" placeholder="Number of worker threads" [(ngModel)]="simAdvancedSettings.numberParallelWorkers">
+                </mat-form-field>
             </div>
             
 
@@ -417,7 +421,7 @@
                         <div class="divSimulationSingleResultCombatant divSimulationSingleResultWizard"
                              *ngFor="let wizardResult of simulationSingleResults.wizardResults">
                             <b>Player {{wizardResult.playerIndex+1}} </b>
-                            ({{ simulationSingleResults.wizards[wizardResult.playerIndex].nameClassUserFriendly }})<br>
+                            ({{ wizardResult.nameClassUserFriendly }})<br>
                             {{wizardResult.challengeXPReward}} challenge XP (runestone level {{wizardResult.runestoneLevel}})<br>
                             <span *ngIf="simulationSingleResults.simParameters.useSponsoredFortressRewards">
                                 {{simulationSingleResults.energyReward}} energy rewarded from sponsored fortress
@@ -453,38 +457,38 @@
                             <b>Potions used</b> (brew time: {{formatHoursDecimal(wizardResult.potionsUsedBrewTimeHours)}}, 
                                                  with master notes: {{formatHoursDecimal(wizardResult.potionsUsedBrewTimeHoursWithMasterNotes)}})
                             <ul>
-                                <li>{{wizardResult.potionsUsed.nExstimuloAvailable}}/{{simulationSingleResults.wizards[wizardResult.playerIndex].potionsAtBeginning.nExstimuloAvailable}}
+                                <li>{{wizardResult.potionsUsed.nExstimuloAvailable}}/{{wizardResult.potionsAtBeginning.nExstimuloAvailable}}
                                     Exstimulo Potion</li>
-                                <li>{{wizardResult.potionsUsed.nStrongExstimuloAvailable}}/{{simulationSingleResults.wizards[wizardResult.playerIndex].potionsAtBeginning.nStrongExstimuloAvailable}}
+                                <li>{{wizardResult.potionsUsed.nStrongExstimuloAvailable}}/{{wizardResult.potionsAtBeginning.nStrongExstimuloAvailable}}
                                     Strong Exstimulo Potion</li>
-                                <li>{{wizardResult.potionsUsed.nPotentExstimuloAvailable}}/{{simulationSingleResults.wizards[wizardResult.playerIndex].potionsAtBeginning.nPotentExstimuloAvailable}}
+                                <li>{{wizardResult.potionsUsed.nPotentExstimuloAvailable}}/{{wizardResult.potionsAtBeginning.nPotentExstimuloAvailable}}
                                     Potent Exstimulo Potion</li>
-                                <li>{{wizardResult.potionsUsed.nWitSharpeningAvailable}}/{{simulationSingleResults.wizards[wizardResult.playerIndex].potionsAtBeginning.nWitSharpeningAvailable}}
+                                <li>{{wizardResult.potionsUsed.nWitSharpeningAvailable}}/{{wizardResult.potionsAtBeginning.nWitSharpeningAvailable}}
                                     Wit Sharpening Potion</li>
-                                <li>{{wizardResult.potionsUsed.nWeakInvigorationAvailable}}/{{simulationSingleResults.wizards[wizardResult.playerIndex].potionsAtBeginning.nWeakInvigorationAvailable}}
+                                <li>{{wizardResult.potionsUsed.nWeakInvigorationAvailable}}/{{wizardResult.potionsAtBeginning.nWeakInvigorationAvailable}}
                                     Weak Invigoration Potion</li>
-                                <li>{{wizardResult.potionsUsed.nStrongInvigorationAvailable}}/{{simulationSingleResults.wizards[wizardResult.playerIndex].potionsAtBeginning.nStrongInvigorationAvailable}}
+                                <li>{{wizardResult.potionsUsed.nStrongInvigorationAvailable}}/{{wizardResult.potionsAtBeginning.nStrongInvigorationAvailable}}
                                     Strong Invigoration Potion</li>
-                                <li>{{wizardResult.potionsUsed.nHealingPotionsAvailable}}/{{simulationSingleResults.wizards[wizardResult.playerIndex].potionsAtBeginning.nHealingPotionsAvailable}}
+                                <li>{{wizardResult.potionsUsed.nHealingPotionsAvailable}}/{{wizardResult.potionsAtBeginning.nHealingPotionsAvailable}}
                                     Health</li>
                             </ul>
 
                             <div class="divSimulationSingleResultAllCombatantBuffs">
                                 <div class="divSimulationSingleResultCombatantBuff">
                                     <img src="assets/img/defenceCharm.png" 
-                                         *ngIf="simulationSingleResults.wizards[wizardResult.playerIndex].hasDefenceCharm"
-                                         matTooltip="Defence charm: +{{(simulationSingleResults.wizards[wizardResult.playerIndex].defenceCharmValue*100).toFixed(0)}}% defence"
+                                         *ngIf="wizardResult.hasDefenceCharm"
+                                         matTooltip="Defence charm: +{{(wizardResult.defenceCharmValue*100).toFixed(0)}}% defence"
                                         [matTooltipClass]="'myMatTooltip'" />
                                 </div>
                                 <div class="divSimulationSingleResultCombatantBuff">
                                     <img src="assets/img/proficiencyCharm.png" 
-                                         *ngIf="simulationSingleResults.wizards[wizardResult.playerIndex].hasProficiencyPowerCharm"
-                                         matTooltip="Proficiency power charm: +{{(simulationSingleResults.wizards[wizardResult.playerIndex].proficiencyPowerCharmValue*100).toFixed(0)}}% proficiency"
+                                         *ngIf="wizardResult.hasProficiencyPowerCharm"
+                                         matTooltip="Proficiency power charm: +{{(wizardResult.proficiencyPowerCharmValue*100).toFixed(0)}}% proficiency"
                                          [matTooltipClass]="'myMatTooltip'" />
                                 </div>
                                 <div class="divSimulationSingleResultCombatantBuff">
                                     <img src="assets/img/braveryCharm.png" 
-                                         *ngIf="simulationSingleResults.wizards[wizardResult.playerIndex].hasBraveryCharm" />
+                                         *ngIf="wizardResult.hasBraveryCharm" />
                                 </div>
                             </div>
                         </div>

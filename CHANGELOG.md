@@ -1,3 +1,5 @@
+- 0.5.0 
+    - Implemented parallel execution of simulations (via WebWorkers)
 - 0.4.3
     - Add button for import/export skill tree data
     - Fix bug with data import where UI does not get updated

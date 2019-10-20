@@ -106,6 +106,7 @@ export class TestData {
             runParallel: false, 
             secondsBetweenSimulations: 40,
             showPlayerRules: false,
+            numberParallelWorkers: 1, 
             simGoal: "single",
             simGoalMultipleParams: {
                 simGoalMultiple_filterSkillTreeNodes: "all",

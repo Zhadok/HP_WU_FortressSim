@@ -147,6 +147,7 @@ declare type simAdvancedSettingsType = {
 
     numberSimulationsPerSetting: number,
     runParallel: boolean,
+    numberParallelWorkers: number, 
     secondsBetweenSimulations: number,
 
     // Frontend settings

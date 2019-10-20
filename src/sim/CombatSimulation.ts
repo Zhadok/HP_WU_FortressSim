@@ -389,6 +389,9 @@ export class CombatSimulation {
         let wizardResults: Array<CombatSimulationResultsWizard> = this.wizards.map(wizard => {
             return {
                 playerIndex: wizard.playerIndex,
+                nameClass: wizard.nameClass, 
+                nameClassUserFriendly: wizard.nameClassUserFriendly,
+
                 numberOfCasts: wizard.numberAttackCasts,
                 numberOfDodgedCasts: wizard.numberDodgedCasts,
                 numberOfCriticalCasts: wizard.numberCriticalCasts,
@@ -406,9 +409,17 @@ export class CombatSimulation {
                 runestoneLevel: this.params.runestoneLevels[wizard.playerIndex],
                 timeSpentDefeated: wizard.timeSpentDefeated,
 
+                potionsAtBeginning: wizard.getPotionsAtBeginning(),
                 potionsUsed: wizard.getPotionsUsed(),
                 potionsUsedBrewTimeHours: wizard.getPotionsUsedBrewTime(false),
-                potionsUsedBrewTimeHoursWithMasterNotes: wizard.getPotionsUsedBrewTime(true)
+                potionsUsedBrewTimeHoursWithMasterNotes: wizard.getPotionsUsedBrewTime(true),
+
+                hasDefenceCharm: wizard.hasDefenceCharm, 
+                defenceCharmValue: wizard.defenceCharmValue, 
+                hasProficiencyPowerCharm: wizard.hasProficiencyPowerCharm, 
+                proficiencyPowerCharmValue: wizard.proficiencyPowerCharmValue, 
+                hasBraveryCharm: wizard.hasBraveryCharm, 
+                braveryCharmValue: wizard.braveryCharmValue
             };
         });
         return {
@@ -421,7 +432,6 @@ export class CombatSimulation {
             simParameters: this.params,
             wizardResults: wizardResults,
             enemies: this.fortressRoom.enemiesAll,
-            wizards: this.wizards,
             energyReward: this.fortressRoom.getEnergyReward(this.params.useSponsoredFortressRewards)
         };
     }

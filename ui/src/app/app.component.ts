@@ -116,7 +116,8 @@ export class AppComponent {
             simGoalMultiple_maxRoomLevel: 20
         },
         
-        runParallel: false,
+        runParallel: this.isWebWorkerSupported(),
+        numberParallelWorkers: navigator.hardwareConcurrency -1 , 
         secondsBetweenSimulations: 40,
         simulationLogChannel: "User friendly",
         isAdvancedSettingsTabExpanded: false
@@ -477,10 +478,26 @@ export class AppComponent {
             }, 100);  */
         }
         else {
-            this.simulationMultipleResults = await simComparison.runParallel();
+            /*this.simulationMultipleResults = await simComparison.runParallel();
             this.simProgress = null;
-            this.updateSimulationMultipleResultsGrouped();
+            this.updateSimulationMultipleResultsGrouped();*/
+            if (this.isWebWorkerSupported()) {
+                // Create a new
+                const worker = new Worker('./app.worker', { type: 'module' });
+                worker.onmessage = ({ data }) => {
+                  console.log(`page got message: ${data}`);
+                };
+                worker.postMessage('hello');
+              } else {
+                // Web Workers are not supported in this environment.
+                // You should add a fallback so that your program still executes correctly.
+                alert("Your browser does not appear to support web workers for parallel execution. Please disable 'run parallel' under advanced simulation settings."); 
+              }
         }
+    }
+
+    isWebWorkerSupported(): boolean {
+        return typeof Worker !== 'undefined'; 
     }
 
     onChangeSelectSimulationLogChannel(event) {
@@ -824,3 +841,4 @@ export class AppComponent {
 
 
 }
+
