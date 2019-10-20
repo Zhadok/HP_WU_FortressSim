@@ -109,10 +109,14 @@ describe("RulesEngine", function() {
     });
     it("professor_shouldCastMendingCharm_ifNoOtherAction", function() {
         wizard.inCombat = false;
-        wizard.removeFocus(wizard.getFocus());
+        //wizard.removeFocus(wizard.getFocus());
+        wizard.setTrigger("mendingCharm", 4); 
         facts.highestPriorityAvailableEnemy = null;
+        wizard.mendingCharmOnCooldown = false; 
+
 
         return rulesEngine.getNextAction(0, facts).then(simEvent => {
+            console.log(simEvent); 
             expect(simEvent instanceof MendingCharmEvent).to.be.true; 
             expect((simEvent as MendingCharmEvent).wizard).to.equal(wizard);
             expect((simEvent as MendingCharmEvent).targetWizard).to.equal(wizard);

@@ -119,6 +119,7 @@ export class RulesEngine {
         }
         //paths.push(null); // Allowed to compare with object itself as well. In UI will appear as empty
         return paths; 
+
     }
 
     async getNextAction(timestampBegin: number, facts: ruleFactType): Promise<SimEvent | null> {
@@ -133,7 +134,11 @@ export class RulesEngine {
         } 
         //console.log(results);
         let event = results[0];
-
+        // Priority 1 is "default" and not properly considered. I.e., no action with priority 0 is first in array even though mending charm with priority 1 is also in array
+        if (event.type as actionNameType === "noAction" && results.length >= 2) {
+            event = results[1]; 
+        }
+        
         let highestPriorityAvailableEnemy = facts.highestPriorityAvailableEnemy;
         let targetEnemy = null; // for casting spells at
 

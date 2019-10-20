@@ -1,3 +1,5 @@
+- 0.5.1
+    - Rules editor: Hide priority complexity from view, add button for position up or down in table. Improved performance
 - 0.5.0 
     - Implemented parallel execution of simulations (via WebWorkers)
 - 0.4.3

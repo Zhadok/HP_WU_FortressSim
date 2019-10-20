@@ -208,13 +208,21 @@
                                                    class="mat-elevation-z8"
                                                    multiTemplateDataRows>
                                                 
-                                                <ng-container matColumnDef="priority">
-                                                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Priority </th>
-                                                        <td mat-cell *matCellDef="let rule"> {{rule.priority}} </td>
-                                                </ng-container>
                                                 <ng-container matColumnDef="event.type">
                                                         <th mat-header-cell *matHeaderCellDef mat-sort-header> Action </th>
                                                         <td mat-cell *matCellDef="let rule"> {{formatUserFriendlyStat(rule.event.type)}} </td>
+                                                </ng-container>
+                                                <ng-container matColumnDef="priority">
+                                                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Priority</th>
+                                                    <td mat-cell *matCellDef="let rule"> 
+                                                        {{rule.priority}}
+                                                        <button mat-icon-button >
+                                                                <mat-icon (click)="onClickButtonIncreaseRulePriority($event, rule, playerIndex); $event.stopPropagation();  false">arrow_upward</mat-icon>
+                                                        </button>
+                                                        <button mat-icon-button>
+                                                                <mat-icon (click)="onClickButtonDecreaseRulePriority($event, rule, playerIndex)">arrow_downward</mat-icon>
+                                                        </button>
+                                                    </td>
                                                 </ng-container>
 
                                                 <ng-container matColumnDef="expandedRuleColumn">
@@ -223,30 +231,30 @@
                                                             [@detailExpand]="rule == expandedRule ? 'expanded' : 'collapsed'">
 
                                                             <div class="rule-detail-inner-container">
-                                                                <mat-form-field class="inputRulePriority">
-                                                                        <mat-label>Priority</mat-label>
-                                                                        <input matInput type="number" placeholder="Priority" [(ngModel)]="rule.priority">
-                                                                    </mat-form-field>
-                                                                    <mat-form-field class="inputRuleAction">
-                                                                        <mat-label>Action</mat-label>
-                                                                        <mat-select placeholder="Action" name="selectRuleType" 
-                                                                                [(ngModel)]="rule.event.type">
-                                                                            <mat-option *ngFor="let action of getActionNameMap(playerIndex) | keyvalue" 
-                                                                                        value="{{action.key}}">{{action.value}}</mat-option>
-                                                                        </mat-select>
-                                                                    </mat-form-field><br>
+                                                                <!-- <mat-form-field class="inputRulePriority">
+                                                                    <mat-label>Priority</mat-label>
+                                                                    <input matInput type="number" placeholder="Priority" [(ngModel)]="rule.priority">
+                                                                </mat-form-field> -->
+                                                                <mat-form-field class="inputRuleAction">
+                                                                    <mat-label>Action</mat-label>
+                                                                    <mat-select placeholder="Action" name="selectRuleType" 
+                                                                            [(ngModel)]="rule.event.type">
+                                                                        <mat-option *ngFor="let action of getActionNameMap(playerIndex) | keyvalue" 
+                                                                                    value="{{action.key}}">{{action.value}}</mat-option>
+                                                                    </mat-select>
+                                                                </mat-form-field><br>
                                                                     
-                                                                    <h3 class="mat-h3">Conditions (total: {{rule.conditions.all.length}})</h3>
-                                                                    <app-rule-detail-component [conditionGroup]="rule.conditions.all"
-                                                                        [ruleConditionGroupName]="'all'"
-                                                                        [depth]="0"
-                                                                        [parentConditionGroup]="rule.conditions.all" [parentConditionGroupIndex]="0"
-                                                                    ></app-rule-detail-component> 
-                                                                    
-                                                                    <button class="buttonSkillTreeControl" mat-raised-button color="accent" 
-                                                                        (click)="onClickRemoveRule(playerIndex, rule)"
-                                                                        class="buttonRemoveRule">Remove rule</button>
+                                                                <h3 class="mat-h3 floatLeft clearBoth">Conditions (total: {{rule.conditions.all.length}})</h3>
+                                                                <app-rule-detail-component *ngIf="rule === expandedRule" [conditionGroup]="rule.conditions.all"
+                                                                    [ruleConditionGroupName]="'all'"
+                                                                    [depth]="0"
+                                                                    [parentConditionGroup]="rule.conditions.all" [parentConditionGroupIndex]="0"
+                                                                ></app-rule-detail-component> 
                                                                 
+                                                                <button class="buttonSkillTreeControl" mat-raised-button color="accent" 
+                                                                    (click)="onClickRemoveRule(playerIndex, rule)"
+                                                                    class="buttonRemoveRule">Remove rule</button>
+                                                            
                                                             </div> 
                                                             
                                                         </div>
@@ -257,7 +265,7 @@
                                                 <tr mat-row *matRowDef="let rule; columns: columnNamesPlayerRules;"
                                                     class="rule-row rule-row-static"
                                                     [class.rule-row]="expandedRule === rule"
-                                                    (click)="expandedRule = expandedRule === rule ? null : rule">
+                                                    (click)="expandedRule = (expandedRule === rule) ? null : rule ">
                                                  </tr>
                                                  <tr mat-row *matRowDef="let row; columns: ['expandedRuleColumn']" class="expandedRule-row"></tr>
                                             </table>

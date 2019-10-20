@@ -130,7 +130,7 @@ export class AppComponent {
     skillTrees: Array<SkillTree> = [];
 
     // Player rules
-    columnNamesPlayerRules = ["priority", "event.type"];
+    columnNamesPlayerRules = ["event.type", "priority"];
     playerRulesData: ruleVisDataContainerType[] = []; // 3 containers of rule data
     ruleErrorStateMatcher = new RuleErrorStateMatcher();
 
@@ -180,6 +180,7 @@ export class AppComponent {
         }
 
         this.simParameters = this.sanitizeSimParametersOldVersions(this.simParameters); 
+        this.simAdvancedSettings = this.sanitizeSimAdvancedSettingsOldVersions(this.simAdvancedSettings); 
 
         console.log("Initial sim parameters: ");
         console.log(this.simParameters);
@@ -223,6 +224,11 @@ export class AppComponent {
         return simParameters; 
     }
 
+    sanitizeSimAdvancedSettingsOldVersions(simAdvancedSettings: simAdvancedSettingsType) {
+        simAdvancedSettings.simulationVersion = packageJsonVersion; 
+        return simAdvancedSettings; 
+    }
+
     getPlayerRulesForTable(playerIndex: number): MatTableDataSource<ruleType> | ruleType[] {
         if (this.simParameters.ruleContainers === undefined) {// With old versions 
             this.simParameters.ruleContainers = []; 
@@ -252,6 +258,56 @@ export class AppComponent {
         // Todo: filter by class
         return RulesEngine.actionNameMap;
     }
+    onClickButtonIncreaseRulePriority(event, rule: ruleType, playerIndex: number) {
+        let rules = this.simParameters.ruleContainers[playerIndex].rules; 
+        let currentIndex = rules.indexOf(rule); 
+        // Check if already at top
+        if (currentIndex === 0) {
+            return; 
+        }
+        if (currentIndex === -1) {
+            console.log(rules); 
+            console.log(rule); 
+            throw new Error("Something went wrong"); 
+        }
+        
+        // Swap positions with other rule
+        rule.priority++; 
+        let ruleToSwap = rules[currentIndex-1]; 
+        ruleToSwap.priority--; 
+
+        rules[currentIndex-1] = rule; 
+        rules[currentIndex] = ruleToSwap;
+        console.log(event); 
+        event.stopPropagation(); 
+        console.log(event); 
+    }
+    onClickButtonDecreaseRulePriority(event, rule: ruleType, playerIndex: number) {
+        let rules = this.simParameters.ruleContainers[playerIndex].rules; 
+        let currentIndex = rules.indexOf(rule); 
+        // Check if already at bottom
+        if (currentIndex === rules.length-1) {
+            return; 
+        }
+        if (currentIndex === -1) {
+            console.log(rules); 
+            console.log(rule); 
+            throw new Error("Something went wrong"); 
+        }
+        
+        // Swap positions with other rule
+        rule.priority--; 
+        let ruleToSwap = rules[currentIndex+1]; 
+        ruleToSwap.priority++; 
+
+        rules[currentIndex+1] = rule; 
+        rules[currentIndex] = ruleToSwap;
+        console.log(event); 
+        event.stopPropagation(); 
+        console.log(event); 
+    }
+
+
     onClickRemoveRule(playerIndex: number, rule: ruleType) {
         let ruleIndex = this.simParameters.ruleContainers[playerIndex].rules.indexOf(rule);
         console.log("Removing ruleIndex=" + ruleIndex + " for playerIndex=" + playerIndex + "...");

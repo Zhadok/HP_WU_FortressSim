@@ -120,7 +120,7 @@ tr.rule-row:not(.expandedRule-row):active {
 }
 .inputRuleAction { /* Strong invigoration potion */
     width: 65%; 
-    float: right; 
+    float: left; 
 }
 .inputRuleConditionElement { /* All of the below inputs*/
     margin-right: 5px; 

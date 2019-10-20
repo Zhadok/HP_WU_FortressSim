@@ -9,7 +9,7 @@
                     "targetWizard": "self"
                 }
             },
-            "priority": 10000,
+            "priority": 15,
             "conditions": {
                 "all": [
                     {
@@ -46,7 +46,7 @@
             "event": {
                 "type": "proficiencyPowerCharm"
             },
-            "priority": 9990,
+            "priority": 14,
             "conditions": {
                 "all": [
                     {
@@ -86,7 +86,7 @@
                     "targetEnemy": "highestPriorityAvailableEnemy"
                 }
             },
-            "priority": 9980,
+            "priority": 13,
             "conditions": {
                 "all": [
                     {
@@ -123,7 +123,7 @@
             "event": {
                 "type": "strongInvigorationPotion"
             },
-            "priority": 9970,
+            "priority": 12,
             "conditions": {
                 "all": [
                     {
@@ -176,7 +176,7 @@
             "event": {
                 "type": "weakInvigorationPotion"
             },
-            "priority": 9960,
+            "priority": 11,
             "conditions": {
                 "all": [
                     {
@@ -233,7 +233,7 @@
                     "description": "Professor should cast mending charm once before entering combat"
                 }
             },
-            "priority": 9950,
+            "priority": 10,
             "conditions": {
                 "all": [
                     {
@@ -270,7 +270,7 @@
             "event": {
                 "type": "enterCombatWithHighestPriorityAvailableEnemy"
             },
-            "priority": 9900,
+            "priority": 9,
             "conditions": {
                 "all": [
                     {
@@ -295,7 +295,7 @@
                     "description": "Professor should exit and check for better enemies available (disabled for now)"
                 }
             },
-            "priority": 5000,
+            "priority": 8,
             "conditions": {
                 "all": [
                     {
@@ -323,7 +323,7 @@
             "event": {
                 "type": "potentExstimuloPotion"
             },
-            "priority": 3990,
+            "priority": 7,
             "conditions": {
                 "all": [
                     {
@@ -354,7 +354,7 @@
             "event": {
                 "type": "strongExstimuloPotion"
             },
-            "priority": 3980,
+            "priority": 6,
             "conditions": {
                 "all": [
                     {
@@ -385,7 +385,7 @@
             "event": {
                 "type": "exstimuloPotion"
             },
-            "priority": 3970,
+            "priority": 5,
             "conditions": {
                 "all": [
                     {
@@ -416,7 +416,7 @@
             "event": {
                 "type": "witSharpeningPotion"
             },
-            "priority": 3960,
+            "priority": 4,
             "conditions": {
                 "all": [
                     {
@@ -453,7 +453,7 @@
             "event": {
                 "type": "healthPotion"
             },
-            "priority": 3950,
+            "priority": 3,
             "conditions": {
                 "all": [
                     {
@@ -481,7 +481,7 @@
             "event": {
                 "type": "combatSpellCastWizard"
             },
-            "priority": 3000,
+            "priority": 2,
             "conditions": {
                 "all": [
                     {
@@ -506,7 +506,7 @@
                     "targetWizard": "lowestHP"
                 }
             },
-            "priority": 2000,
+            "priority": 1,
             "conditions": {
                 "all": [
                     {
