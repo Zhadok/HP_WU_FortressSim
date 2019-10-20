@@ -20,6 +20,7 @@ import { Enemy } from "./model/env/enemies/Enemy";
 import { CombatSimulationParameters } from "./sim/CombatSimulationParameters.js";
 import { PotionAvailabilityParameters } from "./sim/PotionAvailabilityParameters.js";
 import { PersistedSkillTree } from "./model/player/SkillTree/PersistedSkillTree.js";
+import { CombatSimulationResults } from "./sim/CombatSimulationResults.js";
 declare type triggerNameType = 
             // Auror triggers
             "aurorAdvantage" | "playingDirty" | "dancingWithDummies" | "trickWithDeathEaters" |
@@ -196,3 +197,24 @@ declare type simulationResultsGroupedType = {
 
     numberOfRuns: number
 }
+
+
+
+// Web workers (parallel execution) 
+declare type webWorkerMessageContainerType = {
+    messageType: webWorkerMessageType,
+    params: {
+        combatSimulationParameters?: CombatSimulationParameters,
+        runID?: number
+    }
+}
+declare type webWorkerMessageType = "executeSimulation"; 
+
+
+declare type webWorkerMessageResponseContainerType = {
+    messageType: webWorkerMessageResponseType,
+    params: {
+        combatSimulationResults?: CombatSimulationResults
+    }
+};
+declare type webWorkerMessageResponseType = "simulationFinished"; 

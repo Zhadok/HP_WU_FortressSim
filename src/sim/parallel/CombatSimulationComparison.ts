@@ -7,20 +7,20 @@ import { CombatSimulation } from "../CombatSimulation";
 import Prando from 'prando';
 import { Logger } from "../../util/Logger";
 import { SkillTree } from '../../model/player/SkillTree/SkillTree';
+import {CombatSimulationManager} from "./CombatSimulationManager"; 
 import { SkillTreeNode } from "../../model/player/SkillTree/SkillTreeNode";
 
-export class CombatSimulationComparison {
+export class CombatSimulationComparison extends CombatSimulationManager {
 
     readonly simGoal: simGoalType; 
     readonly numberSimulationsPerSetting: number; 
     readonly baseSimParameters: CombatSimulationParameters; 
     readonly allSimParams: CombatSimulationParameters[]; 
     readonly pool: workerpool.WorkerPool; 
-    listenerSimProgress: Function | null = null; 
 
-    currentRunID: number = 0; 
 
     constructor(simParameters: CombatSimulationParameters, simAdvancedSettings: simAdvancedSettingsType) {
+        super(); 
         this.baseSimParameters = simParameters;
         this.simGoal = simAdvancedSettings.simGoal; 
         if (typeof simAdvancedSettings.numberSimulationsPerSetting !== "number") {
@@ -92,10 +92,6 @@ export class CombatSimulationComparison {
         return result;  
     }
 
-    setListenerSimProgress(listener: Function) {
-        this.listenerSimProgress = listener; 
-    }
-
     getNumberSimulationsTotal(): number {
         return this.allSimParams.length; 
     }
@@ -109,13 +105,7 @@ export class CombatSimulationComparison {
         let simResult = await combatSimulationWorker(this.allSimParams[this.currentRunID], new Prando(this.allSimParams[this.currentRunID].seed)); 
         Logger.log(1, "Finished runID=" + this.currentRunID + " after " + simResult.durationWallTimeMS + "ms"); 
         this.currentRunID++;
-        if (this.listenerSimProgress !== null) {
-            this.listenerSimProgress({
-                nTotal: this.allSimParams.length,
-                nFinished: this.currentRunID,
-                nRemaining: this.allSimParams.length-(this.currentRunID)
-            }); 
-        }
+        this.updateSimProgress(); 
         return simResult;  
     }
 
@@ -127,13 +117,7 @@ export class CombatSimulationComparison {
             simResult.runID = runID; 
             simResults.push(simResult); 
             Logger.log(1, "Finished runID=" + runID + " after " + simResult.durationWallTimeMS + "ms"); 
-            if (this.listenerSimProgress !== null) {
-                this.listenerSimProgress({
-                    nTotal: this.allSimParams.length,
-                    nFinished: runID+1,
-                    nRemaining: this.allSimParams.length-(runID+1)
-                }); 
-            }
+            this.updateSimProgress(); 
         }
         return simResults; 
     }

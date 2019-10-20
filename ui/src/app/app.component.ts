@@ -6,7 +6,7 @@ import { TestData } from "../../../tests/TestData";
 import { CombatSimulationParameters } from '../../../src/sim/CombatSimulationParameters';
 import {
     nameClassType, nameClassUserFriendlyType, simGoalType as simGoalType, simAdvancedSettingsType,
-    simProgressType, simulationResultsGroupedType, localStorageDataType, ruleVisDataRowType, ruleVisDataContainerType, simulationLogChannelStoreType, simulationLogChannelType, ruleContainerType, wizardSettingsType, ruleType, actionNameMapType, ruleOperatorType, ruleOperatorMapType, ruleFactNameType, ruleConditionType, simGoalMapType, skillTreeFilterLessonsType
+    simProgressType, simulationResultsGroupedType, localStorageDataType, ruleVisDataRowType, ruleVisDataContainerType, simulationLogChannelStoreType, simulationLogChannelType, ruleContainerType, wizardSettingsType, ruleType, actionNameMapType, ruleOperatorType, ruleOperatorMapType, ruleFactNameType, ruleConditionType, simGoalMapType, skillTreeFilterLessonsType, webWorkerMessageContainerType
 } from '../../../src/types';
 import { PotionAvailabilityParameters } from '../../../src/sim/PotionAvailabilityParameters';
 import { PersistedSkillTree } from '../../../src/model/player/SkillTree/PersistedSkillTree';
@@ -39,6 +39,7 @@ import { version as packageJsonVersion } from '../../package.json';
 import { Utils } from '../../../src/util/Utils';
 import { FortressRoom } from '../../../src/model/env/FortressRoom';
 import { ChangeDetectorRef } from '@angular/core';
+import { WebWorkerPool } from './WebWorkerPool';
 
 const cookieConfig: any = {
     "cookie": {
@@ -156,6 +157,9 @@ export class AppComponent {
         multiple_compare_skillTreeNodes: "Lesson"
     };
 
+    // Worker pool
+    workerPool: WebWorkerPool; 
+
     constructor(private cdr: ChangeDetectorRef, private zone: NgZone) {
         //let sim = new CombatSimulation(this.simParameters, new Prando(0));
         this.allowedClasses = {
@@ -197,9 +201,7 @@ export class AppComponent {
         }
         this.simulationSingleResults = null;
         this.simulationMultipleResultsGrouped = new MatTableDataSource();
-        //this.simulationMultipleResultsGrouped.sort = this.simulationMultipleResultsGroupedSort; 
 
-        //this.columnNamesPlayerRules = Object.keys(this.simParameters.ruleContainers[0].rules[0]); 
     }
 
     @ViewChild(MatSort, { static: true }) playerRulesTableSort: MatSort
@@ -439,6 +441,7 @@ export class AppComponent {
         await this.onClickButtonStartMultipleSimulations("multiple_compare_skillTreeNodes");
     }
 
+
     async onClickButtonStartMultipleSimulations(simGoal: simGoalType) {
         this.resetSimulationResults();
         this.simAdvancedSettings.simGoal = simGoal;
@@ -452,14 +455,10 @@ export class AppComponent {
             nRemaining: simComparison.getNumberSimulationsTotal(),
             nTotal: simComparison.getNumberSimulationsTotal()
         };
-        let lastProgressUpdate = (new Date()).getTime(); // Progress update should only be more than every 250ms because thats how long css animation of progress bar takes. otherwise animation is choppy
+       
+        //let lastProgressUpdate = (new Date()).getTime(); // Progress update should only be more than every 250ms because thats how long css animation of progress bar takes. otherwise animation is choppy
         simComparison.setListenerSimProgress((simProgress: simProgressType) => {
-            //console.log(simProgress);
-            //let currentTime = (new Date()).getTime();  
-            //if (currentTime - lastProgressUpdate > 250) {// have at least 250ms passed?
             self.simProgress = simProgress;
-            //lastProgressUpdate = currentTime; 
-            //}
         });
 
         Logger.verbosity = 1;
@@ -482,12 +481,31 @@ export class AppComponent {
             this.simProgress = null;
             this.updateSimulationMultipleResultsGrouped();*/
             if (this.isWebWorkerSupported()) {
+                let workerPool = new WebWorkerPool(this.simAdvancedSettings); 
+                workerPool.setListenerSimProgress((simProgress: simProgressType) => {
+                    self.simProgress = simProgress;
+                });
+
+                let messageContainers: webWorkerMessageContainerType[] = simComparison.allSimParams.map(simParams => { 
+                    return {
+                        messageType: "executeSimulation", 
+                        params: {
+                            combatSimulationParameters: simParams
+                        }
+                    };
+                }); 
+                workerPool.executeJobs(messageContainers, function(results: CombatSimulationResults[]) {
+                    //console.log("Done parallel of " + results.length + " jobs"); 
+                    self.simulationMultipleResults = results; 
+                    self.onFinishComparingSimulations(); 
+                });
+
                 // Create a new
-                const worker = new Worker('./app.worker', { type: 'module' });
+                /*const worker = new Worker('./app.worker', { type: 'module' });
                 worker.onmessage = ({ data }) => {
                   console.log(`page got message: ${data}`);
                 };
-                worker.postMessage('hello');
+                worker.postMessage('hello');*/
               } else {
                 // Web Workers are not supported in this environment.
                 // You should add a fallback so that your program still executes correctly.
@@ -515,9 +533,13 @@ export class AppComponent {
             }, 0);
         }
         else {
-            this.simProgress = null;
-            this.updateSimulationMultipleResultsGrouped();
+            this.onFinishComparingSimulations(); 
         }
+    }
+
+    onFinishComparingSimulations() {
+        this.simProgress = null;
+        this.updateSimulationMultipleResultsGrouped();
     }
 
 
