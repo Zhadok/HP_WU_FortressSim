@@ -312,6 +312,8 @@ export class AppComponent {
         let ruleIndex = this.simParameters.ruleContainers[playerIndex].rules.indexOf(rule);
         console.log("Removing ruleIndex=" + ruleIndex + " for playerIndex=" + playerIndex + "...");
         this.simParameters.ruleContainers[playerIndex].rules.splice(ruleIndex, 1);
+
+        this.refreshRulesPriority(playerIndex); 
     }
 
     onClickAddPlayerRule(playerIndex: number) {
@@ -324,7 +326,14 @@ export class AppComponent {
                 all: []
             }
         }); 
+        this.refreshRulesPriority(playerIndex); 
     }
+
+    refreshRulesPriority(playerIndex: number) {
+        let highestPriority = this.simParameters.ruleContainers[playerIndex].rules.length; 
+        throw new Error("not implemented"); 
+    }
+
     onClickResetPlayerRules(playerIndex: number) {
         console.log("Resetting player rules to default for playerIndex=" + playerIndex + " and class=" + this.simParameters.nameClasses[playerIndex] + "...");
         this.simParameters.ruleContainers[playerIndex] = this.getDefaultRuleContainer(this.simParameters.nameClasses[playerIndex]);
