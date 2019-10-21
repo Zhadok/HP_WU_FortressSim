@@ -4,18 +4,19 @@ import { expect } from "chai";
 import * as chai from "chai";
 import chaiAsPromised from "chai-as-promised";
 import { fail } from "assert";
-import { Professor } from "../../src/model/player/Professor";
+import { Auror } from "../../src/model/player/Auror";
 import { Enemy } from "../../src/model/env/enemies/Enemy";
 import { ruleFactType } from "../../src/types";
 import { EnterCombatEvent } from "../../src/sim/events/wizard/combat/EnterCombatEvent";
 import { DefenceCharmEvent } from "../../src/sim/events/wizard/room/spells/professor/DefenceCharmEvent";
-import { SimEvent } from "../../src/sim/events/SimEvent";
 import { CombatSpellCircleEvent } from "../../src/sim/events/wizard/combat/CombatSpellCircleEvent";
 import { MendingCharmEvent } from "../../src/sim/events/wizard/room/spells/professor/MendingCharmEvent";
 import { InvigorationPotionEvent } from "../../src/sim/events/wizard/potions/InvigorationPotionEvent";
 import { ExstimuloPotionEvent } from "../../src/sim/events/wizard/potions/ExstimuloPotionEvent";
 import { WitSharpeningPotionEvent } from "../../src/sim/events/wizard/potions/WitSharpeningPotionEvent";
 import { HealthPotionEvent } from "../../src/sim/events/wizard/potions/HealthPotionEvent";
+import { WeakeningHexEvent } from "../../src/sim/events/wizard/room/spells/auror/WeakeningHexEvent";
+import { ConfusionHexEvent } from "../../src/sim/events/wizard/room/spells/auror/ConfusionHexEvent";
 
 // https://github.com/domenic/chai-as-promised/issues/192
 before(() => {
@@ -25,13 +26,13 @@ before(() => {
 
 describe("RulesEngine", function() {
 
-    let wizard: Professor;
+    let wizard: Auror;
     let enemy: Enemy; 
     let rng = TestData.buildNewRNG_0();
     let facts: ruleFactType;
     let rulesEngine: RulesEngine;
     this.beforeEach(() => {
-        wizard = TestData.buildDefaultProfessor();
+        wizard = TestData.buildDefaultAuror(); 
         wizard.setPotions(TestData.buildDefaultPotionParameters_noPotions()); 
         enemy = TestData.buildDefaultEnemy();
         facts = {
@@ -44,58 +45,82 @@ describe("RulesEngine", function() {
 
     });
 
-    it("professor_notEnoughFocusDefenceCharm", function()  {
+    
+
+    it("auror_castWeakeningHex", function() {
+        wizard.inCombat = false; 
+        wizard.addFocus(3);
+        enemy.hasWeakeningHex = false; 
+        wizard.setTrigger("weakeningHex", 0.5);
+
+        expect(wizard.hasStudiedWeakeningHex()).to.be.true; 
+
+        return rulesEngine.getNextAction(0, facts).then(simEvent => {
+            expect(simEvent instanceof WeakeningHexEvent).to.be.true; 
+            expect((simEvent as WeakeningHexEvent).targetEnemy).to.equal(enemy);
+            expect((simEvent as WeakeningHexEvent).powerDecreasePercent).to.equal(wizard.stats.weakeningHexValue);
+        });
+    });
+    it("auror_notEnoughFocusWeakeningHex", function()  {
         
         wizard.inCombat = false; 
         wizard.removeFocus(wizard.getFocus());
-        wizard.hasDefenceCharm = false;
-        wizard.setTrigger("defenceCharm", 1);
+        enemy.hasWeakeningHex = false; 
+        wizard.setTrigger("weakeningHex", 0.5); 
 
         return rulesEngine.getNextAction(0, facts).then(simEvent => {
             expect(simEvent instanceof EnterCombatEvent).to.be.true; 
         });
 
     });
-    it("professor_castDefenceCharm", function()  {
+    it("auror_notStudiedWeakeningHex", function()  {
+        wizard.setTrigger("weakeningHex", null); 
         wizard.inCombat = false; 
-        wizard.addFocus(3);
-        wizard.hasDefenceCharm = false;
-        wizard.setTrigger("defenceCharm", 0.16);
-
-        expect(wizard.hasStudiedDefenceCharm()).to.be.true; 
+        enemy.hasWeakeningHex = false; 
 
         return rulesEngine.getNextAction(0, facts).then(simEvent => {
-            expect(simEvent instanceof DefenceCharmEvent).to.be.true; 
-            expect((simEvent as DefenceCharmEvent).targetWizard).to.equal(wizard);
-            expect((simEvent as DefenceCharmEvent).defenceIncrease).to.equal(wizard.stats.defenceCharmIncrease);
+            expect(simEvent instanceof WeakeningHexEvent).to.be.false; 
         });
     });
 
-    it("professor_shouldCastMendingCharm_beforeCombat", function() {
-        wizard.inCombat = false;
-        wizard.removeFocus(wizard.getFocus());
-        wizard.removeStamina(1); 
+    it("auror_castConfusionHex", function() {
+        wizard.inCombat = false; 
+        enemy.hasWeakeningHex = true;
+        enemy.hasConfusionHex = false; 
+        wizard.setTrigger("confusionHex", 0.5);
+
+        expect(wizard.hasStudiedConfusionHex()).to.be.true; 
 
         return rulesEngine.getNextAction(0, facts).then(simEvent => {
-            expect(simEvent instanceof MendingCharmEvent).to.be.true; 
-            expect((simEvent as MendingCharmEvent).wizard).to.equal(wizard);
-            expect((simEvent as MendingCharmEvent).targetWizard).to.equal(wizard);
-        }); 
+            expect(simEvent instanceof ConfusionHexEvent).to.be.true; 
+            expect((simEvent as ConfusionHexEvent).targetEnemy).to.equal(enemy);
+            expect((simEvent as ConfusionHexEvent).confusionHexValue).to.equal(wizard.stats.confusionHexValue);
+        });
     });
-    it("professor_shouldEnterCombat", function() {
+    it("auror_notStudiedConfusionHex", function()  {
+        wizard.setTrigger("weakeningHex", null); 
+        wizard.setTrigger("confusionHex", null); 
+        wizard.inCombat = false; 
+        enemy.hasConfusionHex = false; 
+        wizard.addFocus(1); 
+
+        return rulesEngine.getNextAction(0, facts).then(simEvent => {
+            expect(simEvent instanceof ConfusionHexEvent).to.be.false; 
+        });
+    });
+
+    it("auror_shouldEnterCombat", function() {
         wizard.inCombat = false; 
         enemy.inCombat = false; 
         wizard.removeFocus(wizard.getFocus());
-        wizard.mendingCharmOnCooldown = true; 
-        wizard.removeStamina(1); 
 
         return rulesEngine.getNextAction(0, facts).then(simEvent => {
             expect(simEvent instanceof EnterCombatEvent).to.be.true; 
             expect((simEvent as EnterCombatEvent).wizard).to.equal(wizard);
             expect((simEvent as EnterCombatEvent).enemy).to.equal(enemy);
         });
-    })
-    it("professor_shouldCombatSpellCast", function() {
+    });
+    it("auror_shouldCombatSpellCast", function() {
         wizard.inCombatWith = enemy;
         wizard.inCombat = true; 
         enemy.inCombatWith = wizard;
@@ -107,22 +132,9 @@ describe("RulesEngine", function() {
             expect((simEvent as CombatSpellCircleEvent).enemy).to.equal(enemy);
         }); 
     });
-    it("professor_shouldCastMendingCharm_ifNoOtherAction", function() {
-        wizard.inCombat = false;
-        //wizard.removeFocus(wizard.getFocus());
-        wizard.setTrigger("mendingCharm", 4); 
-        facts.highestPriorityAvailableEnemy = null;
-        wizard.mendingCharmOnCooldown = false; 
-
-
-        return rulesEngine.getNextAction(0, facts).then(simEvent => {
-            expect(simEvent instanceof MendingCharmEvent).to.be.true; 
-            expect((simEvent as MendingCharmEvent).wizard).to.equal(wizard);
-            expect((simEvent as MendingCharmEvent).targetWizard).to.equal(wizard);
-        }); 
-    });
-
-    it("professor_shouldDrink_strongInvigorationPotion", function() {
+    it("auror_shouldDrink_strongInvigorationPotion", function() {
+        enemy.hasConfusionHex = false; 
+        enemy.hasWeakeningHex = false; 
         wizard.inCombat = false;
         wizard.removeFocus(wizard.getFocus());
         wizard.getPotions().nStrongInvigorationAvailable = 1; 
@@ -132,7 +144,9 @@ describe("RulesEngine", function() {
             expect((simEvent as InvigorationPotionEvent).focusReward).to.equal(3); 
         }); 
     });
-    it("professor_shouldDrink_weakInvigorationPotion", function() {
+    it("auror_shouldDrink_weakInvigorationPotion", function() {
+        enemy.hasConfusionHex = false; 
+        enemy.hasWeakeningHex = false; 
         wizard.inCombat = false;
         wizard.removeFocus(wizard.getFocus());
         wizard.getPotions().nWeakInvigorationAvailable = 1; 
@@ -142,7 +156,7 @@ describe("RulesEngine", function() {
             expect((simEvent as InvigorationPotionEvent).focusReward).to.equal(1); 
         }); 
     });
-    it("professor_shouldDrink_potentExstimuloPotion", function() {
+    it("auror_shouldDrink_potentExstimuloPotion", function() {
         wizard.inCombatWith = enemy;
         wizard.inCombat = true; 
         enemy.inCombatWith = wizard;
@@ -155,7 +169,7 @@ describe("RulesEngine", function() {
             expect((simEvent as ExstimuloPotionEvent).uses).to.equal(5); 
         }); 
     });
-    it("professor_shouldDrink_strongExstimuloPotion", function() {
+    it("auror_shouldDrink_strongExstimuloPotion", function() {
         wizard.inCombatWith = enemy;
         wizard.inCombat = true; 
         enemy.inCombatWith = wizard;
@@ -168,7 +182,7 @@ describe("RulesEngine", function() {
             expect((simEvent as ExstimuloPotionEvent).uses).to.equal(4); 
         }); 
     });
-    it("professor_shouldDrink_exstimuloPotion", function() {
+    it("auror_shouldDrink_exstimuloPotion", function() {
         wizard.inCombatWith = enemy;
         wizard.inCombat = true; 
         enemy.inCombatWith = wizard;
@@ -181,8 +195,7 @@ describe("RulesEngine", function() {
             expect((simEvent as ExstimuloPotionEvent).uses).to.equal(3); 
         }); 
     });
-
-    it("professor_shouldNotDrinkExstimulo_alreadyApplied", function() {
+    it("auror_shouldNotDrinkExstimulo_alreadyApplied", function() {
         wizard.inCombatWith = enemy;
         wizard.inCombat = true; 
         enemy.inCombatWith = wizard;
@@ -197,8 +210,7 @@ describe("RulesEngine", function() {
             expect(simEvent instanceof ExstimuloPotionEvent).to.be.false; 
         }); 
     });
-
-    it("professor_shouldDrink_witSharpeningPotion", function() {
+    it("auror_shouldDrink_witSharpeningPotion", function() {
         let eliteEnemy = TestData.buildDefaultEnemyElite(); 
         wizard.inCombatWith = eliteEnemy;
         wizard.inCombat = true; 
@@ -213,7 +225,7 @@ describe("RulesEngine", function() {
         }); 
     });
 
-    it("professor_shouldNotDrinkWitSharpening_alreadyApplied", function() {
+    it("auror_shouldNotDrinkWitSharpening_alreadyApplied", function() {
         let eliteEnemy = TestData.buildDefaultEnemyElite(); 
         let event = new WitSharpeningPotionEvent(0, wizard, eliteEnemy, 0.5, 3, TestData.buildDefaultPotionParameters()); 
         event.onFinish(); 
@@ -229,7 +241,7 @@ describe("RulesEngine", function() {
             expect(simEvent).to.not.be.instanceOf(WitSharpeningPotionEvent); 
         }); 
     })
-    it("professor_shouldNotDrinkWitSharpening_notElite", function() {
+    it("auror_shouldNotDrinkWitSharpening_notElite", function() {
         wizard.inCombatWith = enemy;
         wizard.inCombat = true; 
         enemy.inCombatWith = wizard;
@@ -240,8 +252,7 @@ describe("RulesEngine", function() {
             expect(simEvent).to.not.be.instanceOf(WitSharpeningPotionEvent); 
         }); 
     });
-
-    it("professor_shouldDrink_healthPotion", function() {
+    it("auror_shouldDrink_healthPotion", function() {
         wizard.inCombatWith = enemy;
         wizard.inCombat = true; 
         enemy.inCombatWith = wizard;
@@ -254,7 +265,7 @@ describe("RulesEngine", function() {
             expect((simEvent as HealthPotionEvent).staminaRestorePercent).to.equal(0.35); 
         }); 
     });
-    it("professor_shouldNotDrink_healthPotion", function () {
+    it("auror_shouldNotDrink_healthPotion", function () {
         wizard.inCombatWith = enemy;
         wizard.inCombat = true; 
         enemy.inCombatWith = wizard;
@@ -268,4 +279,5 @@ describe("RulesEngine", function() {
     });
 
 
-});
+
+}); 

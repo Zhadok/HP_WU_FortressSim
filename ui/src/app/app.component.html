@@ -210,7 +210,7 @@
                                                 
                                                 <ng-container matColumnDef="event.type">
                                                         <th mat-header-cell *matHeaderCellDef mat-sort-header> Action </th>
-                                                        <td mat-cell *matCellDef="let rule"> {{formatUserFriendlyStat(rule.event.type)}} </td>
+                                                        <td mat-cell *matCellDef="let rule"> {{getUserFriendlyActionName(playerIndex, rule.event.type)}} </td>
                                                 </ng-container>
                                                 <ng-container matColumnDef="priority">
                                                     <th mat-header-cell *matHeaderCellDef mat-sort-header>Priority</th>

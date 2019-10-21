@@ -1,3 +1,5 @@
+- 0.6.0
+    - Added auror rules and actions
 - 0.5.2
     - Fixed bug with rule table where priority would not get updated after adding/removing a rule
 - 0.5.1

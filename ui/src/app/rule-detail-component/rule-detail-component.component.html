@@ -53,7 +53,7 @@
                     <mat-form-field *ngIf="isConditionValuePrimitive(condition) === false" 
                         class="inputRuleValueFactObject inputRuleConditionElement" >
                         <mat-label>Value fact</mat-label>
-                        <mat-select placeholder="Fact" name="selectFactObject" 
+                        <mat-select placeholder="Fact" name="selectValueFactObject" 
                                 [(ngModel)]="condition.value.fact">
                             <mat-option *ngFor="let allowedFact of getAllowedRuleFactObjectsMap() | keyvalue" 
                                         value="{{allowedFact.key}}">{{allowedFact.value.label}}</mat-option>
@@ -62,7 +62,7 @@
                     <mat-form-field *ngIf="isConditionValuePrimitive(condition) === false && condition.value.fact !== null"
                         class="inputRuleFactPath inputRuleConditionElement" >
                         <mat-label>Value attribute</mat-label>
-                        <mat-select placeholder="Attribute" name="selectFactObject" 
+                        <mat-select placeholder="Attribute" name="selectValueFactPath" 
                                 [(ngModel)]="condition.value.path">
                             <mat-option [value]="null"></mat-option>    <!-- Allow to select self  (no path) -->
                             <mat-option *ngFor="let path of getAllowedRuleFactPaths(playerIndex, condition.value.fact)" 

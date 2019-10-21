@@ -28,6 +28,8 @@ import { RuleConstructorOptions } from "truegin/dist/lib/rule";
 import { Utils } from "../util/Utils";
 import { WizardFactory } from "../model/player/WizardFactory";
 import { BatBogeyHexEvent } from "../sim/events/wizard/room/spells/auror/BatBogeyHexEvent";
+import { WeakeningHexEvent } from "../sim/events/wizard/room/spells/auror/WeakeningHexEvent";
+import { ConfusionHexEvent } from "../sim/events/wizard/room/spells/auror/ConfusionHexEvent";
 
 
 export class RulesEngine {
@@ -189,6 +191,10 @@ export class RulesEngine {
                 return new InvigorationPotionEvent(timestampBegin, wizard, wizard.getPotions(), potionsData.weakInvigorationPotionFocus, "weak");
             
             // Auror
+            case "weakeningHex": 
+                return new WeakeningHexEvent(timestampBegin, wizard.stats.weakeningHexValue, targetEnemy!, wizard); 
+            case "confusionHex": 
+                return new ConfusionHexEvent(timestampBegin, wizard.stats.confusionHexValue, targetEnemy!, wizard); 
             case "batBogeyHex": 
                 return new BatBogeyHexEvent(timestampBegin, wizard.stats.batBogeyHexDamage, targetEnemy!, wizard); 
 

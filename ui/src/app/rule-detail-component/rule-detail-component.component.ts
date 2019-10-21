@@ -69,7 +69,9 @@ export class RuleDetailComponentComponent implements OnInit {
         try {
             condition.value = JSON.parse(event.target.value); 
         }
-        catch (e) {}
+        catch (e) {
+            // TODO: Mark input for error here
+        }
     }
 
     onClickAddCondition() {

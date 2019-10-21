@@ -152,7 +152,7 @@ tr.rule-row:not(.expandedRule-row):active {
     clear: both; 
 }
 .buttonRemoveRule {
-    float: left; 
+    float: right; 
     clear: both; 
 }
 

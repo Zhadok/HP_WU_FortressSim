@@ -1,77 +1,59 @@
 {
     "author": "Zhadok",
     "nameClass": "magizoologist",
-    "rules": [{
-        "event": {
-            "type": "enterCombatWithHighestPriorityAvailableEnemy"
-        },
-        "priority": 0,
-        "conditions": {
-            "all": [
-                {
-                    "fact": "wizard",
-                    "path": ".inCombat",
-                    "operator": "equal",
-                    "value": false
-                }, {
-                    "fact": "highestPriorityAvailableEnemy",
-                    "path": ".inCombat",
-                    "operator": "equal",
-                    "value": false
-                }
-            ]
-        }
-    }, 
-
-    {
-        "event": {
-            "type": "exitCombat",
-            "params": {
-                "description": "Professor should exit and check for better enemies available (disabled for now)"
+    "rules": [
+        {
+            "event": {
+                "type": "enterCombatWithHighestPriorityAvailableEnemy"
+            },
+            "priority": 2,
+            "conditions": {
+                "all": [
+                    {
+                        "fact": "wizard",
+                        "path": ".inCombat",
+                        "operator": "equal",
+                        "value": false
+                    },
+                    {
+                        "fact": "highestPriorityAvailableEnemy",
+                        "path": ".inCombat",
+                        "operator": "equal",
+                        "value": false
+                    }
+                ]
             }
         },
-        "priority": 0,
-        "conditions": {
-            "all": [
-                {
-                    "fact": "wizard",
-                    "path": ".inCombat",
-                    "operator": "equal",
-                    "value": true
-                }, {
-                    "fact": "wizard",
-                    "path": ".inCombatWith.inCombat",
-                    "operator": "equal",
-                    "value": true
-                }, {
-                    "fact": "wizard", 
-                    "path": ".inCombat",
-                    "operator": "equal",
-                    "value": null
-                }
-            ]
-        }
-    }, {
-        "event": {
-            "type": "combatSpellCastWizard"
+        {
+            "event": {
+                "type": "combatSpellCastWizard"
+            },
+            "priority": 1,
+            "conditions": {
+                "all": [
+                    {
+                        "fact": "wizard",
+                        "path": ".inCombat",
+                        "operator": "equal",
+                        "value": true
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".inCombatWith",
+                        "operator": "notEqual",
+                        "value": null
+                    }
+                ]
+            }
         },
-        "priority": 0,
-        "conditions": {
-            "all": [
-                {
-                    "fact": "wizard",
-                    "path": ".inCombat",
-                    "operator": "equal",
-                    "value": true
-                }, {
-                    "fact": "wizard",
-                    "path": ".inCombatWith",
-                    "operator": "notEqual",
-                    "value": null
-                }
-            ]
+        {
+            "event": {
+                "type": "noAction"
+            },
+            "priority": 0,
+            "conditions": {
+                "all": []
+            }
         }
-    }
-
-]
+    ]
 }
