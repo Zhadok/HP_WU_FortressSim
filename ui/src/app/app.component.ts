@@ -330,8 +330,11 @@ export class AppComponent {
     }
 
     refreshRulesPriority(playerIndex: number) {
-        let highestPriority = this.simParameters.ruleContainers[playerIndex].rules.length; 
-        throw new Error("not implemented"); 
+        // Example: 17 rules, highest priority is 16
+        let highestPriority = this.simParameters.ruleContainers[playerIndex].rules.length - 1; 
+        this.simParameters.ruleContainers[playerIndex].rules.forEach((rule, ruleIndex) => {
+            rule.priority = highestPriority - ruleIndex; 
+        });
     }
 
     onClickResetPlayerRules(playerIndex: number) {

@@ -508,7 +508,7 @@
             
             <div #divContainerMultipleSimulations *ngIf="simAdvancedSettings.simGoal.indexOf('multiple') !== -1">
                 <div *ngIf="simProgress !== null">
-                    Simulation progress: {{ simProgress.nFinished }} / {{ simProgress.nTotal }}
+                    Progress: {{ simProgress.nFinished }} / {{ simProgress.nTotal }} simulations finished
                     <mat-progress-bar mode="determinate" [value]="simProgress.nFinished / simProgress.nTotal *100"></mat-progress-bar>
                 </div>
                 <div id="divContainerMultipleSimulationsTable" *ngIf="simProgress === null">

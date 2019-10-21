@@ -116,7 +116,6 @@ describe("RulesEngine", function() {
 
 
         return rulesEngine.getNextAction(0, facts).then(simEvent => {
-            console.log(simEvent); 
             expect(simEvent instanceof MendingCharmEvent).to.be.true; 
             expect((simEvent as MendingCharmEvent).wizard).to.equal(wizard);
             expect((simEvent as MendingCharmEvent).targetWizard).to.equal(wizard);
