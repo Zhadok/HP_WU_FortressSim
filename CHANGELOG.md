@@ -1,3 +1,5 @@
+- 0.5.2
+    - Fixed bug with rule table where priority would not get updated after adding/removing a rule
 - 0.5.1
     - Rules editor: Hide priority complexity from view, add button for position up or down in table. Improved performance
 - 0.5.0 

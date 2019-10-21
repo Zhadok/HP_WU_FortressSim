@@ -168,16 +168,17 @@ tr.rule-row:not(.expandedRule-row):active {
     position: fixed; 
     bottom: 10px; 
     display: block; 
-    width: 210px;
+    width: 100%;
     z-index: 1000; 
     left: 50%;
-    margin-left: -70px; 
+    margin-left: -308px; 
 }
 .buttonStartSimulation {
     height: 45px; 
     width: 200px; 
     font-size: 12px;
     margin: 3px !important; 
+    float: left; 
 }
 
 /* Button for skill tree upgrades needs more space 
