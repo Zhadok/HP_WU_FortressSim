@@ -20,6 +20,10 @@
         "confusionHexValue": 0,
         "batBogeyHexDamage": 0,
 
+        "braveryCharmValue": 0,
+        "staminaCharmValue": 0,
+        "reviveCharmValue": 0,
+
         "deteriorationHexDamage": 0,
         "mendingCharmStaminaRestore": 0,
         "defenceCharmIncrease": 0,

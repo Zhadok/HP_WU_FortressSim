@@ -87,6 +87,12 @@ export class Professor extends Wizard {
 
     static isValidStatForClass(statName: statNameType): boolean {
         switch(statName) {
+            // Magizoologist
+            case "staminaCharmValue": 
+            case "reviveCharmValue": 
+            case "braveryCharmValue": 
+
+            // Auror
             case "weakeningHexValue": 
             case "confusionHexValue": 
             case "batBogeyHexDamage": 

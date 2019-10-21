@@ -76,6 +76,12 @@ export class Auror extends Wizard {
 
     static isValidStatForClass(statName: statNameType): boolean {
         switch(statName) {
+            // Magizoologist
+            case "staminaCharmValue": 
+            case "reviveCharmValue": 
+            case "braveryCharmValue": 
+
+            // Professor
             case "deteriorationHexDamage": 
             case "mendingCharmStaminaRestore": 
             case "defenceCharmIncrease": 

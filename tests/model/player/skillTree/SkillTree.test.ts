@@ -114,6 +114,10 @@ describe("SkillTree", function() {
         expect(stats.defence).to.be.closeTo(0.44, deltaComparison); 
         expect(stats.defenceBreach).to.be.closeTo(0.15, deltaComparison);  
 
+        expect(stats.defenceCharmIncrease).to.be.closeTo(0.3, deltaComparison); 
+        expect(stats.mendingCharmStaminaRestore).to.equal(4);
+        expect(stats.deteriorationHexDamage).to.equal(40); 
+        expect(stats.proficiencyPowerCharmIncrease).to.be.closeTo(0.44, deltaComparison); 
     });
     it("learnAllLessonsWithScrolls_professor", function() {
         let skillTree = new SkillTree("professor");
@@ -159,7 +163,41 @@ describe("SkillTree", function() {
         expect(stats.defence).to.equal(0.39); 
         expect(stats.defenceBreach).to.equal(0.32);  
 
+        expect(stats.batBogeyHexDamage).to.equal(2);
+        expect(stats.weakeningHexValue).to.equal(0.5); 
+        expect(stats.confusionHexValue).to.be.closeTo(0.6, deltaComparison);
+        expect(stats.focusCharmValue).to.equal(1); 
     });
+
+
+    it("learnAllLessons_magizoologist", function() {
+        let skillTree = new SkillTree("magizoologist");
+        skillTree.learnAllLessons(); 
+        let costs = skillTree.getCosts(); 
+        expect(costs.costScrolls).to.equal(2495); 
+        expect(costs.costRedBooks).to.equal(465); 
+        expect(costs.costRSB).to.equal(115); 
+
+        let deltaComparison = 1e-6; 
+        let stats = skillTree.toWizardStats(); 
+        expect(stats.protegoPower).to.be.closeTo(0.49, deltaComparison); 
+        expect(stats.critChance).to.be.closeTo(0.20, deltaComparison);
+        expect(stats.maxFocus).to.equal(12); 
+        expect(stats.proficiencyPower).to.equal(1.48); 
+        expect(stats.accuracy).to.be.closeTo(0.20, deltaComparison); 
+        expect(stats.deficiencyDefence).to.be.closeTo(0.60, deltaComparison); 
+        expect(stats.power).to.equal(59); 
+        expect(stats.stamina).to.equal(525); 
+        expect(stats.criticalPower).to.equal(0.98); 
+        expect(stats.initialFocus).to.equal(5); 
+        expect(stats.defence).to.equal(0.50); 
+        expect(stats.defenceBreach).to.be.closeTo(0.22, deltaComparison);  
+
+        expect(stats.mendingCharmStaminaRestore).to.equal(4); 
+        expect(stats.reviveCharmValue).to.equal(1); 
+        expect(stats.braveryCharmValue).to.equal(1.5); 
+        expect(stats.staminaCharmValue).to.be.closeTo(0.3, deltaComparison); 
+    }); 
 
     it("skillTree_nextPossibleLessons_shouldBeAll", function() {
         let skillTree = new SkillTree("professor");

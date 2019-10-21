@@ -1,3 +1,5 @@
+- 0.6.1
+    - Added magizoologist skill tree
 - 0.6.0
     - Added auror rules and actions
 - 0.5.2

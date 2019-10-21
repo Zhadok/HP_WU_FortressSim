@@ -9,12 +9,12 @@ export interface SkillTreeNode {
     readonly triggerName: triggerNameType | null; 
 
     readonly statChangeDescription: string;
-    readonly statChanged: statNameType | null;
+    readonly statChanged?: statNameType;
     readonly levels: Array<{
         statChange: number,
         costScrolls: number,
-        costRedBooks: number | null,
-        costRSB: number | null
+        costRedBooks?: number | null,
+        costRSB?: number | null
     }>;
 
     readonly dependencies: Array<string>;

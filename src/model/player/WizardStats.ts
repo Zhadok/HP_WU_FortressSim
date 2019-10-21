@@ -17,6 +17,11 @@ export class WizardStats extends CombatantStats {
     batBogeyHexDamage: number = 0;
     focusCharmValue: number = 0;
 
+    // Magizoologist (mending charm is in professor)
+    staminaCharmValue: number = 0; // between 0 and 1
+    reviveCharmValue: number = 0; 
+    braveryCharmValue: number = 0; 
+
     // Professor
     deteriorationHexDamage: number = 0; 
     mendingCharmStaminaRestore: number = 0; 

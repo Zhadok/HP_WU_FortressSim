@@ -28,6 +28,12 @@ declare type triggerNameType =
             // Auror spells
             "weakeningHex" | "batBogeyHex" | "focusCharm" | "confusionHex" |
 
+            // Magizoologist triggers
+            "ministryMagizoologyOrientation" | "forumQuorum" | "becomeTheBeast" |
+            // Magizoologist spells (mending charm is in professor)
+            "staminaCharm" | "reviveCharm" | "braveryCharm" | "spiders" | "birdInHand" | "vileCreatures" |
+
+
             // Professor triggers
             "idealExchange" | "restrictedSection" | "strengthInNumbers" | "sparringSpecifics" | "teamworkMakesTheDreamWork" | "confidence" |
             "teamTeaching" | "onSabbatical" | "peskyPixies" | "fullMoonHunter" |

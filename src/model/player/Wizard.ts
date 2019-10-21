@@ -100,6 +100,17 @@ export abstract class Wizard extends Combatant {
             firstStrike: null,
             mundungusAmongUs: null,
 
+            // Magizoologist
+            ministryMagizoologyOrientation: null, 
+            forumQuorum: null, 
+            becomeTheBeast: null, 
+            birdInHand: null,
+            spiders: null,
+            vileCreatures: null,
+            staminaCharm: null,
+            reviveCharm: null,
+            braveryCharm: null,
+
             // Professor
             confidence: null, 
             defenceCharm: null, 
