@@ -438,7 +438,7 @@
                             <ul>
                                 <li>{{wizardResult.numberOfCasts}} hits ({{wizardResult.numberOfCriticalCasts}} critical, {{wizardResult.numberOfDodgedCasts}} dodged)</li>
                                 <li>{{wizardResult.averageDamage.toFixed(0)}} average damage ({{wizardResult.totalDamage}} total)</li>
-                                <li>{{(wizardResult.totalDamage/wizardResult.numberAttacksReceived).toFixed(0)}} average damage received ({{wizardResult.totalDamageReceived}} total)</li>
+                                <li>{{(wizardResult.totalDamageReceived/wizardResult.numberAttacksReceived).toFixed(0)}} average damage received ({{wizardResult.numberAttacksReceived}} attacks received, {{wizardResult.totalDamageReceived}} damage total)</li>
                                 <li>{{(wizardResult.timeSpentDefeated/1000).toFixed(0)}}s spent defeated</li>
                             </ul>
                             <b>Enhancements</b>
