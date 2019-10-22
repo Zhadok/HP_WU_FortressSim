@@ -384,7 +384,17 @@ export class AppComponent {
             this.simParameters.ruleContainers[playerIndex].nameClass + "_rules.json",
             JSON.stringify(this.simParameters.ruleContainers[playerIndex], null, 4));
     }
-
+    onClickImportPlayerRules(playerIndex: number) {
+        var self = this; 
+        this.createFileUpload(function(fileContent) {
+        
+            console.log("Importing rules file: ");
+            console.log(fileContent);
+            let importedRuleContainer: ruleContainerType = JSON.parse(fileContent);
+            self.simParameters.ruleContainers[playerIndex] = importedRuleContainer; 
+            
+        });
+    }
 
     applyObserverFunctions(data: localStorageDataType) {
         //console.log("Applying observer function: ");

@@ -9,7 +9,7 @@
             "targetWizard": "lowestHP"
           }
         },
-        "priority": 2000,
+        "priority": 1,
         "conditions": {
           "all": [
             {

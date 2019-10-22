@@ -1,3 +1,5 @@
+- 0.6.3
+    - Added "import rules" button
 - 0.6.2
     - Filtered and sorted rule condition paths to be more user friendly
     - Added "chamber" fact (currentTime, remainingTime, anyWizardDead, enemiesRemaining)

@@ -290,7 +290,8 @@
                                                 <mat-label>Author</mat-label>
                                                 <input matInput type="text" placeholder="Author" [(ngModel)]="simParameters.ruleContainers[playerIndex].author">
                                             </mat-form-field>
-                                            <button class="buttonSkillTreeControl" mat-raised-button color="accent" (click)="onClickExportPlayerRules(playerIndex)">Export rules (JSON)</button>
+                                            <button class="buttonSkillTreeControl" mat-raised-button (click)="onClickExportPlayerRules(playerIndex)">Export rules</button>
+                                            <button class="buttonSkillTreeControl" mat-raised-button (click)="onClickImportPlayerRules(playerIndex)">Import rules</button>
                                             
                                         </div> 
                                     </mat-expansion-panel>

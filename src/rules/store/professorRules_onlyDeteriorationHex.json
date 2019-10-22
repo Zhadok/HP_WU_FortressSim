@@ -9,7 +9,7 @@
                     "targetEnemy": "highestPriorityAvailableEnemy"
                 }
             },
-            "priority": 9980,
+            "priority": 4,
             "conditions": {
                 "all": [
                     {
@@ -46,7 +46,7 @@
             "event": {
                 "type": "enterCombatWithHighestPriorityAvailableEnemy"
             },
-            "priority": 9900,
+            "priority": 3,
             "conditions": {
                 "all": [
                     {
@@ -71,7 +71,7 @@
                     "description": "Professor should exit and check for better enemies available (disabled for now)"
                 }
             },
-            "priority": 5000,
+            "priority": 2,
             "conditions": {
                 "all": [
                     {
@@ -102,7 +102,7 @@
                     "targetWizard": "lowestHP"
                 }
             },
-            "priority": 2000,
+            "priority": 1,
             "conditions": {
                 "all": [
                     {
