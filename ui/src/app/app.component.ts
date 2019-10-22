@@ -261,6 +261,35 @@ export class AppComponent {
     getUserFriendlyActionName(playerIndex: number, actionName: actionNameType) {
         return this.getActionNameMap(playerIndex)[actionName]; 
     }
+    getEventTargetType(playerIndex: number, actionName: actionNameType): string | null {
+        let allowedTarget = RulesEngine.getAllowedTargetType(actionName);  // "targetEnemy", "targetWizard" 
+        if (allowedTarget === null) {
+            return null; 
+        }
+        let ruleEventTargetMap = RulesEngine.eventTargetTypes; 
+        return ruleEventTargetMap[allowedTarget].label; 
+    }
+    getAllowedEventTargets(playerIndex: number, actionName: actionNameType) {
+        let allowedTargetType = RulesEngine.getAllowedTargetType(actionName); 
+        if (allowedTargetType === null) return null; 
+        let allowedTargets = RulesEngine.eventTargetTypes[allowedTargetType].allowedTargets; 
+        // console.log(allowedTargets); 
+        return allowedTargets; 
+    }
+    getEventTarget(playerIndex: number, rule: ruleType): string {
+        if (rule.event.params === undefined) return; 
+        let allowedTargetType = RulesEngine.getAllowedTargetType(rule.event.type); // "targetEnemy", "targetWizard"
+        return rule.event.params[allowedTargetType]; 
+    }
+    onChangeSelectEventTarget(playerIndex: number, rule: ruleType, event) {
+        if (rule.event.params === undefined) {
+            rule.event.params = {}; 
+        }
+        let allowedTargetType = RulesEngine.getAllowedTargetType(rule.event.type); // "targetEnemy", "targetWizard" 
+        rule.event.params[allowedTargetType] = event.value;  // "self", "lowestHP", ...
+    }
+
+
     onClickButtonIncreaseRulePriority(event, rule: ruleType, playerIndex: number) {
         let rules = this.simParameters.ruleContainers[playerIndex].rules; 
         let currentIndex = rules.indexOf(rule); 

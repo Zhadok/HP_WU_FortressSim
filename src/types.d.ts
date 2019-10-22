@@ -77,8 +77,13 @@ declare type ruleFactChamberType = {
 declare type ruleEventTargetType = "targetWizard" | "targetEnemy"; 
 declare type ruleEventTargetMapType = { [key in ruleEventTargetType]: {
     label: string,
-    allowedPaths: Array<string | null>
+    allowedTargets: Array<{
+        key: ruleEventAllowedWizardTargets | ruleEventAllowedEnemyTargets,
+        label: string
+    }>
 }};
+declare type ruleEventAllowedWizardTargets = "self" | "lowestHP";
+declare type ruleEventAllowedEnemyTargets = "lowestHP" | "highestPriorityAvailableEnemy"; 
 
 declare type actionNameType = strategicSpellNameType | 
                               "strongInvigorationPotion" | "weakInvigorationPotion" |

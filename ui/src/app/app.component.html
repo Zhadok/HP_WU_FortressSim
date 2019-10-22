@@ -230,7 +230,7 @@
                                                         <div class="rule-detail"
                                                             [@detailExpand]="rule == expandedRule ? 'expanded' : 'collapsed'">
 
-                                                            <div class="rule-detail-inner-container">
+                                                            <div class="rule-detail-inner-container" *ngIf="rule === expandedRule">
                                                                 <!-- <mat-form-field class="inputRulePriority">
                                                                     <mat-label>Priority</mat-label>
                                                                     <input matInput type="number" placeholder="Priority" [(ngModel)]="rule.priority">
@@ -242,10 +242,22 @@
                                                                         <mat-option *ngFor="let action of getActionNameMap(playerIndex) | keyvalue" 
                                                                                     value="{{action.key}}">{{action.value}}</mat-option>
                                                                     </mat-select>
-                                                                </mat-form-field><br>
-                                                                    
+                                                                </mat-form-field>
+                                                                <div *ngIf="getEventTargetType(playerIndex, rule.event.type) !== null">
+                                                                    <mat-form-field class="inputRuleAction">
+                                                                        <mat-label>Target {{getEventTargetType(playerIndex, rule.event.type)}}</mat-label>
+                                                                        <mat-select placeholder="Target" name="selectRuleTarget" (selectionChange)="onChangeSelectEventTarget(playerIndex, rule, $event)" 
+                                                                            [value]="getEventTarget(playerIndex, rule)">
+                                                                            <mat-option *ngFor="let target of getAllowedEventTargets(playerIndex, rule.event.type)" 
+                                                                                        value="{{target.key}}">{{target.label}}</mat-option>
+                                                                        </mat-select>
+                                                                    </mat-form-field> 
+                                                                </div>
+                                                                
+                                                                <br>
+
                                                                 <h3 class="mat-h3 floatLeft clearBoth">Conditions (total: {{rule.conditions.all.length}})</h3>
-                                                                <app-rule-detail-component *ngIf="rule === expandedRule" [conditionGroup]="rule.conditions.all"
+                                                                <app-rule-detail-component [conditionGroup]="rule.conditions.all"
                                                                     [ruleConditionGroupName]="'all'"
                                                                     [depth]="0"
                                                                     [parentConditionGroup]="rule.conditions.all" [parentConditionGroupIndex]="0"

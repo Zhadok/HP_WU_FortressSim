@@ -7,7 +7,7 @@ import aurorRules from "./store/aurorRules.json";
 import magizoologistRules from "./store/magizoologistRules.json";
 
 import potionsData from "../data/potions.json"; 
-import { nameClassType, nameClassUserFriendlyType, strategicSpellNameType, ruleFactType, actionNameType, ruleOperatorMapType, ruleContainerType, ruleType, actionNameMapType, ruleFactNameMapType, ruleFactNameType, ruleFactChamberType, ruleEventTargetMapType } from "../types";
+import { nameClassType, nameClassUserFriendlyType, strategicSpellNameType, ruleFactType, actionNameType, ruleOperatorMapType, ruleContainerType, ruleType, actionNameMapType, ruleFactNameMapType, ruleFactNameType, ruleFactChamberType, ruleEventTargetMapType, ruleEventTargetType } from "../types";
 import { SimEvent } from "../sim/events/SimEvent";
 import { DefenceCharmEvent } from "../sim/events/wizard/room/spells/professor/DefenceCharmEvent";
 import { Enemy } from "../model/env/enemies/Enemy";
@@ -76,14 +76,22 @@ export class RulesEngine {
             "allowedPaths": RulesEngine.getAllowedPaths("chamber")
         }
     };
-    static allowedEventTargetTypes: ruleEventTargetMapType = {
+    static eventTargetTypes: ruleEventTargetMapType = {
         targetWizard: {
-            "label": "Target wizard",
-            "allowedPaths": ["self", "lowestHP"]
+            "label": "wizard",
+            allowedTargets: [{
+                key: "self", label: "Self"
+            }, {
+                key: "lowestHP", label: "Lowest HP"
+            }]
         },
         targetEnemy: {
-            "label": "Target enemy",
-            "allowedPaths": ["lowestHP", "highestPriorityAvailableEnemy"]
+            "label": "enemy",
+            allowedTargets: [{
+                key: "highestPriorityAvailableEnemy", label: "Highest Priority Available Enemy"
+            }, {
+                key: "lowestHP", label: "Lowest HP"
+            }]
         }
     }
 
@@ -184,6 +192,33 @@ export class RulesEngine {
 
         return paths; 
 
+    }
+    static getAllowedTargetType(actionName: actionNameType): ruleEventTargetType | null {
+        switch (actionName) {
+            case "batBogeyHex": return "targetEnemy";
+            case "braveryCharm": return null; 
+            case "combatSpellCastWizard": return null;
+            case "confusionHex": return "targetEnemy";
+            case "defenceCharm": return "targetWizard";
+            case "deteriorationHex": return "targetEnemy"; 
+            case "enterCombatWithHighestPriorityAvailableEnemy": return null; 
+            case "exitCombat": return null;
+            case "exstimuloPotion": return null;
+            case "focusCharm": return "targetWizard";
+            case "healthPotion": return null; 
+            case "mendingCharm": return "targetWizard";
+            case "noAction": return null; 
+            case "potentExstimuloPotion": return null;
+            case "proficiencyPowerCharm": return null;
+            case "reviveCharm": return "targetWizard"; 
+            case "staminaCharm": return "targetWizard"; 
+            case "strongExstimuloPotion": return null;
+            case "strongInvigorationPotion": return null;
+            case "weakInvigorationPotion": return null;
+            case "weakeningHex": return "targetEnemy"; 
+            case "witSharpeningPotion": return null;
+            default: throw new Error("actionName=" + actionName + " not implemented.");
+        }
     }
 
     async getNextAction(timestampBegin: number, facts: ruleFactType): Promise<SimEvent | null> {
