@@ -37,7 +37,13 @@ describe("RulesEngine", function() {
             wizard: wizard,
             highestPriorityAvailableEnemy: enemy,
             allWizards: [wizard],
-            allActiveEnemies: [enemy]
+            allActiveEnemies: [enemy],
+            chamber: {
+                currentTimeSeconds: 0,
+                remainingTimeSeconds: 600,
+                remainingEnemies: 10,
+                isAnyWizardDefeated: false
+            }
         };
         rulesEngine = RulesEngine.buildFromStandard(wizard.nameClass, rng);
 

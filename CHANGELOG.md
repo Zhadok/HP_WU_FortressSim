@@ -1,3 +1,6 @@
+- 0.6.2
+    - Filtered and sorted rule condition paths to be more user friendly
+    - Added "chamber" fact (currentTime, remainingTime, anyWizardDead, enemiesRemaining)
 - 0.6.1
     - Added magizoologist skill tree
 - 0.6.0

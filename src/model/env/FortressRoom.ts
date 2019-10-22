@@ -83,9 +83,20 @@ export class FortressRoom {
         }
         return true; 
     }
+    getRemainingEnemiesCount(): number {
+        let result = 0; 
+        for (let enemy of this.enemiesAll) {
+            if (enemy.getIsDefeated() === false) {
+                result++; 
+            }
+        }
+        return result; 
+    }
+
+
 
     // More research needed: 3 for 1 player, 6 for 2 players, ...?
-    getMaxNumberOfEnemies(): number {
+    getMaxNumberOfActiveEnemies(): number {
         return this.runestoneLevels.length * 3;
     }
 

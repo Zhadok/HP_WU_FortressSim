@@ -7,7 +7,7 @@ import aurorRules from "./store/aurorRules.json";
 import magizoologistRules from "./store/magizoologistRules.json";
 
 import potionsData from "../data/potions.json"; 
-import { nameClassType, nameClassUserFriendlyType, strategicSpellNameType, ruleFactType, actionNameType, ruleOperatorMapType, ruleContainerType, ruleType, actionNameMapType, ruleFactNameMapType, ruleFactNameType } from "../types";
+import { nameClassType, nameClassUserFriendlyType, strategicSpellNameType, ruleFactType, actionNameType, ruleOperatorMapType, ruleContainerType, ruleType, actionNameMapType, ruleFactNameMapType, ruleFactNameType, ruleFactChamberType, ruleEventTargetMapType } from "../types";
 import { SimEvent } from "../sim/events/SimEvent";
 import { DefenceCharmEvent } from "../sim/events/wizard/room/spells/professor/DefenceCharmEvent";
 import { Enemy } from "../model/env/enemies/Enemy";
@@ -70,8 +70,22 @@ export class RulesEngine {
         "highestPriorityAvailableEnemy": {
             "label": "Highest priority available enemy",
             "allowedPaths": RulesEngine.getAllowedPaths("highestPriorityAvailableEnemy")
+        },
+        chamber: {
+            "label": "Chamber",
+            "allowedPaths": RulesEngine.getAllowedPaths("chamber")
         }
     };
+    static allowedEventTargetTypes: ruleEventTargetMapType = {
+        targetWizard: {
+            "label": "Target wizard",
+            "allowedPaths": ["self", "lowestHP"]
+        },
+        targetEnemy: {
+            "label": "Target enemy",
+            "allowedPaths": ["lowestHP", "highestPriorityAvailableEnemy"]
+        }
+    }
 
     static ruleOperatorMap: ruleOperatorMapType = {
         "equal": "==",
@@ -118,8 +132,56 @@ export class RulesEngine {
             case "highestPriorityAvailableEnemy": 
                 paths = Utils.getAllFieldNames(tempWizard.inCombatWith, "", []);  
                 break; 
+            case "chamber":
+                let tempChamber: ruleFactChamberType = {
+                    currentTimeSeconds: 0,
+                    remainingTimeSeconds: 600,
+                    remainingEnemies: 10,
+                    isAnyWizardDefeated: false
+                }; 
+                paths = Utils.getAllFieldNames(tempChamber, "", []);
+                break;  
+            default: 
+                throw new Error("ruleFactName=" + ruleFactName + " is not implemented"); 
         }
-        //paths.push(null); // Allowed to compare with object itself as well. In UI will appear as empty
+        // Sort by 
+        // number of periods "." in string
+        // alphabetically
+        paths.sort((v1, v2) => {
+            if (v1!.split(".").length < v2!.split(".").length) {
+                return -1; 
+            }
+            else if (v1!.split(".").length > v2!.split(".").length) {
+                return 1; 
+            }
+            // Equal number of dots
+            if (v1! < v2!) {
+                return -1; 
+            }
+            else if (v1! > v2!) {
+                return 1;
+            }
+            return 0; 
+        });
+
+        let filteredExactPaths: Array<string> = [
+            ".stats", ".potions", ".potionsAtBeginning", ".potionData", ".triggers", // irrelevant objects
+                                                    // Irrelevant attributes
+        ]; // These must be matched exactly
+        let filteredPaths: Array<string> = ["numberEnhancementsDuringAttacks", "numberImpairmentsDuringAttacks", "numberEnhancementsDuringAttacksReceived", "numberImpairmentsDuringAttacksReceived"];  // These must only be part of the string
+        paths = paths.filter((path) => {
+            // also any ending with .0, .1, .2, .length
+            if (filteredExactPaths.indexOf(path!) > -1) {
+                return false; 
+            }     
+            for (let filteredPath of filteredPaths) {
+                if (path!.includes(filteredPath!)) {
+                    return false; 
+                }
+            }
+            return true; 
+        });       
+
         return paths; 
 
     }

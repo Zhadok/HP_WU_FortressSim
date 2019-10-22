@@ -31,7 +31,7 @@ export class RuleDetailComponentComponent implements OnInit {
 
     // Which path is allowed for object (e.g., .stats.power)
     getAllowedRuleFactPaths(playerIndex: number, ruleFactName: ruleFactNameType) {
-        if (ruleFactName != "highestPriorityAvailableEnemy" && ruleFactName != "wizard") {
+        if (ruleFactName != "highestPriorityAvailableEnemy" && ruleFactName != "wizard" && ruleFactName != "chamber") {
             throw new Error("Invalid ruleFactName=" + ruleFactName);
         }
         let result = RulesEngine.allowedFactObjects[ruleFactName].allowedPaths;

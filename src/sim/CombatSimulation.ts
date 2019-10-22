@@ -130,6 +130,7 @@ export class CombatSimulation {
     //    return this.fortressRoom.enemiesActive.filter(e => e.isActive === true && e.inCombat === false).length;
     //}
 
+
     addEvent(newEvent: SimEvent) {
         
         if (this.currentTime > newEvent.timestampBegin) {
@@ -336,7 +337,13 @@ export class CombatSimulation {
             wizard: wizard,
             highestPriorityAvailableEnemy: highestPriorityAvailableEnemy,  
             allWizards: this.wizards,
-            allActiveEnemies: this.fortressRoom.enemiesActive
+            allActiveEnemies: this.fortressRoom.enemiesActive,
+            chamber: {
+                currentTimeSeconds: this.currentTime / 1000,
+                remainingTimeSeconds: (this.maxTime - this.currentTime) / 1000, 
+                isAnyWizardDefeated: this.isAnyWizardDefeated(),
+                remainingEnemies: this.fortressRoom.getRemainingEnemiesCount()
+            }
         }
         let nextEvent = await this.getRulesEngine(wizard.playerIndex).getNextAction(timestampBegin, facts);
         if (nextEvent !== null) {
@@ -353,6 +360,14 @@ export class CombatSimulation {
         }
     }   
 
+    isAnyWizardDefeated(): boolean {
+        for (let wizard of this.wizards) {
+            if (wizard.getIsDefeated()) {
+                return true; 
+            }
+        }
+        return false; 
+    }
 
 
     // Priority calculation:

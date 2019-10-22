@@ -59,11 +59,23 @@ declare type ruleFactType = {
     wizard: Wizard,
     highestPriorityAvailableEnemy: Enemy | null,
     allWizards: Array<Wizard>,
-    allActiveEnemies: Array<Enemy>
+    allActiveEnemies: Array<Enemy>,
+    chamber: ruleFactChamberType; 
 }
 
-declare type ruleFactNameType = "wizard" | "highestPriorityAvailableEnemy"; 
+declare type ruleFactNameType = "wizard" | "highestPriorityAvailableEnemy" | "chamber"; // Available in frontend
 declare type ruleFactNameMapType = { [key in ruleFactNameType]: {
+    label: string,
+    allowedPaths: Array<string | null>
+}};
+declare type ruleFactChamberType = {
+    currentTimeSeconds: number, 
+    remainingTimeSeconds: number, 
+    remainingEnemies: number, 
+    isAnyWizardDefeated: boolean
+}; 
+declare type ruleEventTargetType = "targetWizard" | "targetEnemy"; 
+declare type ruleEventTargetMapType = { [key in ruleEventTargetType]: {
     label: string,
     allowedPaths: Array<string | null>
 }};
