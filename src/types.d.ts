@@ -72,7 +72,8 @@ declare type ruleFactChamberType = {
     currentTimeSeconds: number, 
     remainingTimeSeconds: number, 
     remainingEnemies: number, 
-    isAnyWizardDefeated: boolean
+    isAnyWizardDefeated: boolean,
+    numberOfWizards: number
 }; 
 declare type ruleEventTargetType = "targetWizard" | "targetEnemy"; 
 declare type ruleEventTargetMapType = { [key in ruleEventTargetType]: {
@@ -82,7 +83,7 @@ declare type ruleEventTargetMapType = { [key in ruleEventTargetType]: {
         label: string
     }>
 }};
-declare type ruleEventAllowedWizardTargets = "self" | "lowestHP";
+declare type ruleEventAllowedWizardTargets = "self" | "lowestHP" | "lowestHP_notSelf" | "defeatedWizard";
 declare type ruleEventAllowedEnemyTargets = "lowestHP" | "highestPriorityAvailableEnemy"; 
 
 declare type actionNameType = strategicSpellNameType | 

@@ -8,15 +8,15 @@ describe("StaminaCharmEvent", function() {
 
 
     it("staminaCharmEvent_apply", function() {
+        let targetWizard = TestData.buildDefaultAuror(); 
         let wizard = TestData.buildDefaultMagizoologist();
-        wizard.removeStamina(wizard.getMaxStamina() - 1);
+        targetWizard.removeStamina(wizard.getMaxStamina() - 1);
 
-        let event = new StaminaCharmEvent(0, 0.35, wizard, wizard);
+        let event = new StaminaCharmEvent(0, 0.35, targetWizard, wizard);
         event.onFinish();
 
-        expect(wizard.getCurrentStamina()).to.equal(Math.ceil(1 + wizard.getMaxStamina() * 0.35));
+        expect(targetWizard.getCurrentStamina()).to.equal(Math.ceil(1 + targetWizard.getMaxStamina() * 0.35));
         expect(wizard.getFocus()).to.equal(wizard.stats.initialFocus - focusCostData.staminaCharm);
-
     });
 
 });

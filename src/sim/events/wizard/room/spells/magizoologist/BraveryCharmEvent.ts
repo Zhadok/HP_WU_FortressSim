@@ -1,5 +1,6 @@
 import { StrategicSpellEvent } from "../StrategicSpellEvent";
 import { Wizard } from "../../../../../../model/player/Wizard";
+import { Magizoologist } from "../../../../../../model/player/Magizoologist";
 
 export class BraveryCharmEvent extends StrategicSpellEvent {
 
@@ -10,6 +11,10 @@ export class BraveryCharmEvent extends StrategicSpellEvent {
         super(timestampBegin, caster);
         this.powerIncreaseAgainstElites = powerIncreaseAgainstElites;
         this.allWizards = allWizards;
+
+        if ((caster as Magizoologist).hasStudiedBraveryCharm() === false) {
+            throw new Error(caster.toUserFriendlyDescription() + "has not studied bravery charm but tried casting it!");
+        }
     }
 
     onFinish() {
@@ -24,7 +29,7 @@ export class BraveryCharmEvent extends StrategicSpellEvent {
     }
 
     getStrategicSpellName(): string {
-        return "Bravery Charm"; 
+        return "Bravery Charm (" + this.powerIncreaseAgainstElites + "% more dmg against elites)"; 
     }
 
 

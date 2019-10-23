@@ -4,6 +4,7 @@ import { Professor } from "../../../../../../model/player/Professor";
 import { SimEvent } from "../../../../SimEvent";
 import { MendingCharmCooldownFinishedEvent } from "./MendingCharmCooldownFinishedEvent";
 import spellCooldownData from "../../../../../../data/spellCooldowns.json"; 
+import { Magizoologist } from "../../../../../../model/player/Magizoologist";
 
 export class MendingCharmEvent extends StrategicSpellEvent {
 
@@ -15,8 +16,15 @@ export class MendingCharmEvent extends StrategicSpellEvent {
         this.staminaRestore = staminaRestore;
         this.targetWizard = targetWizard;
 
-        if ((caster as Professor).hasStudiedMendingCharm() === false) {
-            throw new Error(caster.toUserFriendlyDescription() + " has not studied mending charm but tried casting it!");
+        if (caster instanceof Professor) {
+            if (caster.hasStudiedMendingCharm() === false) {
+                throw new Error(caster.toUserFriendlyDescription() + " has not studied mending charm but tried casting it!");
+            }
+        }
+        else if (caster instanceof Magizoologist) {
+            if (caster.hasStudiedMendingCharm() === false) {
+                throw new Error(caster.toUserFriendlyDescription() + " has not studied mending charm but tried casting it!");
+            }
         }
         if (caster.mendingCharmOnCooldown === true) {
             throw new Error(caster.toUserFriendlyDescription() + " tried casting mending charm while it was still on cooldown!"); 

@@ -4,9 +4,288 @@
     "rules": [
         {
             "event": {
+                "type": "reviveCharm",
+                "params": {
+                    "targetWizard": "defeatedWizard"
+                }
+            },
+            "priority": 14,
+            "conditions": {
+                "all": [
+                    {
+                        "fact": "wizard",
+                        "path": ".focus",
+                        "operator": "greaterThanInclusive",
+                        "value": {
+                            "fact": "wizard",
+                            "path": ".focusCostData.reviveCharm"
+                        }
+                    },
+                    {
+                        "fact": "chamber",
+                        "path": ".isAnyWizardDefeated",
+                        "operator": "equal",
+                        "value": true
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".triggers.reviveCharm",
+                        "operator": "notEqual",
+                        "value": null
+                    },
+                    {
+                        "fact": "chamber",
+                        "path": ".numberOfWizards",
+                        "operator": "greaterThan",
+                        "value": 1
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".inCombat",
+                        "operator": "equal",
+                        "value": false
+                    }
+                ]
+            }
+        },
+        {
+            "event": {
+                "type": "staminaCharm",
+                "params": {
+                    "targetWizard": "lowestHP_notSelf"
+                }
+            },
+            "priority": 13,
+            "conditions": {
+                "all": [
+                    {
+                        "fact": "wizard",
+                        "path": ".focus",
+                        "operator": "greaterThanInclusive",
+                        "value": {
+                            "fact": "wizard",
+                            "path": ".focusCostData.staminaCharm"
+                        }
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".inCombat",
+                        "operator": "equal",
+                        "value": false
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".triggers.staminaCharm",
+                        "operator": "notEqual",
+                        "value": null
+                    },
+                    {
+                        "fact": "chamber",
+                        "path": ".numberOfWizards",
+                        "operator": "greaterThan",
+                        "value": 1
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".focus",
+                        "operator": "greaterThanInclusive",
+                        "value": 7
+                    }
+                ]
+            }
+        },
+        {
+            "event": {
+                "type": "strongInvigorationPotion"
+            },
+            "priority": 12,
+            "conditions": {
+                "all": [
+                    {
+                        "fact": "wizard",
+                        "path": ".inCombat",
+                        "operator": "equal",
+                        "value": false
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".focus",
+                        "operator": "lessThan",
+                        "value": {
+                            "fact": "wizard",
+                            "path": ".stats.maxFocus"
+                        }
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".potions.nStrongInvigorationAvailable",
+                        "operator": "greaterThan",
+                        "value": 0
+                    },
+                    {
+                        "any": [
+                            {
+                                "fact": "chamber",
+                                "path": ".isAnyWizardDefeated",
+                                "operator": "equal",
+                                "value": true
+                            },
+                            {
+                                "all": [
+                                    {
+                                        "fact": "wizard",
+                                        "path": ".triggers.becomeTheBeast",
+                                        "operator": "notEqual",
+                                        "value": null
+                                    },
+                                    {
+                                        "fact": "wizard",
+                                        "path": ".focus",
+                                        "operator": "lessThan",
+                                        "value": 5
+                                    }
+                                ]
+                            },
+                            {
+                                "all": [
+                                    {
+                                        "fact": "wizard",
+                                        "path": ".triggers.birdInHand",
+                                        "operator": "notEqual",
+                                        "value": null
+                                    },
+                                    {
+                                        "fact": "wizard",
+                                        "path": ".focus",
+                                        "operator": "lessThan",
+                                        "value": 5
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "event": {
+                "type": "mendingCharm",
+                "params": {
+                    "targetWizard": "self",
+                    "description": "Magizoologist should cast mending charm once before entering combat"
+                }
+            },
+            "priority": 11,
+            "conditions": {
+                "all": [
+                    {
+                        "fact": "wizard",
+                        "path": ".inCombat",
+                        "operator": "equal",
+                        "value": false
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".currentStamina",
+                        "operator": "lessThan",
+                        "value": {
+                            "fact": "wizard",
+                            "path": ".maxStamina"
+                        }
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".triggers.mendingCharm",
+                        "operator": "notEqual",
+                        "value": null
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".mendingCharmOnCooldown",
+                        "operator": "equal",
+                        "value": false
+                    }
+                ]
+            }
+        },
+        {
+            "event": {
+                "type": "weakInvigorationPotion"
+            },
+            "priority": 10,
+            "conditions": {
+                "all": [
+                    {
+                        "fact": "wizard",
+                        "path": ".inCombat",
+                        "operator": "equal",
+                        "value": false
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".focus",
+                        "operator": "lessThan",
+                        "value": {
+                            "fact": "wizard",
+                            "path": ".stats.maxFocus"
+                        }
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".potions.nWeakInvigorationAvailable",
+                        "operator": "greaterThan",
+                        "value": 0
+                    },
+                    {
+                        "any": [
+                            {
+                                "fact": "chamber",
+                                "path": ".isAnyWizardDefeated",
+                                "operator": "equal",
+                                "value": true
+                            },
+                            {
+                                "all": [
+                                    {
+                                        "fact": "wizard",
+                                        "path": ".triggers.becomeTheBeast",
+                                        "operator": "notEqual",
+                                        "value": null
+                                    },
+                                    {
+                                        "fact": "wizard",
+                                        "path": ".focus",
+                                        "operator": "lessThan",
+                                        "value": 5
+                                    }
+                                ]
+                            },
+                            {
+                                "all": [
+                                    {
+                                        "fact": "wizard",
+                                        "path": ".triggers.birdInHand",
+                                        "operator": "notEqual",
+                                        "value": null
+                                    },
+                                    {
+                                        "fact": "wizard",
+                                        "path": ".focus",
+                                        "operator": "lessThan",
+                                        "value": 5
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "event": {
                 "type": "enterCombatWithHighestPriorityAvailableEnemy"
             },
-            "priority": 2,
+            "priority": 9,
             "conditions": {
                 "all": [
                     {
@@ -26,9 +305,204 @@
         },
         {
             "event": {
+                "type": "exitCombat"
+            },
+            "priority": 8,
+            "conditions": {
+                "all": [
+                    {
+                        "fact": "chamber",
+                        "path": ".isAnyWizardDefeated",
+                        "operator": "equal",
+                        "value": true
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".focus",
+                        "operator": "greaterThanInclusive",
+                        "value": {
+                            "fact": "wizard",
+                            "path": ".focusCostData.reviveCharm"
+                        }
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".triggers.reviveCharm",
+                        "operator": "notEqual",
+                        "value": null
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".inCombat",
+                        "operator": "equal",
+                        "value": true
+                    }
+                ]
+            }
+        },
+        {
+            "event": {
+                "type": "potentExstimuloPotion"
+            },
+            "priority": 7,
+            "conditions": {
+                "all": [
+                    {
+                        "fact": "wizard",
+                        "path": ".inCombat",
+                        "operator": "equal",
+                        "value": true
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".potions.nPotentExstimuloAvailable",
+                        "operator": "greaterThan",
+                        "value": 0
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".exstimuloPotionDamageBuff",
+                        "operator": "lessThan",
+                        "value": {
+                            "fact": "wizard",
+                            "path": ".potionData.potentExstimuloPotionDamageBuff"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "event": {
+                "type": "strongExstimuloPotion"
+            },
+            "priority": 6,
+            "conditions": {
+                "all": [
+                    {
+                        "fact": "wizard",
+                        "path": ".inCombat",
+                        "operator": "equal",
+                        "value": true
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".potions.nStrongExstimuloAvailable",
+                        "operator": "greaterThan",
+                        "value": 0
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".exstimuloPotionDamageBuff",
+                        "operator": "lessThan",
+                        "value": {
+                            "fact": "wizard",
+                            "path": ".potionData.strongExstimuloPotionDamageBuff"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "event": {
+                "type": "exstimuloPotion"
+            },
+            "priority": 5,
+            "conditions": {
+                "all": [
+                    {
+                        "fact": "wizard",
+                        "path": ".inCombat",
+                        "operator": "equal",
+                        "value": true
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".potions.nExstimuloAvailable",
+                        "operator": "greaterThan",
+                        "value": 0
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".exstimuloPotionDamageBuff",
+                        "operator": "lessThan",
+                        "value": {
+                            "fact": "wizard",
+                            "path": ".potionData.exstimuloPotionDamageBuff"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "event": {
+                "type": "witSharpeningPotion"
+            },
+            "priority": 4,
+            "conditions": {
+                "all": [
+                    {
+                        "fact": "wizard",
+                        "path": ".inCombat",
+                        "operator": "equal",
+                        "value": true
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".potions.nWitSharpeningAvailable",
+                        "operator": "greaterThan",
+                        "value": 0
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".witSharpeningPotionDamageBuff",
+                        "operator": "lessThan",
+                        "value": {
+                            "fact": "wizard",
+                            "path": ".potionData.witSharpeningPotionDamageBuff"
+                        }
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".inCombatWith.isElite",
+                        "operator": "equal",
+                        "value": true
+                    }
+                ]
+            }
+        },
+        {
+            "event": {
+                "type": "healthPotion"
+            },
+            "priority": 3,
+            "conditions": {
+                "all": [
+                    {
+                        "fact": "wizard",
+                        "path": ".potions.nHealingPotionsAvailable",
+                        "operator": "greaterThan",
+                        "value": 0
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".currentStaminaPercent",
+                        "operator": "lessThan",
+                        "value": 0.65
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".inCombat",
+                        "operator": "equal",
+                        "value": true
+                    }
+                ]
+            }
+        },
+        {
+            "event": {
                 "type": "combatSpellCastWizard"
             },
-            "priority": 1,
+            "priority": 2,
             "conditions": {
                 "all": [
                     {
@@ -42,6 +516,42 @@
                         "path": ".inCombatWith",
                         "operator": "notEqual",
                         "value": null
+                    }
+                ]
+            }
+        },
+        {
+            "event": {
+                "type": "mendingCharm",
+                "params": {
+                    "targetWizard": "lowestHP"
+                }
+            },
+            "priority": 1,
+            "conditions": {
+                "all": [
+                    {
+                        "fact": "wizard",
+                        "path": ".inCombat",
+                        "operator": "equal",
+                        "value": false
+                    },
+                    {
+                        "fact": "highestPriorityAvailableEnemy",
+                        "operator": "equal",
+                        "value": null
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".triggers.mendingCharm",
+                        "operator": "notEqual",
+                        "value": null
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".mendingCharmOnCooldown",
+                        "operator": "equal",
+                        "value": false
                     }
                 ]
             }

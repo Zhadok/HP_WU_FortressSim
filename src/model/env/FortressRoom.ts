@@ -67,8 +67,12 @@ export class FortressRoom {
         }
         return false;
     }
-    getNextActiveEnemy(): Enemy {
-        for (let enemy of this.enemiesAll) {
+    getNextActiveEnemy(skip?: number): Enemy {
+        if (skip === undefined) {
+            skip = 0; 
+        }
+        for (let i=skip; i<this.enemiesAll.length; i++) {
+            let enemy = this.enemiesAll[i]; 
             if (enemy.isActive == false && enemy.getIsDefeated() == false) {
                 return enemy;
             }

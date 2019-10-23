@@ -29,7 +29,7 @@
                         Input parameters
                     </mat-panel-title>
                     <mat-panel-description>
-                        Choose between your skill tree and directly entering stats
+                        Enter your skill tree, potions, ...
                     </mat-panel-description>
                 </mat-expansion-panel-header>
 
@@ -216,11 +216,14 @@
                                                     <th mat-header-cell *matHeaderCellDef mat-sort-header>Priority</th>
                                                     <td mat-cell *matCellDef="let rule"> 
                                                         {{rule.priority}}
-                                                        <button mat-icon-button (click)="onClickButtonIncreaseRulePriority($event, rule, playerIndex); expandedRule = null">
+                                                        <button mat-icon-button (click)="onClickButtonIncreaseRulePriority($event, rule, playerIndex); expandedRule = null" matTooltip="Increase priority">
                                                                 <mat-icon>arrow_upward</mat-icon>
                                                         </button>
-                                                        <button mat-icon-button (click)="onClickButtonDecreaseRulePriority($event, rule, playerIndex); expandedRule = null">
+                                                        <button mat-icon-button (click)="onClickButtonDecreaseRulePriority($event, rule, playerIndex); expandedRule = null" matTooltip="Decrease priority">
                                                                 <mat-icon>arrow_downward</mat-icon>
+                                                        </button>
+                                                        <button mat-icon-button (click)="onClickButtonCopyRule($event, rule, playerIndex); expandedRule = null" matTooltip="Copy rule">
+                                                            <mat-icon>file_copy</mat-icon>
                                                         </button>
                                                     </td>
                                                 </ng-container>
@@ -321,7 +324,7 @@
                     Advanced simulation settings
                 </mat-panel-title>
                 <mat-panel-description>
-                    Seed, number of simulations...
+                    Enter a seed, the number of simulations...
                 </mat-panel-description>
             </mat-expansion-panel-header>
         
@@ -436,7 +439,7 @@
                             </div>
                         </div>
                     </div>
-
+                   
                     <div class ="divSimulationSingleResultAllWizards">
                         <h2 class="mat-h2">Players: </h2>
                         <div class="divSimulationSingleResultCombatant divSimulationSingleResultWizard"

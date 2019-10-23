@@ -19,6 +19,19 @@ export class Magizoologist extends Wizard {
         }
     }
 
+    hasStudiedMendingCharm(): boolean {
+        return this.getTriggers().mendingCharm !== null; 
+    }
+    hasStudiedStaminaCharm(): boolean {
+        return this.getTriggers().staminaCharm !== null; 
+    }
+    hasStudiedBraveryCharm(): boolean {
+        return this.getTriggers().braveryCharm !== null; 
+    }
+    hasStudiedReviveCharm(): boolean {
+        return this.getTriggers().reviveCharm !== null; 
+    }
+
     getPowerAfterModifications(enemy: Enemy) {
         let powerBuffs = 0; 
         if (this.getTriggers().ministryMagizoologyOrientation !== null && this.getCurrentStaminaPercent() >= 0.5) {

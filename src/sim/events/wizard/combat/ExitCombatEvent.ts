@@ -23,6 +23,9 @@ export class ExitCombatEvent extends CombatEvent {
         this.enemy.inCombatWith = null;
         this.wizard.inCombat = false;
         this.wizard.inCombatWith = null;
+
+        Logger.logTUserFriendly(1, this.timestampEnd, this.wizard.toUserFriendlyDescription() + " has exited combat with " + 
+                                this.enemy.toUserFriendlyDescription() + "."); 
     }
 
 

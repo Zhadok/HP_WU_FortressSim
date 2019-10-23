@@ -6,7 +6,7 @@ import { WizardStats } from "../src/model/player/WizardStats";
 import { FortressRoom } from "../src/model/env/FortressRoom";
 import Prando from "prando";
 import { Auror } from "../src/model/player/Auror";
-import { Magizoologist } from "../src/model/player/Magizoloogist";
+import { Magizoologist } from "./model/player/Magizoologist";
 import { PotionAvailabilityParameters } from "../src/sim/PotionAvailabilityParameters";
 import { enemyNameType, nameClassType, simAdvancedSettingsType } from "../src/types";
 import { CombatSimulation } from "../src/sim/CombatSimulation";
@@ -77,6 +77,10 @@ export class TestData {
     }
     static buildDefaultSkillTreeMagizoologist(): SkillTree {
         let skillTree = this.buildDefaultSkillTree("magizoologist");
+        skillTree.setNodeLevelByTriggerName("mendingCharm", 1); 
+        skillTree.setNodeLevelByTriggerName("staminaCharm", 1); 
+        skillTree.setNodeLevelByTriggerName("reviveCharm", 1); 
+        skillTree.setNodeLevelByTriggerName("braveryCharm", 1); 
         return skillTree;
     }
     static buildDefaultSkillTreeProfessor(): SkillTree {

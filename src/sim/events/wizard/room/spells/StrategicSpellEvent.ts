@@ -7,6 +7,10 @@ export abstract class StrategicSpellEvent extends WizardEvent {
 
     constructor(timestampBegin: number, caster: Wizard) {
         super("strategicSpellDragAndCastAnimation", timestampBegin, caster);
+        // Check if in combat
+        if (caster.inCombat === true) {
+            throw new Error(caster.toUserFriendlyDescription() + " tried casting strategic spell (" + this.getStrategicSpellName() + ") but was in combat!"); 
+        }
     }
 
     allowWizardFollowupAction() {

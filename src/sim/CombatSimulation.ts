@@ -95,7 +95,7 @@ export class CombatSimulation {
 
         // Add one enemy per wizard initially
         for (var i=0;i<this.wizards.length;i++) {
-            this.addEvent(new EnemySpawnEvent(0, this.fortressRoom.getNextActiveEnemy()));
+            this.addEvent(new EnemySpawnEvent(0, this.fortressRoom.getNextActiveEnemy(i)));
         }
 
         // Add another enemy per wizard after 18s
@@ -342,7 +342,8 @@ export class CombatSimulation {
                 currentTimeSeconds: this.currentTime / 1000,
                 remainingTimeSeconds: (this.maxTime - this.currentTime) / 1000, 
                 isAnyWizardDefeated: this.isAnyWizardDefeated(),
-                remainingEnemies: this.fortressRoom.getRemainingEnemiesCount()
+                remainingEnemies: this.fortressRoom.getRemainingEnemiesCount(),
+                numberOfWizards: this.wizards.length
             }
         }
         let nextEvent = await this.getRulesEngine(wizard.playerIndex).getNextAction(timestampBegin, facts);

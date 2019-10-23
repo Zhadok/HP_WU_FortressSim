@@ -30,6 +30,10 @@ import { WizardFactory } from "../model/player/WizardFactory";
 import { BatBogeyHexEvent } from "../sim/events/wizard/room/spells/auror/BatBogeyHexEvent";
 import { WeakeningHexEvent } from "../sim/events/wizard/room/spells/auror/WeakeningHexEvent";
 import { ConfusionHexEvent } from "../sim/events/wizard/room/spells/auror/ConfusionHexEvent";
+import { BraveryCharmEvent } from "../sim/events/wizard/room/spells/magizoologist/BraveryCharmEvent";
+import { StaminaCharmEvent } from "../sim/events/wizard/room/spells/magizoologist/StaminaCharmEvent";
+import { ReviveCharmEvent } from "../sim/events/wizard/room/spells/magizoologist/ReviveCharmEvent";
+import { Combatant } from "../model/Combatant";
 
 
 export class RulesEngine {
@@ -81,8 +85,15 @@ export class RulesEngine {
             "label": "wizard",
             allowedTargets: [{
                 key: "self", label: "Self"
-            }, {
+            }, 
+            {
                 key: "lowestHP", label: "Lowest HP"
+            },
+            {
+                key: "lowestHP_notSelf", label: "Lowest HP (not self)"
+            },
+            {
+                key: "defeatedWizard", label: "Defeated wizard"
             }]
         },
         targetEnemy: {
@@ -145,7 +156,8 @@ export class RulesEngine {
                     currentTimeSeconds: 0,
                     remainingTimeSeconds: 600,
                     remainingEnemies: 10,
-                    isAnyWizardDefeated: false
+                    isAnyWizardDefeated: false,
+                    numberOfWizards: 1
                 }; 
                 paths = Utils.getAllFieldNames(tempChamber, "", []);
                 break;  
@@ -221,6 +233,21 @@ export class RulesEngine {
         }
     }
 
+    getLowestHPCombatant(combatants: Array<Combatant>): Combatant {
+        let result = combatants.sort(function(v1, v2) {
+            return v2.getCurrentStamina() - v1.getCurrentStamina();
+        })[0];
+        return result; 
+    }
+
+    getFirstDefeatedWizard(wizards: Array<Wizard>): Wizard | null {
+        for (let wizard of wizards) {
+            if (wizard.getIsDefeated()) 
+                return wizard; 
+        }
+        return null; 
+    }
+
     async getNextAction(timestampBegin: number, facts: ruleFactType): Promise<SimEvent | null> {
         //console.log(facts);
         let results = await this.engine.run(facts).catch((error) => {
@@ -239,22 +266,38 @@ export class RulesEngine {
         }
         
         let highestPriorityAvailableEnemy = facts.highestPriorityAvailableEnemy;
-        let targetEnemy = null; // for casting spells at
+        let targetEnemy: Enemy | null = null; // for casting spells at
 
         let wizard = facts.wizard;
-        let targetWizard = null; 
+        let targetWizard: Wizard | null = null; 
         if (event.params !== undefined) {
             if (event.params.targetWizardIndex !== undefined) {
                 targetWizard = facts.allWizards.filter(wizard => wizard.playerIndex === event.params.targetWizardIndex)[0];
             }
             switch (event.params.targetWizard) {
                 case "lowestHP":
-                    targetWizard = facts.allWizards.sort(function(v1, v2) {
-                        return v2.getCurrentStamina() - v1.getCurrentStamina();
-                    })[0];
+                    targetWizard = this.getLowestHPCombatant(facts.allWizards) as Wizard; 
                     break; 
                 case "self": 
                     targetWizard = wizard; 
+                    break; 
+                case "lowestHP_notSelf": 
+                    if (facts.allWizards.length === 1) {
+                        throw new Error("Tried to target a different wizard from self but only one wizard in group (action=" + event.type + ")"); 
+                    }
+                    let otherWizards = facts.allWizards.filter(function(wizardInAllWizards) {
+                        return wizardInAllWizards !== wizard; 
+                    }); 
+                    targetWizard = this.getLowestHPCombatant(otherWizards) as Wizard; 
+                    break; 
+                case "defeatedWizard": 
+                    otherWizards = facts.allWizards.filter(function(wizardInAllWizards) {
+                        return wizardInAllWizards !== wizard; 
+                    }); 
+                    targetWizard = this.getFirstDefeatedWizard(otherWizards); 
+                    if (targetWizard === null) {
+                        throw new Error("Tried to target a defeated wizard but there are none!"); 
+                    }
                     break; 
                 default: 
                     targetWizard = wizard; 
@@ -266,9 +309,7 @@ export class RulesEngine {
                     targetEnemy = highestPriorityAvailableEnemy; 
                     break; 
                 case "lowestHP": 
-                    targetEnemy = facts.allActiveEnemies.sort(function(v1, v2) {
-                        return v2.getCurrentStamina() - v1.getCurrentStamina();
-                    })[0];
+                    targetEnemy = this.getLowestHPCombatant(facts.allActiveEnemies) as Enemy; 
                     break;
                 default: 
                     targetEnemy = highestPriorityAvailableEnemy; 
@@ -294,6 +335,14 @@ export class RulesEngine {
                 return new ConfusionHexEvent(timestampBegin, wizard.stats.confusionHexValue, targetEnemy!, wizard); 
             case "batBogeyHex": 
                 return new BatBogeyHexEvent(timestampBegin, wizard.stats.batBogeyHexDamage, targetEnemy!, wizard); 
+
+            // Magizoologist
+            case "braveryCharm": 
+                return new BraveryCharmEvent(timestampBegin, wizard.stats.braveryCharmValue, facts.allWizards, wizard);             
+            case "staminaCharm": 
+                return new StaminaCharmEvent(timestampBegin, wizard.stats.staminaCharmValue, targetWizard, wizard); 
+            case "reviveCharm": 
+                return new ReviveCharmEvent(timestampBegin, wizard.stats.reviveCharmValue, targetWizard, wizard); 
 
             // Professor    
             case "defenceCharm": 

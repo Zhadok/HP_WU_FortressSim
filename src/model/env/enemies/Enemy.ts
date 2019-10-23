@@ -4,7 +4,7 @@ import { Combatant } from "../../Combatant";
 import { EnemyStats } from "./EnemyStats";
 import { enemyNameType } from "../../../types.js";
 import { Wizard } from "../../player/Wizard";
-import { Magizoologist } from "../../player/Magizoloogist";
+import { Magizoologist } from "../../player/Magizoologist";
 import { Auror } from "../../player/Auror";
 import { Professor } from "../../player/Professor";
 

@@ -16,7 +16,7 @@ describe("ReviveCharmEvent", function() {
         let deadWizard = TestData.buildDefaultAuror();
         deadWizard.removeStamina(999);
 
-        let event = new ReviveCharmEvent(0, deadWizard, wizard);
+        let event = new ReviveCharmEvent(0, 0.7, deadWizard, wizard);
         event.onFinish();
 
         expect(wizard.getFocus()).to.equal(wizard.stats.initialFocus - focusCostData.reviveCharm);
@@ -41,7 +41,7 @@ describe("ReviveCharmEvent", function() {
         expect(sim1.peekNextEvent().timestampEnd).to.equal(sim1.fortressRoom.computeKnockoutTime());
 
         let usefulWizard = sim1.wizards[1];
-        let reviveCharmEvent = new ReviveCharmEvent(500, deadWizard, usefulWizard);
+        let reviveCharmEvent = new ReviveCharmEvent(500, 0.7, deadWizard, usefulWizard);
         sim1.addEvent(reviveCharmEvent);
         expect(sim1.peekNextEvent() instanceof ReviveCharmEvent).to.be.true;
 

@@ -13,7 +13,7 @@ import { PersistedSkillTree } from '../../../src/model/player/SkillTree/Persiste
 import { SkillTreeNode } from '../../../src/model/player/SkillTree/SkillTreeNode';
 import { SkillTree } from "../../../src/model/player/SkillTree/SkillTree";
 import { Professor } from '../../../src/model/player/Professor';
-import { Magizoologist } from '../../../src/model/player/Magizoloogist';
+import { Magizoologist } from '../../../src/model/player/Magizoologist';
 import { Auror } from '../../../src/model/player/Auror';
 import { MatExpansionModule, MatExpansionPanel } from '@angular/material/expansion';
 import { statNameType } from '../../../src/types';
@@ -310,9 +310,9 @@ export class AppComponent {
 
         rules[currentIndex-1] = rule; 
         rules[currentIndex] = ruleToSwap;
-        console.log(event); 
+        //console.log(event); 
         event.stopPropagation(); 
-        console.log(event); 
+        //console.log(event); 
     }
     onClickButtonDecreaseRulePriority(event, rule: ruleType, playerIndex: number) {
         let rules = this.simParameters.ruleContainers[playerIndex].rules; 
@@ -334,10 +334,17 @@ export class AppComponent {
 
         rules[currentIndex+1] = rule; 
         rules[currentIndex] = ruleToSwap;
-        console.log(event); 
+        //console.log(event); 
         event.stopPropagation(); 
-        console.log(event); 
+        //console.log(event); 
     }
+    onClickButtonCopyRule(event, rule: ruleType, playerIndex: number) {
+        let rules = this.simParameters.ruleContainers[playerIndex].rules; 
+        let currentIndex = rules.indexOf(rule); 
+        rules.splice(currentIndex, 0, JSON.parse(JSON.stringify(rule))); 
+        this.refreshRulesPriority(playerIndex); 
+    }
+
 
 
     onClickRemoveRule(playerIndex: number, rule: ruleType) {

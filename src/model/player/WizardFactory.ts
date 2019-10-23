@@ -1,6 +1,6 @@
 import { WizardStats } from "./WizardStats";
 import { Auror } from "./Auror";
-import { Magizoologist } from "./Magizoloogist";
+import { Magizoologist } from "./Magizoologist";
 import { Professor } from "./Professor";
 import { nameClassType, triggerNameType } from "../../types";
 import { Wizard } from "./Wizard";

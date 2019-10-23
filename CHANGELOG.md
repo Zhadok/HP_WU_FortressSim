@@ -1,3 +1,6 @@
+- 0.7.0
+    - Added Magizoologist default rules
+    - Added "copy" button to each rule
 - 0.6.3
     - Added "import rules" button
 - 0.6.2

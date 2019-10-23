@@ -2,8 +2,7 @@
 import { TestData } from "../../TestData";
 import { expect } from "chai";
 import { Enemy } from  "../../../src/model/env/enemies/Enemy";
-import { Magizoologist } from "./Magizoloogist";
-
+import { Magizoologist } from "./Magizoologist";
 
 
 describe("Magizoologist", function() {
