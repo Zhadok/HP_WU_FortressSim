@@ -709,7 +709,19 @@ export class AppComponent {
             // sort.direction = "" or "asc" or "desc"
             let isAsc = sort.direction === 'asc';
             data.sort((row1, row2) => {
-                return this.compare(row1[sort.active], row2[sort.active], isAsc); 
+                // Remove " (base)" from string
+                let v1: any = row1[sort.active]; 
+                let v2: any = row2[sort.active]; 
+                if (sort.active === "groupByValue") {
+                    let baseString = " (base)"; 
+                    if (v1.indexOf(baseString) > -1) v1 = v1.substr(0, v1.indexOf(baseString)); 
+                    if (v2.indexOf(baseString) > -1) v2 = v2.substr(0, v2.indexOf(baseString)); 
+                }   
+                // Convert to number if possible
+                if (isNaN(parseFloat(v1 as string)) === false) v1 = parseFloat(v1); 
+                if (isNaN(parseFloat(v2 as string)) === false) v2 = parseFloat(v2); 
+
+                return this.compare(v1, v2, isAsc); 
             }); 
         }
         else if (sort.direction === "") {
