@@ -702,7 +702,6 @@ export class AppComponent {
     }
 
     onSortMultipleResults(sort: Sort) {
-        console.log(sort); 
         let data = this.simulationMultipleResultsGrouped.data; 
         if (sort.active && sort.direction !== "") {
             // example: sort.active = "groupByValue" or "averageChallengeXPReward"
