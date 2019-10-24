@@ -443,6 +443,7 @@ export class CombatSimulation {
             wallTimeEnd: this.timeEnd,
             durationWallTimeMS: this.timeEnd - this.timeStart,
             durationGameTimeMS: this.currentTime, 
+            maxGameTimeMS: this.maxTime, 
             nEvents: this.nEventsProcessed,
             isWin: this.isWin as boolean, 
             simParameters: this.params,

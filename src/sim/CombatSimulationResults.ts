@@ -17,6 +17,7 @@ export interface CombatSimulationResults {
     wallTimeEnd: number; 
     durationWallTimeMS: number; 
     readonly durationGameTimeMS: number; 
+    readonly maxGameTimeMS: number; 
 
     runID?: number; 
 }

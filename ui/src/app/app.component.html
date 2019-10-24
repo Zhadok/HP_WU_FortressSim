@@ -423,7 +423,9 @@
                 <div #divContainerSingleSimulationLog>
                     <h2 class="mat-h2">Overall simulation results: </h2>
                     Real world time passed: {{(simulationSingleResults.durationWallTimeMS / 1000).toFixed(3)}}s <br>
-                    Simulation time: {{simulationSingleResults.durationGameTimeMS / 1000}}s <br>
+                    Chamber time: {{(simulationSingleResults.durationGameTimeMS / 1000).toFixed(0)}}s / 
+                    {{(simulationSingleResults.maxGameTimeMS / 1000).toFixed(0)}}s
+                    <br>
                     <!-- Number of events: {{simulationSingleResults.nEvents}} <br> -->
                     Room level: {{getChamberName(simulationSingleResults.simParameters.roomLevel)}} <br>
                     {{simulationSingleResults.isWin === false ? 'Challenge was not won.' : 'Challenge was won!'}}<br>
@@ -468,77 +470,88 @@
                         <h2 class="mat-h2">Players: </h2>
                         <div class="divSimulationSingleResultCombatant divSimulationSingleResultWizard"
                              *ngFor="let wizardResult of simulationSingleResults.wizardResults">
-                            <b>Player {{wizardResult.playerIndex+1}} </b>
-                            ({{ wizardResult.nameClassUserFriendly }})<br>
-                            {{wizardResult.challengeXPReward}} challenge XP (runestone level {{wizardResult.runestoneLevel}})<br>
-                            <span *ngIf="simulationSingleResults.simParameters.useSponsoredFortressRewards">
-                                {{simulationSingleResults.energyReward}} energy rewarded from sponsored fortress
-                            </span><br>
-                            <b>Attacks</b>
-                            <ul>
-                                <li>{{wizardResult.numberOfCasts}} hits ({{wizardResult.numberOfCriticalCasts}} critical, {{wizardResult.numberOfDodgedCasts}} dodged)</li>
-                                <li>{{wizardResult.averageDamage.toFixed(0)}} average damage ({{wizardResult.totalDamage}} total)</li>
-                                <li>{{(wizardResult.totalDamageReceived/wizardResult.numberAttacksReceived).toFixed(0)}} average damage received ({{wizardResult.numberAttacksReceived}} attacks received, {{wizardResult.totalDamageReceived}} damage total)</li>
-                                <li>{{(wizardResult.timeSpentDefeated/1000).toFixed(0)}}s spent defeated</li>
-                            </ul>
-                            <b>Enhancements</b>
-                            <ul>
-                                <li *ngFor="let numberAttacks of wizardResult.numberEnhancementsDuringAttacks; let numberEnhancements=index"
-                                    [hidden]="numberAttacks === 0">
-                                    <b>{{numberEnhancements}}</b> enhancements: 
-                                    <b>{{numberAttacks}}</b> ({{(100*numberAttacks/wizardResult.numberOfCasts).toFixed(0)}}%) attacks made,
-                                    <b>{{wizardResult.numberEnhancementsDuringAttacksReceived[numberEnhancements]}}</b> attacks received 
-                                        
-                                </li>
-                            </ul>
-                            <b>Impairments</b>
-                            <ul>
-                                <li *ngFor="let numberAttacks of wizardResult.numberImpairmentsDuringAttacks; let numberImpairments=index"
-                                    [hidden]="numberAttacks === 0">
-                                    <b>{{numberImpairments}}</b> impairments: 
-                                    <b>{{numberAttacks}}</b> ({{(100*numberAttacks/wizardResult.numberOfCasts).toFixed(0)}}%) attacks made,
-                                    <b>{{wizardResult.numberImpairmentsDuringAttacksReceived[numberImpairments]}}</b> attacks received 
-                                        
-                                </li>
-                            </ul>
+                            <div class="floatLeft clearBoth">
+                                <b>Player {{wizardResult.playerIndex+1}} </b>
+                                ({{ wizardResult.nameClassUserFriendly }})<br>
+                                {{wizardResult.challengeXPReward}} challenge XP (runestone level {{wizardResult.runestoneLevel}})<br>
+                                <span *ngIf="simulationSingleResults.simParameters.useSponsoredFortressRewards">
+                                    {{simulationSingleResults.energyReward}} energy rewarded from sponsored fortress
+                                </span><br>
+                                <b>Attacks</b>
+                                <ul>
+                                    <li>{{wizardResult.numberOfCasts}} hits ({{wizardResult.numberOfCriticalCasts}} critical, {{wizardResult.numberOfDodgedCasts}} dodged)</li>
+                                    <li>{{wizardResult.averageDamage.toFixed(0)}} average damage ({{wizardResult.totalDamage}} total)</li>
+                                    <li>{{(wizardResult.totalDamageReceived/wizardResult.numberAttacksReceived).toFixed(0)}} average damage received ({{wizardResult.numberAttacksReceived}} attacks received, {{wizardResult.totalDamageReceived}} damage total)</li>
+                                    <li>{{(wizardResult.timeSpentDefeated/1000).toFixed(0)}}s spent defeated</li>
+                                </ul>
+                            </div>
 
-                            <b>Potions used</b> (brew time: {{formatHoursDecimal(wizardResult.potionsUsedBrewTimeHours)}}, 
-                                                 with master notes: {{formatHoursDecimal(wizardResult.potionsUsedBrewTimeHoursWithMasterNotes)}})
-                            <ul>
-                                <li>{{wizardResult.potionsUsed.nExstimuloAvailable}}/{{wizardResult.potionsAtBeginning.nExstimuloAvailable}}
-                                    Exstimulo Potion</li>
-                                <li>{{wizardResult.potionsUsed.nStrongExstimuloAvailable}}/{{wizardResult.potionsAtBeginning.nStrongExstimuloAvailable}}
-                                    Strong Exstimulo Potion</li>
-                                <li>{{wizardResult.potionsUsed.nPotentExstimuloAvailable}}/{{wizardResult.potionsAtBeginning.nPotentExstimuloAvailable}}
-                                    Potent Exstimulo Potion</li>
-                                <li>{{wizardResult.potionsUsed.nWitSharpeningAvailable}}/{{wizardResult.potionsAtBeginning.nWitSharpeningAvailable}}
-                                    Wit Sharpening Potion</li>
-                                <li>{{wizardResult.potionsUsed.nWeakInvigorationAvailable}}/{{wizardResult.potionsAtBeginning.nWeakInvigorationAvailable}}
-                                    Weak Invigoration Potion</li>
-                                <li>{{wizardResult.potionsUsed.nStrongInvigorationAvailable}}/{{wizardResult.potionsAtBeginning.nStrongInvigorationAvailable}}
-                                    Strong Invigoration Potion</li>
-                                <li>{{wizardResult.potionsUsed.nHealingPotionsAvailable}}/{{wizardResult.potionsAtBeginning.nHealingPotionsAvailable}}
-                                    Health</li>
-                            </ul>
-
-                            <div class="divSimulationSingleResultAllCombatantBuffs">
-                                <div class="divSimulationSingleResultCombatantBuff">
+                            <div class="divSimulationSingleResultAllCombatantBuffs floatLeft clearBoth">
+                                <span class="floatLeft clearBoth">
+                                    <b>Buffs</b>
+                                </span>
+                                <div class="divSimulationSingleResultCombatantBuff clearBoth">
                                     <img src="assets/img/defenceCharm.png" 
-                                         *ngIf="wizardResult.hasDefenceCharm"
-                                         matTooltip="Defence charm: +{{(wizardResult.defenceCharmValue*100).toFixed(0)}}% defence"
+                                            *ngIf="wizardResult.hasDefenceCharm"
+                                            matTooltip="Defence charm: +{{(wizardResult.defenceCharmValue*100).toFixed(0)}}% defence"
                                         [matTooltipClass]="'myMatTooltip'" />
                                 </div>
                                 <div class="divSimulationSingleResultCombatantBuff">
                                     <img src="assets/img/proficiencyCharm.png" 
-                                         *ngIf="wizardResult.hasProficiencyPowerCharm"
-                                         matTooltip="Proficiency power charm: +{{(wizardResult.proficiencyPowerCharmValue*100).toFixed(0)}}% proficiency"
-                                         [matTooltipClass]="'myMatTooltip'" />
+                                            *ngIf="wizardResult.hasProficiencyPowerCharm"
+                                            matTooltip="Proficiency power charm: +{{(wizardResult.proficiencyPowerCharmValue*100).toFixed(0)}}% proficiency"
+                                            [matTooltipClass]="'myMatTooltip'" />
                                 </div>
                                 <div class="divSimulationSingleResultCombatantBuff">
                                     <img src="assets/img/braveryCharm.png" 
-                                         *ngIf="wizardResult.hasBraveryCharm" />
+                                            *ngIf="wizardResult.hasBraveryCharm" />
                                 </div>
                             </div>
+
+                            <div class="clearBoth floatLeft">
+                                <br>
+                                <b>Potions used</b> (brew time: {{formatHoursDecimal(wizardResult.potionsUsedBrewTimeHours)}}, 
+                                                        with master notes: {{formatHoursDecimal(wizardResult.potionsUsedBrewTimeHoursWithMasterNotes)}})
+                                <ul>
+                                    <li>{{wizardResult.potionsUsed.nExstimuloAvailable}}/{{wizardResult.potionsAtBeginning.nExstimuloAvailable}}
+                                        Exstimulo Potion</li>
+                                    <li>{{wizardResult.potionsUsed.nStrongExstimuloAvailable}}/{{wizardResult.potionsAtBeginning.nStrongExstimuloAvailable}}
+                                        Strong Exstimulo Potion</li>
+                                    <li>{{wizardResult.potionsUsed.nPotentExstimuloAvailable}}/{{wizardResult.potionsAtBeginning.nPotentExstimuloAvailable}}
+                                        Potent Exstimulo Potion</li>
+                                    <li>{{wizardResult.potionsUsed.nWitSharpeningAvailable}}/{{wizardResult.potionsAtBeginning.nWitSharpeningAvailable}}
+                                        Wit Sharpening Potion</li>
+                                    <li>{{wizardResult.potionsUsed.nWeakInvigorationAvailable}}/{{wizardResult.potionsAtBeginning.nWeakInvigorationAvailable}}
+                                        Weak Invigoration Potion</li>
+                                    <li>{{wizardResult.potionsUsed.nStrongInvigorationAvailable}}/{{wizardResult.potionsAtBeginning.nStrongInvigorationAvailable}}
+                                        Strong Invigoration Potion</li>
+                                    <li>{{wizardResult.potionsUsed.nHealingPotionsAvailable}}/{{wizardResult.potionsAtBeginning.nHealingPotionsAvailable}}
+                                        Health</li>
+                                </ul>
+
+                                <b>Enhancements</b>
+                                <ul>
+                                    <li *ngFor="let numberAttacks of wizardResult.numberEnhancementsDuringAttacks; let numberEnhancements=index"
+                                        [hidden]="numberAttacks === 0">
+                                        <b>{{numberEnhancements}}</b> enhancements: 
+                                        <b>{{numberAttacks}}</b> ({{(100*numberAttacks/wizardResult.numberOfCasts).toFixed(0)}}%) attacks made,
+                                        <b>{{wizardResult.numberEnhancementsDuringAttacksReceived[numberEnhancements]}}</b> attacks received 
+                                            
+                                    </li>
+                                </ul>
+                                <b>Impairments</b>
+                                <ul>
+                                    <li *ngFor="let numberAttacks of wizardResult.numberImpairmentsDuringAttacks; let numberImpairments=index"
+                                        [hidden]="numberAttacks === 0">
+                                        <b>{{numberImpairments}}</b> impairments: 
+                                        <b>{{numberAttacks}}</b> ({{(100*numberAttacks/wizardResult.numberOfCasts).toFixed(0)}}%) attacks made,
+                                        <b>{{wizardResult.numberImpairmentsDuringAttacksReceived[numberImpairments]}}</b> attacks received 
+                                            
+                                    </li>
+                                </ul>
+                            </div>
+                            
+
                         </div>
                     </div>
 
@@ -558,8 +571,8 @@
 
                         
                             <ng-container matColumnDef="groupByValue" sticky>
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header> {{simGoalMap[simAdvancedSettings.simGoal]}} </th>
-                                <td mat-cell *matCellDef="let row"> {{row.groupByValue}} </td>
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header class="cellBorderRight"> {{simGoalMap[simAdvancedSettings.simGoal]}} </th>
+                                <td mat-cell *matCellDef="let row" class="cellBorderRight"> {{row.groupByValue}} </td>
                             </ng-container>
                             <!-- <ng-container matColumnDef="roomLevel">
                                     <th mat-header-cell *matHeaderCellDef mat-sort-header> Room level </th>
@@ -594,12 +607,12 @@
                                 <td mat-cell *matCellDef="let row"> {{(row.averageTimeSpentDeadMS / 1000).toFixed(0)}}s </td>
                             </ng-container>
                             <ng-container matColumnDef="averageGameTimeMS">
-                                    <th mat-header-cell *matHeaderCellDef> Average sim time </th>
+                                    <th mat-header-cell *matHeaderCellDef> Average chamber time </th>
                                     <td mat-cell *matCellDef="let row"> {{(row.averageGameTimeMS / 1000).toFixed(0)}}s </td>
                             </ng-container>
                             <ng-container matColumnDef="averageBrewTimeHours">
-                                <th mat-header-cell *matHeaderCellDef> Average brew time </th>
-                                <td mat-cell *matCellDef="let row"> {{formatHoursDecimal(row.averageBrewTimeHours)}}</td>
+                                <th mat-header-cell *matHeaderCellDef class="cellBorderRight"> Average brew time </th>
+                                <td mat-cell *matCellDef="let row" class="cellBorderRight"> {{formatHoursDecimal(row.averageBrewTimeHours)}}</td>
                             </ng-container>
                             <ng-container matColumnDef="averageChallengeXPReward">
                                     <th mat-header-cell *matHeaderCellDef mat-sort-header> Reward </th>
@@ -614,8 +627,8 @@
                                 <td mat-cell *matCellDef="let row"> {{row.averageChallengeXPRewardPerHour.toFixed(0) }} CXP/hour </td>
                             </ng-container>
                             <ng-container matColumnDef="averageEnergyPerHour">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Energy per hour </th>
-                                <td mat-cell *matCellDef="let row"> {{row.averageEnergyPerHour.toFixed(0) }} energy/hour </td>
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header class="cellBorderRight"> Energy per hour </th>
+                                <td mat-cell *matCellDef="let row" class="cellBorderRight"> {{row.averageEnergyPerHour.toFixed(0) }} energy/hour </td>
                             </ng-container>
                             <ng-container matColumnDef="numberOfRuns">
                                     <th mat-header-cell *matHeaderCellDef> Runs simulated </th>

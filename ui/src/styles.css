@@ -296,15 +296,18 @@ https://stackoverflow.com/questions/53497127/how-to-break-word-if-text-inside-an
     width: 100%; 
     min-width: 1000px; 
 }
-.mat-table-sticky:first-child {
+/*.mat-table-sticky:first-child {*/
+.cellBorderRight {
     border-right: 1px solid rgba(0,0,0,.12); 
 } 
 
 #tableMultipleResultsGrouped .mat-cell {
-    padding-left: 8px !important; 
+    padding-left: 7px !important; 
+    padding-right: 7px !important; 
 }
 #tableMultipleResultsGrouped th {
-    padding-left: 8px !important; 
+    padding-left: 7px !important; 
+    padding-right: 7px !important; 
 }
 
 

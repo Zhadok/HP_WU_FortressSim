@@ -123,8 +123,8 @@ export class AppComponent {
         simulationLogChannel: "User friendly",
 
         isAdvancedSettingsTabExpanded: false,
-        closeAdvancedSettingsTabOnStartSimulation: true, 
-        closeSimParametersTabOnStartSimulation: true
+        closeAdvancedSettingsTabOnStartSimulation: false, 
+        closeSimParametersTabOnStartSimulation: false
     };
 
 
