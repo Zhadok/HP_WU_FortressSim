@@ -96,7 +96,7 @@ export class AppComponent {
     readonly skillTreeVis = {
         rowHeight: 80,
         columnWidth: 120,
-        marginTop: 30,
+        marginTop: 45,
         marginLeft: 30,
         nodeCircleRadius: 30
     };
@@ -121,7 +121,10 @@ export class AppComponent {
         numberParallelWorkers: navigator.hardwareConcurrency -1 , 
         secondsBetweenSimulations: 40,
         simulationLogChannel: "User friendly",
-        isAdvancedSettingsTabExpanded: false
+
+        isAdvancedSettingsTabExpanded: false,
+        closeAdvancedSettingsTabOnStartSimulation: true, 
+        closeSimParametersTabOnStartSimulation: true
     };
 
 
@@ -204,6 +207,7 @@ export class AppComponent {
         this.simulationMultipleResultsGrouped = new MatTableDataSource();
 
     }
+
 
     @ViewChild(MatSort, { static: true }) playerRulesTableSort: MatSort
     //playerRulesDataSources: Array<MatTableDataSource<ruleType>>; 
@@ -460,6 +464,31 @@ export class AppComponent {
         }
     }
 
+    min(v1: number, v2: number): number {
+        return Math.min(v1, v2); 
+    }
+
+    //@ViewChild("svgSkillTree", {static: false }) svgSkillTrees: ElementRef[];
+    getSkillTreeSVGHeight(): number | string {
+        //console.log(this.svgSkillTrees);
+        let svgSkillTrees = document.getElementsByClassName("svgSkillTree"); 
+        let maxHeight = this.skillTreeVis.marginTop + this.skillTreeVis.rowHeight*16; 
+        if (svgSkillTrees.length === 0) {
+            return maxHeight; 
+        }
+        
+        let width = svgSkillTrees[0].clientWidth; 
+         if (width > this.skillTreeVis.marginLeft + this.skillTreeVis.columnWidth*5) {
+            // If element is wide enough, return constant height for skill tree
+            return maxHeight; 
+        }
+        else {  
+            // If element is not wide enough, slowly scale down height for skill tree
+            let widthPercent = width / (this.skillTreeVis.marginLeft + this.skillTreeVis.columnWidth*5); 
+            return Math.ceil(widthPercent * maxHeight); 
+        }
+    }
+
     onClickSkillTreeNode(node: SkillTreeNode, playerIndex: number): void {
         let skillTree = this.skillTrees[playerIndex];
         let currentLevel: number = skillTree.nodesStudied.get(node)!;
@@ -680,10 +709,18 @@ export class AppComponent {
 
     @ViewChild("matPanelInputParameters", { static: false }) matPanelInputParameters: MatExpansionPanel;
     @ViewChild("matPanelAdvancedSimulationSettings", { static: false }) matPanelAdvancedSimulationSettings: MatExpansionPanel;
+    @ViewChild("matPanelAdvancedSimulationSettings", { static: false, read: ElementRef }) matPanelAdvancedSimulationSettingsElement: ElementRef;
+    @ViewChild("matPanelStartSimulation", { static: false }) matPanelStartSimulation: MatExpansionPanel;
     @ViewChild("matPanelSimulationResults", { static: false }) matPanelSimulationResults: MatExpansionPanel;
+    
     closeSettingsPanels(): void {
-        //this.matPanelInputParameters.close();
-        //this.matPanelAdvancedSimulationSettings.close(); 
+        if (this.simAdvancedSettings.closeSimParametersTabOnStartSimulation === true) {
+            this.matPanelInputParameters.close();
+        }
+        if (this.simAdvancedSettings.closeAdvancedSettingsTabOnStartSimulation === true) {
+            this.matPanelAdvancedSimulationSettings.close(); 
+        }
+        this.matPanelStartSimulation.close(); 
         this.matPanelSimulationResults.open();
     }
 

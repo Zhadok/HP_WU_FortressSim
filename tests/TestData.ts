@@ -118,7 +118,9 @@ export class TestData {
                 simGoalMultiple_maxRoomLevel: 20
             }, 
             simulationLogChannel: "Debug",
-            isAdvancedSettingsTabExpanded: false
+            isAdvancedSettingsTabExpanded: false,
+            closeAdvancedSettingsTabOnStartSimulation: false,
+            closeSimParametersTabOnStartSimulation: false
         }; 
     }
 

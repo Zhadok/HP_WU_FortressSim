@@ -20,7 +20,7 @@ import { MatSortModule } from "@angular/material";
 import { MatPaginatorModule } from "@angular/material";
 import { MatIconModule } from "@angular/material";
 import { RuleDetailComponentComponent } from './rule-detail-component/rule-detail-component.component';
-
+import { MatCardModule } from "@angular/material"; 
 
 @NgModule({
         declarations: [
@@ -45,7 +45,8 @@ import { RuleDetailComponentComponent } from './rule-detail-component/rule-detai
             MatProgressBarModule,
             MatSortModule,
             MatPaginatorModule,
-            MatIconModule
+            MatIconModule,
+            MatCardModule
         ],
         providers: [],
         bootstrap: [AppComponent]

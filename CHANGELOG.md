@@ -1,3 +1,5 @@
+- 0.7.1
+    - Responsive design: Make interface elements readable on mobile devices
 - 0.7.0
     - Added Magizoologist default rules
     - Added "copy" button to each rule

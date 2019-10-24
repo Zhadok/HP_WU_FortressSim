@@ -22,10 +22,16 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 #matTabGroupWizardSettings {
     clear: both; 
 }
-.divSingleWizardSettings {
-    width: 100%;
-    padding: 10px;
+#divSkillTreeSettingsWrapper {
+    overflow-x: hidden; 
+}
+.divSingleWizardSettingsWrapper {
+    width: 99%;
+    padding: 2px;
     float: left;
+}
+.divSingleWizardSettings {
+    width: 99%; 
 }
 
 .inputRoomLevel {
@@ -35,9 +41,9 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 /***** Skill tree ****/
 .divSkillTree {
-    height: 600px;
-    width: 100%;
-    overflow-y: scroll; 
+    /*height: 600px; not needed since it is computed */
+    width: 98%; /* leave space for scroll bar */
+    /* overflow-y: scroll;  not needed since height of svg is computed */
     margin-top: 10px;
     position: relative; /* relative to parent container */
 }
@@ -54,11 +60,24 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 
 .divContainerSkillTreeButtons {
-    margin-top: 5px; 
+    margin-top: 0px; 
 }
-.buttonSkillTreeControl {
-    margin: 3px !important; 
+
+
+
+@media only screen and (min-width: 769px) {
+    .buttonSkillTreeControl {
+        margin: 3px !important; 
+    }
 }
+@media only screen and (max-width: 768px) {
+    .buttonSkillTreeControl {
+        margin-bottom: 3px !important; 
+        width: 100%
+    }
+}
+
+
 
 /***** Potions *****/
 .divSettingsPotions {
@@ -164,6 +183,7 @@ tr.rule-row:not(.expandedRule-row):active {
 }
 
 /**** Start simulation *****/
+/* Fixed static position at bottom of screen
 #divStartSimulationContainer {
     position: fixed; 
     bottom: 10px; 
@@ -180,12 +200,18 @@ tr.rule-row:not(.expandedRule-row):active {
     margin: 3px !important; 
     float: left; 
 }
-
 /* Button for skill tree upgrades needs more space 
-https://stackoverflow.com/questions/53497127/how-to-break-word-if-text-inside-angular-material-button-is-longer-than-the-widt */
+https://stackoverflow.com/questions/53497127/how-to-break-word-if-text-inside-angular-material-button-is-longer-than-the-widt 
 .buttonStartSimulation {
     white-space: pre-wrap !important;
     line-height: 15px !important; 
+}*/
+
+.buttonStartSimulation {
+    width: 100% !important; 
+    white-space: pre-wrap !important;
+    line-height: 15px !important; 
+    padding: 10px !important; 
 }
 
 
@@ -210,12 +236,12 @@ https://stackoverflow.com/questions/53497127/how-to-break-word-if-text-inside-an
     padding: 10px; 
 }
 .divSimulationSingleResultEnemy {
-    width: 150px; 
+    /*width: 150px; */
     text-align: center; 
 }
 .divEnemyPortraitContainer { /** Each div is one enemy portrait **/
-    width: 50px; 
-    height: 50px; 
+    width: 30px; 
+    height: 30px; 
     margin: auto; 
 }
 .divEnemyPortraitContainer > img { 
@@ -224,7 +250,7 @@ https://stackoverflow.com/questions/53497127/how-to-break-word-if-text-inside-an
 }
 
 .spanEnemyDifficultyStar {
-    font-size: 25px; 
+    font-size: 15px; 
 }
 .divSimulationSingleResultWizard {
     /*width: 300px; */
@@ -264,7 +290,24 @@ https://stackoverflow.com/questions/53497127/how-to-break-word-if-text-inside-an
 /***** Multiple simulation results ******/ 
 #divContainerMultipleSimulationsTable {
     overflow-x: auto; 
+    width: 100%; 
 }
+#tableMultipleResultsGrouped {
+    width: 100%; 
+    min-width: 1000px; 
+}
+.mat-table-sticky:first-child {
+    border-right: 1px solid rgba(0,0,0,.12); 
+} 
+
+#tableMultipleResultsGrouped .mat-cell {
+    padding-left: 8px !important; 
+}
+#tableMultipleResultsGrouped th {
+    padding-left: 8px !important; 
+}
+
+
 table {
     text-align: center !important;
     width: 100%;
@@ -302,4 +345,6 @@ table {
 .width48Percent {
     width: 48%; 
 }
-
+.spanMultipleLines {
+    white-space: pre-wrap;
+}

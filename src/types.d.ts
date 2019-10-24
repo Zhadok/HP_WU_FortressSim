@@ -179,6 +179,9 @@ declare type simAdvancedSettingsType = {
     simulationLogChannel: simulationLogChannelType, // user friendly or debug, which log should be shown?
     showPlayerRules: boolean,
     isAdvancedSettingsTabExpanded: boolean,
+
+    closeSimParametersTabOnStartSimulation: boolean,
+    closeAdvancedSettingsTabOnStartSimulation: boolean
 }; 
 declare type localStorageDataType = {
     simParameters: CombatSimulationParameters, 
