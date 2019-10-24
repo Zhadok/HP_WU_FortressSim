@@ -182,6 +182,7 @@ declare type simAdvancedSettingsType = {
 
     closeSimParametersTabOnStartSimulation: boolean,
     closeAdvancedSettingsTabOnStartSimulation: boolean
+    closeStartSimulationTabOnStartSimulation: boolean
 }; 
 declare type localStorageDataType = {
     simParameters: CombatSimulationParameters, 

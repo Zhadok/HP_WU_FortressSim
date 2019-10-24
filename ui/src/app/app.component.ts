@@ -24,7 +24,7 @@ import { MatTable, MatTab, ErrorStateMatcher } from "@angular/material";
 import { MatTableDataSource } from '@angular/material/table';
 import * as ObservableSlim from "observable-slim";
 import { MatSortModule } from "@angular/material";
-import { MatSort } from '@angular/material/sort';
+import { MatSort, Sort } from '@angular/material/sort';
 
 import fortressRewardData from "../../../src/data/fortressRewards.json"; 
 import professorRules from "../../../src/rules/store/professorRules.json";
@@ -124,7 +124,8 @@ export class AppComponent {
 
         isAdvancedSettingsTabExpanded: false,
         closeAdvancedSettingsTabOnStartSimulation: false, 
-        closeSimParametersTabOnStartSimulation: false
+        closeSimParametersTabOnStartSimulation: false,
+        closeStartSimulationTabOnStartSimulation: false
     };
 
 
@@ -152,8 +153,6 @@ export class AppComponent {
 
     // Multiple sim results comparison
     columnNamesMultipleSimulationsResultsGrouped = [];
-    @ViewChild("tableMultipleSimulationResults", { static: false }) matTableMultipleSimulationResults: MatTable<simulationResultsGroupedType>;
-    //@ViewChild(MatSort, {static: false}) simulationMultipleResultsGroupedSort: MatSort
     simGoalMap: simGoalMapType = { // Label of column for groupByAttributeValue
         single: "Single",
         multiple_compare_roomLevels: "Room level",
@@ -688,19 +687,42 @@ export class AppComponent {
         this.updateSimulationMultipleResultsGrouped();
     }
 
-
+    // Need this because element is in ngIf
+    // https://stackoverflow.com/questions/39366981/viewchild-in-ngif
+    matTableMultipleSimulationResults: MatTable<simulationResultsGroupedType>;
+    @ViewChild('tableMultipleSimulationResults', { static: false}) set table(matTable) {
+        this.matTableMultipleSimulationResults = matTable; 
+    }
+    
     updateSimulationMultipleResultsGrouped() {
-
         let resultsGrouped: simulationResultsGroupedType[] = CombatSimulationComparison.groupResults(this.simulationMultipleResults, this.simAdvancedSettings.secondsBetweenSimulations);
 
-        //this.simulationMultipleResultsGrouped.data = resultsGrouped; 
         this.simulationMultipleResultsGrouped = new MatTableDataSource(resultsGrouped);
-        //this.simulationMultipleResultsGrouped.sort = this.simulationMultipleResultsGroupedSort; 
         this.columnNamesMultipleSimulationsResultsGrouped = Object.keys(resultsGrouped[0]);
-        //console.log(this.simulationMultipleResultsGrouped); 
-        //console.log(this.columnNamesMultipleSimulationsResultsGrouped); 
-        //this.matTableMultipleSimulationResults.renderRows(); 
     }
+
+    onSortMultipleResults(sort: Sort) {
+        console.log(sort); 
+        let data = this.simulationMultipleResultsGrouped.data; 
+        if (sort.active && sort.direction !== "") {
+            // example: sort.active = "groupByValue" or "averageChallengeXPReward"
+            // sort.direction = "" or "asc" or "desc"
+            let isAsc = sort.direction === 'asc';
+            data.sort((row1, row2) => {
+                return this.compare(row1[sort.active], row2[sort.active], isAsc); 
+            }); 
+        }
+        else if (sort.direction === "") {
+            this.onSortMultipleResults({active: "groupByValue", direction: "asc"})
+        }
+        this.matTableMultipleSimulationResults.renderRows(); 
+    }
+    
+    // https://medium.com/@AustinRMueller/dynamic-tables-and-sorting-with-angular-material-7dea862cc93c
+    private compare(a, b, isAsc) {
+        return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+    }
+
 
     getEnergyReward() {
         return FortressRoom.getEnergyRewardStatic(this.simParameters.roomLevel, true); 
@@ -712,6 +734,7 @@ export class AppComponent {
     @ViewChild("matPanelAdvancedSimulationSettings", { static: false, read: ElementRef }) matPanelAdvancedSimulationSettingsElement: ElementRef;
     @ViewChild("matPanelStartSimulation", { static: false }) matPanelStartSimulation: MatExpansionPanel;
     @ViewChild("matPanelSimulationResults", { static: false }) matPanelSimulationResults: MatExpansionPanel;
+    @ViewChild("matPanelSimulationResults", { static: false, read: ElementRef }) matPanelSimulationResultsElement: ElementRef;
     
     closeSettingsPanels(): void {
         if (this.simAdvancedSettings.closeSimParametersTabOnStartSimulation === true) {
@@ -720,8 +743,11 @@ export class AppComponent {
         if (this.simAdvancedSettings.closeAdvancedSettingsTabOnStartSimulation === true) {
             this.matPanelAdvancedSimulationSettings.close(); 
         }
-        this.matPanelStartSimulation.close(); 
+        if (this.simAdvancedSettings.closeStartSimulationTabOnStartSimulation === true) {
+            this.matPanelStartSimulation.close(); 
+        }
         this.matPanelSimulationResults.open();
+        this.matPanelSimulationResultsElement.nativeElement.scrollIntoView(); 
     }
 
     // Dependencies can look like the following: ["10/2", "9/3"]

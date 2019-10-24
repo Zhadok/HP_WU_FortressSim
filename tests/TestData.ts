@@ -120,7 +120,8 @@ export class TestData {
             simulationLogChannel: "Debug",
             isAdvancedSettingsTabExpanded: false,
             closeAdvancedSettingsTabOnStartSimulation: false,
-            closeSimParametersTabOnStartSimulation: false
+            closeSimParametersTabOnStartSimulation: false,
+            closeStartSimulationTabOnStartSimulation: false
         }; 
     }
 
