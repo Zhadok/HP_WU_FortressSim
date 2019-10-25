@@ -224,6 +224,23 @@ https://stackoverflow.com/questions/53497127/how-to-break-word-if-text-inside-an
 }
 
 
+/**** Running simulation (manual inputs) ****/
+#divSelectActionContainer {
+    margin-bottom: 10px; 
+}
+.selectedEnemy > div {
+    border: 1px solid black; 
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.selectedWizard {
+    border: 1px solid black; 
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
 
 /**** Simulation outputs ****/
 .matPanelSimulationResultsClass {
@@ -234,10 +251,10 @@ https://stackoverflow.com/questions/53497127/how-to-break-word-if-text-inside-an
 .divSimulationSingleResultCombatant { /** Each div is one enemy portrait + difficulty and level **/
     float: left; 
     padding: 10px; 
+    text-align: center; 
 }
 .divSimulationSingleResultEnemy {
     /*width: 150px; */
-    text-align: center; 
 }
 .divEnemyPortraitContainer { /** Each div is one enemy portrait **/
     width: 30px; 
@@ -262,10 +279,20 @@ https://stackoverflow.com/questions/53497127/how-to-break-word-if-text-inside-an
     width: 25px; 
     /* border: 1px solid black; */
     float: left; 
+    position: relative; /* So potion text can be positioned over */
 }
 .divSimulationSingleResultCombatantBuff > img {
     width: 100%;
     height: 100%; 
+}
+.spanPotionUsesRemaining {
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    background-color: rgba(0,0,0,0.2);
+    width: 100%;
+    height: 100%;
+    color: white;
 }
 
 .divSimulationSingleResultAllWizards { /** Stats of wizards **/

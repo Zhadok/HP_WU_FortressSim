@@ -1,0 +1,81 @@
+<div *ngIf="runningSimulation !== null">
+    <h2 class="mat-h2">Chamber simulation ({{parent.getChamberName(runningSimulation.params.roomLevel)}})</h2>
+    <div class="floatLeft clearBoth">
+        Time: {{parent.formatMinutesDecimal(facts.chamber.remainingTimeSeconds)}}
+    </div>
+    <div class="floatLeft clearBoth">
+        <app-enemy-portrait [class.selectedEnemy]="selectedEnemyID===enemy.enemyIndex" (click)="selectedEnemyID=enemy.enemyIndex" *ngFor="let enemy of runningSimulation.fortressRoom.enemiesActive" [enemy]="enemy">
+        </app-enemy-portrait>
+    </div>
+
+
+    <div class="floatLeft clearBoth">
+        <div *ngFor="let wizard of runningSimulation.wizards"
+            [class.selectedWizard]="runningSimulation.wizards.length > 1 && selectedWizardID===wizard.playerIndex" 
+            (click)="selectedWizardID=wizard.playerIndex" 
+            class="divSimulationSingleResultCombatant" >
+            
+            {{wizard.nameClassUserFriendly}}
+            {{facts.wizard.playerIndex === wizard.playerIndex && facts.allWizards.length > 1 ? '(active)' : ''}} (ID={{wizard.playerIndex}})<br>
+            {{wizard.inCombat ? 'Fighting ID=' + wizard.inCombatWith.enemyIndex : 'Out of combat'}}   <br>
+            HP: {{wizard.currentStamina}} / {{wizard.maxStamina}}<br>
+            Focus: {{wizard.focus}} / {{wizard.stats.maxFocus}}
+            <mat-progress-bar mode="determinate" color="warn" [value]="wizard.currentStamina  / wizard.maxStamina *100">
+            </mat-progress-bar>
+            <div class="divSimulationSingleResultAllCombatantBuffs floatLeft clearBoth">
+                <div class="divSimulationSingleResultCombatantBuff clearBoth">
+                    <img src="assets/img/defenceCharm.png" *ngIf="wizard.hasDefenceCharm"
+                        matTooltip="Defence charm: +{{(wizard.defenceCharmValue*100).toFixed(0)}}% defence"
+                        [matTooltipClass]="'myMatTooltip'" />
+                </div>
+                <div class="divSimulationSingleResultCombatantBuff">
+                    <img src="assets/img/proficiencyCharm.png" *ngIf="wizard.hasProficiencyPowerCharm"
+                        matTooltip="Proficiency power charm: +{{(wizard.proficiencyPowerCharmValue*100).toFixed(0)}}% proficiency"
+                        [matTooltipClass]="'myMatTooltip'" />
+                </div>
+                <div class="divSimulationSingleResultCombatantBuff">
+                    <img src="assets/img/braveryCharm.png" *ngIf="wizard.hasBraveryCharm" />
+                </div>
+                <div class="divSimulationSingleResultCombatantBuff">
+                    <img src="assets/img/potions/exstimulo.png"
+                        *ngIf="wizard.exstimuloPotionDamageBuff === wizard.potionData.exstimuloPotionDamageBuff" />
+                    <img src="assets/img/potions/strongExstimulo.png"
+                        *ngIf="wizard.exstimuloPotionDamageBuff === wizard.potionData.strongExstimuloPotionDamageBuff" />
+                    <img src="assets/img/potions/potentExstimulo.png"
+                        *ngIf="wizard.exstimuloPotionDamageBuff === wizard.potionData.potentExstimuloPotionDamageBuff" />
+                    <span class="spanPotionUsesRemaining"
+                        *ngIf="wizard.inCombat === true && wizard.inCombatWith.getExstimuloUsesRemaining(wizard.playerIndex) > 0">{{wizard.inCombatWith.getExstimuloUsesRemaining(wizard.playerIndex)}}</span>
+                </div>
+                <div class="divSimulationSingleResultCombatantBuff">
+                    <img src="assets/img/potions/witSharpening.png"
+                        *ngIf="wizard.witSharpeningPotionDamageBuff === wizard.potionData.witSharpeningPotionDamageBuff" />
+                    <span class="spanPotionUsesRemaining"
+                        *ngIf="wizard.inCombat === true && wizard.inCombatWith.getWitSharpeningUsesRemaining(wizard.playerIndex) > 0">{{wizard.inCombatWith.getWitSharpeningUsesRemaining(wizard.playerIndex)}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="divSelectActionContainer" class="floatLeft clearBoth">
+        <!-- <mat-form-field class="inputAdvancedSetting" appearance="outline">
+        <mat-select #selectPlayerAction placeholder="Player action" name="selectPlayerAction"
+            [(ngModel)]="selectedAction">
+            <mat-option *ngFor="let item of selectedActionResolveContainer.availableActions" value="{{item}}">{{parent.getActionNameMap(0)[item]}}</mat-option>
+        </mat-select> 
+        </mat-form-field> -->
+        <mat-radio-group aria-label="Select player action" [(ngModel)]="selectedAction">
+            <mat-radio-button class="floatLeft clearBoth" *ngFor="let item of availableActions" [value]="item">
+                <span class="spanMultipleLines">{{parent.getActionNameMap(0)[item]}}</span>
+            </mat-radio-button>
+        </mat-radio-group>
+    </div>
+    <!-- <div class="floatLeft clearBoth" *ngIf="selectedAction !== null && parent.getEventTargetType(playerIndex, selectedAction) !== null">
+        <mat-form-field class="inputAdvancedSetting" appearance="outline">
+            <mat-label>Target {{parent.getEventTargetType(playerIndex, selectedAction)}} ID</mat-label>
+            <input matInput type="number" min="0" placeholder="Target ID" [(ngModel)]="selectedTargetID">
+        </mat-form-field>
+    </div> -->
+    <button class="floatLeft clearBoth"
+        [disabled]="!selectedAction || (parent.getEventTargetType(playerIndex, selectedAction) === 'wizard' && selectedWizardID === null) || (parent.getEventTargetType(playerIndex, selectedAction) === 'enemy' && selectedEnemyID === null)"
+        (click)="onClickButtonPerformPlayerAction()" mat-raised-button large color="primary">Perform action</button>
+</div>

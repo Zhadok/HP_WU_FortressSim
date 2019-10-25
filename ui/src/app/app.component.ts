@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, NgZone } from '@angular/core';
+import { Component, ViewChild, ElementRef, NgZone, ViewChildren, QueryList } from '@angular/core';
 
 import { CombatSimulation } from "../../../src/sim/CombatSimulation";
 import Prando from 'prando';
@@ -6,7 +6,7 @@ import { TestData } from "../../../tests/TestData";
 import { CombatSimulationParameters } from '../../../src/sim/CombatSimulationParameters';
 import {
     nameClassType, nameClassUserFriendlyType, simGoalType as simGoalType, simAdvancedSettingsType,
-    simProgressType, simulationResultsGroupedType, localStorageDataType, ruleVisDataRowType, ruleVisDataContainerType, simulationLogChannelStoreType, simulationLogChannelType, ruleContainerType, wizardSettingsType, ruleType, actionNameMapType, ruleOperatorType, ruleOperatorMapType, ruleFactNameType, ruleConditionType, simGoalMapType, skillTreeFilterLessonsType, webWorkerMessageContainerType, actionNameType
+    simProgressType, simulationResultsGroupedType, localStorageDataType, ruleVisDataRowType, ruleVisDataContainerType, simulationLogChannelStoreType, simulationLogChannelType, ruleContainerType, wizardSettingsType, ruleType, actionNameMapType, ruleOperatorType, ruleOperatorMapType, ruleFactNameType, ruleConditionType, simGoalMapType, skillTreeFilterLessonsType, webWorkerMessageContainerType, actionNameType, playerActionSelectionModeMapType, ruleFactType, manualActionContainerType
 } from '../../../src/types';
 import { PotionAvailabilityParameters } from '../../../src/sim/PotionAvailabilityParameters';
 import { PersistedSkillTree } from '../../../src/model/player/SkillTree/PersistedSkillTree';
@@ -20,7 +20,7 @@ import { statNameType } from '../../../src/types';
 import { Logger } from '../../../src/util/Logger';
 import { CombatSimulationResults } from '../../../src/sim/CombatSimulationResults';
 import { CombatSimulationComparison } from '../../../src/sim//parallel/CombatSimulationComparison';
-import { MatTable, MatTab, ErrorStateMatcher } from "@angular/material";
+import { MatTable, MatTab, ErrorStateMatcher, MatSelect } from "@angular/material";
 import { MatTableDataSource } from '@angular/material/table';
 import * as ObservableSlim from "observable-slim";
 import { MatSortModule } from "@angular/material";
@@ -40,6 +40,9 @@ import { Utils } from '../../../src/util/Utils';
 import { FortressRoom } from '../../../src/model/env/FortressRoom';
 import { ChangeDetectorRef } from '@angular/core';
 import { WebWorkerPool } from './WebWorkerPool';
+import { PlayerActionEngine } from '../../../src/rules/PlayerActionEngine';
+import { ManualPlayerActionEngine } from '../../../src/rules/ManulPlayerActionEngine';
+import { ManualActionSelectionSimulationComponent } from './manual-action-selection-simulation/manual-action-selection-simulation.component';
 
 const cookieConfig: any = {
     "cookie": {
@@ -138,6 +141,8 @@ export class AppComponent {
     playerRulesData: ruleVisDataContainerType[] = []; // 3 containers of rule data
     ruleErrorStateMatcher = new RuleErrorStateMatcher();
 
+    // Manual simulation
+    runningSimulation: CombatSimulation | null = null; 
 
     // For showing results of simulations
     //simulationLog: string = "";
@@ -564,21 +569,41 @@ export class AppComponent {
         return result;
     }
 
+
+    @ViewChildren("manualActionSelectionSimulation") manualActionSelectionSimulationComponent: QueryList<ManualActionSelectionSimulationComponent>; 
+
     async onClickButtonStartSingleSimulation() {
         this.resetSimulationResults();
         this.simAdvancedSettings.simGoal = "single";
+        this.runningSimulation = null; 
+        this.simulationSingleResults = null; 
         console.log("Starting single simulation with parameters:");
         console.log(this.simParameters);
 
         Logger.verbosity = 2;
-        let sim = new CombatSimulation(this.getSimParametersCopy(), new Prando(this.simParameters.seed));
-        sim.init();
-        await sim.simulate();
-        this.simulationSingleResults = sim.toSimulationResults();
-        console.log("Results of the simulation are: ");
-        console.log(this.simulationSingleResults);
+        this.runningSimulation = new CombatSimulation(this.getSimParametersCopy(), new Prando(this.simParameters.seed));
+        this.runningSimulation.init();
+        if (this.isPlayerActionSelectionManual()) {
+            this.manualActionSelectionSimulationComponent.first.init(this.runningSimulation, this); 
+        }
+        try {
+            await this.runningSimulation.simulate();
+            this.simulationSingleResults =  this.runningSimulation.toSimulationResults();
+            this.runningSimulation = null; 
+            console.log("Results of the simulation are: ");
+            console.log(this.simulationSingleResults);
+        }
+        catch (error) {
+            Logger.callbackFunctionUserFriendly(error.stack); 
+            Logger.callbackFunction(error.stack); 
+            console.log(error); 
+        }
     }
 
+    isSimulationRunning(): boolean {
+        return this.runningSimulation !== null;
+    }
+    
     async onClickButtonStartMultipleSimulations_compareRoomLevels() {
         await this.onClickButtonStartMultipleSimulations("multiple_compare_roomLevels");
     }
@@ -846,6 +871,13 @@ export class AppComponent {
         return roomType + " " + chamberLevel;
     }
 
+    getPlayerActionSelectionModeMap(): playerActionSelectionModeMapType {
+        return PlayerActionEngine.playerActionSelectionModeMap; 
+    }
+    isPlayerActionSelectionManual(): boolean {
+        return this.simParameters.playerActionSelectionMode === "manual"; 
+    }    
+
     // Todo: Use localstorage
     getInitialSimParameters(): CombatSimulationParameters {
         return {
@@ -920,6 +952,24 @@ export class AppComponent {
             seconds = "0" + seconds;
         }
         return hours + "h" + minutes + "m";
+    }
+    formatMinutesDecimal(secondsParam: number) {
+        let decimalTime = secondsParam; 
+        let hours: number | string = Math.floor((decimalTime / (60 * 60)));
+        decimalTime = decimalTime - (hours * 60 * 60);
+        let minutes: number | string = Math.floor((decimalTime / 60));
+        decimalTime = decimalTime - (minutes * 60);
+        let seconds: number | string = Math.round(decimalTime);
+        if (hours < 10) {
+            hours = "0" + hours;
+        }
+        if (minutes < 10) {
+            minutes = "0" + minutes;
+        }
+        if (seconds < 10) {
+            seconds = "0" + seconds;
+        }
+        return minutes + ":" + seconds;
     }
 
     initFromLocalStorage(): void {

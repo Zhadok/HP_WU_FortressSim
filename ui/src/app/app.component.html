@@ -1,63 +1,62 @@
-
 <div id="divContainer">
     <h1 class="mat-h1">
         Harry Potter - Wizards Unite Fortress Simulator v{{simAdvancedSettings.simulationVersion}} <br>
         <a target="_blank" href="https://github.com/Zhadok/HP_WU_FortressSim">(source code and documentation)</a>
     </h1>
 
-    
+
 
     <mat-accordion [multi]="true">
         <!--<h2 class="mat-h2">Input parameters</h2> -->
         <mat-expansion-panel #matPanelInputParameters [expanded]="true">
-                <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        Input parameters
-                    </mat-panel-title>
-                    <mat-panel-description>
-                        Enter your skill tree and potions 
-                    </mat-panel-description>
-                </mat-expansion-panel-header>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Input parameters
+                </mat-panel-title>
+                <mat-panel-description>
+                    Enter your skill tree and potions
+                </mat-panel-description>
+            </mat-expansion-panel-header>
 
-                <div id="divSettingsRoomLevel">
-                    <h2 class="mat-h2">Overall parameters: </h2>
-                    <mat-form-field class="inputRoomLevel floatLeft" appearance="outline">
-                        <mat-label>Room level: {{getChamberName(simParameters.roomLevel)}}</mat-label>
-                        <input type="number" min="1" max="20" matInput placeholder="Room level" name="roomLevel"
-                                    [(ngModel)]="simParameters.roomLevel">
-                    </mat-form-field>
-                    <mat-checkbox class="floatLeft clearBoth" [(ngModel)]="simParameters.useSponsoredFortressRewards">
-                        <span class="spanMultipleLines">Sponsored fortress rewards 
-                                ({{(fortressRewardData.sponsoredFortressRewardsChallengeXPIncrease*100).toFixed(0)}}% more challenge XP and 
-                                {{getEnergyReward()}} energy)</span>
-                    </mat-checkbox>
-                </div>
+            <div id="divSettingsRoomLevel">
+                <h2 class="mat-h2">Overall parameters: </h2>
+                <mat-form-field class="inputRoomLevel floatLeft" appearance="outline">
+                    <mat-label>Room level: {{getChamberName(simParameters.roomLevel)}}</mat-label>
+                    <input type="number" min="1" max="20" matInput placeholder="Room level" name="roomLevel"
+                        [(ngModel)]="simParameters.roomLevel">
+                </mat-form-field>
+                <mat-checkbox class="floatLeft clearBoth" [(ngModel)]="simParameters.useSponsoredFortressRewards">
+                    <span class="spanMultipleLines">Sponsored fortress rewards
+                        ({{(fortressRewardData.sponsoredFortressRewardsChallengeXPIncrease*100).toFixed(0)}}% more
+                        challenge XP and
+                        {{getEnergyReward()}} energy)</span>
+                </mat-checkbox>
+            </div>
 
-                <mat-tab-group id="matTabGroupWizardSettings">
-                    <mat-tab label="Skill Tree"> 
-                        <div id="divSkillTreeSettingsWrapper">
-                            <div *ngFor="let nameClass of simParameters.nameClasses; let playerIndex=index" 
-                                class="divSingleWizardSettingsWrapper">
-                                <div class="divSingleWizardSettings">
+            <mat-tab-group id="matTabGroupWizardSettings">
+                <mat-tab label="Skill Tree">
+                    <div id="divSkillTreeSettingsWrapper">
+                        <div *ngFor="let nameClass of simParameters.nameClasses; let playerIndex=index"
+                            class="divSingleWizardSettingsWrapper">
+                            <div class="divSingleWizardSettings">
                                 <h2 class="mat-h2">Settings for player {{playerIndex+1}}</h2>
-                                
+
                                 <mat-form-field appearance="outline">
                                     <mat-label>Class</mat-label>
-                                    <mat-select placeholder="Select class..." name="selectWizardClass" 
-                                                (selectionChange)="onChangeSelectWizardClass($event, playerIndex)"
-                                                [(ngModel)]="simParameters.nameClasses[playerIndex]"
-                                                class="inputPotion">
-                                                
-                                        <mat-option *ngFor="let item of allowedClasses | keyvalue" value="{{item.key}}">{{item.value}}</mat-option>
+                                    <mat-select placeholder="Select class..." name="selectWizardClass"
+                                        (selectionChange)="onChangeSelectWizardClass($event, playerIndex)"
+                                        [(ngModel)]="simParameters.nameClasses[playerIndex]" class="inputPotion">
+
+                                        <mat-option *ngFor="let item of allowedClasses | keyvalue" value="{{item.key}}">
+                                            {{item.value}}</mat-option>
                                     </mat-select>
                                 </mat-form-field>
-            
+
                                 <h2 class="mat-h2">Skill tree: </h2>
                                 <div class="divSkillTree">
                                     <!-- https://teropa.info/blog/2016/12/12/graphics-in-angular-2.html -->
-                                    <svg #svgSkillTree class="svgSkillTree" width="100%" 
-                                        [attr.height]="getSkillTreeSVGHeight()"
-                                        [attr.viewBox]="[0,0,
+                                    <svg #svgSkillTree class="svgSkillTree" width="100%"
+                                        [attr.height]="getSkillTreeSVGHeight()" [attr.viewBox]="[0,0,
                                         skillTreeVis.marginLeft + skillTreeVis.columnWidth*5,
                                         skillTreeVis.rowHeight*16]">
                                         <defs>
@@ -67,106 +66,128 @@
                                         </defs>
 
                                         <g *ngFor="let node of skillTrees[playerIndex].nodesStudied | keyvalue">
-                                            <line *ngFor="let dependency of getDependenciesFromSkillTreeNode(node.key.dependencies)"
-                                                [attr.x1]="dependency.columnIndex * skillTreeVis.columnWidth + skillTreeVis.marginLeft*2" 
-                                                [attr.y1]="dependency.rowIndex * skillTreeVis.rowHeight + skillTreeVis.marginTop" 
-                                                [attr.x2]="node.key.columnIndex * skillTreeVis.columnWidth + skillTreeVis.marginLeft*2" 
-                                                [attr.y2]="node.key.rowIndex * skillTreeVis.rowHeight + skillTreeVis.marginTop" 
-                                                stroke="black"
-                                            />
+                                            <line
+                                                *ngFor="let dependency of getDependenciesFromSkillTreeNode(node.key.dependencies)"
+                                                [attr.x1]="dependency.columnIndex * skillTreeVis.columnWidth + skillTreeVis.marginLeft*2"
+                                                [attr.y1]="dependency.rowIndex * skillTreeVis.rowHeight + skillTreeVis.marginTop"
+                                                [attr.x2]="node.key.columnIndex * skillTreeVis.columnWidth + skillTreeVis.marginLeft*2"
+                                                [attr.y2]="node.key.rowIndex * skillTreeVis.rowHeight + skillTreeVis.marginTop"
+                                                stroke="black" />
                                         </g>
-            
+
                                         <g *ngFor="let node of skillTrees[playerIndex].nodesStudied | keyvalue">
-                                            <text [attr.x]="node.key.columnIndex * skillTreeVis.columnWidth + skillTreeVis.marginLeft*2" 
-                                                [attr.y]="node.key.rowIndex * skillTreeVis.rowHeight + skillTreeVis.marginTop - skillTreeVis.nodeCircleRadius/2 - 20" 
+                                            <text
+                                                [attr.x]="node.key.columnIndex * skillTreeVis.columnWidth + skillTreeVis.marginLeft*2"
+                                                [attr.y]="node.key.rowIndex * skillTreeVis.rowHeight + skillTreeVis.marginTop - skillTreeVis.nodeCircleRadius/2 - 20"
                                                 text-anchor="middle"
                                                 class="textSkillTreeNodeName">{{node.key.name}}</text>
-                                            <circle [attr.cx]="node.key.columnIndex * skillTreeVis.columnWidth + skillTreeVis.marginLeft*2"
-                                                    [attr.cy]="node.key.rowIndex * skillTreeVis.rowHeight + skillTreeVis.marginTop"
-                                                    [attr.r]="skillTreeVis.nodeCircleRadius" stroke="black"
-                                                    [attr.fill]="node.value===node.key.levels.length ? 'yellowgreen' : 'gray'"
-                                                    (click)="onClickSkillTreeNode(node.key, playerIndex)"
-                                                    matTooltip="{{getSkillTreeNodeTooltip(node.key)}}"
-                                                    [matTooltipClass]="'myMatTooltip'"
-                                                    
-                                                    ></circle>
-                                            <text [attr.x]="node.key.columnIndex * skillTreeVis.columnWidth + skillTreeVis.marginLeft*2" 
-                                                  [attr.y]="node.key.rowIndex * skillTreeVis.rowHeight + skillTreeVis.marginTop + 6" 
-                                                  class="textSkillTreeNode" text-anchor="middle"
-                                                  (click)="onClickSkillTreeNode(node.key, playerIndex)"
-                                                  matTooltip="{{getSkillTreeNodeTooltip(node.key)}}"
-                                                  [matTooltipClass]="'myMatTooltip'"
-                                                  >{{node.value}}/{{node.key.levels.length}}</text>
+                                            <circle
+                                                [attr.cx]="node.key.columnIndex * skillTreeVis.columnWidth + skillTreeVis.marginLeft*2"
+                                                [attr.cy]="node.key.rowIndex * skillTreeVis.rowHeight + skillTreeVis.marginTop"
+                                                [attr.r]="skillTreeVis.nodeCircleRadius" stroke="black"
+                                                [attr.fill]="node.value===node.key.levels.length ? 'yellowgreen' : 'gray'"
+                                                (click)="onClickSkillTreeNode(node.key, playerIndex)"
+                                                matTooltip="{{getSkillTreeNodeTooltip(node.key)}}"
+                                                [matTooltipClass]="'myMatTooltip'"></circle>
+                                            <text
+                                                [attr.x]="node.key.columnIndex * skillTreeVis.columnWidth + skillTreeVis.marginLeft*2"
+                                                [attr.y]="node.key.rowIndex * skillTreeVis.rowHeight + skillTreeVis.marginTop + 6"
+                                                class="textSkillTreeNode" text-anchor="middle"
+                                                (click)="onClickSkillTreeNode(node.key, playerIndex)"
+                                                matTooltip="{{getSkillTreeNodeTooltip(node.key)}}"
+                                                [matTooltipClass]="'myMatTooltip'">{{node.value}}/{{node.key.levels.length}}</text>
                                         </g>
                                     </svg>
                                 </div>
                                 <div class="divContainerSkillTreeButtons">
-                                    <button class="buttonSkillTreeControl" mat-raised-button color="accent" (click)="onClickButtonLearnAllLessonsScrolls(playerIndex)">Learn all lessons (scrolls only)</button>
-                                    <button class="buttonSkillTreeControl" mat-raised-button color="accent" (click)="onClickButtonLearnAllLessons(playerIndex)">Learn all lessons</button>
-                                    <button class="buttonSkillTreeControl" mat-raised-button color="accent" (click)="onClickButtonResetSkillTree(playerIndex)">Reset skill tree</button>
-                                    <button class="buttonSkillTreeControl" mat-raised-button (click)="onClickButtonImportSkillTree(playerIndex)">Import skill tree from file</button>
-                                    <button class="buttonSkillTreeControl" mat-raised-button (click)="onClickButtonExportSkillTree(playerIndex)">Export skill tree as file</button>
+                                    <button class="buttonSkillTreeControl" mat-raised-button color="accent"
+                                        (click)="onClickButtonLearnAllLessonsScrolls(playerIndex)">Learn all lessons
+                                        (scrolls only)</button>
+                                    <button class="buttonSkillTreeControl" mat-raised-button color="accent"
+                                        (click)="onClickButtonLearnAllLessons(playerIndex)">Learn all lessons</button>
+                                    <button class="buttonSkillTreeControl" mat-raised-button color="accent"
+                                        (click)="onClickButtonResetSkillTree(playerIndex)">Reset skill tree</button>
+                                    <button class="buttonSkillTreeControl" mat-raised-button
+                                        (click)="onClickButtonImportSkillTree(playerIndex)">Import skill tree from
+                                        file</button>
+                                    <button class="buttonSkillTreeControl" mat-raised-button
+                                        (click)="onClickButtonExportSkillTree(playerIndex)">Export skill tree as
+                                        file</button>
                                     <p>Costs: {{ skillTrees[playerIndex].getCostsString() }}</p>
                                 </div>
-                                                                
+
                                 <div class="divSettingsOutputWizardStats">
                                     <h2 class="mat-h2">Stats:</h2>
                                     <div *ngFor="let stat of skillTrees[playerIndex].toWizardStats() | keyvalue">
                                         <span *ngIf="isValidStatForClass(stat.key, playerIndex)">
                                             {{formatUserFriendlyStat(stat.key)}}: {{stat.value.toFixed(2)}}
-                                        </span>   
+                                        </span>
                                     </div>
-                                    
+
                                     <h2 class="mat-h2">Conditional buffs:</h2>
                                     <div>
                                         <ul>
-                                            <li *ngFor="let skillTreeNode of skillTrees[playerIndex].toStudiedTriggers(false)">
-                                                <b>{{skillTreeNode.name}}</b>: {{skillTreeNode.statChangeDescription}} (+{{skillTreeNode.levels[0].statChange.toFixed(2)}})
+                                            <li
+                                                *ngFor="let skillTreeNode of skillTrees[playerIndex].toStudiedTriggers(false)">
+                                                <b>{{skillTreeNode.name}}</b>: {{skillTreeNode.statChangeDescription}}
+                                                (+{{skillTreeNode.levels[0].statChange.toFixed(2)}})
                                             </li>
                                         </ul>
                                     </div>
-                                    
+
                                 </div>
-            
+
                                 <div class="divSettingsPotions">
                                     <p>
-                                        Potions (brew time: {{getPotionsBrewTimeRaw(simParameters.potions[playerIndex])}},
-                                        with master notes: {{getPotionsBrewTimeMasterNotes(simParameters.potions[playerIndex])}}):
-                                        
+                                        Potions (brew time:
+                                        {{getPotionsBrewTimeRaw(simParameters.potions[playerIndex])}},
+                                        with master notes:
+                                        {{getPotionsBrewTimeMasterNotes(simParameters.potions[playerIndex])}}):
+
                                     </p>
                                     <form class="potionsForm">
                                         <mat-form-field class="inputPotion">
-                                            <input type="number" min="0" matInput placeholder="Regular exstimulo" name="exstimulo"
-                                                   [(ngModel)]="simParameters.potions[playerIndex].nExstimuloAvailable">
+                                            <input type="number" min="0" matInput placeholder="Regular exstimulo"
+                                                name="exstimulo"
+                                                [(ngModel)]="simParameters.potions[playerIndex].nExstimuloAvailable">
                                         </mat-form-field>
                                         <mat-form-field class="inputPotion">
-                                            <input type="number" min="0" matInput placeholder="Strong exstimulo" name="strongExstimulo"
-                                                   [(ngModel)]="simParameters.potions[playerIndex].nStrongExstimuloAvailable">
+                                            <input type="number" min="0" matInput placeholder="Strong exstimulo"
+                                                name="strongExstimulo"
+                                                [(ngModel)]="simParameters.potions[playerIndex].nStrongExstimuloAvailable">
                                         </mat-form-field>
                                         <mat-form-field class="inputPotion">
-                                            <input type="number" min="0" matInput placeholder="Potent exstimulo" name="potentExstimulo"
-                                                    [(ngModel)]="simParameters.potions[playerIndex].nPotentExstimuloAvailable">
+                                            <input type="number" min="0" matInput placeholder="Potent exstimulo"
+                                                name="potentExstimulo"
+                                                [(ngModel)]="simParameters.potions[playerIndex].nPotentExstimuloAvailable">
                                         </mat-form-field>
                                         <mat-form-field class="inputPotion">
-                                            <input type="number" min="0" matInput placeholder="Wit Sharpening" name="witSharpening"
-                                                    [(ngModel)]="simParameters.potions[playerIndex].nWitSharpeningAvailable">
+                                            <input type="number" min="0" matInput placeholder="Wit Sharpening"
+                                                name="witSharpening"
+                                                [(ngModel)]="simParameters.potions[playerIndex].nWitSharpeningAvailable">
                                         </mat-form-field>
                                         <mat-form-field class="inputPotion">
-                                            <input type="number" min="0" matInput placeholder="Weak Invigoration" name="weakInvigoration"
-                                                    [(ngModel)]="simParameters.potions[playerIndex].nWeakInvigorationAvailable">
+                                            <input type="number" min="0" matInput placeholder="Weak Invigoration"
+                                                name="weakInvigoration"
+                                                [(ngModel)]="simParameters.potions[playerIndex].nWeakInvigorationAvailable">
                                         </mat-form-field>
                                         <mat-form-field class="inputPotion">
-                                            <input type="number" min="0" matInput placeholder="Strong Invigoration" name="strongInvigoration"
-                                                    [(ngModel)]="simParameters.potions[playerIndex].nStrongInvigorationAvailable">
+                                            <input type="number" min="0" matInput placeholder="Strong Invigoration"
+                                                name="strongInvigoration"
+                                                [(ngModel)]="simParameters.potions[playerIndex].nStrongInvigorationAvailable">
                                         </mat-form-field>
                                         <mat-form-field class="inputPotion">
                                             <input type="number" min="0" matInput placeholder="Health" name="health"
-                                                    [(ngModel)]="simParameters.potions[playerIndex].nHealingPotionsAvailable">
+                                                [(ngModel)]="simParameters.potions[playerIndex].nHealingPotionsAvailable">
                                         </mat-form-field>
-                                        <mat-checkbox [(ngModel)]="simParameters.potions[playerIndex].hasBaruffiosBrainElixir" name="checkboxBaruffios">
+                                        <mat-checkbox
+                                            [(ngModel)]="simParameters.potions[playerIndex].hasBaruffiosBrainElixir"
+                                            name="checkboxBaruffios">
                                             Use Baruffio's Brain Elixir
                                         </mat-checkbox>
-                                        <mat-checkbox [(ngModel)]="simParameters.potions[playerIndex].hasTonicForTraceDetection" name="checkboxTonic">
+                                        <mat-checkbox
+                                            [(ngModel)]="simParameters.potions[playerIndex].hasTonicForTraceDetection"
+                                            name="checkboxTonic">
                                             Use Tonic for Trace Detection
                                         </mat-checkbox>
 
@@ -177,12 +198,13 @@
                                 <div class="divSettingsRunestoneLevel">
                                     <p>Runestone level:</p>
                                     <mat-form-field class="inputPotion">
-                                        <input type="number" matInput placeholder="Runestone level" name="runestoneLevel"
-                                                    [(ngModel)]="simParameters.runestoneLevels[playerIndex]">
+                                        <input type="number" matInput placeholder="Runestone level"
+                                            name="runestoneLevel"
+                                            [(ngModel)]="simParameters.runestoneLevels[playerIndex]">
                                     </mat-form-field>
                                 </div>
 
-                                
+
                                 <div *ngIf="simAdvancedSettings.showPlayerRules" class="divSettingsPlayerRules">
                                     <mat-expansion-panel [expanded]="false">
                                         <mat-expansion-panel-header>
@@ -191,197 +213,259 @@
                                             </mat-panel-title>
                                             <mat-panel-description>
                                                 Rules that determine each action
-                                            </mat-panel-description>    
+                                            </mat-panel-description>
                                         </mat-expansion-panel-header>
                                         <div class="divPlayerRulesContainer">
-                                            <table mat-table matSort [dataSource]="getPlayerRulesForTable(playerIndex)" 
-                                                   class="mat-elevation-z8"
-                                                   multiTemplateDataRows>
-                                                
+                                            <table mat-table matSort [dataSource]="getPlayerRulesForTable(playerIndex)"
+                                                class="mat-elevation-z8" multiTemplateDataRows>
+
                                                 <ng-container matColumnDef="event.type">
-                                                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Action </th>
-                                                        <td mat-cell *matCellDef="let rule"> {{getUserFriendlyActionName(playerIndex, rule.event.type)}} </td>
+                                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Action </th>
+                                                    <td mat-cell *matCellDef="let rule">
+                                                        {{getUserFriendlyActionName(playerIndex, rule.event.type)}}
+                                                    </td>
                                                 </ng-container>
                                                 <ng-container matColumnDef="priority">
                                                     <th mat-header-cell *matHeaderCellDef mat-sort-header>Priority</th>
-                                                    <td mat-cell *matCellDef="let rule"> 
+                                                    <td mat-cell *matCellDef="let rule">
                                                         {{rule.priority}}
-                                                        <button mat-icon-button (click)="onClickButtonIncreaseRulePriority($event, rule, playerIndex); expandedRule = null" matTooltip="Increase priority">
-                                                                <mat-icon>arrow_upward</mat-icon>
+                                                        <button mat-icon-button
+                                                            (click)="onClickButtonIncreaseRulePriority($event, rule, playerIndex); expandedRule = null"
+                                                            matTooltip="Increase priority">
+                                                            <mat-icon>arrow_upward</mat-icon>
                                                         </button>
-                                                        <button mat-icon-button (click)="onClickButtonDecreaseRulePriority($event, rule, playerIndex); expandedRule = null" matTooltip="Decrease priority">
-                                                                <mat-icon>arrow_downward</mat-icon>
+                                                        <button mat-icon-button
+                                                            (click)="onClickButtonDecreaseRulePriority($event, rule, playerIndex); expandedRule = null"
+                                                            matTooltip="Decrease priority">
+                                                            <mat-icon>arrow_downward</mat-icon>
                                                         </button>
-                                                        <button mat-icon-button (click)="onClickButtonCopyRule($event, rule, playerIndex); expandedRule = null" matTooltip="Copy rule">
+                                                        <button mat-icon-button
+                                                            (click)="onClickButtonCopyRule($event, rule, playerIndex); expandedRule = null"
+                                                            matTooltip="Copy rule">
                                                             <mat-icon>file_copy</mat-icon>
                                                         </button>
                                                     </td>
                                                 </ng-container>
 
                                                 <ng-container matColumnDef="expandedRuleColumn">
-                                                    <td mat-cell *matCellDef="let rule" [attr.colspan]="columnNamesPlayerRules.length">
+                                                    <td mat-cell *matCellDef="let rule"
+                                                        [attr.colspan]="columnNamesPlayerRules.length">
                                                         <div class="rule-detail"
                                                             [@detailExpand]="rule == expandedRule ? 'expanded' : 'collapsed'">
 
-                                                            <div class="rule-detail-inner-container" *ngIf="rule === expandedRule">
+                                                            <div class="rule-detail-inner-container"
+                                                                *ngIf="rule === expandedRule">
                                                                 <!-- <mat-form-field class="inputRulePriority">
                                                                     <mat-label>Priority</mat-label>
                                                                     <input matInput type="number" placeholder="Priority" [(ngModel)]="rule.priority">
                                                                 </mat-form-field> -->
                                                                 <mat-form-field class="inputRuleAction">
                                                                     <mat-label>Action</mat-label>
-                                                                    <mat-select placeholder="Action" name="selectRuleType" 
-                                                                            [(ngModel)]="rule.event.type">
-                                                                        <mat-option *ngFor="let action of getActionNameMap(playerIndex) | keyvalue" 
-                                                                                    value="{{action.key}}">{{action.value}}</mat-option>
+                                                                    <mat-select placeholder="Action"
+                                                                        name="selectRuleType"
+                                                                        [(ngModel)]="rule.event.type">
+                                                                        <mat-option
+                                                                            *ngFor="let action of getActionNameMap(playerIndex) | keyvalue"
+                                                                            value="{{action.key}}">{{action.value}}
+                                                                        </mat-option>
                                                                     </mat-select>
                                                                 </mat-form-field>
-                                                                <div *ngIf="getEventTargetType(playerIndex, rule.event.type) !== null">
+                                                                <div
+                                                                    *ngIf="getEventTargetType(playerIndex, rule.event.type) !== null">
                                                                     <mat-form-field class="inputRuleAction">
-                                                                        <mat-label>Target {{getEventTargetType(playerIndex, rule.event.type)}}</mat-label>
-                                                                        <mat-select placeholder="Target" name="selectRuleTarget" (selectionChange)="onChangeSelectEventTarget(playerIndex, rule, $event)" 
+                                                                        <mat-label>Target
+                                                                            {{getEventTargetType(playerIndex, rule.event.type)}}
+                                                                        </mat-label>
+                                                                        <mat-select placeholder="Target"
+                                                                            name="selectRuleTarget"
+                                                                            (selectionChange)="onChangeSelectEventTarget(playerIndex, rule, $event)"
                                                                             [value]="getEventTarget(playerIndex, rule)">
-                                                                            <mat-option *ngFor="let target of getAllowedEventTargets(playerIndex, rule.event.type)" 
-                                                                                        value="{{target.key}}">{{target.label}}</mat-option>
+                                                                            <mat-option
+                                                                                *ngFor="let target of getAllowedEventTargets(playerIndex, rule.event.type)"
+                                                                                value="{{target.key}}">{{target.label}}
+                                                                            </mat-option>
                                                                         </mat-select>
-                                                                    </mat-form-field> 
+                                                                    </mat-form-field>
                                                                 </div>
-                                                                
+
                                                                 <br>
 
-                                                                <h3 class="mat-h3 floatLeft clearBoth">Conditions (total: {{rule.conditions.all.length}})</h3>
-                                                                <app-rule-detail-component [conditionGroup]="rule.conditions.all"
-                                                                    [ruleConditionGroupName]="'all'"
-                                                                    [depth]="0"
-                                                                    [parentConditionGroup]="rule.conditions.all" [parentConditionGroupIndex]="0"
-                                                                ></app-rule-detail-component> 
-                                                                
-                                                                <button class="buttonSkillTreeControl" mat-raised-button color="accent" 
+                                                                <h3 class="mat-h3 floatLeft clearBoth">Conditions
+                                                                    (total: {{rule.conditions.all.length}})</h3>
+                                                                <app-rule-detail-component
+                                                                    [conditionGroup]="rule.conditions.all"
+                                                                    [ruleConditionGroupName]="'all'" [depth]="0"
+                                                                    [parentConditionGroup]="rule.conditions.all"
+                                                                    [parentConditionGroupIndex]="0">
+                                                                </app-rule-detail-component>
+
+                                                                <button class="buttonSkillTreeControl" mat-raised-button
+                                                                    color="accent"
                                                                     (click)="onClickRemoveRule(playerIndex, rule)"
                                                                     class="buttonRemoveRule">Remove rule</button>
-                                                            
-                                                            </div> 
-                                                            
+
+                                                            </div>
+
                                                         </div>
                                                     </td>
                                                 </ng-container>
-                            
+
                                                 <tr mat-header-row *matHeaderRowDef="columnNamesPlayerRules"></tr>
                                                 <tr mat-row *matRowDef="let rule; columns: columnNamesPlayerRules;"
                                                     class="rule-row rule-row-static"
                                                     [class.rule-row]="expandedRule === rule"
                                                     (click)="expandedRule = (expandedRule === rule) ? null : rule ">
-                                                 </tr>
-                                                 <tr mat-row *matRowDef="let row; columns: ['expandedRuleColumn']" class="expandedRule-row"></tr>
+                                                </tr>
+                                                <tr mat-row *matRowDef="let row; columns: ['expandedRuleColumn']"
+                                                    class="expandedRule-row"></tr>
                                             </table>
-                                            
-                                            <button class="buttonSkillTreeControl" mat-raised-button color="primary" (click)="onClickAddPlayerRule(playerIndex)">Add rule</button>
-                                            <button class="buttonSkillTreeControl" mat-raised-button color="accent" (click)="onClickResetPlayerRules(playerIndex)">Reset rules to default</button>
-                                            <button class="buttonSkillTreeControl" mat-raised-button color="accent" (click)="onClickRemovePlayerRules(playerIndex)">Remove all rules</button><br>
+
+                                            <button class="buttonSkillTreeControl" mat-raised-button color="primary"
+                                                (click)="onClickAddPlayerRule(playerIndex)">Add rule</button>
+                                            <button class="buttonSkillTreeControl" mat-raised-button color="accent"
+                                                (click)="onClickResetPlayerRules(playerIndex)">Reset rules to
+                                                default</button>
+                                            <button class="buttonSkillTreeControl" mat-raised-button color="accent"
+                                                (click)="onClickRemovePlayerRules(playerIndex)">Remove all
+                                                rules</button><br>
 
                                             <mat-form-field class="inputPotion">
                                                 <mat-label>Author</mat-label>
-                                                <input matInput type="text" placeholder="Author" [(ngModel)]="simParameters.ruleContainers[playerIndex].author">
+                                                <input matInput type="text" placeholder="Author"
+                                                    [(ngModel)]="simParameters.ruleContainers[playerIndex].author">
                                             </mat-form-field>
-                                            <button class="buttonSkillTreeControl" mat-raised-button (click)="onClickExportPlayerRules(playerIndex)">Export rules</button>
-                                            <button class="buttonSkillTreeControl" mat-raised-button (click)="onClickImportPlayerRules(playerIndex)">Import rules</button>
-                                            
-                                        </div> 
+                                            <button class="buttonSkillTreeControl" mat-raised-button
+                                                (click)="onClickExportPlayerRules(playerIndex)">Export rules</button>
+                                            <button class="buttonSkillTreeControl" mat-raised-button
+                                                (click)="onClickImportPlayerRules(playerIndex)">Import rules</button>
+
+                                        </div>
                                     </mat-expansion-panel>
-                                </div> 
-                                
-            
+                                </div>
+
+
                                 <br>
-                                <button id="buttonRemoveWizard" class="buttonSkillTreeControl" color="accent" mat-raised-button (click)="onClickRemoveWizard(playerIndex)">Remove wizard</button>
+                                <button id="buttonRemoveWizard" class="buttonSkillTreeControl" color="accent"
+                                    mat-raised-button (click)="onClickRemoveWizard(playerIndex)">Remove wizard</button>
                             </div>
-                        
-                            </div>
+
                         </div>
-                        <div *ngIf="simParameters.nameClasses.length<5" class="divSingleWizardSettingsWrapper">
-                            <div class="divSingleWizardSettings">
-                                <button id="buttonAddWizard" class="buttonSkillTreeControl" mat-raised-button (click)="onClickAddWizard($event)" 
-                                    matTooltip="Add another wizard" >Add wizard</button> 
-                            </div>
-                           
+                    </div>
+                    <div *ngIf="simParameters.nameClasses.length<5" class="divSingleWizardSettingsWrapper">
+                        <div class="divSingleWizardSettings">
+                            <button id="buttonAddWizard" class="buttonSkillTreeControl" mat-raised-button
+                                (click)="onClickAddWizard($event)" matTooltip="Add another wizard">Add wizard</button>
                         </div>
-                    </mat-tab>
-                </mat-tab-group>
+
+                    </div>
+                </mat-tab>
+            </mat-tab-group>
         </mat-expansion-panel>
 
-        <mat-expansion-panel #matPanelAdvancedSimulationSettings [expanded]="simAdvancedSettings.isAdvancedSettingsTabExpanded"
-        (opened)="simAdvancedSettings.isAdvancedSettingsTabExpanded = true"
-        (closed)="simAdvancedSettings.isAdvancedSettingsTabExpanded = false">
+        <mat-expansion-panel #matPanelAdvancedSimulationSettings
+            [expanded]="simAdvancedSettings.isAdvancedSettingsTabExpanded"
+            (opened)="simAdvancedSettings.isAdvancedSettingsTabExpanded = true"
+            (closed)="simAdvancedSettings.isAdvancedSettingsTabExpanded = false">
             <mat-expansion-panel-header>
                 <mat-panel-title>
                     Advanced simulation settings
                 </mat-panel-title>
                 <mat-panel-description>
-                    Enter a seed or other advanced settings. 
+                    Enter a seed or other advanced settings.
                 </mat-panel-description>
             </mat-expansion-panel-header>
-        
+
             <h2 class="mat-h2">General</h2>
             <mat-form-field class="inputAdvancedSetting">
-                <mat-label>Seed: This will ensure reproducible results. For multiple simulations, the seed will increased by 1 for each simulation. </mat-label>
-                <input matInput type="number" placeholder="Seed" [(ngModel)]="simParameters.seed" [(value)]="simParameters.seed">
+                <mat-label>Seed: This will ensure reproducible results. For multiple simulations, the seed will
+                    increased by 1 for each simulation. </mat-label>
+                <input matInput type="number" placeholder="Seed" [(ngModel)]="simParameters.seed"
+                    [(value)]="simParameters.seed">
             </mat-form-field>
-            <mat-checkbox [(ngModel)]="simAdvancedSettings.showPlayerRules">Show player AI rules in wizard settings</mat-checkbox><br>
-           
+            <mat-form-field class="inputAdvancedSetting">
+                <mat-label>How should player actions be selected?</mat-label>
+                <mat-select placeholder="Player action selection mode" name="selectActionSelectionMode"
+                    [(ngModel)]="simParameters.playerActionSelectionMode">
+
+                    <mat-option *ngFor="let item of getPlayerActionSelectionModeMap() | keyvalue" value="{{item.key}}">
+                        {{item.value}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-checkbox [(ngModel)]="simAdvancedSettings.showPlayerRules">Show player AI rules in wizard settings
+            </mat-checkbox><br>
 
             <div class="divContainerAdvancedSettingsSection">
                 <h2 class="mat-h2">Comparing multiple simulations</h2>
                 <mat-form-field class="inputAdvancedSetting">
-                    <mat-label>Number of simulations: For example, when comparing room level, will run each room level this many times (with different seeds). </mat-label>
-                    <input matInput type="number" min="1" placeholder="Number of simulations" [(ngModel)]="simAdvancedSettings.numberSimulationsPerSetting">
+                    <mat-label>Number of simulations: For example, when comparing room level, will run each room level
+                        this many times (with different seeds). </mat-label>
+                    <input matInput type="number" min="1" placeholder="Number of simulations"
+                        [(ngModel)]="simAdvancedSettings.numberSimulationsPerSetting">
                 </mat-form-field>
                 <mat-form-field class="inputAdvancedSetting">
-                    <mat-label>Seconds between simulations: This field is only used for calculating challenge XP rewards per hour. </mat-label>
-                    <input matInput type="number" min="1" placeholder="Seconds between simulations" [(ngModel)]="simAdvancedSettings.secondsBetweenSimulations">
+                    <mat-label>Seconds between simulations: This field is only used for calculating challenge XP rewards
+                        per hour. </mat-label>
+                    <input matInput type="number" min="1" placeholder="Seconds between simulations"
+                        [(ngModel)]="simAdvancedSettings.secondsBetweenSimulations">
                 </mat-form-field>
-    
+
                 <mat-form-field class="inputAdvancedSetting floatLeft width48Percent">
                     <mat-label>Simulate different room levels: Minimum room level </mat-label>
-                    <input matInput type="number" min="1" placeholder="Minimum room level" [(ngModel)]="simAdvancedSettings.simGoalMultipleParams.simGoalMultiple_minRoomLevel">
+                    <input matInput type="number" min="1" placeholder="Minimum room level"
+                        [(ngModel)]="simAdvancedSettings.simGoalMultipleParams.simGoalMultiple_minRoomLevel">
                 </mat-form-field>
                 <mat-form-field class="inputAdvancedSetting floatRight width48Percent">
                     <mat-label>Simulate different room levels: Maximum room level </mat-label>
-                    <input matInput type="number" min="1" placeholder="Maximum room level" [(ngModel)]="simAdvancedSettings.simGoalMultipleParams.simGoalMultiple_maxRoomLevel">
+                    <input matInput type="number" min="1" placeholder="Maximum room level"
+                        [(ngModel)]="simAdvancedSettings.simGoalMultipleParams.simGoalMultiple_maxRoomLevel">
                 </mat-form-field>
-                            
+
                 <mat-form-field class="inputAdvancedSetting">
                     <mat-label>Simulate skill tree upgrades: Filter lessons by cost</mat-label>
-                    <mat-select placeholder="Select skill tree upgrades filter" name="selectTreeUpgradesFilter" 
-                                [(ngModel)]="simAdvancedSettings.simGoalMultipleParams.simGoalMultiple_filterSkillTreeNodes"
-                                >
-                                
-                        <mat-option *ngFor="let item of getSkillTreeFilterLessonsMap() | keyvalue" value="{{item.key}}">{{item.value}}</mat-option>
+                    <mat-select placeholder="Select skill tree upgrades filter" name="selectTreeUpgradesFilter"
+                        [(ngModel)]="simAdvancedSettings.simGoalMultipleParams.simGoalMultiple_filterSkillTreeNodes">
+
+                        <mat-option *ngFor="let item of getSkillTreeFilterLessonsMap() | keyvalue" value="{{item.key}}">
+                            {{item.value}}</mat-option>
                     </mat-select>
                 </mat-form-field>
                 <mat-checkbox [(ngModel)]="simAdvancedSettings.runParallel">Run simulations in parallel</mat-checkbox>
                 <mat-form-field class="inputAdvancedSetting" *ngIf="simAdvancedSettings.runParallel">
-                    <mat-label>Number of worker threads (if unsure, use the number of your CPU physical cores -1)</mat-label>
-                    <input matInput type="number" min="1" placeholder="Number of worker threads" [(ngModel)]="simAdvancedSettings.numberParallelWorkers">
+                    <mat-label>Number of worker threads (if unsure, use the number of your CPU physical cores -1)
+                    </mat-label>
+                    <input matInput type="number" min="1" placeholder="Number of worker threads"
+                        [(ngModel)]="simAdvancedSettings.numberParallelWorkers">
                 </mat-form-field>
             </div>
-            
+
             <div class="divContainerAdvancedSettingsSection">
-                    <h2 class="mat-h2">Usability</h2>
-                <mat-checkbox class="inputAdvancedSetting floatLeft clearBoth" [(ngModel)]="simAdvancedSettings.closeSimParametersTabOnStartSimulation">
-                        Close input parameters tab on simulation start</mat-checkbox>
-                <mat-checkbox class="inputAdvancedSetting floatLeft clearBoth" [(ngModel)]="simAdvancedSettings.closeAdvancedSettingsTabOnStartSimulation">
-                        Close advanced settings tab on simulation start</mat-checkbox>
-                <mat-checkbox class="inputAdvancedSetting floatLeft clearBoth" [(ngModel)]="simAdvancedSettings.closeStartSimulationTabOnStartSimulation">
-                        Close start simulation tab on simulation start</mat-checkbox>
+                <h2 class="mat-h2">Usability</h2>
+                <mat-checkbox class="inputAdvancedSetting floatLeft clearBoth"
+                    [(ngModel)]="simAdvancedSettings.closeSimParametersTabOnStartSimulation">
+                    <span class="spanMultipleLines">Close input parameters tab on simulation start</span>
+                </mat-checkbox>
+                <mat-checkbox class="inputAdvancedSetting floatLeft clearBoth"
+                    [(ngModel)]="simAdvancedSettings.closeAdvancedSettingsTabOnStartSimulation">
+                    <span class="spanMultipleLines">Close advanced settings tab on simulation start</span>
+                </mat-checkbox>
+                <mat-checkbox class="inputAdvancedSetting floatLeft clearBoth"
+                    [(ngModel)]="simAdvancedSettings.closeStartSimulationTabOnStartSimulation">
+                    <span class="spanMultipleLines">Close start simulation tab on simulation start</span>
+                </mat-checkbox>
             </div>
 
             <div class="divContainerAdvancedSettingsSection">
                 <h2 class="mat-h2">Data on this website (v{{simAdvancedSettings.simulationVersion}})</h2>
                 <p>
-                    Data imports and exports include skill trees, customized player AI rules and advanced simulation settings.
+                    Data imports and exports include skill trees, customized player AI rules and advanced simulation
+                    settings.
                 </p>
-                <button class="buttonSkillTreeControl" id="buttonImportDataFromFile"  mat-raised-button (click)="importDataFromFile()">Import data from file</button>
-                <button class="buttonSkillTreeControl" id="buttonExportDataToFile" mat-raised-button (click)="exportDataToFile()">Export data as file</button>
-                <button class="buttonSkillTreeControl" id="buttonExportDataToFile" mat-raised-button color="accent" (click)="resetAllData()">Reset all data</button>
+                <button class="buttonSkillTreeControl" id="buttonImportDataFromFile" mat-raised-button
+                    (click)="importDataFromFile()">Import data from file</button>
+                <button class="buttonSkillTreeControl" id="buttonExportDataToFile" mat-raised-button
+                    (click)="exportDataToFile()">Export data as file</button>
+                <button class="buttonSkillTreeControl" id="buttonExportDataToFile" mat-raised-button color="accent"
+                    (click)="resetAllData()">Reset all data</button>
             </div>
 
         </mat-expansion-panel>
@@ -396,17 +480,22 @@
                 </mat-panel-description>
             </mat-expansion-panel-header>
             <div id="divStartSimulationContainer">
-                <button (click)="onClickButtonStartSingleSimulation()" class="buttonStartSimulation buttonSkillTreeControl" mat-raised-button large color="primary" >
+                <button (click)="onClickButtonStartSingleSimulation()"
+                    class="buttonStartSimulation buttonSkillTreeControl" mat-raised-button large color="primary">
                     Start single simulation
                 </button>
-                <button (click)="onClickButtonStartMultipleSimulations_compareRoomLevels()" class="buttonStartSimulation buttonSkillTreeControl" mat-raised-button large color="primary" >
-                    Simulate different room levels 
-                    (Levels {{simAdvancedSettings.simGoalMultipleParams.simGoalMultiple_minRoomLevel}} to 
+                <button (click)="onClickButtonStartMultipleSimulations_compareRoomLevels()"
+                    class="buttonStartSimulation buttonSkillTreeControl" mat-raised-button large color="primary"
+                    [disabled]="isPlayerActionSelectionManual()">
+                    Simulate different room levels
+                    (Levels {{simAdvancedSettings.simGoalMultipleParams.simGoalMultiple_minRoomLevel}} to
                     {{simAdvancedSettings.simGoalMultipleParams.simGoalMultiple_maxRoomLevel}})
                 </button>
-                <button (click)="onClickButtonStartMultipleSimulations_compareSkillTreeNodes()" class="buttonStartSimulation buttonSkillTreeControl" mat-raised-button large color="primary" 
-                        id="buttonStartSimulationCompareSkillTreeNodes">
-                    Simulate skill tree upgrades ({{getSkillTreeFilterLessonsMap()[simAdvancedSettings.simGoalMultipleParams.simGoalMultiple_filterSkillTreeNodes]}})
+                <button (click)="onClickButtonStartMultipleSimulations_compareSkillTreeNodes()"
+                    class="buttonStartSimulation buttonSkillTreeControl" mat-raised-button large color="primary"
+                    [disabled]="isPlayerActionSelectionManual()" id="buttonStartSimulationCompareSkillTreeNodes">
+                    Simulate skill tree upgrades
+                    ({{getSkillTreeFilterLessonsMap()[simAdvancedSettings.simGoalMultipleParams.simGoalMultiple_filterSkillTreeNodes]}})
                 </button>
             </div>
         </mat-expansion-panel>
@@ -420,70 +509,53 @@
                     Results of your simulation
                 </mat-panel-description>
             </mat-expansion-panel-header>
+            <div >
+                <!-- *ngIf="isPlayerActionSelectionManual() && simulationSingleResults === null && isSimulationRunning()" -->
+                <app-manual-action-selection-simulation  
+                    #manualActionSelectionSimulation>
+                </app-manual-action-selection-simulation>
+            </div>
 
-            <div #divContainerSingleSimulation *ngIf="simAdvancedSettings.simGoal ==='single' && simulationSingleResults !== null">
+            <div #divContainerSingleSimulation
+                *ngIf="simAdvancedSettings.simGoal ==='single' && simulationSingleResults !== null">
                 <div #divContainerSingleSimulationLog>
                     <h2 class="mat-h2">Overall simulation results: </h2>
                     Real world time passed: {{(simulationSingleResults.durationWallTimeMS / 1000).toFixed(3)}}s <br>
-                    Chamber time: {{(simulationSingleResults.durationGameTimeMS / 1000).toFixed(0)}}s / 
+                    Chamber time: {{(simulationSingleResults.durationGameTimeMS / 1000).toFixed(0)}}s /
                     {{(simulationSingleResults.maxGameTimeMS / 1000).toFixed(0)}}s
                     <br>
                     <!-- Number of events: {{simulationSingleResults.nEvents}} <br> -->
                     Room level: {{getChamberName(simulationSingleResults.simParameters.roomLevel)}} <br>
                     {{simulationSingleResults.isWin === false ? 'Challenge was not won.' : 'Challenge was won!'}}<br>
-                    
+
                     <div class="divSimulationSingleResultAllEnemies">
                         <h2 class="mat-h2">Enemies: </h2>
-                        <div class="divSimulationSingleResultCombatant divSimulationSingleResultEnemy" *ngFor="let enemy of simulationSingleResults.enemies">
-                            <div class="divEnemyPortraitContainer">
-                                <img src="assets/img/enemies/{{enemy.name}}.png" />
-                            </div>
-                            {{ enemy.nameUserFriendly }}<br>
-                            ({{ enemy.level }}{{ enemy.isElite === true ? ', elite' : ''}})
-                            <mat-progress-bar mode="determinate" color="warn" 
-                                 [value]="enemy.currentStamina  / enemy.maxStamina *100"></mat-progress-bar>
-                            <span class="spanEnemyDifficultyStar" *ngFor="let difficulty of [].constructor(enemy.difficulty)">★</span>
-                            <span class="spanEnemyDifficultyStar" *ngFor="let difficulty of [].constructor(5-enemy.difficulty)">☆</span>
-                            <div class="divSimulationSingleResultAllCombatantBuffs">
-                                <div class="divSimulationSingleResultCombatantBuff">
-                                    <img src="assets/img/deteriorationHex.png" *ngIf="enemy.hasDeteriorationHex"
-                                        matTooltip="Deterioration hex damage: {{enemy.deteriorationHexDamage}}"
-                                        [matTooltipClass]="'myMatTooltip'"
-                                    />
-                                </div>
-                                <div class="divSimulationSingleResultCombatantBuff">
-                                    <img src="assets/img/confusionHex.png" *ngIf="enemy.hasConfusionHex" 
-                                        matTooltip="Confusion hex (-defence, -defence breach, -dodge): {{enemy.confusionHexValue}}"
-                                        [matTooltipClass]="'myMatTooltip'"
-                                    />
-                                </div>
-                                <div class="divSimulationSingleResultCombatantBuff">
-                                    <img src="assets/img/weakeningHex.png" *ngIf="enemy.hasWeakeningHex" 
-                                        matTooltip="Weakening hex (-power): {{enemy.weakeningHexValue}}"
-                                        [matTooltipClass]="'myMatTooltip'"
-                                    />
-                                </div>
-                                        
-                            </div>
-                        </div>
+                        <app-enemy-portrait *ngFor="let enemy of simulationSingleResults.enemies" 
+                            [enemy]="enemy">
+                        </app-enemy-portrait>
                     </div>
-                   
-                    <div class ="divSimulationSingleResultAllWizards">
+
+                    <div class="divSimulationSingleResultAllWizards">
                         <h2 class="mat-h2">Players: </h2>
                         <div class="divSimulationSingleResultCombatant divSimulationSingleResultWizard"
-                             *ngFor="let wizardResult of simulationSingleResults.wizardResults">
+                            *ngFor="let wizardResult of simulationSingleResults.wizardResults">
                             <div class="floatLeft clearBoth">
                                 <b>Player {{wizardResult.playerIndex+1}} </b>
                                 ({{ wizardResult.nameClassUserFriendly }})<br>
-                                {{wizardResult.challengeXPReward}} challenge XP (runestone level {{wizardResult.runestoneLevel}})<br>
+                                {{wizardResult.challengeXPReward}} challenge XP (runestone level
+                                {{wizardResult.runestoneLevel}})<br>
                                 <span *ngIf="simulationSingleResults.simParameters.useSponsoredFortressRewards">
                                     {{simulationSingleResults.energyReward}} energy rewarded from sponsored fortress
                                 </span><br>
                                 <b>Attacks</b>
                                 <ul>
-                                    <li>{{wizardResult.numberOfCasts}} hits ({{wizardResult.numberOfCriticalCasts}} critical, {{wizardResult.numberOfDodgedCasts}} dodged)</li>
-                                    <li>{{wizardResult.averageDamage.toFixed(0)}} average damage ({{wizardResult.totalDamage}} total)</li>
-                                    <li>{{(wizardResult.totalDamageReceived/wizardResult.numberAttacksReceived).toFixed(0)}} average damage received ({{wizardResult.numberAttacksReceived}} attacks received, {{wizardResult.totalDamageReceived}} damage total)</li>
+                                    <li>{{wizardResult.numberOfCasts}} hits ({{wizardResult.numberOfCriticalCasts}}
+                                        critical, {{wizardResult.numberOfDodgedCasts}} dodged)</li>
+                                    <li>{{wizardResult.averageDamage.toFixed(0)}} average damage
+                                        ({{wizardResult.totalDamage}} total)</li>
+                                    <li>{{(wizardResult.totalDamageReceived/wizardResult.numberAttacksReceived).toFixed(0)}}
+                                        average damage received ({{wizardResult.numberAttacksReceived}} attacks
+                                        received, {{wizardResult.totalDamageReceived}} damage total)</li>
                                     <li>{{(wizardResult.timeSpentDefeated/1000).toFixed(0)}}s spent defeated</li>
                                 </ul>
                             </div>
@@ -493,27 +565,27 @@
                                     <b>Buffs</b>
                                 </span>
                                 <div class="divSimulationSingleResultCombatantBuff clearBoth">
-                                    <img src="assets/img/defenceCharm.png" 
-                                            *ngIf="wizardResult.hasDefenceCharm"
-                                            matTooltip="Defence charm: +{{(wizardResult.defenceCharmValue*100).toFixed(0)}}% defence"
+                                    <img src="assets/img/defenceCharm.png" *ngIf="wizardResult.hasDefenceCharm"
+                                        matTooltip="Defence charm: +{{(wizardResult.defenceCharmValue*100).toFixed(0)}}% defence"
                                         [matTooltipClass]="'myMatTooltip'" />
                                 </div>
                                 <div class="divSimulationSingleResultCombatantBuff">
-                                    <img src="assets/img/proficiencyCharm.png" 
-                                            *ngIf="wizardResult.hasProficiencyPowerCharm"
-                                            matTooltip="Proficiency power charm: +{{(wizardResult.proficiencyPowerCharmValue*100).toFixed(0)}}% proficiency"
-                                            [matTooltipClass]="'myMatTooltip'" />
+                                    <img src="assets/img/proficiencyCharm.png"
+                                        *ngIf="wizardResult.hasProficiencyPowerCharm"
+                                        matTooltip="Proficiency power charm: +{{(wizardResult.proficiencyPowerCharmValue*100).toFixed(0)}}% proficiency"
+                                        [matTooltipClass]="'myMatTooltip'" />
                                 </div>
                                 <div class="divSimulationSingleResultCombatantBuff">
-                                    <img src="assets/img/braveryCharm.png" 
-                                            *ngIf="wizardResult.hasBraveryCharm" />
+                                    <img src="assets/img/braveryCharm.png" *ngIf="wizardResult.hasBraveryCharm" />
                                 </div>
                             </div>
 
                             <div class="clearBoth floatLeft">
                                 <br>
-                                <b>Potions used</b> (brew time: {{formatHoursDecimal(wizardResult.potionsUsedBrewTimeHours)}}, 
-                                                        with master notes: {{formatHoursDecimal(wizardResult.potionsUsedBrewTimeHoursWithMasterNotes)}})
+                                <b>Potions used</b> (brew time:
+                                {{formatHoursDecimal(wizardResult.potionsUsedBrewTimeHours)}},
+                                with master notes:
+                                {{formatHoursDecimal(wizardResult.potionsUsedBrewTimeHoursWithMasterNotes)}})
                                 <ul>
                                     <li>{{wizardResult.potionsUsed.nExstimuloAvailable}}/{{wizardResult.potionsAtBeginning.nExstimuloAvailable}}
                                         Exstimulo Potion</li>
@@ -535,24 +607,28 @@
                                 <ul>
                                     <li *ngFor="let numberAttacks of wizardResult.numberEnhancementsDuringAttacks; let numberEnhancements=index"
                                         [hidden]="numberAttacks === 0">
-                                        <b>{{numberEnhancements}}</b> enhancements: 
-                                        <b>{{numberAttacks}}</b> ({{(100*numberAttacks/wizardResult.numberOfCasts).toFixed(0)}}%) attacks made,
-                                        <b>{{wizardResult.numberEnhancementsDuringAttacksReceived[numberEnhancements]}}</b> attacks received 
-                                            
+                                        <b>{{numberEnhancements}}</b> enhancements:
+                                        <b>{{numberAttacks}}</b>
+                                        ({{(100*numberAttacks/wizardResult.numberOfCasts).toFixed(0)}}%) attacks made,
+                                        <b>{{wizardResult.numberEnhancementsDuringAttacksReceived[numberEnhancements]}}</b>
+                                        attacks received
+
                                     </li>
                                 </ul>
                                 <b>Impairments</b>
                                 <ul>
                                     <li *ngFor="let numberAttacks of wizardResult.numberImpairmentsDuringAttacks; let numberImpairments=index"
                                         [hidden]="numberAttacks === 0">
-                                        <b>{{numberImpairments}}</b> impairments: 
-                                        <b>{{numberAttacks}}</b> ({{(100*numberAttacks/wizardResult.numberOfCasts).toFixed(0)}}%) attacks made,
-                                        <b>{{wizardResult.numberImpairmentsDuringAttacksReceived[numberImpairments]}}</b> attacks received 
-                                            
+                                        <b>{{numberImpairments}}</b> impairments:
+                                        <b>{{numberAttacks}}</b>
+                                        ({{(100*numberAttacks/wizardResult.numberOfCasts).toFixed(0)}}%) attacks made,
+                                        <b>{{wizardResult.numberImpairmentsDuringAttacksReceived[numberImpairments]}}</b>
+                                        attacks received
+
                                     </li>
                                 </ul>
                             </div>
-                            
+
 
                         </div>
                     </div>
@@ -560,109 +636,114 @@
                 </div>
             </div>
 
-            
+
             <div #divContainerMultipleSimulations *ngIf="simAdvancedSettings.simGoal.indexOf('multiple') !== -1">
                 <div *ngIf="simProgress !== null">
                     Progress: {{ simProgress.nFinished }} / {{ simProgress.nTotal }} simulations finished
-                    <mat-progress-bar mode="determinate" [value]="simProgress.nFinished / simProgress.nTotal *100"></mat-progress-bar>
+                    <mat-progress-bar mode="determinate" [value]="simProgress.nFinished / simProgress.nTotal *100">
+                    </mat-progress-bar>
                 </div>
                 <div id="divContainerMultipleSimulationsTable" *ngIf="simProgress === null">
-                    <table id="tableMultipleResultsGrouped"
-                        #tableMultipleSimulationResults mat-table matSort 
-                        (matSortChange)="onSortMultipleResults($event)"
-                        [dataSource]="simulationMultipleResultsGrouped" class="mat-elevation-z8">
+                    <table id="tableMultipleResultsGrouped" #tableMultipleSimulationResults mat-table matSort
+                        (matSortChange)="onSortMultipleResults($event)" [dataSource]="simulationMultipleResultsGrouped"
+                        class="mat-elevation-z8">
 
-                        
-                            <ng-container matColumnDef="groupByValue" sticky>
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header class="cellBorderRight"> {{simGoalMap[simAdvancedSettings.simGoal]}} </th>
-                                <td mat-cell *matCellDef="let row" class="cellBorderRight"> {{row.groupByValue}} </td>
-                            </ng-container>
-                            <!-- <ng-container matColumnDef="roomLevel">
+
+                        <ng-container matColumnDef="groupByValue" sticky>
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header class="cellBorderRight">
+                                {{simGoalMap[simAdvancedSettings.simGoal]}} </th>
+                            <td mat-cell *matCellDef="let row" class="cellBorderRight"> {{row.groupByValue}} </td>
+                        </ng-container>
+                        <!-- <ng-container matColumnDef="roomLevel">
                                     <th mat-header-cell *matHeaderCellDef mat-sort-header> Room level </th>
                                     <td mat-cell *matCellDef="let row"> {{row.roomLevel}} </td>
                             </ng-container> -->
-                            <ng-container matColumnDef="winPercentage">
-                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Win % </th>
-                                    <td mat-cell *matCellDef="let row"> {{(row.winPercentage*100).toFixed(2)}}% </td>
-                            </ng-container>
-                            <ng-container matColumnDef="averageNumberOfCasts">
-                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Average energy (casts)</th>
-                                    <td mat-cell *matCellDef="let row"> {{row.averageNumberOfCasts.toFixed(2)}} </td>
-                            </ng-container>
-                            <ng-container matColumnDef="averageDamage">
-                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Average damage </th>
-                                    <td mat-cell *matCellDef="let row"> {{row.averageDamage.toFixed(2)}} </td>
-                            </ng-container>
-                            <ng-container matColumnDef="averageCritPercent">
-                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Crit % </th>
-                                    <td mat-cell *matCellDef="let row"> {{(row.averageCritPercent*100).toFixed(0)}}% </td>
-                            </ng-container>
-                            <ng-container matColumnDef="averageDodgePercent">
-                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Dodge % </th>
-                                    <td mat-cell *matCellDef="let row"> {{(row.averageDodgePercent*100).toFixed(0)}}% </td>
-                            </ng-container>
-                            <ng-container matColumnDef="averageTotalDamage">
-                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Average total damage </th>
-                                    <td mat-cell *matCellDef="let row"> {{row.averageTotalDamage.toFixed(2)}} </td>
-                            </ng-container>
-                            <ng-container matColumnDef="averageTimeSpentDeadMS">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Average time dead </th>
-                                <td mat-cell *matCellDef="let row"> {{(row.averageTimeSpentDeadMS / 1000).toFixed(0)}}s </td>
-                            </ng-container>
-                            <ng-container matColumnDef="averageGameTimeMS">
-                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Average chamber time </th>
-                                    <td mat-cell *matCellDef="let row"> {{(row.averageGameTimeMS / 1000).toFixed(0)}}s </td>
-                            </ng-container>
-                            <ng-container matColumnDef="averageBrewTimeHours">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header class="cellBorderRight"> Average brew time </th>
-                                <td mat-cell *matCellDef="let row" class="cellBorderRight"> {{formatHoursDecimal(row.averageBrewTimeHours)}}</td>
-                            </ng-container>
-                            <ng-container matColumnDef="averageChallengeXPReward">
-                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Reward </th>
-                                    <td mat-cell *matCellDef="let row"> {{row.averageChallengeXPReward}} CXP </td>
-                            </ng-container>
-                            <ng-container matColumnDef="averageRunsPerHour">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Runs per hour </th>
-                                <td mat-cell *matCellDef="let row"> {{row.averageRunsPerHour.toFixed(1) }} runs/hour </td>
-                            </ng-container>
-                            <ng-container matColumnDef="averageChallengeXPRewardPerHour">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Rewards per hour </th>
-                                <td mat-cell *matCellDef="let row"> {{row.averageChallengeXPRewardPerHour.toFixed(0) }} CXP/hour </td>
-                            </ng-container>
-                            <ng-container matColumnDef="averageEnergyPerHour">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header class="cellBorderRight"> Energy per hour </th>
-                                <td mat-cell *matCellDef="let row" class="cellBorderRight"> {{row.averageEnergyPerHour.toFixed(0) }} energy/hour </td>
-                            </ng-container>
-                            <ng-container matColumnDef="numberOfRuns">
-                                    <th mat-header-cell *matHeaderCellDef> Runs simulated </th>
-                                    <td mat-cell *matCellDef="let row"> {{row.numberOfRuns}} </td>
-                            </ng-container>
-        
-                            <tr mat-header-row *matHeaderRowDef="columnNamesMultipleSimulationsResultsGrouped"></tr>
-                            <tr mat-row *matRowDef="let row; columns: columnNamesMultipleSimulationsResultsGrouped;"></tr>
-                        </table>
+                        <ng-container matColumnDef="winPercentage">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Win % </th>
+                            <td mat-cell *matCellDef="let row"> {{(row.winPercentage*100).toFixed(2)}}% </td>
+                        </ng-container>
+                        <ng-container matColumnDef="averageNumberOfCasts">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Average energy (casts)</th>
+                            <td mat-cell *matCellDef="let row"> {{row.averageNumberOfCasts.toFixed(2)}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="averageDamage">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Average damage </th>
+                            <td mat-cell *matCellDef="let row"> {{row.averageDamage.toFixed(2)}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="averageCritPercent">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Crit % </th>
+                            <td mat-cell *matCellDef="let row"> {{(row.averageCritPercent*100).toFixed(0)}}% </td>
+                        </ng-container>
+                        <ng-container matColumnDef="averageDodgePercent">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Dodge % </th>
+                            <td mat-cell *matCellDef="let row"> {{(row.averageDodgePercent*100).toFixed(0)}}% </td>
+                        </ng-container>
+                        <ng-container matColumnDef="averageTotalDamage">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Average total damage </th>
+                            <td mat-cell *matCellDef="let row"> {{row.averageTotalDamage.toFixed(2)}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="averageTimeSpentDeadMS">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Average time dead </th>
+                            <td mat-cell *matCellDef="let row"> {{(row.averageTimeSpentDeadMS / 1000).toFixed(0)}}s
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="averageGameTimeMS">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Average chamber time </th>
+                            <td mat-cell *matCellDef="let row"> {{(row.averageGameTimeMS / 1000).toFixed(0)}}s </td>
+                        </ng-container>
+                        <ng-container matColumnDef="averageBrewTimeHours">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header class="cellBorderRight"> Average brew
+                                time </th>
+                            <td mat-cell *matCellDef="let row" class="cellBorderRight">
+                                {{formatHoursDecimal(row.averageBrewTimeHours)}}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="averageChallengeXPReward">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Reward </th>
+                            <td mat-cell *matCellDef="let row"> {{row.averageChallengeXPReward}} CXP </td>
+                        </ng-container>
+                        <ng-container matColumnDef="averageRunsPerHour">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Runs per hour </th>
+                            <td mat-cell *matCellDef="let row"> {{row.averageRunsPerHour.toFixed(1) }} runs/hour </td>
+                        </ng-container>
+                        <ng-container matColumnDef="averageChallengeXPRewardPerHour">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Rewards per hour </th>
+                            <td mat-cell *matCellDef="let row"> {{row.averageChallengeXPRewardPerHour.toFixed(0) }}
+                                CXP/hour </td>
+                        </ng-container>
+                        <ng-container matColumnDef="averageEnergyPerHour">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header class="cellBorderRight"> Energy per
+                                hour </th>
+                            <td mat-cell *matCellDef="let row" class="cellBorderRight">
+                                {{row.averageEnergyPerHour.toFixed(0) }} energy/hour </td>
+                        </ng-container>
+                        <ng-container matColumnDef="numberOfRuns">
+                            <th mat-header-cell *matHeaderCellDef> Runs simulated </th>
+                            <td mat-cell *matCellDef="let row"> {{row.numberOfRuns}} </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="columnNamesMultipleSimulationsResultsGrouped"></tr>
+                        <tr mat-row *matRowDef="let row; columns: columnNamesMultipleSimulationsResultsGrouped;"></tr>
+                    </table>
                 </div>
-                
+
             </div>
 
             <br>
             <div id="divContainerSimulationLog">
                 <h2 class="mat-h2">Simulation log: </h2>
-                <mat-form-field id="selectLogChannelInput"  class="inputAdvancedSetting">
-                    <mat-select placeholder="Select log channel" name="selectLogChannel" 
-                                                    [(ngModel)]="simAdvancedSettings.simulationLogChannel"
-                                                    class="inputPotion">
-                                                    
-                        <mat-option *ngFor="let item of simulationLogChannelStore | keyvalue" 
-                                    value="{{item.key}}">{{item.key}}</mat-option>
+                <mat-form-field id="selectLogChannelInput" class="inputAdvancedSetting">
+                    <mat-select placeholder="Select log channel" name="selectLogChannel"
+                        [(ngModel)]="simAdvancedSettings.simulationLogChannel" class="inputPotion">
+
+                        <mat-option *ngFor="let item of simulationLogChannelStore | keyvalue" value="{{item.key}}">
+                            {{item.key}}</mat-option>
                     </mat-select>
-                </mat-form-field> 
-                <textarea matInput id="inputSimulationLog" type="text" disabled="true" 
-                        placeholder="Simulation log" 
-                        [(value)]="simulationLogChannelStore[simAdvancedSettings.simulationLogChannel]"></textarea>
+                </mat-form-field>
+                <textarea matInput id="inputSimulationLog" type="text" disabled="true" placeholder="Simulation log"
+                    [(value)]="simulationLogChannelStore[simAdvancedSettings.simulationLogChannel]"></textarea>
             </div>
-            
-           
+
+
 
         </mat-expansion-panel>
 

@@ -1,0 +1,28 @@
+<div class="divSimulationSingleResultCombatant divSimulationSingleResultEnemy">
+    <div class="divEnemyPortraitContainer">
+        <img src="assets/img/enemies/{{enemy.name}}.png" />
+    </div>
+    {{ enemy.nameUserFriendly }}<br>
+    (ID={{enemy.enemyIndex}}, {{ enemy.level }}{{ enemy.isElite === true ? ', elite' : ''}})
+    <mat-progress-bar mode="determinate" color="warn" [value]="enemy.currentStamina  / enemy.maxStamina *100">
+    </mat-progress-bar>
+    <span class="spanEnemyDifficultyStar" *ngFor="let difficulty of [].constructor(enemy.difficulty)">★</span>
+    <span class="spanEnemyDifficultyStar" *ngFor="let difficulty of [].constructor(5-enemy.difficulty)">☆</span>
+    <div class="divSimulationSingleResultAllCombatantBuffs">
+        <div class="divSimulationSingleResultCombatantBuff">
+            <img src="assets/img/deteriorationHex.png" *ngIf="enemy.hasDeteriorationHex"
+                matTooltip="Deterioration hex damage: {{enemy.deteriorationHexDamage}}"
+                [matTooltipClass]="'myMatTooltip'" />
+        </div>
+        <div class="divSimulationSingleResultCombatantBuff">
+            <img src="assets/img/confusionHex.png" *ngIf="enemy.hasConfusionHex"
+                matTooltip="Confusion hex (-defence, -defence breach, -dodge): {{enemy.confusionHexValue}}"
+                [matTooltipClass]="'myMatTooltip'" />
+        </div>
+        <div class="divSimulationSingleResultCombatantBuff">
+            <img src="assets/img/weakeningHex.png" *ngIf="enemy.hasWeakeningHex"
+                matTooltip="Weakening hex (-power): {{enemy.weakeningHexValue}}" [matTooltipClass]="'myMatTooltip'" />
+        </div>
+
+    </div>
+</div>

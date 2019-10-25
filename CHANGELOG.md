@@ -1,3 +1,6 @@
+- 0.8.0
+    - Allow manual selection of next action for players
+    - Allow manual input of enemies 
 - 0.7.1
     - Responsive design: Make interface elements more readable on mobile devices
     - Simulations results comparison table: Sortable, better layout, sticky column

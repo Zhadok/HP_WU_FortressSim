@@ -16,6 +16,10 @@ describe("ExitCombatEvent", function() {
     beforeEach(() => {
         wizard = TestData.buildDefaultProfessor();
         enemy = TestData.buildDefaultEnemy(); 
+        wizard.inCombat = true; 
+        wizard.inCombatWith = enemy; 
+        enemy.inCombat = true; 
+        enemy.inCombatWith = wizard; 
         event = new ExitCombatEvent(0, enemy, wizard, TestData.buildNewRNG_0()); 
     }); 
 

@@ -13,7 +13,7 @@ export class DefenceCharmEvent extends StrategicSpellEvent {
         this.targetWizard = targetWizard;
 
         if ((caster as Professor).hasStudiedDefenceCharm() === false) {
-            throw new Error("Wizard id=" + caster.playerIndex + " has not studied defence charm but tried casting it!");
+            throw new Error(caster.toUserFriendlyDescription() + " has not studied defence charm but tried casting it!");
         }
     }
 
@@ -28,7 +28,7 @@ export class DefenceCharmEvent extends StrategicSpellEvent {
     }
 
     getStrategicSpellName(): string {
-        return "Defence Charm (+" + (this.defenceIncrease*100).toFixed(0) + "% defence)"; 
+        return "Defence Charm (+" + (this.defenceIncrease*100).toFixed(0) + "% defence) for " + this.targetWizard.toUserFriendlyDescription(); 
     }
 
 

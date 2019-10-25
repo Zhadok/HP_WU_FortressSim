@@ -1,6 +1,6 @@
 import { Combatant } from "../Combatant";
 import { WizardStats } from "./WizardStats";
-import { nameClassType, nameClassUserFriendlyType, strategicSpellNameType, statNameType } from "../../types";
+import { nameClassType, nameClassUserFriendlyType, strategicSpellNameType, statNameType, actionNameType } from "../../types";
 import { Enemy } from "../env/enemies/Enemy";
 
 import focusCostData from "../../data/focusCosts.json";
@@ -319,6 +319,43 @@ export abstract class Wizard extends Combatant {
     }
 
     abstract isProficientAgainst(enemy: Enemy): boolean;
+
+    isValidAction(actionName: actionNameType): boolean {
+        // check potions
+        switch (actionName) {
+            case "potentExstimuloPotion": if (this.potions!.nPotentExstimuloAvailable === 0 || this.inCombat === false) return false; break; 
+            case "strongExstimuloPotion": if (this.potions!.nStrongExstimuloAvailable === 0 || this.inCombat === false) return false; break; 
+            case "exstimuloPotion": if (this.potions!.nExstimuloAvailable === 0 || this.inCombat === false) return false; break; 
+            case "healthPotion": if (this.potions!.nHealingPotionsAvailable === 0) return false; break; 
+            case "strongInvigorationPotion": if (this.potions!.nStrongInvigorationAvailable === 0) return false; break; 
+            case "weakInvigorationPotion": if (this.potions!.nWeakInvigorationAvailable === 0) return false; break; 
+            case "witSharpeningPotion": if (this.potions!.nWitSharpeningAvailable === 0 || this.inCombat === false || this.inCombatWith!.isElite === false) return false; break; 
+        }
+        // Check inCombat
+        if (this.inCombat === false) {
+            switch (actionName) {
+                case "combatSpellCastWizard": return false; break; 
+                case "exitCombat": return false; break; 
+                case "noAction": return false; break; 
+            }
+            if (this.isActionStrategicSpell(actionName) && (this.isValidStrategicSpell(actionName as strategicSpellNameType) === false || this.canCastStrategicSpell(actionName as strategicSpellNameType) === false)) return false; 
+        }
+        if (this.inCombat === true) {
+            switch (actionName) {
+                case "enterCombatWithHighestPriorityAvailableEnemy": return false; break; 
+                case "enterCombat": return false; break; 
+            }
+            if (this.isActionStrategicSpell(actionName)) return false; 
+        }
+
+        return true; 
+    }
+    protected abstract canCastStrategicSpell(strategicSpellName: strategicSpellNameType): boolean; 
+    protected abstract isValidStrategicSpell(strategicSpellName: strategicSpellNameType): boolean; 
+
+    isActionStrategicSpell(actionName: actionNameType) {
+        return Object.keys(focusCostData).indexOf(actionName) > -1; 
+    }
 
     static getPotionsBrewTime(potions: PotionAvailabilityParameters, useMasterNotes: boolean): number {
         let hours = potions.nExstimuloAvailable * potionsBrewTime.exstimuloPotion +

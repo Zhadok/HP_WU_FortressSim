@@ -20,12 +20,17 @@ import { MatSortModule } from "@angular/material";
 import { MatPaginatorModule } from "@angular/material";
 import { MatIconModule } from "@angular/material";
 import { RuleDetailComponentComponent } from './rule-detail-component/rule-detail-component.component';
-import { MatCardModule } from "@angular/material"; 
+import { MatCardModule } from "@angular/material";
+import { ManualActionSelectionSimulationComponent } from './manual-action-selection-simulation/manual-action-selection-simulation.component';
+import { EnemyPortraitComponent } from './enemy-portrait/enemy-portrait.component'; 
+import { MatRadioModule} from "@angular/material";
 
 @NgModule({
         declarations: [
             AppComponent,
-            RuleDetailComponentComponent
+            RuleDetailComponentComponent,
+            ManualActionSelectionSimulationComponent,
+            EnemyPortraitComponent
         ],
         imports: [
             BrowserModule,
@@ -46,7 +51,8 @@ import { MatCardModule } from "@angular/material";
             MatSortModule,
             MatPaginatorModule,
             MatIconModule,
-            MatCardModule
+            MatCardModule,
+            MatRadioModule
         ],
         providers: [],
         bootstrap: [AppComponent]

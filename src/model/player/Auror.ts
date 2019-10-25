@@ -2,7 +2,7 @@ import { Wizard } from "./Wizard";
 import focusCostData from "../../data/focusCosts.json";
 import { Enemy } from "../env/enemies/Enemy";
 import { WizardStats } from "./WizardStats";
-import { statNameType } from '../../types';
+import { statNameType, actionNameType } from '../../types';
 
 
 export class Auror extends Wizard {
@@ -47,47 +47,74 @@ export class Auror extends Wizard {
             critChanceBuffs += this.getTriggers().dancingWithDummies!;
         }
         if (this.getTriggers().trickWithDeathEaters !== null && enemy.name === "deathEater") {
-            critChanceBuffs += this.getTriggers().trickWithDeathEaters! 
+            critChanceBuffs += this.getTriggers().trickWithDeathEaters!
         }
         return super.getCritChanceAfterModifications(enemy) + critChanceBuffs;
     }
     getCriticalPowerAfterModifications(enemy: Enemy): number {
-        let criticalPowerBuffs = 0; 
+        let criticalPowerBuffs = 0;
         if (this.getTriggers().firstStrike !== null && enemy.getCurrentStaminaPercent() === 1) {
-            criticalPowerBuffs += this.getTriggers().firstStrike!; 
+            criticalPowerBuffs += this.getTriggers().firstStrike!;
         }
-        return super.getCriticalPowerAfterModifications(enemy) + criticalPowerBuffs; 
+        return super.getCriticalPowerAfterModifications(enemy) + criticalPowerBuffs;
     }
 
     getDefenceAfterModifications(enemy: Enemy): number {
-        let defenceBuffs = 0; 
+        let defenceBuffs = 0;
         if (this.getTriggers().playingDirty !== null && enemy.getCurrentStaminaPercent() < 0.5) {
-            defenceBuffs += this.getTriggers().playingDirty!; 
+            defenceBuffs += this.getTriggers().playingDirty!;
         }
-        return super.getDefenceAfterModifications(enemy) + defenceBuffs; 
+        return super.getDefenceAfterModifications(enemy) + defenceBuffs;
     }
     getProtegoPowerAfterModifications(enemy: Enemy): number {
-        let buffs = 0; 
+        let buffs = 0;
         if (this.getTriggers().mundungusAmongUs !== null && enemy.name === "darkWizard") {
-            buffs += this.getTriggers().mundungusAmongUs!; 
+            buffs += this.getTriggers().mundungusAmongUs!;
         }
-        return super.getProtegoPowerAfterModifications(enemy) + buffs; 
+        return super.getProtegoPowerAfterModifications(enemy) + buffs;
     }
 
     static isValidStatForClass(statName: statNameType): boolean {
-        switch(statName) {
+        switch (statName) {
             // Magizoologist
-            case "staminaCharmValue": 
-            case "reviveCharmValue": 
-            case "braveryCharmValue": 
+            case "staminaCharmValue":
+            case "reviveCharmValue":
+            case "braveryCharmValue":
 
             // Professor
-            case "deteriorationHexDamage": 
-            case "mendingCharmStaminaRestore": 
-            case "defenceCharmIncrease": 
-            case "proficiencyPowerCharmIncrease": return false; 
+            case "deteriorationHexDamage":
+            case "mendingCharmStaminaRestore":
+            case "defenceCharmIncrease":
+            case "proficiencyPowerCharmIncrease": return false;
         }
-        return true; 
+        return true;
     }
+
+    isValidStrategicSpell(actionName: actionNameType): boolean {
+        switch (actionName) {
+            // Magizoologist
+            case "staminaCharm":
+            case "reviveCharm":
+            case "braveryCharm":
+
+            // Professor
+            case "deteriorationHex":
+            case "mendingCharm":
+            case "defenceCharm":
+            case "proficiencyPowerCharm": return false;
+        }
+        return true;
+    }
+
+    canCastStrategicSpell(actionName: actionNameType) {
+        switch (actionName) {
+            case "weakeningHex": return this.hasStudiedWeakeningHex() && this.hasEnoughFocusForStrategicSpell(actionName); 
+            case "confusionHex": return this.hasStudiedConfusionHex() && this.hasEnoughFocusForStrategicSpell(actionName); 
+            case "focusCharm": return this.hasStudiedFocusCharm() && this.hasEnoughFocusForStrategicSpell(actionName); 
+            case "batBogeyHex": return this.hasStudiedBatBogeyHex() && this.hasEnoughFocusForStrategicSpell(actionName); 
+        }
+        return false; 
+    }
+
 
 }

@@ -23,7 +23,9 @@ import { WizardsOutOfTimeEvent } from "./events/env/WizardsOutOfTimeEvent";
 import { FortressRoom } from "../model/env/FortressRoom";
 import { CombatSpellCastEnemyEvent } from "./events/wizard/combat/CombatSpellCastEnemyEvent";
 import { CooldownFinishedEvent } from "./events/wizard/room/spells/CooldownFinishedEvent";
-import { CombatSimulationResultsWizard } from "./CombatSimulationResultsWizard.js";
+import { CombatSimulationResultsWizard } from "./CombatSimulationResultsWizard";
+import { PlayerActionEngine } from "../rules/PlayerActionEngine";
+import { ManualPlayerActionEngine } from "../rules/ManulPlayerActionEngine";
 
 
 export class CombatSimulation {
@@ -33,7 +35,7 @@ export class CombatSimulation {
     readonly fortressRoom: FortressRoom;
     readonly rng: Prando
     
-    readonly rulesEngines: Array<RulesEngine>; // 1 ruleEngine per player (it might be that 2 professors in team but that they should follow different strategy)
+    readonly playerActionEngines: Array<PlayerActionEngine>; // 1 ruleEngine per player (it might be that 2 professors in team but that they should follow different strategy)
 
     currentTime: number;
     readonly maxTime: number; 
@@ -74,18 +76,27 @@ export class CombatSimulation {
             this.wizards.push(wizard);
         }
 
-        this.rulesEngines = []; 
-        if (params.ruleContainers === undefined) {
-            for (let nameClass of params.nameClasses) {
-                this.rulesEngines.push(RulesEngine.buildFromStandard(nameClass, rng)); 
-            }
+        this.playerActionEngines = []; 
+        switch (params.playerActionSelectionMode) {
+            case "manual": 
+                for (let nameClass of params.nameClasses) {
+                    this.playerActionEngines.push(new ManualPlayerActionEngine(nameClass, rng)); 
+                }
+                break; 
+            case "rules": 
+            default: 
+                if (params.ruleContainers === undefined) {
+                    for (let nameClass of params.nameClasses) {
+                        this.playerActionEngines.push(RulesEngine.buildFromStandard(nameClass, rng)); 
+                    }
+                }
+                else {
+                    for (let ruleContainer of params.ruleContainers) {
+                        this.playerActionEngines.push(new RulesEngine(ruleContainer, rng)); 
+                    }
+                }
+                break; 
         }
-        else {
-            for (let ruleContainer of params.ruleContainers) {
-                this.rulesEngines.push(new RulesEngine(ruleContainer, rng)); 
-            }
-        }
-
         
     }
 
@@ -317,8 +328,8 @@ export class CombatSimulation {
         }   
     }
 
-    getRulesEngine(playerIndex: number): RulesEngine {
-        return this.rulesEngines[playerIndex]; 
+    getPlayerActionEngine(playerIndex: number): PlayerActionEngine {
+        return this.playerActionEngines[playerIndex]; 
     }
 
     // Priority based next action
@@ -346,7 +357,7 @@ export class CombatSimulation {
                 numberOfWizards: this.wizards.length
             }
         }
-        let nextEvent = await this.getRulesEngine(wizard.playerIndex).getNextAction(timestampBegin, facts);
+        let nextEvent = await this.getPlayerActionEngine(wizard.playerIndex).getNextAction(timestampBegin, facts);
         if (nextEvent !== null) {
             // event can be null, for example, if professor has not studied mending charm and no enemies available
             this.addEvent(nextEvent);

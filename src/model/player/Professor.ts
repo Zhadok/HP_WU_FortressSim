@@ -3,7 +3,7 @@ import { Enemy } from "../env/enemies/Enemy";
 import { WizardStats } from "./WizardStats";
 import { SkillTree } from "./SkillTree/SkillTree";
 import { SkillTreeNode } from "./SkillTree/SkillTreeNode";
-import { statNameType } from '../../types';
+import { statNameType, actionNameType, strategicSpellNameType } from '../../types';
 import { ENGINE_METHOD_PKEY_METHS } from "constants";
 
 
@@ -99,6 +99,32 @@ export class Professor extends Wizard {
             case "focusCharmValue": return false; 
         }
         return true; 
+    }
+
+    isValidStrategicSpell(strategicSpellName: strategicSpellNameType): boolean {
+        switch (strategicSpellName) {
+            // Magizoologist
+            case "staminaCharm": 
+            case "reviveCharm": 
+            case "braveryCharm": 
+
+            // Auror
+            case "weakeningHex": 
+            case "confusionHex": 
+            case "batBogeyHex": 
+            case "focusCharm": return false; 
+        }
+        return true; 
+    }
+
+    canCastStrategicSpell(strategicSpellName: strategicSpellNameType) {
+        switch (strategicSpellName) {
+            case "defenceCharm": return this.hasStudiedDefenceCharm() && this.hasEnoughFocusForStrategicSpell("defenceCharm"); 
+            case "mendingCharm": return this.hasStudiedMendingCharm() && this.hasEnoughFocusForStrategicSpell("mendingCharm"); 
+            case "proficiencyPowerCharm": return this.hasStudiedProficiencyPowerCharm() && this.hasEnoughFocusForStrategicSpell("proficiencyPowerCharm"); 
+            case "deteriorationHex": return this.hasStudiedDeteriorationHex() && this.hasEnoughFocusForStrategicSpell("deteriorationHex"); 
+        }
+        return false; 
     }
 
 }

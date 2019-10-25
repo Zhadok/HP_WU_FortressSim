@@ -6,7 +6,6 @@ import professorRules from "./store/professorRules.json";
 import aurorRules from "./store/aurorRules.json";
 import magizoologistRules from "./store/magizoologistRules.json";
 
-import potionsData from "../data/potions.json"; 
 import { nameClassType, nameClassUserFriendlyType, strategicSpellNameType, ruleFactType, actionNameType, ruleOperatorMapType, ruleContainerType, ruleType, actionNameMapType, ruleFactNameMapType, ruleFactNameType, ruleFactChamberType, ruleEventTargetMapType, ruleEventTargetType } from "../types";
 import { SimEvent } from "../sim/events/SimEvent";
 import { DefenceCharmEvent } from "../sim/events/wizard/room/spells/professor/DefenceCharmEvent";
@@ -34,37 +33,11 @@ import { BraveryCharmEvent } from "../sim/events/wizard/room/spells/magizoologis
 import { StaminaCharmEvent } from "../sim/events/wizard/room/spells/magizoologist/StaminaCharmEvent";
 import { ReviveCharmEvent } from "../sim/events/wizard/room/spells/magizoologist/ReviveCharmEvent";
 import { Combatant } from "../model/Combatant";
+import { PlayerActionEngine } from "./PlayerActionEngine";
 
 
-export class RulesEngine {
+export class RulesEngine extends PlayerActionEngine {
 
-    static actionNameMap: actionNameMapType = {
-        "weakeningHex": "Weakening Hex",
-        "confusionHex": "Confusion Hex",
-        "focusCharm": "Focus Charm",
-        "batBogeyHex": "Bat Bogey Hex",
-        
-        "staminaCharm": "Stamina Charm",
-        "reviveCharm": "Revive Charm",
-        "braveryCharm": "Bravery Charm",
-    
-        "defenceCharm": "Defence Charm",
-        "deteriorationHex": "Deterioration Hex",
-        "proficiencyPowerCharm": "Proficiency Power Charm",
-        "mendingCharm": "Mending Charm",
-
-        "strongInvigorationPotion": "Strong Invigoration Potion",
-        "weakInvigorationPotion": "Weak Invigoration Potion",
-        "potentExstimuloPotion": "Potent Exstimulo Potion",
-        "strongExstimuloPotion": "Strong Exstimulo Potion", 
-        "exstimuloPotion": "Exstimulo Potion",
-        "witSharpeningPotion": "Wit Sharpening Potion",
-        "healthPotion": "Health Potion",
-        "enterCombatWithHighestPriorityAvailableEnemy": "Enter combat with highest priority available enemy",
-        "exitCombat": "Exit combat", 
-        "combatSpellCastWizard": "Attack",
-        "noAction": "No action"
-    }; 
 
     static allowedFactObjects: ruleFactNameMapType = {
         "wizard": {
@@ -117,12 +90,11 @@ export class RulesEngine {
 
 
 
-    readonly engine: Engine    
-    readonly rng: Prando; 
+    readonly engine: Engine; 
 
     constructor(ruleContainer: ruleContainerType, rng: Prando) {
+        super(rng); 
         this.engine = new Engine();
-        this.rng = rng;
         let rules = ruleContainer.rules; 
         
         rules.forEach((rule, index) => {
@@ -213,6 +185,7 @@ export class RulesEngine {
             case "confusionHex": return "targetEnemy";
             case "defenceCharm": return "targetWizard";
             case "deteriorationHex": return "targetEnemy"; 
+            case "enterCombat": return "targetEnemy"; 
             case "enterCombatWithHighestPriorityAvailableEnemy": return null; 
             case "exitCombat": return null;
             case "exstimuloPotion": return null;
@@ -274,34 +247,36 @@ export class RulesEngine {
             if (event.params.targetWizardIndex !== undefined) {
                 targetWizard = facts.allWizards.filter(wizard => wizard.playerIndex === event.params.targetWizardIndex)[0];
             }
-            switch (event.params.targetWizard) {
-                case "lowestHP":
-                    targetWizard = this.getLowestHPCombatant(facts.allWizards) as Wizard; 
-                    break; 
-                case "self": 
-                    targetWizard = wizard; 
-                    break; 
-                case "lowestHP_notSelf": 
-                    if (facts.allWizards.length === 1) {
-                        throw new Error("Tried to target a different wizard from self but only one wizard in group (action=" + event.type + ")"); 
-                    }
-                    let otherWizards = facts.allWizards.filter(function(wizardInAllWizards) {
-                        return wizardInAllWizards !== wizard; 
-                    }); 
-                    targetWizard = this.getLowestHPCombatant(otherWizards) as Wizard; 
-                    break; 
-                case "defeatedWizard": 
-                    otherWizards = facts.allWizards.filter(function(wizardInAllWizards) {
-                        return wizardInAllWizards !== wizard; 
-                    }); 
-                    targetWizard = this.getFirstDefeatedWizard(otherWizards); 
-                    if (targetWizard === null) {
-                        throw new Error("Tried to target a defeated wizard but there are none!"); 
-                    }
-                    break; 
-                default: 
-                    targetWizard = wizard; 
-                    break; 
+            else {
+                switch (event.params.targetWizard) {
+                    case "lowestHP":
+                        targetWizard = this.getLowestHPCombatant(facts.allWizards) as Wizard; 
+                        break; 
+                    case "self": 
+                        targetWizard = wizard; 
+                        break; 
+                    case "lowestHP_notSelf": 
+                        if (facts.allWizards.length === 1) {
+                            throw new Error("Tried to target a different wizard from self but only one wizard in group (action=" + event.type + ")"); 
+                        }
+                        let otherWizards = facts.allWizards.filter(function(wizardInAllWizards) {
+                            return wizardInAllWizards !== wizard; 
+                        }); 
+                        targetWizard = this.getLowestHPCombatant(otherWizards) as Wizard; 
+                        break; 
+                    case "defeatedWizard": 
+                        otherWizards = facts.allWizards.filter(function(wizardInAllWizards) {
+                            return wizardInAllWizards !== wizard; 
+                        }); 
+                        targetWizard = this.getFirstDefeatedWizard(otherWizards); 
+                        if (targetWizard === null) {
+                            throw new Error("Tried to target a defeated wizard but there are none!"); 
+                        }
+                        break; 
+                    default: 
+                        targetWizard = wizard; 
+                        break; 
+                }
             }
             
             switch (event.params.targetEnemy) {
@@ -321,70 +296,8 @@ export class RulesEngine {
             targetWizard = wizard; 
             targetEnemy = highestPriorityAvailableEnemy; 
         }
-        switch (event.type as actionNameType) {
-            // Invigoration potion
-            case "strongInvigorationPotion": 
-                return new InvigorationPotionEvent(timestampBegin, wizard, wizard.getPotions(), potionsData.strongInvigorationPotionFocus, "strong");
-            case "weakInvigorationPotion": 
-                return new InvigorationPotionEvent(timestampBegin, wizard, wizard.getPotions(), potionsData.weakInvigorationPotionFocus, "weak");
-            
-            // Auror
-            case "weakeningHex": 
-                return new WeakeningHexEvent(timestampBegin, wizard.stats.weakeningHexValue, targetEnemy!, wizard); 
-            case "confusionHex": 
-                return new ConfusionHexEvent(timestampBegin, wizard.stats.confusionHexValue, targetEnemy!, wizard); 
-            case "batBogeyHex": 
-                return new BatBogeyHexEvent(timestampBegin, wizard.stats.batBogeyHexDamage, targetEnemy!, wizard); 
 
-            // Magizoologist
-            case "braveryCharm": 
-                return new BraveryCharmEvent(timestampBegin, wizard.stats.braveryCharmValue, facts.allWizards, wizard);             
-            case "staminaCharm": 
-                return new StaminaCharmEvent(timestampBegin, wizard.stats.staminaCharmValue, targetWizard, wizard); 
-            case "reviveCharm": 
-                return new ReviveCharmEvent(timestampBegin, wizard.stats.reviveCharmValue, targetWizard, wizard); 
-
-            // Professor    
-            case "defenceCharm": 
-                //console.log(event);
-                return new DefenceCharmEvent(timestampBegin, wizard.stats.defenceCharmIncrease, targetWizard!, wizard);
-            case "proficiencyPowerCharm":
-                return new ProficiencyPowerCharmEvemt(timestampBegin, wizard.stats.proficiencyPowerCharmIncrease, facts.allWizards, wizard);
-            case "deteriorationHex": 
-                return new DeteriorationHexEvent(timestampBegin, wizard.stats.deteriorationHexDamage, targetEnemy!, wizard);
-            case "mendingCharm": 
-                return new MendingCharmEvent(timestampBegin, wizard.stats.mendingCharmStaminaRestore, targetWizard!, wizard);
-            
-            // Combat
-            case "enterCombatWithHighestPriorityAvailableEnemy": 
-                return new EnterCombatEvent(timestampBegin, highestPriorityAvailableEnemy!, wizard, this.rng);
-            case "exitCombat": 
-                return new ExitCombatEvent(timestampBegin, wizard.inCombatWith!, wizard, this.rng);
-            case "potentExstimuloPotion": 
-                return new ExstimuloPotionEvent(timestampBegin, wizard, wizard.inCombatWith!, 
-                    wizard.getPotions(), potionsData.potentExstimuloPotionDamageBuff, 
-                    potionsData.potentExstimuloPotionUses, "potent"); 
-            case "strongExstimuloPotion": 
-                return new ExstimuloPotionEvent(timestampBegin, wizard, wizard.inCombatWith!, 
-                    wizard.getPotions(), potionsData.strongExstimuloPotionDamageBuff, 
-                    potionsData.strongExstimuloPotionUses, "strong"); 
-            case "exstimuloPotion": 
-                return new ExstimuloPotionEvent(timestampBegin, wizard, wizard.inCombatWith!, 
-                    wizard.getPotions(), potionsData.exstimuloPotionDamageBuff,
-                    potionsData.exstimuloPotionUses, "normal"); 
-            case "witSharpeningPotion": 
-                return new WitSharpeningPotionEvent(timestampBegin, wizard, wizard.inCombatWith!,
-                    potionsData.witSharpeningPotionDamageBuff, potionsData.witSharpeningPotionUses,
-                    wizard.getPotions()); 
-            case "healthPotion": 
-                return new HealthPotionEvent(timestampBegin, wizard, wizard.getPotions(), potionsData.healthPotion); 
-            case "combatSpellCastWizard":
-                return new CombatSpellCircleEvent(timestampBegin, wizard.inCombatWith!, wizard, this.rng);
-            case "noAction":
-                return null; 
-        }
-
-        throw new Error("Could not find action for event type=" + results[0].type + "!");
+        return this.getSimEventFromAction(event.type as actionNameType, timestampBegin, wizard, targetWizard, targetEnemy!, facts); 
     }
 
 }

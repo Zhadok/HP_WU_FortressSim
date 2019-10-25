@@ -10,6 +10,13 @@ export class ExitCombatEvent extends CombatEvent {
 
     constructor(timestampBegin: number, enemy: Enemy, wizard: Wizard, rng: Prando) {
         super("exitCombat", timestampBegin, enemy, wizard, rng);
+
+        if (this.enemy.inCombat === false) {
+            throw new Error(wizard.toUserFriendlyDescription() + " tried exiting combat with " + enemy.toUserFriendlyDescription() + " but enemy was not in combat!"); 
+        }
+        if (this.wizard.inCombat === false) {
+            throw new Error(wizard.toUserFriendlyDescription() + " tried exiting combat with " + enemy.toUserFriendlyDescription() + " but wizard was not in combat!"); 
+        }
     }
 
     allowWizardFollowupAction(): boolean {

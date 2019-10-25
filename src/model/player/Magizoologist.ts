@@ -2,7 +2,7 @@ import { Wizard } from "./Wizard";
 import focusCostData from "../../data/focusCosts.json";
 import { Enemy } from "../env/enemies/Enemy";
 import { WizardStats } from "./WizardStats";
-import { statNameType } from '../../types';
+import { statNameType, actionNameType, strategicSpellNameType } from '../../types';
 
 
 export class Magizoologist extends Wizard {
@@ -75,5 +75,32 @@ export class Magizoologist extends Wizard {
         }
         return true; 
     }
+
+    isValidStrategicSpell(strategicSpellName: strategicSpellNameType): boolean {
+        switch(strategicSpellName) {
+            // Auror
+            case "weakeningHex": 
+            case "confusionHex": 
+            case "batBogeyHex": 
+            case "focusCharm": 
+
+            // Professor
+            case "deteriorationHex": 
+            case "defenceCharm": 
+            case "proficiencyPowerCharm": return false; 
+        }
+        return true; 
+    }
     
+    canCastStrategicSpell(strategicSpellName: strategicSpellNameType) {
+        switch (strategicSpellName) {
+            case "braveryCharm": return this.hasStudiedBraveryCharm() && this.hasEnoughFocusForStrategicSpell(strategicSpellName); 
+            case "mendingCharm": return this.hasStudiedMendingCharm() && this.hasEnoughFocusForStrategicSpell(strategicSpellName); 
+            case "staminaCharm": return this.hasStudiedStaminaCharm() && this.hasEnoughFocusForStrategicSpell(strategicSpellName); 
+            case "reviveCharm": return this.hasStudiedReviveCharm() && this.hasEnoughFocusForStrategicSpell(strategicSpellName); 
+        }
+        return false; 
+    }
+
+
 }

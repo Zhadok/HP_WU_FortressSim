@@ -7,7 +7,6 @@ declare type nameClassUserFriendlyType = "Auror" | "Magizoologist" | "Professor"
 import focusCostData from "./data/focusCosts.json";
 declare type strategicSpellNameType = keyof typeof focusCostData;
 
-
 declare type exstimuloPotionType = "normal" | "strong" | "potent";
 declare type invigorationPotionType = "weak" | "strong";
 
@@ -54,6 +53,24 @@ declare type skillTreeFilterLessonsMapType = { [key in skillTreeFilterLessonsTyp
 
 declare type statNameType = keyof WizardStats;
 
+
+// Player actions
+declare type playerActionSelectionModeType = "manual" | "rules"; 
+declare type playerActionSelectionModeMapType = { [key in playerActionSelectionModeType]: string }; 
+
+declare type actionNameType = strategicSpellNameType | 
+                              "strongInvigorationPotion" | "weakInvigorationPotion" |
+                              "potentExstimuloPotion" | "strongExstimuloPotion" | "exstimuloPotion" | 
+                              "witSharpeningPotion" | "healthPotion" |
+                              "enterCombat" | "enterCombatWithHighestPriorityAvailableEnemy" | "exitCombat" | 
+                              "combatSpellCastWizard" | "noAction";
+declare type actionNameMapType = { [key in actionNameType]: string }; 
+declare type manualActionContainerType = {
+    actionName: actionNameType,
+    targetWizardIndex?: number,
+    targetEnemyIndex?: number
+}; 
+
 // Rule engine
 declare type ruleFactType = {
     wizard: Wizard,
@@ -85,14 +102,6 @@ declare type ruleEventTargetMapType = { [key in ruleEventTargetType]: {
 }};
 declare type ruleEventAllowedWizardTargets = "self" | "lowestHP" | "lowestHP_notSelf" | "defeatedWizard";
 declare type ruleEventAllowedEnemyTargets = "lowestHP" | "highestPriorityAvailableEnemy"; 
-
-declare type actionNameType = strategicSpellNameType | 
-                              "strongInvigorationPotion" | "weakInvigorationPotion" |
-                              "potentExstimuloPotion" | "strongExstimuloPotion" | "exstimuloPotion" | 
-                              "witSharpeningPotion" | "healthPotion" |
-                              "enterCombatWithHighestPriorityAvailableEnemy" | "exitCombat" | 
-                              "combatSpellCastWizard" | "noAction";
-declare type actionNameMapType = { [key in actionNameType]: string }; 
 
                               
 declare type ruleOperatorType = "equal" | "notEqual" |

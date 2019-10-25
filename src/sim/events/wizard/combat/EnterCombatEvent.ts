@@ -16,8 +16,12 @@ export class EnterCombatEvent extends CombatEvent {
         Logger.logT(2, this.timestampBegin, "EnterCombatEvent.onStart: Wizard (id=" + this.wizard.playerIndex + ") and enemy (id=" + this.enemy.enemyIndex + ") are entering combat");
 
         if (this.enemy.inCombat === true) {
-            throw new Error("Wizard id=" + this.wizard.playerIndex + " tried entering combat with enemy id=" + 
-                            this.enemy.enemyIndex + ", but enemy was already in combat!");
+            throw new Error(this.wizard.toUserFriendlyDescription() + " tried entering combat with " + 
+                            this.enemy.toUserFriendlyDescription() + ", but enemy was already in combat!");
+        }
+        if (this.wizard.inCombat === true) {
+            throw new Error(this.wizard.toUserFriendlyDescription() + " tried entering combat with " + 
+                            this.enemy.toUserFriendlyDescription() + ", but wizard was already in combat!")
         }
 
         this.wizard.inCombat = true;

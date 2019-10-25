@@ -22,7 +22,7 @@ A running version of the simulator can be found [here](https://zhadok.github.io/
 ## Features
 
 - **Skill tree**: Easily try out different builds and check stats
-- **Player AI**: The simulation contains a rule-based AI which automatically decides on the best next action. Advanced users can also edit the rules to create a custom AI
+- **Player AI** vs **manually decide actions**: The simulation contains a rule-based AI which automatically decides on the best next action. Advanced users can also edit the rules to create a custom AI. Alternatively, you can manually decide which action each player should take next
 - **Detailed simulation output**: Simulate a single run and see who cast what spell, drank what potion and did how much damage to which enemy
 - **Compare room levels**: Find out which room level is best for you based on your build
 - **Compare your next skill tree lesson**: Find out which lesson in your skill tree you should pick next. Filter by lessons with only scrolls, red books or green books
