@@ -6,10 +6,11 @@ import { Auror } from "../../../../../../model/player/Auror";
 export class FocusCharmEvent extends StrategicSpellEvent {
 
     readonly targetWizard: Wizard;
-    readonly focusIncrease: number = 1;
+    readonly focusIncrease: number; 
 
-    constructor(timestampBegin: number, targetWizard: Wizard, caster: Wizard) {
+    constructor(timestampBegin: number, focusIncrease: number, targetWizard: Wizard, caster: Wizard) {
         super(timestampBegin, caster);
+        this.focusIncrease = focusIncrease; 
         this.targetWizard = targetWizard;
 
         if ((caster as Auror).hasStudiedFocusCharm() === false) {
@@ -24,7 +25,7 @@ export class FocusCharmEvent extends StrategicSpellEvent {
     }
     
     getStrategicSpellName(): string {
-        return "Focus Charm"; 
+        return "Focus Charm (+" + this.focusIncrease + " focus) for " + this.targetWizard.toUserFriendlyDescription(); 
     }
 
 

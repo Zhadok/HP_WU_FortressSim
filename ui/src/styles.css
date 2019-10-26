@@ -282,6 +282,7 @@ https://stackoverflow.com/questions/53497127/how-to-break-word-if-text-inside-an
     text-align: center; 
     line-height: 25px;
     font-size: 25px;  
+    font-weight: bold;
 }
 
 .divEnemyPortraitUpperContainer {  /* Border of upper part, everything except debuffs */

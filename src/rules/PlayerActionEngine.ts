@@ -11,6 +11,7 @@ import { BraveryCharmEvent } from "../sim/events/wizard/room/spells/magizoologis
 import { StaminaCharmEvent } from "../sim/events/wizard/room/spells/magizoologist/StaminaCharmEvent";
 import { ReviveCharmEvent } from "../sim/events/wizard/room/spells/magizoologist/ReviveCharmEvent";
 import { DefenceCharmEvent } from "../sim/events/wizard/room/spells/professor/DefenceCharmEvent";
+import { FocusCharmEvent } from "../sim/events/wizard/room/spells/auror/FocusCharmEvent";
 import { ProficiencyPowerCharmEvemt } from "../sim/events/wizard/room/spells/professor/ProficiencyPowerCharmEvent";
 import { DeteriorationHexEvent } from "../sim/events/wizard/room/spells/professor/DeteriorationHexEvent";
 import { MendingCharmEvent } from "../sim/events/wizard/room/spells/professor/MendingCharmEvent";
@@ -85,7 +86,9 @@ export abstract class PlayerActionEngine {
                 return new ConfusionHexEvent(timestampBegin, wizard.stats.confusionHexValue, targetEnemy!, wizard); 
             case "batBogeyHex": 
                 return new BatBogeyHexEvent(timestampBegin, wizard.stats.batBogeyHexDamage, targetEnemy!, wizard); 
-    
+            case "focusCharm": 
+                return new FocusCharmEvent(timestampBegin, wizard.stats.focusCharmValue, targetWizard!, wizard); 
+
             // Magizoologist
             case "braveryCharm": 
                 return new BraveryCharmEvent(timestampBegin, wizard.stats.braveryCharmValue, facts.allWizards, wizard);             

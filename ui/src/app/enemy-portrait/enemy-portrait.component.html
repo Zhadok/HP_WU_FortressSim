@@ -25,12 +25,12 @@
         </div>
         <div class="divSimulationSingleResultCombatantBuff">
             <img src="assets/img/confusionHex.png" *ngIf="enemy.hasConfusionHex"
-                matTooltip="Confusion hex (-defence, -defence breach, -dodge): {{enemy.confusionHexValue}}"
+                matTooltip="Confusion hex (-defence, -defence breach, -dodge): {{enemy.confusionHexValue.toFixed(2)}}"
                 [matTooltipClass]="'myMatTooltip'" />
         </div>
         <div class="divSimulationSingleResultCombatantBuff">
             <img src="assets/img/weakeningHex.png" *ngIf="enemy.hasWeakeningHex"
-                matTooltip="Weakening hex (-power): {{enemy.weakeningHexValue}}" [matTooltipClass]="'myMatTooltip'" />
+                matTooltip="Weakening hex (-power %): {{enemy.weakeningHexValue.toFixed(2)}}" [matTooltipClass]="'myMatTooltip'" />
         </div>
     </div>
 

@@ -110,7 +110,16 @@ export class Auror extends Wizard {
         switch (strategicSpellName) {
             case "weakeningHex": return this.hasStudiedWeakeningHex() && this.hasEnoughFocusForStrategicSpell(strategicSpellName); 
             case "confusionHex": return this.hasStudiedConfusionHex() && this.hasEnoughFocusForStrategicSpell(strategicSpellName); 
-            case "focusCharm": return this.hasStudiedFocusCharm() && this.hasEnoughFocusForStrategicSpell(strategicSpellName); 
+            case "focusCharm": 
+                if (this.hasStudiedFocusCharm() === false || this.hasEnoughFocusForStrategicSpell(strategicSpellName) === false) return false; 
+                if (facts.allWizards.length === 1) return false; 
+                if (targetWizardIndex !== undefined) {
+                    let targetWizard = facts.allWizards[targetWizardIndex]; 
+                    if (targetWizard !== undefined) {
+                        if (facts.wizard === targetWizard) return false; 
+                    }
+                }
+                return true; 
             case "batBogeyHex": return this.hasStudiedBatBogeyHex() && this.hasEnoughFocusForStrategicSpell(strategicSpellName) && this.batBogeyHexOnCooldown===false; 
         }
         return false; 
