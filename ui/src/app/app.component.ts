@@ -1029,6 +1029,9 @@ export class AppComponent {
             console.log("Importing data from file: ");
             console.log(fileContent);
             let importedData: localStorageDataType = JSON.parse(fileContent);
+            if ((importedData as any).logs) {
+                delete importedData["logs"]; 
+            }
 
             if (Utils.deepCompareObjectSameKeys(this.simAdvancedSettings, importedData.simAdvancedSettings) === false) {
                 console.log("Older version of sim advanced settings detected in imported data:"); 
@@ -1047,7 +1050,8 @@ export class AppComponent {
     }
 
     exportDataToFile(): void {
-        let data = this.getDataFromLocalStorage();
+        let data: any = this.getDataFromLocalStorage();
+        data.logs = this.simulationLogChannelStore; 
         this.createFileDownload("simulationParameters.json", JSON.stringify(data, null, 4));
     }
 
