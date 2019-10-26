@@ -193,7 +193,14 @@ export class AppComponent {
         }
         else if (dataInLocalStorage === true && dataInHashFragment === true) {
             // Both detected: Decide which should be kept via dialog (TODO)
-            this.initFromLocalStorage();
+            if (confirm("Detected saved data in local storage as well as in the URL. Do you want to overwrite your local data? " + 
+                        "\nNOTE: your previously saved data will be lost. If you wish to first save your previously saved data, " + 
+                        "press cancel and click \"Export data as file\" under Advanced simulation settings to keep a backup.")) {
+                this.initFromHashFragment(); 
+            }
+            else {
+                this.initFromLocalStorage();
+            }
         }
         else {
             // If nothing stored in localStorage and hash fragment: load from defaults
@@ -202,8 +209,6 @@ export class AppComponent {
             this.addWizardSettings(initialWizardSettings);
         }
 
-        // Reset hash fragment
-        URLHashManager.resetHashFragment(); 
         
 
         this.simParameters = this.sanitizeSimParametersOldVersions(this.simParameters);
@@ -1021,6 +1026,10 @@ export class AppComponent {
         console.log("Initializing from hash fragment..."); 
         let data = URLHashManager.getDataFromHashFragment(); 
         this.initDataFromOtherSource(data); 
+        this.persistToLocalStorage(); 
+
+        // Reset hash fragment
+        URLHashManager.resetHashFragment(); 
     }
 
 
