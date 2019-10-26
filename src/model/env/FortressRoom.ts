@@ -228,7 +228,7 @@ export class FortressRoom {
     }
 
     static getEnergyRewardStatic(roomLevel: number, isSponsoredFortress: boolean) {
-        if (isSponsoredFortress === false) {
+        if (isSponsoredFortress === false || isSponsoredFortress === undefined || isSponsoredFortress === null) {
             return 0; 
         }
         else {

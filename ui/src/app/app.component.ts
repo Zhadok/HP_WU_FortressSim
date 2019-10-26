@@ -194,7 +194,7 @@ export class AppComponent {
         else if (dataInLocalStorage === true && dataInHashFragment === true) {
             // Both detected: Decide which should be kept via dialog (TODO)
             if (confirm("Detected saved data in local storage as well as in the URL. Do you want to overwrite your local data? " + 
-                        "\nNOTE: your previously saved data will be lost. If you wish to first save your previously saved data, " + 
+                        "\n\nNOTE: your previously saved data will be lost. If you wish to first save your previously saved data, " + 
                         "press cancel and click \"Export data as file\" under Advanced simulation settings to keep a backup.")) {
                 this.initFromHashFragment(); 
             }

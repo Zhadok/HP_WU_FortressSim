@@ -26,7 +26,7 @@ A running version of the simulator can be found [here](https://zhadok.github.io/
 - **Detailed simulation output**: Simulate a single run and see who cast what spell, drank what potion and did how much damage to which enemy
 - **Compare room levels**: Find out which room level is best for you based on your build
 - **Compare your next skill tree lesson**: Find out which lesson in your skill tree you should pick next. Filter by lessons with only scrolls, red books or green books
-- **Data storage**: All changes made on the websites are stored immediately and automatically on your device. You can also export and import your data!
+- **Data storage**: All changes made on the websites are stored immediately and automatically on your device. You can also export and import your data via files or URL.
 
 
 ## FAQ
