@@ -588,6 +588,7 @@ export class AppComponent {
         }
         try {
             await this.runningSimulation.simulate();
+            this.manualActionSelectionSimulationComponent.first.finish();  
             this.simulationSingleResults =  this.runningSimulation.toSimulationResults();
             this.runningSimulation = null; 
             console.log("Results of the simulation are: ");

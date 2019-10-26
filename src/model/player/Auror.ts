@@ -2,7 +2,7 @@ import { Wizard } from "./Wizard";
 import focusCostData from "../../data/focusCosts.json";
 import { Enemy } from "../env/enemies/Enemy";
 import { WizardStats } from "./WizardStats";
-import { statNameType, actionNameType } from '../../types';
+import { statNameType, actionNameType, ruleFactType, strategicSpellNameType } from '../../types';
 
 
 export class Auror extends Wizard {
@@ -106,12 +106,12 @@ export class Auror extends Wizard {
         return true;
     }
 
-    canCastStrategicSpell(actionName: actionNameType) {
-        switch (actionName) {
-            case "weakeningHex": return this.hasStudiedWeakeningHex() && this.hasEnoughFocusForStrategicSpell(actionName); 
-            case "confusionHex": return this.hasStudiedConfusionHex() && this.hasEnoughFocusForStrategicSpell(actionName); 
-            case "focusCharm": return this.hasStudiedFocusCharm() && this.hasEnoughFocusForStrategicSpell(actionName); 
-            case "batBogeyHex": return this.hasStudiedBatBogeyHex() && this.hasEnoughFocusForStrategicSpell(actionName); 
+    canCastStrategicSpell(strategicSpellName: strategicSpellNameType, facts: ruleFactType, targetWizardIndex?: number, targetEnemyIndex?: number) {
+        switch (strategicSpellName) {
+            case "weakeningHex": return this.hasStudiedWeakeningHex() && this.hasEnoughFocusForStrategicSpell(strategicSpellName); 
+            case "confusionHex": return this.hasStudiedConfusionHex() && this.hasEnoughFocusForStrategicSpell(strategicSpellName); 
+            case "focusCharm": return this.hasStudiedFocusCharm() && this.hasEnoughFocusForStrategicSpell(strategicSpellName); 
+            case "batBogeyHex": return this.hasStudiedBatBogeyHex() && this.hasEnoughFocusForStrategicSpell(strategicSpellName) && this.batBogeyHexOnCooldown===false; 
         }
         return false; 
     }

@@ -41,7 +41,7 @@ export class ReviveCharmEvent extends StrategicSpellEvent {
     }
 
     getStrategicSpellName(): string {
-        return "Revive Charm (with " + this.reviveCharmValue + "% HP)"; 
+        return "Revive Charm (with " + (this.reviveCharmValue*100).toFixed(0) + "% HP)"; 
     }
 
 

@@ -17,10 +17,10 @@ export class ManualPlayerActionEngine extends PlayerActionEngine {
         this.nameClass = nameClass; 
     }
 
-    getAvailablePlayerActions(wizard: Wizard): actionNameType[] {
+    getAvailablePlayerActions(facts: ruleFactType): actionNameType[] {
         let actions = PlayerActionEngine.actionNameMap; 
         let actionNames: actionNameType[] = Object.keys(actions) as actionNameType[]; 
-        actionNames = actionNames.filter((actionName) => wizard.isValidAction(actionName)); 
+        actionNames = actionNames.filter((actionName) => facts.wizard.isValidAction(actionName, facts)); 
         actionNames.sort(); 
         return actionNames; 
     }
@@ -34,7 +34,7 @@ export class ManualPlayerActionEngine extends PlayerActionEngine {
 
     async getNextAction(timestampBegin: number, facts: ruleFactType): Promise<SimEvent | null> {
         if (this.playerActionRequestListener !== undefined) {
-            let availableActions =  this.getAvailablePlayerActions(facts.wizard); 
+            let availableActions =  this.getAvailablePlayerActions(facts); 
             console.log("Requesting next player action with available actions:"); 
             let nextAction: manualActionContainerType = await this.playerActionRequestListener.call(this.playerActionRequestListenerContext, facts, availableActions); 
             let targetWizard: Wizard | null = null; 

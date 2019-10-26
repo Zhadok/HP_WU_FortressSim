@@ -226,16 +226,19 @@ https://stackoverflow.com/questions/53497127/how-to-break-word-if-text-inside-an
 
 /**** Running simulation (manual inputs) ****/
 #divSelectActionContainer {
+    margin-top: 10px; 
     margin-bottom: 10px; 
 }
+.divSimulationSingleResultEnemy {
+}
 .selectedEnemy > div {
-    border: 1px solid black; 
+    border: 1px solid black !important; 
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
 }
 .selectedWizard {
-    border: 1px solid black; 
+    border: 1px solid black !important; 
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
@@ -251,20 +254,32 @@ https://stackoverflow.com/questions/53497127/how-to-break-word-if-text-inside-an
 .divSimulationSingleResultCombatant { /** Each div is one enemy portrait + difficulty and level **/
     float: left; 
     padding: 10px; 
-    text-align: center; 
+    border: 1px solid white; /* So that selectedEnemy > div does not change size of div */
 }
 .divSimulationSingleResultEnemy {
     /*width: 150px; */
+    text-align: center; 
 }
 .divEnemyPortraitContainer { /** Each div is one enemy portrait **/
-    width: 30px; 
-    height: 30px; 
+    width: 50px; 
+    height: 50px; 
     margin: auto; 
 }
 .divEnemyPortraitContainer > img { 
     width: 100%; 
     height: 100%; 
 }
+.divEnemyPortraitUpperContainer {  /* Border of upper part, everything except debuffs */
+    border-radius: 15px; 
+    padding: 5px; 
+}
+.divEnemyNormalBorder {
+    border: 4px solid rgb(216, 203, 181)
+}
+.divEnemyEliteBorder {
+    border: 4px solid rgb(175, 99, 19)
+}
+
 
 .spanEnemyDifficultyStar {
     font-size: 15px; 
@@ -293,7 +308,17 @@ https://stackoverflow.com/questions/53497127/how-to-break-word-if-text-inside-an
     width: 100%;
     height: 100%;
     color: white;
+    text-align: center; 
+    line-height: 25px; 
 }
+
+.divWizardPortraitUpperContainer { /* Portrait without buffs of each player*/
+    border-radius: 15px; 
+    padding: 5px; 
+    border: 4px solid rgb(216, 203, 181); 
+    text-align: center; 
+}
+
 
 .divSimulationSingleResultAllWizards { /** Stats of wizards **/
     clear: both; 
@@ -362,6 +387,9 @@ table {
 }
 .clearBoth {
     clear: both; 
+}
+.marginTop5px {
+    margin-top: 5px !important; 
 }
 .marginRight5px {
     margin-right: 5px !important;

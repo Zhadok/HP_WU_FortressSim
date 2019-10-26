@@ -4,24 +4,31 @@
         Time: {{parent.formatMinutesDecimal(facts.chamber.remainingTimeSeconds)}}
     </div>
     <div class="floatLeft clearBoth">
-        <app-enemy-portrait [class.selectedEnemy]="selectedEnemyID===enemy.enemyIndex" (click)="selectedEnemyID=enemy.enemyIndex" *ngFor="let enemy of runningSimulation.fortressRoom.enemiesActive" [enemy]="enemy">
+        <app-enemy-portrait 
+            [class.selectedEnemy]="(isEnemyTargetRequired(selectedAction) && selectedEnemyID===enemy.enemyIndex) || 
+                                   (facts.wizard.inCombat === true && facts.wizard.inCombatWith.enemyIndex===enemy.enemyIndex)" 
+            (click)="selectedEnemyID=enemy.enemyIndex" *ngFor="let enemy of runningSimulation.fortressRoom.enemiesActive" [enemy]="enemy">
         </app-enemy-portrait>
     </div>
 
 
-    <div class="floatLeft clearBoth">
+    <div class="floatLeft clearBoth marginTop5px">
         <div *ngFor="let wizard of runningSimulation.wizards"
-            [class.selectedWizard]="runningSimulation.wizards.length > 1 && selectedWizardID===wizard.playerIndex" 
+            [class.selectedWizard]="(isWizardTargetRequired(selectedAction) && runningSimulation.wizards.length > 1 && selectedWizardID===wizard.playerIndex) ||
+                                    (facts.wizard.inCombat === true && facts.wizard === wizard)" 
             (click)="selectedWizardID=wizard.playerIndex" 
             class="divSimulationSingleResultCombatant" >
-            
-            {{wizard.nameClassUserFriendly}}
-            {{facts.wizard.playerIndex === wizard.playerIndex && facts.allWizards.length > 1 ? '(active)' : ''}} (ID={{wizard.playerIndex}})<br>
-            {{wizard.inCombat ? 'Fighting ID=' + wizard.inCombatWith.enemyIndex : 'Out of combat'}}   <br>
-            HP: {{wizard.currentStamina}} / {{wizard.maxStamina}}<br>
-            Focus: {{wizard.focus}} / {{wizard.stats.maxFocus}}
-            <mat-progress-bar mode="determinate" color="warn" [value]="wizard.currentStamina  / wizard.maxStamina *100">
-            </mat-progress-bar>
+            <div class="divWizardPortraitUpperContainer">
+                <div class="divEnemyPortraitContainer">
+                    <img src="assets/img/classes/{{wizard.nameClass}}.png" />
+                </div>
+                (ID={{wizard.playerIndex}}) {{facts.wizard.playerIndex === wizard.playerIndex && facts.allWizards.length > 1 ? '(active)' : ''}}<br>
+                {{wizard.inCombat ? 'Fighting ID=' + wizard.inCombatWith.enemyIndex : 'Out of combat'}}   <br>
+                HP: {{wizard.currentStamina}} / {{wizard.maxStamina}}<br>
+                Focus: {{wizard.focus}} / {{wizard.stats.maxFocus}}
+                <mat-progress-bar mode="determinate" color="warn" [value]="wizard.currentStamina  / wizard.maxStamina *100">
+                </mat-progress-bar>
+            </div>
             <div class="divSimulationSingleResultAllCombatantBuffs floatLeft clearBoth">
                 <div class="divSimulationSingleResultCombatantBuff clearBoth">
                     <img src="assets/img/defenceCharm.png" *ngIf="wizard.hasDefenceCharm"
@@ -75,7 +82,15 @@
             <input matInput type="number" min="0" placeholder="Target ID" [(ngModel)]="selectedTargetID">
         </mat-form-field>
     </div> -->
-    <button class="floatLeft clearBoth"
-        [disabled]="!selectedAction || (parent.getEventTargetType(playerIndex, selectedAction) === 'wizard' && selectedWizardID === null) || (parent.getEventTargetType(playerIndex, selectedAction) === 'enemy' && selectedEnemyID === null)"
-        (click)="onClickButtonPerformPlayerAction()" mat-raised-button large color="primary">Perform action</button>
+    <div class="floatLeft clearBoth">
+        <span class="floatLeft clearBoth" *ngIf="isEnemyTargetRequired(selectedAction) && selectedEnemyID === null">Hint: Select a <b>target enemy</b> by clicking or tapping on it. </span>
+        <span class="floatLeft clearBoth" *ngIf="isWizardTargetRequired(selectedAction) && selectedWizardID === null">Hint: Select a <b>target wizard</b> by clicking or tapping on it. </span>
+    
+        <button class="floatLeft clearBoth" 
+                [disabled]="!selectedAction || 
+                    (isWizardTargetRequired(selectedAction) && selectedWizardID === null) || (isEnemyTargetRequired(selectedAction) && selectedEnemyID === null) ||
+                    (facts.wizard.isValidAction(selectedAction, facts, selectedWizardID, selectedEnemyID) !== true)"
+                (click)="onClickButtonPerformPlayerAction()" mat-raised-button large color="primary">Perform action</button>
+    </div>
+    
 </div>

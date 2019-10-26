@@ -1,13 +1,21 @@
 <div class="divSimulationSingleResultCombatant divSimulationSingleResultEnemy">
-    <div class="divEnemyPortraitContainer">
-        <img src="assets/img/enemies/{{enemy.name}}.png" />
+    <div class="divEnemyPortraitUpperContainer"
+        [class.divEnemyNormalBorder]="enemy.isElite === false"
+        [class.divEnemyEliteBorder]="enemy.isElite === true">
+        <div class="divEnemyPortraitContainer">
+            <img src="assets/img/enemies/{{enemy.name}}.png" />
+        </div>
+        <span class="divEnemyLevel">{{ enemy.level }}</span><br>
+        <!-- {{ enemy.nameUserFriendly }}<br> -->
+        (ID={{enemy.enemyIndex}})
+        <!--{{ enemy.isElite === true ? ', elite' : ''}})<br> -->
+        <br>
+        <span class="spanEnemyDifficultyStar" *ngFor="let difficulty of [].constructor(enemy.difficulty)">★</span>
+        <span class="spanEnemyDifficultyStar" *ngFor="let difficulty of [].constructor(5-enemy.difficulty)">☆</span>
+        <mat-progress-bar mode="determinate" color="warn" [value]="enemy.currentStamina  / enemy.maxStamina *100">
+        </mat-progress-bar>
     </div>
-    {{ enemy.nameUserFriendly }}<br>
-    (ID={{enemy.enemyIndex}}, {{ enemy.level }}{{ enemy.isElite === true ? ', elite' : ''}})
-    <mat-progress-bar mode="determinate" color="warn" [value]="enemy.currentStamina  / enemy.maxStamina *100">
-    </mat-progress-bar>
-    <span class="spanEnemyDifficultyStar" *ngFor="let difficulty of [].constructor(enemy.difficulty)">★</span>
-    <span class="spanEnemyDifficultyStar" *ngFor="let difficulty of [].constructor(5-enemy.difficulty)">☆</span>
+    
     <div class="divSimulationSingleResultAllCombatantBuffs">
         <div class="divSimulationSingleResultCombatantBuff">
             <img src="assets/img/deteriorationHex.png" *ngIf="enemy.hasDeteriorationHex"
@@ -23,6 +31,6 @@
             <img src="assets/img/weakeningHex.png" *ngIf="enemy.hasWeakeningHex"
                 matTooltip="Weakening hex (-power): {{enemy.weakeningHexValue}}" [matTooltipClass]="'myMatTooltip'" />
         </div>
-
     </div>
+
 </div>

@@ -2,7 +2,7 @@ import { Wizard } from "./Wizard";
 import focusCostData from "../../data/focusCosts.json";
 import { Enemy } from "../env/enemies/Enemy";
 import { WizardStats } from "./WizardStats";
-import { statNameType, actionNameType, strategicSpellNameType } from '../../types';
+import { statNameType, actionNameType, strategicSpellNameType, ruleFactType } from '../../types';
 
 
 export class Magizoologist extends Wizard {
@@ -92,12 +92,21 @@ export class Magizoologist extends Wizard {
         return true; 
     }
     
-    canCastStrategicSpell(strategicSpellName: strategicSpellNameType) {
+    canCastStrategicSpell(strategicSpellName: strategicSpellNameType, facts: ruleFactType, targetWizardIndex?: number, targetEnemyIndex?: number) {
         switch (strategicSpellName) {
             case "braveryCharm": return this.hasStudiedBraveryCharm() && this.hasEnoughFocusForStrategicSpell(strategicSpellName); 
-            case "mendingCharm": return this.hasStudiedMendingCharm() && this.hasEnoughFocusForStrategicSpell(strategicSpellName); 
-            case "staminaCharm": return this.hasStudiedStaminaCharm() && this.hasEnoughFocusForStrategicSpell(strategicSpellName); 
-            case "reviveCharm": return this.hasStudiedReviveCharm() && this.hasEnoughFocusForStrategicSpell(strategicSpellName); 
+            case "mendingCharm": return this.hasStudiedMendingCharm() && this.hasEnoughFocusForStrategicSpell(strategicSpellName) && this.mendingCharmOnCooldown===false; 
+            case "staminaCharm": return this.hasStudiedStaminaCharm() && this.hasEnoughFocusForStrategicSpell(strategicSpellName) && facts.allWizards.length > 1; 
+            case "reviveCharm": 
+                if (this.hasStudiedReviveCharm() === false || this.hasEnoughFocusForStrategicSpell(strategicSpellName) === false) return false; 
+                if (facts.allWizards.length === 1 || facts.chamber.isAnyWizardDefeated === false) return false; 
+                if (targetWizardIndex !== undefined) {
+                    let targetWizard = facts.allWizards[targetWizardIndex]; 
+                    if (targetWizard !== undefined) {
+                        if (targetWizard.getIsDefeated() === false || facts.wizard === targetWizard) return false; 
+                    }
+                }
+                return true; 
         }
         return false; 
     }

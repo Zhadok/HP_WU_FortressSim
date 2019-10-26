@@ -383,7 +383,7 @@
                     [(value)]="simParameters.seed">
             </mat-form-field>
             <mat-form-field class="inputAdvancedSetting">
-                <mat-label>How should player actions be selected?</mat-label>
+                <mat-label>Player action selection (manual or automatic)</mat-label>
                 <mat-select placeholder="Player action selection mode" name="selectActionSelectionMode"
                     [(ngModel)]="simParameters.playerActionSelectionMode">
 
@@ -497,6 +497,9 @@
                     Simulate skill tree upgrades
                     ({{getSkillTreeFilterLessonsMap()[simAdvancedSettings.simGoalMultipleParams.simGoalMultiple_filterSkillTreeNodes]}})
                 </button>
+                <span class="spanMultipleLines">
+                    {{isPlayerActionSelectionManual() ? 'Hint: Set player action selection to "Player AI" in advanced simulation settings to enable comparing simulations' :''}}
+                </span>
             </div>
         </mat-expansion-panel>
 

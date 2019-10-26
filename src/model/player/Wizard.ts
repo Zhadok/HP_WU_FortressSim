@@ -1,6 +1,6 @@
 import { Combatant } from "../Combatant";
 import { WizardStats } from "./WizardStats";
-import { nameClassType, nameClassUserFriendlyType, strategicSpellNameType, statNameType, actionNameType } from "../../types";
+import { nameClassType, nameClassUserFriendlyType, strategicSpellNameType, statNameType, actionNameType, ruleFactType } from "../../types";
 import { Enemy } from "../env/enemies/Enemy";
 
 import focusCostData from "../../data/focusCosts.json";
@@ -320,7 +320,7 @@ export abstract class Wizard extends Combatant {
 
     abstract isProficientAgainst(enemy: Enemy): boolean;
 
-    isValidAction(actionName: actionNameType): boolean {
+    isValidAction(actionName: actionNameType, facts: ruleFactType, targetWizardIndex?: number, targetEnemyIndex?: number): boolean {
         // check potions
         switch (actionName) {
             case "potentExstimuloPotion": if (this.potions!.nPotentExstimuloAvailable === 0 || this.inCombat === false) return false; break; 
@@ -336,9 +336,21 @@ export abstract class Wizard extends Combatant {
             switch (actionName) {
                 case "combatSpellCastWizard": return false; break; 
                 case "exitCombat": return false; break; 
-                case "noAction": return false; break; 
+                case "enterCombat": 
+                    // Check if we are allowed to enter combat with this particular enemy
+                    if (targetEnemyIndex !== undefined) {
+                        let targetEnemy = facts.allActiveEnemies.filter((enemy) => enemy.enemyIndex === targetEnemyIndex)[0];
+                        if (targetEnemy !== undefined) {
+                            if (targetEnemy.inCombat === true) {
+                                return false; 
+                            }
+                        }
+                    }
+                //case "noAction": return false; break; 
             }
-            if (this.isActionStrategicSpell(actionName) && (this.isValidStrategicSpell(actionName as strategicSpellNameType) === false || this.canCastStrategicSpell(actionName as strategicSpellNameType) === false)) return false; 
+            if (this.isActionStrategicSpell(actionName) && 
+                (this.isValidStrategicSpell(actionName as strategicSpellNameType) === false 
+                    || this.canCastStrategicSpell(actionName as strategicSpellNameType, facts, targetWizardIndex, targetEnemyIndex) === false)) return false; 
         }
         if (this.inCombat === true) {
             switch (actionName) {
@@ -350,7 +362,7 @@ export abstract class Wizard extends Combatant {
 
         return true; 
     }
-    protected abstract canCastStrategicSpell(strategicSpellName: strategicSpellNameType): boolean; 
+    protected abstract canCastStrategicSpell(strategicSpellName: strategicSpellNameType, facts: ruleFactType, targetWizardIndex?: number, targetEnemyIndex?: number): boolean; 
     protected abstract isValidStrategicSpell(strategicSpellName: strategicSpellNameType): boolean; 
 
     isActionStrategicSpell(actionName: actionNameType) {

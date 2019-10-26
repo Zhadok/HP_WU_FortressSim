@@ -3,7 +3,7 @@ import { Enemy } from "../env/enemies/Enemy";
 import { WizardStats } from "./WizardStats";
 import { SkillTree } from "./SkillTree/SkillTree";
 import { SkillTreeNode } from "./SkillTree/SkillTreeNode";
-import { statNameType, actionNameType, strategicSpellNameType } from '../../types';
+import { statNameType, actionNameType, strategicSpellNameType, ruleFactType } from '../../types';
 import { ENGINE_METHOD_PKEY_METHS } from "constants";
 
 
@@ -117,10 +117,10 @@ export class Professor extends Wizard {
         return true; 
     }
 
-    canCastStrategicSpell(strategicSpellName: strategicSpellNameType) {
+    canCastStrategicSpell(strategicSpellName: strategicSpellNameType, facts: ruleFactType, targetWizardIndex?: number, targetEnemyIndex?: number) {
         switch (strategicSpellName) {
             case "defenceCharm": return this.hasStudiedDefenceCharm() && this.hasEnoughFocusForStrategicSpell("defenceCharm"); 
-            case "mendingCharm": return this.hasStudiedMendingCharm() && this.hasEnoughFocusForStrategicSpell("mendingCharm"); 
+            case "mendingCharm": return this.hasStudiedMendingCharm() && this.hasEnoughFocusForStrategicSpell("mendingCharm") && this.mendingCharmOnCooldown===false; 
             case "proficiencyPowerCharm": return this.hasStudiedProficiencyPowerCharm() && this.hasEnoughFocusForStrategicSpell("proficiencyPowerCharm"); 
             case "deteriorationHex": return this.hasStudiedDeteriorationHex() && this.hasEnoughFocusForStrategicSpell("deteriorationHex"); 
         }
