@@ -460,11 +460,17 @@
                     Data imports and exports include skill trees, customized player AI rules and advanced simulation
                     settings.
                 </p>
-                <button class="buttonSkillTreeControl" id="buttonImportDataFromFile" mat-raised-button
+                <button class="buttonSkillTreeControl floatLeft" id="buttonImportDataFromFile" mat-raised-button
                     (click)="importDataFromFile()">Import data from file</button>
-                <button class="buttonSkillTreeControl" id="buttonExportDataToFile" mat-raised-button
+                <button class="buttonSkillTreeControl floatLeft" id="buttonExportDataToFile" mat-raised-button
                     (click)="exportDataToFile()">Export data as file</button>
-                <button class="buttonSkillTreeControl" id="buttonExportDataToFile" mat-raised-button color="accent"
+                <button class="buttonSkillTreeControl floatLeft" id="buttonExportDataToFile" mat-raised-button
+                    (click)="onClickButtonShareData()">Share data as URL</button>
+                <mat-form-field [hidden]="shareDataURL === null" class="inputAdvancedSetting" appearance="outline">
+                    <mat-label>URL for sharing</mat-label>
+                    <input #inputShareDataURL matInput type="text" [value]="shareDataURL">
+                </mat-form-field>
+                <button class="buttonSkillTreeControl clearBoth floatRight" id="buttonResetAllData" mat-raised-button color="accent"
                     (click)="resetAllData()">Reset all data</button>
             </div>
 

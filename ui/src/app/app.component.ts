@@ -43,6 +43,7 @@ import { WebWorkerPool } from './WebWorkerPool';
 import { PlayerActionEngine } from '../../../src/rules/PlayerActionEngine';
 import { ManualPlayerActionEngine } from '../../../src/rules/ManulPlayerActionEngine';
 import { ManualActionSelectionSimulationComponent } from './manual-action-selection-simulation/manual-action-selection-simulation.component';
+import { URLHashManager } from './URLHashManager';
 
 
 const cookieConfig: any = {
@@ -157,6 +158,8 @@ export class AppComponent {
     simulationMultipleResultsGrouped: MatTableDataSource<simulationResultsGroupedType>;
     simProgress: simProgressType | null = null;
 
+    shareDataURL: string | null = null; 
+
     // Multiple sim results comparison
     columnNamesMultipleSimulationsResultsGrouped = [];
     simGoalMap: simGoalMapType = { // Label of column for groupByAttributeValue
@@ -176,17 +179,32 @@ export class AppComponent {
             "professor": "Professor"
         };
 
-        
         let self = this;
 
-        if (this.isPersistedInLocalStorage() === false) {
-            // If nothing stored in localStorage
+        // Init: Check if something in local storage and/or hash fragment
+        let dataInLocalStorage = this.isPersistedInLocalStorage(); 
+        let dataInHashFragment = URLHashManager.hasValidDataInHashFragment(); 
+
+        if (dataInLocalStorage === true && dataInHashFragment === false) {
+            this.initFromLocalStorage();
+        }
+        else if (dataInLocalStorage === false && dataInHashFragment === true) {
+            this.initFromHashFragment(); 
+        }
+        else if (dataInLocalStorage === true && dataInHashFragment === true) {
+            // Both detected: Decide which should be kept via dialog (TODO)
+            this.initFromLocalStorage();
+        }
+        else {
+            // If nothing stored in localStorage and hash fragment: load from defaults
             this.simParameters = this.getInitialSimParameters();
             let initialWizardSettings = this.getInitialWizardSettings();
             this.addWizardSettings(initialWizardSettings);
-        } else {
-            this.initFromLocalStorage();
         }
+
+        // Reset hash fragment
+        URLHashManager.resetHashFragment(); 
+        
 
         this.simParameters = this.sanitizeSimParametersOldVersions(this.simParameters);
         this.simAdvancedSettings = this.sanitizeSimAdvancedSettingsOldVersions(this.simAdvancedSettings);
@@ -975,12 +993,10 @@ export class AppComponent {
         return minutes + ":" + seconds;
     }
 
-    initFromLocalStorage(): void {
-        let data = this.getDataFromLocalStorage();
-
+    initDataFromOtherSource(data: localStorageDataType) {
         // For sim advanced settings: Check if we are using a different structure (=different keys) from an older version
         if (Utils.deepCompareObjectSameKeys(this.simAdvancedSettings, data.simAdvancedSettings) === false) {
-            console.log("Older version of sim advanced settings detected in local storage:");
+            console.log("Older version of sim advanced settings detected:");
             console.log(data.simAdvancedSettings);
             console.log("Using newer (default) version with different structure and overwriting old: ");
             console.log(this.simAdvancedSettings);
@@ -993,6 +1009,18 @@ export class AppComponent {
         for (let persistedSkillTree of this.simParameters.skillTrees) {
             this.skillTrees.push(SkillTree.fromPersisted(persistedSkillTree));
         }
+    }
+
+    initFromLocalStorage(): void {
+        console.log("Initializing from local storage..."); 
+        let data = this.getDataFromLocalStorage();
+        this.initDataFromOtherSource(data);         
+    }
+
+    initFromHashFragment(): void {
+        console.log("Initializing from hash fragment..."); 
+        let data = URLHashManager.getDataFromHashFragment(); 
+        this.initDataFromOtherSource(data); 
     }
 
 
@@ -1058,6 +1086,28 @@ export class AppComponent {
         this.createFileDownload("simulationParameters.json", JSON.stringify(data, null, 4));
     }
 
+    @ViewChild("inputShareDataURL", {static: false, read: ElementRef}) inputShareDataURL: ElementRef; 
+    onClickButtonShareData(): void {
+        
+        let url = window.location.href.split('#')[0] + "#" + URLHashManager.convertDataToHashFragment({
+            simParameters: this.simParameters,
+            simAdvancedSettings: this.simAdvancedSettings
+        }); 
+        //console.log(url); 
+        this.shareDataURL = url; 
+        //console.log(this.inputShareDataURL); 
+        
+        var self = this; 
+        setTimeout(function() {
+            self.inputShareDataURL.nativeElement.focus(); 
+            self.inputShareDataURL.nativeElement.select(); 
+        }, 500); 
+
+        Utils_UI.copyToClipboard(url); 
+        this.openSnackBar("URL copied to clipboard.", "Dismiss"); 
+        
+    }
+
     createFileUpload(callbackFunction) {
         var element = document.createElement("input");
         element.setAttribute("type", "file");
@@ -1113,6 +1163,7 @@ export class AppComponent {
             duration: 1000,
         });
     }
+
 
 
 }
