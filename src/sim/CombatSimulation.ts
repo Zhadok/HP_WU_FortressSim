@@ -254,7 +254,7 @@ export class CombatSimulation {
                      // In this case, the wizard should NOT be allowed a followup action, since he should wait for the spawn event
                     this.addEvent(new EnemySpawnEvent(this.currentTime, this.fortressRoom.getNextActiveEnemy()));
                 }
-                else {
+                else if (this.checkForVictory() === false) {
                     // In this case, the wizard should be allowed a followup action, since there will be no new enemies after next event
                     await this.triggerIdleWizards(); 
                 }

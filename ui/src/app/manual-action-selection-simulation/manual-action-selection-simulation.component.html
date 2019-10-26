@@ -1,13 +1,15 @@
 <div *ngIf="runningSimulation !== null">
     <h2 class="mat-h2">Chamber simulation ({{parent.getChamberName(runningSimulation.params.roomLevel)}})</h2>
     <div class="floatLeft clearBoth">
-        Time: {{parent.formatMinutesDecimal(facts.chamber.remainingTimeSeconds)}}
+            <h3 class="mat-h3">Time: {{parent.formatMinutesDecimal(facts.chamber.remainingTimeSeconds)}}/{{parent.formatMinutesDecimal((runningSimulation.maxTime/1000).toFixed(0)) }}<br>
+            Enemies defeated: {{runningSimulation.fortressRoom.enemiesAll.length-facts.chamber.remainingEnemies}}/{{runningSimulation.fortressRoom.enemiesAll.length}}
+            </h3>
     </div>
     <div class="floatLeft clearBoth">
         <app-enemy-portrait 
             [class.selectedEnemy]="(isEnemyTargetRequired(selectedAction) && selectedEnemyID===enemy.enemyIndex) || 
                                    (facts.wizard.inCombat === true && facts.wizard.inCombatWith.enemyIndex===enemy.enemyIndex)" 
-            (click)="selectedEnemyID=enemy.enemyIndex" *ngFor="let enemy of runningSimulation.fortressRoom.enemiesActive" [enemy]="enemy">
+            (click)="selectedEnemyID=enemy.enemyIndex" *ngFor="let enemy of runningSimulation.fortressRoom.enemiesActive" [enemy]="enemy" [wizard]="facts.wizard">
         </app-enemy-portrait>
     </div>
 

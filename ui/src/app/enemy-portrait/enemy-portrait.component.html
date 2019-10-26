@@ -4,6 +4,7 @@
         [class.divEnemyEliteBorder]="enemy.isElite === true">
         <div class="divEnemyPortraitContainer">
             <img src="assets/img/enemies/{{enemy.name}}.png" />
+            <span *ngIf="wizard !== undefined && wizard.isProficientAgainst(enemy)" class="spanWizardProficiencyMarker">^</span>
         </div>
         <span class="divEnemyLevel">{{ enemy.level }}</span><br>
         <!-- {{ enemy.nameUserFriendly }}<br> -->

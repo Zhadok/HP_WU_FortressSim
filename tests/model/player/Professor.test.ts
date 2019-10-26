@@ -2,128 +2,142 @@
 import { TestData } from "../../TestData";
 import { expect } from "chai";
 import { Professor } from "./Professor";
-import { Enemy } from "../env/enemies/Enemy";
+import { Enemy } from  "../../../src/model/env/enemies/Enemy";
 
 
 
 describe("Professor", function() {
 
-    let professor: Professor; 
+    let wizard: Professor; 
     let enemy: Enemy; 
     let enemy2: Enemy; 
 
     beforeEach(() => {
-        professor = TestData.buildDefaultProfessor();
+        wizard = TestData.buildDefaultProfessor();
         enemy = TestData.buildDefaultEnemy();
         enemy2 = TestData.buildDefaultEnemy(); 
     });
 
     it("standardPower", function() {
-        expect(professor.getPowerAfterModifications(enemy)).to.equal(professor.stats.power);
+        expect(wizard.getPowerAfterModifications(enemy)).to.equal(wizard.stats.power);
     });
     it("idealExchange_triggered", function() {
         enemy.hasDeteriorationHex = true;
 
-        professor.setTrigger("idealExchange", 5);
+        wizard.setTrigger("idealExchange", 5);
 
-        expect(professor.getPowerAfterModifications(enemy)).to.equal(professor.stats.power + 5);
-        expect(professor.getPowerAfterModifications(enemy2)).to.equal(professor.stats.power); // Has no debuffs
+        expect(wizard.getPowerAfterModifications(enemy)).to.equal(wizard.stats.power + 5);
+        expect(wizard.getPowerAfterModifications(enemy2)).to.equal(wizard.stats.power); // Has no debuffs
     });
 
     it("restrictionSection_triggered", function() {
         enemy.hasDeteriorationHex = true; 
 
-        professor.setTrigger("restrictedSection", 0.06);
+        wizard.setTrigger("restrictedSection", 0.06);
 
-        expect(professor.getDefenceAfterModifications(enemy)).to.equal(professor.stats.defence + 0.06); 
-        expect(professor.getDefenceAfterModifications(enemy2)).to.equal(professor.stats.defence); 
+        expect(wizard.getDefenceAfterModifications(enemy)).to.equal(wizard.stats.defence + 0.06); 
+        expect(wizard.getDefenceAfterModifications(enemy2)).to.equal(wizard.stats.defence); 
     });
 
 
     it("strengthInNumbers_triggered", function() {
-        professor.hasDefenceCharm = true;
-        professor.setTrigger("strengthInNumbers", 5);
+        wizard.hasDefenceCharm = true;
+        wizard.setTrigger("strengthInNumbers", 5);
 
-        expect(professor.getPowerAfterModifications(enemy)).to.equal(professor.stats.power + 5);
+        expect(wizard.getPowerAfterModifications(enemy)).to.equal(wizard.stats.power + 5);
         
-        professor.setTrigger("strengthInNumbers", null);
-        expect(professor.getPowerAfterModifications(enemy)).to.equal(professor.stats.power);
+        wizard.setTrigger("strengthInNumbers", null);
+        expect(wizard.getPowerAfterModifications(enemy)).to.equal(wizard.stats.power);
     });
     
     it("sparringSpecifics_triggered", function() {
 
         enemy.hasDeteriorationHex = true;
         enemy.hasConfusionHex = true; 
-        professor.setTrigger("sparringSpecifics", 0.12);
+        wizard.setTrigger("sparringSpecifics", 0.12);
 
-        expect(professor.getDefenceAfterModifications(enemy)).to.equal(professor.stats.defence + 0.12);
-        expect(professor.getDefenceAfterModifications(enemy2)).to.equal(professor.stats.defence);
+        expect(wizard.getDefenceAfterModifications(enemy)).to.equal(wizard.stats.defence + 0.12);
+        expect(wizard.getDefenceAfterModifications(enemy2)).to.equal(wizard.stats.defence);
         
     });
     it("teamworkMakesTheDreamWork_triggered", function() {
 
-        professor.hasBraveryCharm = true;
-        enemy.applyExstimuloPotion(professor, 1, 2.25); 
-        professor.setTrigger("teamworkMakesTheDreamWork", 12);
+        wizard.hasBraveryCharm = true;
+        enemy.applyExstimuloPotion(wizard, 1, 2.25); 
+        wizard.setTrigger("teamworkMakesTheDreamWork", 12);
 
-        expect(professor.getPowerAfterModifications(enemy)).to.equal(professor.stats.power + 12);
+        expect(wizard.getPowerAfterModifications(enemy)).to.equal(wizard.stats.power + 12);
         
-        professor.setTrigger("teamworkMakesTheDreamWork", null);
-        expect(professor.getPowerAfterModifications(enemy)).to.equal(professor.stats.power); 
+        wizard.setTrigger("teamworkMakesTheDreamWork", null);
+        expect(wizard.getPowerAfterModifications(enemy)).to.equal(wizard.stats.power); 
     });
     it("confidence_triggered", function() {
-        professor.hasBraveryCharm = true;
-        professor.setTrigger("confidence", 0.06);
+        wizard.hasBraveryCharm = true;
+        wizard.setTrigger("confidence", 0.06);
 
-        expect(professor.getDefenceAfterModifications(enemy)).to.equal(professor.stats.defence + 0.06);
+        expect(wizard.getDefenceAfterModifications(enemy)).to.equal(wizard.stats.defence + 0.06);
 
-        professor.setTrigger("confidence", null);
-        expect(professor.getDefenceAfterModifications(enemy)).to.equal(professor.stats.defence);
+        wizard.setTrigger("confidence", null);
+        expect(wizard.getDefenceAfterModifications(enemy)).to.equal(wizard.stats.defence);
 
     });
     it("teamTeaching_triggered", function() {
-        professor.hasBraveryCharm = true;
-        professor.hasDefenceCharm = true; 
-        professor.setTrigger("teamTeaching", 0.12);
+        wizard.hasBraveryCharm = true;
+        wizard.hasDefenceCharm = true; 
+        wizard.setTrigger("teamTeaching", 0.12);
 
-        expect(professor.getDefenceAfterModifications(enemy)).to.equal(professor.stats.defence + 0.12);
+        expect(wizard.getDefenceAfterModifications(enemy)).to.equal(wizard.stats.defence + 0.12);
 
-        professor.setTrigger("teamTeaching", null);
-        expect(professor.getDefenceAfterModifications(enemy)).to.equal(professor.stats.defence);
+        wizard.setTrigger("teamTeaching", null);
+        expect(wizard.getDefenceAfterModifications(enemy)).to.equal(wizard.stats.defence);
 
     });
     it("onSabbatical_triggered", function() {
         enemy.hasConfusionHex = true;
         enemy.hasDeteriorationHex = true;
         enemy.hasWeakeningHex = true; 
-        professor.setTrigger("onSabbatical", 12);
+        wizard.setTrigger("onSabbatical", 12);
 
-        expect(professor.getPowerAfterModifications(enemy)).to.equal(professor.stats.power + 12);
+        expect(wizard.getPowerAfterModifications(enemy)).to.equal(wizard.stats.power + 12);
 
-        professor.setTrigger("onSabbatical", null);
+        wizard.setTrigger("onSabbatical", null);
 
-        expect(professor.getPowerAfterModifications(enemy)).to.equal(professor.stats.power);
+        expect(wizard.getPowerAfterModifications(enemy)).to.equal(wizard.stats.power);
     });
     it("peskyPixies_triggered", function() {
         let enemyPixie = TestData.buildDefaultPixie();
         let enemyWerewolf = TestData.buildDefaultWerewolf();
 
-        professor.setTrigger("peskyPixies", 0.3);
+        wizard.setTrigger("peskyPixies", 0.3);
 
-        expect(professor.getAccuracyAfterModifications(enemyPixie)).to.equal(professor.stats.accuracy + 0.3);
-        expect(professor.getAccuracyAfterModifications(enemyWerewolf)).to.equal(professor.stats.accuracy);
+        expect(wizard.getAccuracyAfterModifications(enemyPixie)).to.equal(wizard.stats.accuracy + 0.3);
+        expect(wizard.getAccuracyAfterModifications(enemyWerewolf)).to.equal(wizard.stats.accuracy);
     });
     it("fullMoonHunter_triggered", function() {
         let enemy = TestData.buildDefaultWerewolf();
         let enemy2 = TestData.buildDefaultPixie();
 
-        professor.setTrigger("fullMoonHunter", 0.3);
+        wizard.setTrigger("fullMoonHunter", 0.3);
 
-        expect(professor.getDefenceBreachAfterModifications(enemy)).to.equal(professor.stats.defenceBreach + 0.3);
-        expect(professor.getDefenceBreachAfterModifications(enemy2)).to.equal(professor.stats.defenceBreach);
+        expect(wizard.getDefenceBreachAfterModifications(enemy)).to.equal(wizard.stats.defenceBreach + 0.3);
+        expect(wizard.getDefenceBreachAfterModifications(enemy2)).to.equal(wizard.stats.defenceBreach);
     });
 
 
-
+    it("proficiency", function() {
+        let erkling = Enemy.buildEnemy("erkling", 0, false, 1, 1, 1); 
+        let acromantula = Enemy.buildEnemy("acromantula", 0, false, 1, 1, 1); 
+        let darkWizard = Enemy.buildEnemy("darkWizard", 0, false, 1, 1, 1); 
+        let deathEater = Enemy.buildEnemy("deathEater", 0, false, 1, 1, 1); 
+        let pixie = Enemy.buildEnemy("pixie", 0, false, 1, 1, 1); 
+        let werewolf = Enemy.buildEnemy("werewolf", 0, false, 1, 1, 1); 
+        
+        expect(wizard.isProficientAgainst(erkling)).to.be.false; 
+        expect(wizard.isProficientAgainst(acromantula)).to.be.false; 
+        expect(wizard.isProficientAgainst(darkWizard)).to.be.false; 
+        expect(wizard.isProficientAgainst(deathEater)).to.be.false; 
+        expect(wizard.isProficientAgainst(pixie)).to.be.true; 
+        expect(wizard.isProficientAgainst(werewolf)).to.be.true; 
+    });
 
 });

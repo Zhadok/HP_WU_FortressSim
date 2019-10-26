@@ -70,4 +70,20 @@ describe("Magizoologist", function() {
         expect(wizard.getPowerAfterModifications(enemyPixie)).to.be.equal(wizard.stats.power); 
     });
 
+    it("proficiency", function() {
+        let erkling = Enemy.buildEnemy("erkling", 0, false, 1, 1, 1); 
+        let acromantula = Enemy.buildEnemy("acromantula", 0, false, 1, 1, 1); 
+        let darkWizard = Enemy.buildEnemy("darkWizard", 0, false, 1, 1, 1); 
+        let deathEater = Enemy.buildEnemy("deathEater", 0, false, 1, 1, 1); 
+        let pixie = Enemy.buildEnemy("pixie", 0, false, 1, 1, 1); 
+        let werewolf = Enemy.buildEnemy("werewolf", 0, false, 1, 1, 1); 
+        
+        expect(wizard.isProficientAgainst(erkling)).to.be.true; 
+        expect(wizard.isProficientAgainst(acromantula)).to.be.true; 
+        expect(wizard.isProficientAgainst(darkWizard)).to.be.false; 
+        expect(wizard.isProficientAgainst(deathEater)).to.be.false; 
+        expect(wizard.isProficientAgainst(pixie)).to.be.false; 
+        expect(wizard.isProficientAgainst(werewolf)).to.be.false; 
+    });
+
 }); 

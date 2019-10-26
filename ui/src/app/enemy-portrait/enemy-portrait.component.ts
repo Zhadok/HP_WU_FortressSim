@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Enemy } from '../../../src/model/env/enemies/Enemy';
+import { Wizard } from '../../../src/model/player/Wizard';
 
 @Component({
     selector: 'app-enemy-portrait',
@@ -9,6 +10,7 @@ import { Enemy } from '../../../src/model/env/enemies/Enemy';
 export class EnemyPortraitComponent implements OnInit {
 
     @Input() enemy: Enemy; 
+    @Input() wizard: Wizard
 
     constructor() { }
 

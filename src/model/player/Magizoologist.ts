@@ -13,8 +13,8 @@ export class Magizoologist extends Wizard {
 
     isProficientAgainst(enemy: Enemy): boolean {
         switch (enemy.name) {
-            case "darkWizard": return true;
-            case "deathEater": return true;
+            case "acromantula": return true;
+            case "erkling": return true;
             default: return false;
         }
     }
