@@ -6,7 +6,7 @@ import professorRules from "./store/professorRules.json";
 import aurorRules from "./store/aurorRules.json";
 import magizoologistRules from "./store/magizoologistRules.json";
 
-import { nameClassType, nameClassUserFriendlyType, strategicSpellNameType, ruleFactType, actionNameType, ruleOperatorMapType, ruleContainerType, ruleType, actionNameMapType, ruleFactNameMapType, ruleFactNameType, ruleFactChamberType, ruleEventTargetMapType, ruleEventTargetType } from "../types";
+import { nameClassType, nameClassUserFriendlyType, strategicSpellNameType, ruleFactType, actionNameType, ruleOperatorMapType, ruleContainerType, ruleType, actionNameMapType, ruleFactNameMapType, ruleFactNameType, ruleFactChamberType, ruleEventTargetMapType, ruleEventTargetType, rulesActionContainerType } from "../types";
 import { SimEvent } from "../sim/events/SimEvent";
 import { DefenceCharmEvent } from "../sim/events/wizard/room/spells/professor/DefenceCharmEvent";
 import { Enemy } from "../model/env/enemies/Enemy";
@@ -221,8 +221,8 @@ export class RulesEngine extends PlayerActionEngine {
         return null; 
     }
 
-    async getNextAction(timestampBegin: number, facts: ruleFactType): Promise<SimEvent | null> {
-        //console.log(facts);
+    async runRulesEngine(facts: ruleFactType): Promise<rulesActionContainerType> {
+
         let results = await this.engine.run(facts).catch((error) => {
             console.log("Error processing rules!"); 
             throw error; 
@@ -297,7 +297,18 @@ export class RulesEngine extends PlayerActionEngine {
             targetEnemy = highestPriorityAvailableEnemy; 
         }
 
-        return this.getSimEventFromAction(event.type as actionNameType, timestampBegin, wizard, targetWizard, targetEnemy!, facts); 
+        return {
+            actionName: event.type as actionNameType,
+            targetWizard: targetWizard,
+            targetEnemy: targetEnemy
+        }
+    }
+
+    async getNextAction(timestampBegin: number, facts: ruleFactType): Promise<SimEvent | null> {
+        //console.log(facts);
+        let rulesEngineResult = await this.runRulesEngine(facts); 
+        return this.getSimEventFromAction(rulesEngineResult.actionName as actionNameType, timestampBegin, facts.wizard, 
+                rulesEngineResult.targetWizard!, rulesEngineResult.targetEnemy!, facts); 
     }
 
 }

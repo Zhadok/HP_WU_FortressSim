@@ -1,3 +1,5 @@
+- 0.8.2
+    - Manual player action selection in simulation: Added button as to what the player AI would do
 - 0.8.1
     - Added toast popup for when data is saved
     - Added column for comparing simulations: CXP / energy

@@ -229,8 +229,8 @@ https://stackoverflow.com/questions/53497127/how-to-break-word-if-text-inside-an
     margin-top: 10px; 
     margin-bottom: 10px; 
 }
-.divSimulationSingleResultEnemy {
-}
+/*.divSimulationSingleResultEnemy {
+}*/
 .selectedEnemy > div {
     border: 1px solid black !important; 
     -webkit-box-sizing: border-box;

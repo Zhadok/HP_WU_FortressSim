@@ -75,7 +75,16 @@
         </mat-form-field> -->
         <mat-radio-group aria-label="Select player action" [(ngModel)]="selectedAction">
             <mat-radio-button class="floatLeft clearBoth" *ngFor="let item of availableActions" [value]="item">
-                <span class="spanMultipleLines">{{parent.getActionNameMap(0)[item]}}</span>
+                <span class="spanMultipleLines">
+                    {{parent.getActionNameMap(0)[item]}} {{getPotionsRemainingLabel(facts.wizard, item)}}
+                    <span>{{ (nextActionAI && nextActionAI.actionName === item) ? '(AI would choose this action' : '' }}</span>
+                    <span>{{ (nextActionAI && nextActionAI.actionName === item &&  nextActionAI.targetWizard !== null 
+                        && isWizardTargetRequired(item)) ? ' with target wizard ID=' + nextActionAI.targetWizard.playerIndex : '' }}</span>
+                    <span>{{ (nextActionAI && nextActionAI.actionName === item &&  nextActionAI.targetEnemy !== null 
+                        && isEnemyTargetRequired(item)) ? ' with target enemy ID=' + nextActionAI.targetEnemy.enemyIndex : '' }}</span>
+                    <span>{{ (nextActionAI && nextActionAI.actionName === item) ? ')' : '' }}</span>
+                    
+                </span>
             </mat-radio-button>
         </mat-radio-group>
     </div>
@@ -94,6 +103,8 @@
                     (isWizardTargetRequired(selectedAction) && selectedWizardID === null) || (isEnemyTargetRequired(selectedAction) && selectedEnemyID === null) ||
                     (facts.wizard.isValidAction(selectedAction, facts, selectedWizardID, selectedEnemyID) !== true)"
                 (click)="onClickButtonPerformPlayerAction()" mat-raised-button large color="primary">Perform action</button>
+        <button class="floatLeft" 
+                (click)="onClickButtonPerformNextActionAI()" mat-raised-button large>Let AI perform action</button>
     </div>
     
 </div>

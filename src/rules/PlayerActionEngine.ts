@@ -110,7 +110,6 @@ export abstract class PlayerActionEngine {
             
             // Combat
             case "enterCombat": 
-                return new EnterCombatEvent(timestampBegin, targetEnemy!, wizard, this.rng);
             case "enterCombatWithHighestPriorityAvailableEnemy": 
                 return new EnterCombatEvent(timestampBegin, targetEnemy!, wizard, this.rng);
             case "exitCombat": 

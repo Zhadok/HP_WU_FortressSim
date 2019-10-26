@@ -172,7 +172,10 @@
         },
         {
             "event": {
-                "type": "enterCombatWithHighestPriorityAvailableEnemy"
+                "type": "enterCombat",
+                "params": {
+                    "targetEnemy": "highestPriorityAvailableEnemy"
+                }
             },
             "priority": 8,
             "conditions": {

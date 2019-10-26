@@ -354,7 +354,7 @@ export abstract class Wizard extends Combatant {
         }
         if (this.inCombat === true) {
             switch (actionName) {
-                case "enterCombatWithHighestPriorityAvailableEnemy": return false; break; 
+                //case "enterCombatWithHighestPriorityAvailableEnemy": return false; break; 
                 case "enterCombat": return false; break; 
             }
             if (this.isActionStrategicSpell(actionName)) return false; 

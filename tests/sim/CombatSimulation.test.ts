@@ -97,6 +97,18 @@ describe("CombatSimulation", function() {
         
         expect(orderedTargets).to.deep.equal([enemy1, enemy2]);
     });
+    it("highestPriorityTarget_case1", function() {
+        let enemy1 = Enemy.buildEnemy("acromantula", 0, false, 1, 1, 3);
+        let enemy2 = Enemy.buildEnemy("darkWizard", 1, false, 1, 1, 3);
+        let enemy3 = Enemy.buildEnemy("pixie", 2, false, 1, 1, 3);
+        sim.addEnemyToActive(enemy3); 
+        sim.addEnemyToActive(enemy2); 
+        sim.addEnemyToActive(enemy1); 
+        
+        let highestPriorityTarget = sim.getHighestPriorityAvailableEnemy(sim.wizards[0]);
+        expect(highestPriorityTarget).to.equal(enemy3); 
+    });
+
 
     it("combatSimulation_dead_normalOrder", function() {
         let enemy = TestData.buildDefaultEnemy();

@@ -62,9 +62,16 @@ declare type actionNameType = strategicSpellNameType |
                               "strongInvigorationPotion" | "weakInvigorationPotion" |
                               "potentExstimuloPotion" | "strongExstimuloPotion" | "exstimuloPotion" | 
                               "witSharpeningPotion" | "healthPotion" |
-                              "enterCombat" | "enterCombatWithHighestPriorityAvailableEnemy" | "exitCombat" | 
+                              "enterCombat" | 
+                              "enterCombatWithHighestPriorityAvailableEnemy" | 
+                              "exitCombat" | 
                               "combatSpellCastWizard" | "noAction";
-declare type actionNameMapType = { [key in actionNameType]: string }; 
+declare type actionNameMapType = { [key in actionNameType]: string };
+declare type rulesActionContainerType = {
+    actionName: actionNameType, 
+    targetWizard: Wizard | null,
+    targetEnemy: Enemy | null
+}; 
 declare type manualActionContainerType = {
     actionName: actionNameType,
     targetWizardIndex?: number,

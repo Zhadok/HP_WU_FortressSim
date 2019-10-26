@@ -1,4 +1,4 @@
-import {firstBy} from "thenby"
+import { firstBy } from "thenby"
 import Prando from "prando";
 
 import eventData from "../data/events.json";
@@ -36,17 +36,18 @@ export class CombatSimulation {
     readonly wizards: Array<Wizard> = [];
     readonly fortressRoom: FortressRoom;
     readonly rng: Prando
-    
+
     readonly playerActionEngines: Array<PlayerActionEngine>; // 1 ruleEngine per player (it might be that 2 professors in team but that they should follow different strategy)
+    readonly defaultPlayerActionEngines: Array<RulesEngine>; // Default: Rules based. Used in frontend to compare what the player can choose with that the AI would do
 
     currentTime: number;
-    readonly maxTime: number; 
+    readonly maxTime: number;
 
     // For simulation results
-    timeStart: number = -1; 
-    timeEnd: number = -1; 
+    timeStart: number = -1;
+    timeEnd: number = -1;
     nEventsProcessed: number = 0;
-    isWin: boolean | null = null; 
+    isWin: boolean | null = null;
 
 
 
@@ -61,45 +62,64 @@ export class CombatSimulation {
     readonly eventQueue: Array<SimEvent>;
 
     constructor(params: CombatSimulationParameters, rng: Prando) {
-        this.timeStart = (new Date()).getTime(); 
+        this.timeStart = (new Date()).getTime();
         this.params = params;
-        this.rng = rng;  
+        this.rng = rng;
         this.currentTime = 0;
         //this.events = new Map<number, Array<SimEvent>>();
         this.eventQueue = [];
 
         this.fortressRoom = new FortressRoom(params, rng);
-        let knockoutTime = this.fortressRoom.computeKnockoutTime(); 
+        let knockoutTime = this.fortressRoom.computeKnockoutTime();
         this.maxTime = this.fortressRoom.computeMaxtime() * 1000;
 
-        for (let i=0;i<params.nameClasses.length;i++) {
+        for (let i = 0; i < params.nameClasses.length; i++) {
             let skillTree = SkillTree.fromPersisted(params.skillTrees[i]);
-            let wizard = WizardFactory.buildWizardWithSkillTree(skillTree, i, knockoutTime, params.potions[i]); 
+            let wizard = WizardFactory.buildWizardWithSkillTree(skillTree, i, knockoutTime, params.potions[i]);
             this.wizards.push(wizard);
         }
 
-        this.playerActionEngines = []; 
-        switch (params.playerActionSelectionMode) {
-            case "manual": 
-                for (let nameClass of params.nameClasses) {
-                    this.playerActionEngines.push(new ManualPlayerActionEngine(nameClass, rng)); 
+        this.playerActionEngines = [];
+        this.defaultPlayerActionEngines = [];
+        this.initPlayerActionEngines();
+
+
+    }
+
+    initPlayerActionEngines() {
+        switch (this.params.playerActionSelectionMode) {
+            case "manual":
+                for (let nameClass of this.params.nameClasses) {
+                    this.playerActionEngines.push(new ManualPlayerActionEngine(nameClass, this.rng));
                 }
-                break; 
-            case "rules": 
-            default: 
-                if (params.ruleContainers === undefined) {
-                    for (let nameClass of params.nameClasses) {
-                        this.playerActionEngines.push(RulesEngine.buildFromStandard(nameClass, rng)); 
-                    }
-                }
-                else {
-                    for (let ruleContainer of params.ruleContainers) {
-                        this.playerActionEngines.push(new RulesEngine(ruleContainer, rng)); 
-                    }
-                }
-                break; 
+                this.initRulesPlayerActionEngines(false); 
+                break;
+            case "rules":
+            default:
+                this.initRulesPlayerActionEngines(true); 
+                break;
         }
-        
+    }
+
+    initRulesPlayerActionEngines(addToPlayerActionEngines: boolean): void {
+        if (this.params.ruleContainers === undefined) {
+            for (let nameClass of this.params.nameClasses) {
+                let engine = RulesEngine.buildFromStandard(nameClass, this.rng);
+                if (addToPlayerActionEngines === true) {
+                    this.playerActionEngines.push(engine);
+                }
+                this.defaultPlayerActionEngines.push(engine);
+            }
+        }
+        else {
+            for (let ruleContainer of this.params.ruleContainers) {
+                let engine = new RulesEngine(ruleContainer, this.rng);
+                if (addToPlayerActionEngines === true) {
+                    this.playerActionEngines.push(engine);
+                }
+                this.defaultPlayerActionEngines.push(engine);
+            }
+        }
     }
 
     init() {
@@ -107,7 +127,7 @@ export class CombatSimulation {
         this.addEvent(new InitialEnemySpawnEvent(0));
 
         // Add one enemy per wizard initially
-        for (var i=0;i<this.wizards.length;i++) {
+        for (var i = 0; i < this.wizards.length; i++) {
             this.addEvent(new EnemySpawnEvent(0, this.fortressRoom.getNextActiveEnemy(i)));
         }
 
@@ -117,7 +137,7 @@ export class CombatSimulation {
         this.addEvent(new SecondEnemySpawnEvent("thirdEnemySpawnTime", 0));
 
         // Add out of time event
-        this.addEvent(new WizardsOutOfTimeEvent(this.maxTime)); 
+        this.addEvent(new WizardsOutOfTimeEvent(this.maxTime));
     }
 
 
@@ -145,10 +165,10 @@ export class CombatSimulation {
 
 
     addEvent(newEvent: SimEvent) {
-        
+
         if (this.currentTime > newEvent.timestampBegin) {
-            throw new Error("Attempted to add event at eventTimestamp=" + newEvent.timestampBegin + " with currentTime=" + this.currentTime + ", " + 
-                            newEvent.eventName);
+            throw new Error("Attempted to add event at eventTimestamp=" + newEvent.timestampBegin + " with currentTime=" + this.currentTime + ", " +
+                newEvent.eventName);
         }
         // Stack based implementation: top of stack (=last element) is next event 
         // (FIFO queue)
@@ -162,8 +182,8 @@ export class CombatSimulation {
                 break;
             }
         }
-        this.log(2, "Adding event: " + newEvent.constructor.name + " with begin=" + newEvent.timestampBegin + ", end=" + newEvent.timestampEnd + 
-                    " (" + newEvent.eventName + ")");
+        this.log(2, "Adding event: " + newEvent.constructor.name + " with begin=" + newEvent.timestampBegin + ", end=" + newEvent.timestampEnd +
+            " (" + newEvent.eventName + ")");
         this.eventQueue.splice(eventIndex, 0, newEvent);
 
         newEvent.onStart();
@@ -176,28 +196,28 @@ export class CombatSimulation {
         while (this.eventQueue.length > 0) {
             let eventProcessed: boolean = await this.processNextEvent();
             if (eventProcessed === false) {
-                this.log(2, "Simulation reached max time (" + this.maxTime/1000 + "s). Wizard(s) were defeated!");
-                this.isWin = false; 
-                this.emptyEventQueue(); 
+                this.log(2, "Simulation reached max time (" + this.maxTime / 1000 + "s). Wizard(s) were defeated!");
+                this.isWin = false;
+                this.emptyEventQueue();
                 this.wizards.forEach((wizard) => {
                     if (wizard.getIsDefeated() === true) {
                         wizard.timeSpentDefeated += this.currentTime - wizard.timestampDefeated; // Need to add here because otherwise it would only be added on revive
                     }
                 });
-                break; 
+                break;
             }
         }
         if (this.isWin === null) {
             this.log(2, "All enemies have been defeated!");
-            this.isWin = true; 
-        } 
+            this.isWin = true;
+        }
 
         this.timeEnd = (new Date()).getTime();
-        this.log(2, "Simulation finished after " + (this.timeEnd-this.timeStart) + "ms."); 
+        this.log(2, "Simulation finished after " + (this.timeEnd - this.timeStart) + "ms.");
     }
-    
+
     peekNextEvent(): SimEvent {
-        return this.eventQueue[ this.eventQueue.length-1 ];
+        return this.eventQueue[this.eventQueue.length - 1];
     }
     emptyEventQueue(): void {
         this.eventQueue.splice(0, this.eventQueue.length);
@@ -214,10 +234,10 @@ export class CombatSimulation {
 
         await this.processEvent(currentEvent);
 
-        this.nEventsProcessed++; 
+        this.nEventsProcessed++;
 
         if (this.currentTime >= this.maxTime) {
-            return false; 
+            return false;
         }
         return true;
     }
@@ -234,7 +254,7 @@ export class CombatSimulation {
             }
             else if (event instanceof SecondEnemySpawnEvent) {
                 // Enemies will continue spawning after 18s/34s
-                for (let i=0;i<this.wizards.length;i++) {
+                for (let i = 0; i < this.wizards.length; i++) {
                     if (this.fortressRoom.hasNextActiveEnemy()) {
                         this.addEvent(new EnemySpawnEvent(this.currentTime, this.fortressRoom.getNextActiveEnemy()));
                     }
@@ -246,27 +266,27 @@ export class CombatSimulation {
                 this.addEnemyToActive(event.enemy);
                 if (this.eventQueue.filter(e => e instanceof InitialEnemySpawnEvent).length === 0) {
                     // Only trigger idle wizards if no more initial enemy spawns in queue
-                    await this.triggerIdleWizards(); 
-                }   
+                    await this.triggerIdleWizards();
+                }
             }
             else if (event instanceof EnemyDefeatEvent) {
                 this.removeEnemyFromActive(event.enemy);
                 this.rewardWizardFocus(event.enemy.focusReward);
                 if (this.fortressRoom.hasNextActiveEnemy()) {
-                     // In this case, the wizard should NOT be allowed a followup action, since he should wait for the spawn event
+                    // In this case, the wizard should NOT be allowed a followup action, since he should wait for the spawn event
                     this.addEvent(new EnemySpawnEvent(this.currentTime, this.fortressRoom.getNextActiveEnemy()));
                 }
                 else if (this.checkForVictory() === false) {
                     // In this case, the wizard should be allowed a followup action, since there will be no new enemies after next event
-                    await this.triggerIdleWizards(); 
+                    await this.triggerIdleWizards();
                 }
                 if (this.checkForVictory() === true) {
-                    this.emptyEventQueue(); 
-                    return; 
+                    this.emptyEventQueue();
+                    return;
                 }
             }
 
-            return; 
+            return;
         }
 
         if (event.allowWizardFollowupAction()) {
@@ -278,17 +298,17 @@ export class CombatSimulation {
         }
         if (event instanceof CooldownFinishedEvent) {
             // trigger this specific wizard
-            await this.triggerIdleWizard(event.getCaster()); 
+            await this.triggerIdleWizard(event.getCaster());
         }
     }
 
     checkForVictory(): boolean {
-        return this.fortressRoom.areAllEnemiesDefeated(); 
+        return this.fortressRoom.areAllEnemiesDefeated();
     }
 
 
     rewardWizardFocus(focus: number): void {
-        this.log(2, "Adding " + focus + " focus to all wizards."); 
+        this.log(2, "Adding " + focus + " focus to all wizards.");
         for (let wizard of this.wizards) {
             wizard.addFocus(focus);
         }
@@ -296,14 +316,14 @@ export class CombatSimulation {
 
     getWizardDefeatedTimerMS(wizard: Wizard): number {
         if (wizard.getIsDefeated() === false) {
-            return -1; 
+            return -1;
         }
 
         // Find revive event corresponding to this wizard
         for (let event of this.eventQueue) {
             if (event instanceof WizardDefeatEvent) {
                 if (event.wizard.playerIndex === wizard.playerIndex) {
-                    return event.timestampEnd - this.currentTime; 
+                    return event.timestampEnd - this.currentTime;
                 }
             }
         }
@@ -324,9 +344,9 @@ export class CombatSimulation {
                 }
             }
         }
-        return wizard.inCombat === false && 
-               wizard.getIsDefeated() === false &&
-               hasBlockingEvent === false; 
+        return wizard.inCombat === false &&
+            wizard.getIsDefeated() === false &&
+            hasBlockingEvent === false;
     }
 
 
@@ -335,19 +355,19 @@ export class CombatSimulation {
             /*if (this.isWizardIdle(wizard)) {
                 await this.addNextWizardEvent(wizard); 
             } */
-            await this.triggerIdleWizard(wizard);   
+            await this.triggerIdleWizard(wizard);
         }
-    }    
+    }
 
     async triggerIdleWizard(wizard: Wizard) {
         if (this.isWizardIdle(wizard)) {
-            this.log(2, "Player id=" + wizard.playerIndex + " was idle and an action has been triggered."); 
-            await this.addNextWizardEvent(wizard); 
-        }   
+            this.log(2, "Player id=" + wizard.playerIndex + " was idle and an action has been triggered.");
+            await this.addNextWizardEvent(wizard);
+        }
     }
 
     getPlayerActionEngine(playerIndex: number): PlayerActionEngine {
-        return this.playerActionEngines[playerIndex]; 
+        return this.playerActionEngines[playerIndex];
     }
 
     // Priority based next action
@@ -359,17 +379,17 @@ export class CombatSimulation {
 
         let highestPriorityAvailableEnemy: Enemy | null = this.getHighestPriorityAvailableEnemy(wizard);
         if (highestPriorityAvailableEnemy === undefined) {
-            highestPriorityAvailableEnemy = null; 
+            highestPriorityAvailableEnemy = null;
         }
 
         let facts: ruleFactType = {
             wizard: wizard,
-            highestPriorityAvailableEnemy: highestPriorityAvailableEnemy,  
+            highestPriorityAvailableEnemy: highestPriorityAvailableEnemy,
             allWizards: this.wizards,
             allActiveEnemies: this.fortressRoom.enemiesActive,
             chamber: {
                 currentTimeSeconds: this.currentTime / 1000,
-                remainingTimeSeconds: (this.maxTime - this.currentTime) / 1000, 
+                remainingTimeSeconds: (this.maxTime - this.currentTime) / 1000,
                 isAnyWizardDefeated: this.isAnyWizardDefeated(),
                 remainingEnemies: this.fortressRoom.getRemainingEnemiesCount(),
                 numberOfWizards: this.wizards.length
@@ -381,22 +401,22 @@ export class CombatSimulation {
             this.addEvent(nextEvent);
         }
         else {
-            this.log(2, "Player id=" + wizard.playerIndex + " chose 'no action' as followup."); 
+            this.log(2, "Player id=" + wizard.playerIndex + " chose 'no action' as followup.");
             if (wizard.inCombat === true) {
                 // Enemy should attack if player did not chose an action
-                let enemyAttackEvent = new CombatSpellCastEnemyEvent(timestampBegin, wizard.inCombatWith!, wizard, this.rng, true); 
-                this.addEvent(enemyAttackEvent); 
+                let enemyAttackEvent = new CombatSpellCastEnemyEvent(timestampBegin, wizard.inCombatWith!, wizard, this.rng, true);
+                this.addEvent(enemyAttackEvent);
             }
         }
-    }   
+    }
 
     isAnyWizardDefeated(): boolean {
         for (let wizard of this.wizards) {
             if (wizard.getIsDefeated()) {
-                return true; 
+                return true;
             }
         }
-        return false; 
+        return false;
     }
 
 
@@ -409,15 +429,15 @@ export class CombatSimulation {
     // Result: Highest priority will be at index=0
     sortEnemyTargetsByPriority(wizard: Wizard, activeEnemies: Array<Enemy>): Array<Enemy> {
         return activeEnemies.sort(
-            firstBy(function(v1, v2) { return v1.inCombat === v2.inCombat ? 0 : v1.inCombat ? 1 : -1 })
-            .thenBy(function(v1, v2) { return wizard.isProficientAgainst(v1) === wizard.isProficientAgainst(v2) ? 0 : wizard.isProficientAgainst(v1) ? -1 : 1})
-            .thenBy(function(v1, v2) { return v2.focusReward - v1.focusReward })
+            firstBy(function (v1, v2) { return v1.inCombat === v2.inCombat ? 0 : v1.inCombat ? 1 : -1 })
+                .thenBy(function (v1, v2) { return wizard.isProficientAgainst(v1) === wizard.isProficientAgainst(v2) ? 0 : wizard.isProficientAgainst(v1) ? -1 : 1 })
+                .thenBy(function (v1, v2) { return v2.focusReward - v1.focusReward })
         );
     }
 
     getHighestPriorityAvailableEnemy(wizard: Wizard): Enemy {
-        let sortedActiveEnemies = this.sortEnemyTargetsByPriority(wizard, 
-            this.fortressRoom.enemiesActive.filter(enemy => enemy.inCombat===false));
+        let sortedActiveEnemies = this.sortEnemyTargetsByPriority(wizard,
+            this.fortressRoom.enemiesActive.filter(enemy => enemy.inCombat === false));
         return sortedActiveEnemies[0];
     }
 
@@ -427,14 +447,14 @@ export class CombatSimulation {
 
     toSimulationResults(): CombatSimulationResults {
         if (this.isFinished() === false) {
-            throw new Error("Simulation not finished yet!"); 
+            throw new Error("Simulation not finished yet!");
         }
 
-        let challengeXPRewards = this.fortressRoom.computeChallengeXPRewards(this.isWin!, this.params.useSponsoredFortressRewards); 
+        let challengeXPRewards = this.fortressRoom.computeChallengeXPRewards(this.isWin!, this.params.useSponsoredFortressRewards);
         let wizardResults: Array<CombatSimulationResultsWizard> = this.wizards.map(wizard => {
             return {
                 playerIndex: wizard.playerIndex,
-                nameClass: wizard.nameClass, 
+                nameClass: wizard.nameClass,
                 nameClassUserFriendly: wizard.nameClassUserFriendly,
 
                 numberOfCasts: wizard.numberAttackCasts,
@@ -442,13 +462,13 @@ export class CombatSimulation {
                 numberOfCriticalCasts: wizard.numberCriticalCasts,
                 totalDamage: wizard.totalDamage,
                 averageDamage: wizard.totalDamage / wizard.numberAttackCasts,
-                numberEnhancementsDuringAttacks: wizard.numberEnhancementsDuringAttacks, 
-                numberImpairmentsDuringAttacks: wizard.numberImpairmentsDuringAttacks, 
+                numberEnhancementsDuringAttacks: wizard.numberEnhancementsDuringAttacks,
+                numberImpairmentsDuringAttacks: wizard.numberImpairmentsDuringAttacks,
 
                 totalDamageReceived: wizard.totalDamageReceived,
                 numberAttacksReceived: wizard.numberAttacksReceived,
-                numberEnhancementsDuringAttacksReceived: wizard.numberEnhancementsDuringAttacksReceived, 
-                numberImpairmentsDuringAttacksReceived: wizard.numberImpairmentsDuringAttacksReceived, 
+                numberEnhancementsDuringAttacksReceived: wizard.numberEnhancementsDuringAttacksReceived,
+                numberImpairmentsDuringAttacksReceived: wizard.numberImpairmentsDuringAttacksReceived,
 
                 challengeXPReward: challengeXPRewards[wizard.playerIndex],
                 runestoneLevel: this.params.runestoneLevels[wizard.playerIndex],
@@ -459,11 +479,11 @@ export class CombatSimulation {
                 potionsUsedBrewTimeHours: wizard.getPotionsUsedBrewTime(false),
                 potionsUsedBrewTimeHoursWithMasterNotes: wizard.getPotionsUsedBrewTime(true),
 
-                hasDefenceCharm: wizard.hasDefenceCharm, 
-                defenceCharmValue: wizard.defenceCharmValue, 
-                hasProficiencyPowerCharm: wizard.hasProficiencyPowerCharm, 
-                proficiencyPowerCharmValue: wizard.proficiencyPowerCharmValue, 
-                hasBraveryCharm: wizard.hasBraveryCharm, 
+                hasDefenceCharm: wizard.hasDefenceCharm,
+                defenceCharmValue: wizard.defenceCharmValue,
+                hasProficiencyPowerCharm: wizard.hasProficiencyPowerCharm,
+                proficiencyPowerCharmValue: wizard.proficiencyPowerCharmValue,
+                hasBraveryCharm: wizard.hasBraveryCharm,
                 braveryCharmValue: wizard.braveryCharmValue
             };
         });
@@ -471,15 +491,15 @@ export class CombatSimulation {
             wallTimeStart: this.timeStart,
             wallTimeEnd: this.timeEnd,
             durationWallTimeMS: this.timeEnd - this.timeStart,
-            durationGameTimeMS: this.currentTime, 
-            maxGameTimeMS: this.maxTime, 
+            durationGameTimeMS: this.currentTime,
+            maxGameTimeMS: this.maxTime,
             nEvents: this.nEventsProcessed,
-            isWin: this.isWin as boolean, 
+            isWin: this.isWin as boolean,
             simParameters: this.params,
             wizardResults: wizardResults,
             enemies: this.fortressRoom.enemiesAll,
             energyReward: this.fortressRoom.getEnergyReward(this.params.useSponsoredFortressRewards)
         };
     }
-    
+
 }
