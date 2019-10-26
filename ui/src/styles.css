@@ -272,7 +272,7 @@ https://stackoverflow.com/questions/53497127/how-to-break-word-if-text-inside-an
     position: absolute;
     left: 0%; 
 }
-.spanWizardProficiencyMarker {
+.spanWizardProficiencyMarker { /* "^" on upper left of enemy portrait */ 
     position: absolute;
     top: 0%;
     left: -33%;
@@ -284,6 +284,17 @@ https://stackoverflow.com/questions/53497127/how-to-break-word-if-text-inside-an
     font-size: 25px;  
     font-weight: bold;
 }
+.spanWizardDefeatedTimer {
+    background-color: rgba(0,0,0,0.3);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    font-size: 30px;
+    left: 0%;
+    line-height: 50px;
+    color: white;
+}
+
 
 .divEnemyPortraitUpperContainer {  /* Border of upper part, everything except debuffs */
     border-radius: 15px; 

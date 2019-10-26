@@ -33,12 +33,12 @@ import { MendingCharmCooldownFinishedEvent } from "../../src/sim/events/wizard/r
 
 describe("CombatSimulation", function() {
     let params1: CombatSimulationParameters;
-    let sim1: CombatSimulation; 
+    let sim: CombatSimulation; 
     
     beforeEach(() => {
         Logger.verbosity = 0;
         params1 = TestData.buildDefaultSimParameters();
-        sim1 = new CombatSimulation(params1, TestData.buildNewRNG_0());
+        sim = new CombatSimulation(params1, TestData.buildNewRNG_0());
     });
 
     it('addEvent', function() {
@@ -47,28 +47,28 @@ describe("CombatSimulation", function() {
         let event3 = new InitialEnemySpawnEvent(2000);
         let event4 = new InitialEnemySpawnEvent(3000);
 
-        sim1.addEvent(event1);
-        expect(sim1.eventQueue).to.deep.equal([event1]);
+        sim.addEvent(event1);
+        expect(sim.eventQueue).to.deep.equal([event1]);
         
-        sim1.addEvent(event4);
-        expect(sim1.eventQueue).to.deep.equal([event4, event1]);
+        sim.addEvent(event4);
+        expect(sim.eventQueue).to.deep.equal([event4, event1]);
         
-        sim1.addEvent(event2);
-        expect(sim1.eventQueue).to.deep.equal([event4, event2, event1]);
+        sim.addEvent(event2);
+        expect(sim.eventQueue).to.deep.equal([event4, event2, event1]);
         
-        sim1.addEvent(event3);
-        expect(sim1.eventQueue).to.deep.equal([event4, event3, event2, event1]);
+        sim.addEvent(event3);
+        expect(sim.eventQueue).to.deep.equal([event4, event3, event2, event1]);
     });
 
     it("init", function() {
-        sim1.init();
+        sim.init();
 
-        expect(sim1.eventQueue[0]).to.be.instanceOf(WizardsOutOfTimeEvent); 
-        expect(sim1.eventQueue[1].eventName).to.equal("thirdEnemySpawnTime");
-        expect(sim1.eventQueue[2].eventName).to.equal("secondEnemySpawnTime");
-        expect(sim1.eventQueue[3].eventName).to.equal("initialEnemySpawnAnimation");
-        expect(sim1.eventQueue[4].eventName).to.equal("enemySpawn");
-        expect(sim1.eventQueue.length).to.equal(3 + 1 + sim1.wizards.length); // outoftime/second/thirdEnemy, initialSpawn, 1 for each wizard
+        expect(sim.eventQueue[0]).to.be.instanceOf(WizardsOutOfTimeEvent); 
+        expect(sim.eventQueue[1].eventName).to.equal("thirdEnemySpawnTime");
+        expect(sim.eventQueue[2].eventName).to.equal("secondEnemySpawnTime");
+        expect(sim.eventQueue[3].eventName).to.equal("initialEnemySpawnAnimation");
+        expect(sim.eventQueue[4].eventName).to.equal("enemySpawn");
+        expect(sim.eventQueue.length).to.equal(3 + 1 + sim.wizards.length); // outoftime/second/thirdEnemy, initialSpawn, 1 for each wizard
     });
 
     it("targetPriority", function() {
@@ -77,7 +77,7 @@ describe("CombatSimulation", function() {
         let activeEnemies: Array<Enemy> = [
             enemy1, enemy2
         ];
-        let orderedTargets = sim1.sortEnemyTargetsByPriority(sim1.wizards[0], activeEnemies);
+        let orderedTargets = sim.sortEnemyTargetsByPriority(sim.wizards[0], activeEnemies);
         expect(orderedTargets[0].name).to.equal("pixie");
         expect(orderedTargets[1].name).to.equal("acromantula");
         
@@ -91,7 +91,7 @@ describe("CombatSimulation", function() {
         let activeEnemies: Array<Enemy> = [
             enemy1, enemy2
         ];
-        let orderedTargets = sim1.sortEnemyTargetsByPriority(sim1.wizards[0], activeEnemies);
+        let orderedTargets = sim.sortEnemyTargetsByPriority(sim.wizards[0], activeEnemies);
         expect(orderedTargets[0].name).to.equal("acromantula");
         expect(orderedTargets[1].name).to.equal("pixie"); // index 1 should be pixie since it is lowest priority since it is already in combat
         
@@ -100,20 +100,20 @@ describe("CombatSimulation", function() {
 
     it("combatSimulation_dead_normalOrder", function() {
         let enemy = TestData.buildDefaultEnemy();
-        sim1.addEnemyToActive(enemy);
+        sim.addEnemyToActive(enemy);
 
-        expect(sim1.eventQueue).to.be.empty;
-        let deadWizard = sim1.wizards[0];
+        expect(sim.eventQueue).to.be.empty;
+        let deadWizard = sim.wizards[0];
         deadWizard.removeStamina(999);
         expect(deadWizard.getIsDefeated()).to.be.true;
 
         let wizardDefeatEvent = new WizardDefeatEvent(0, enemy, deadWizard, TestData.buildNewRNG_0());
         expect(wizardDefeatEvent.hasFollowupEvent()).to.be.false;
 
-        sim1.addEvent(wizardDefeatEvent);
-        expect(sim1.peekNextEvent().timestampEnd).to.equal(sim1.fortressRoom.computeKnockoutTime());
+        sim.addEvent(wizardDefeatEvent);
+        expect(sim.peekNextEvent().timestampEnd).to.equal(sim.fortressRoom.computeKnockoutTime());
 
-        sim1.processNextEvent(); // Process WizardDefeatEvent
+        sim.processNextEvent(); // Process WizardDefeatEvent
         expect(deadWizard.getCurrentStamina()).to.equal(deadWizard.getMaxStamina());
         expect(deadWizard.getIsDefeated()).to.be.false;
         expect(wizardDefeatEvent.allowWizardFollowupAction()).to.be.true; // After revived there should be an allowed followup action
@@ -385,6 +385,31 @@ describe("CombatSimulation", function() {
         
         // 600s, exactly 100 casts (1 every 6s)
         expect(enemy.getCurrentStamina()).to.be.equal(enemy.getMaxStamina() - 100*sim.wizards[0].stats.batBogeyHexDamage);  
+    });
+
+    it("getWizardDefeatedTimer", async function() {
+        Logger.verbosity = 0;  
+        params1.roomLevel = 20; 
+       
+        let sim = new CombatSimulation(params1, new Prando(params1.seed));
+        sim.init(); 
+        let wizard = sim.wizards[0]; 
+
+        while (wizard.getIsDefeated() === false) {
+            await sim.processNextEvent(); 
+        }
+
+        let containsDefeatEvent = false; 
+        let defeatEvent: WizardDefeatEvent | null = null; 
+        sim.eventQueue.forEach((event) => {
+            if (event instanceof WizardDefeatEvent) {
+                containsDefeatEvent = true; 
+                defeatEvent = event; 
+            }
+        });
+        expect(containsDefeatEvent).to.be.true;
+        expect(wizard.getIsDefeated()).to.be.true; 
+        expect(sim.getWizardDefeatedTimerMS(wizard)).to.equal(defeatEvent!.timestampEnd - sim.currentTime); 
     });
 
 });

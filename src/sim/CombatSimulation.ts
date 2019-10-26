@@ -26,6 +26,8 @@ import { CooldownFinishedEvent } from "./events/wizard/room/spells/CooldownFinis
 import { CombatSimulationResultsWizard } from "./CombatSimulationResultsWizard";
 import { PlayerActionEngine } from "../rules/PlayerActionEngine";
 import { ManualPlayerActionEngine } from "../rules/ManulPlayerActionEngine";
+import { WizardReviveEvent } from './events/wizard/room/WizardReviveEvent';
+import { WizardDefeatEvent } from './events/wizard/combat/WizardDefeatEvent';
 
 
 export class CombatSimulation {
@@ -290,6 +292,22 @@ export class CombatSimulation {
         for (let wizard of this.wizards) {
             wizard.addFocus(focus);
         }
+    }
+
+    getWizardDefeatedTimerMS(wizard: Wizard): number {
+        if (wizard.getIsDefeated() === false) {
+            return -1; 
+        }
+
+        // Find revive event corresponding to this wizard
+        for (let event of this.eventQueue) {
+            if (event instanceof WizardDefeatEvent) {
+                if (event.wizard.playerIndex === wizard.playerIndex) {
+                    return event.timestampEnd - this.currentTime; 
+                }
+            }
+        }
+        return -1; //throw new Error("Could not find wizard defeat event for revive of " + wizard.toUserFriendlyDescription()); 
     }
 
     // Sometimes, wizards need to be retriggered

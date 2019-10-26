@@ -90,6 +90,9 @@ export class ManualActionSelectionSimulationComponent implements OnInit {
         this.selectedActionResolve(performedAction);
     }
 
+    ceil(n: number): number {
+        return Math.ceil(n); 
+    }
 
 
 

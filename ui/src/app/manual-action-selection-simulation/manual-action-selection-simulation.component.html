@@ -23,6 +23,7 @@
             <div class="divWizardPortraitUpperContainer">
                 <div class="divEnemyPortraitContainer">
                     <img src="assets/img/classes/{{wizard.nameClass}}.png" />
+                    <span class="spanWizardDefeatedTimer" *ngIf="wizard.isDefeated === true">{{ ceil(runningSimulation.getWizardDefeatedTimerMS(wizard)/1000).toFixed(0) }}s</span>
                 </div>
                 (ID={{wizard.playerIndex}}) {{facts.wizard.playerIndex === wizard.playerIndex && facts.allWizards.length > 1 ? '(active)' : ''}}<br>
                 {{wizard.inCombat ? 'Fighting ID=' + wizard.inCombatWith.enemyIndex : 'Out of combat'}}   <br>
