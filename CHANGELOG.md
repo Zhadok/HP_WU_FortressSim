@@ -1,3 +1,6 @@
+- 0.8.1
+    - Added toast popup for when data is saved
+    - Added column for comparing simulations: CXP / energy
 - 0.8.0
     - Allow manual selection of next action for players
 - 0.7.1

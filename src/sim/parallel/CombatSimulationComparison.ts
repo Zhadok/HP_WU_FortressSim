@@ -226,6 +226,7 @@ export class CombatSimulationComparison extends CombatSimulationManager {
                 averageDodgePercent: totalDodgePercent / (nRuns * nWizards),
                 averageTotalDamage: totalDamage / (nRuns * nWizards),
                 averageChallengeXPReward: averageChallengeXPReward,
+                averageChallengeXPPerEnergy: averageChallengeXPReward / averageNumberOfCasts, 
                 averageTimeSpentDeadMS: totalTimeSpentDeadMS / (nRuns * nWizards), 
                 averageGameTimeMS: averageGameTimeMS,
                 averageBrewTimeHours: totalBrewTimeHours / (nRuns * nWizards),
@@ -233,7 +234,7 @@ export class CombatSimulationComparison extends CombatSimulationManager {
                 averageRunsPerHour: averageRunsPerHour,
                 averageChallengeXPRewardPerHour: averageChallengeXPRewardPerHour,
                 averageEnergyPerHour: averageCastsPerHour - averageEnergyRewardPerHour,
-
+                
                 numberOfRuns: nRuns
             });
         }

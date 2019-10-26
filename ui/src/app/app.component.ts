@@ -20,13 +20,13 @@ import { statNameType } from '../../../src/types';
 import { Logger } from '../../../src/util/Logger';
 import { CombatSimulationResults } from '../../../src/sim/CombatSimulationResults';
 import { CombatSimulationComparison } from '../../../src/sim//parallel/CombatSimulationComparison';
-import { MatTable, MatTab, ErrorStateMatcher, MatSelect } from "@angular/material";
+import { MatTable, MatTab, ErrorStateMatcher, MatSelect, MatSnackBar } from "@angular/material";
 import { MatTableDataSource } from '@angular/material/table';
 import * as ObservableSlim from "observable-slim";
 import { MatSortModule } from "@angular/material";
 import { MatSort, Sort } from '@angular/material/sort';
 
-import fortressRewardData from "../../../src/data/fortressRewards.json"; 
+import fortressRewardData from "../../../src/data/fortressRewards.json";
 import professorRules from "../../../src/rules/store/professorRules.json";
 import aurorRules from "../../../src/rules/store/aurorRules.json";
 import magizoologistRules from "../../../src/rules/store/magizoologistRules.json";
@@ -43,6 +43,7 @@ import { WebWorkerPool } from './WebWorkerPool';
 import { PlayerActionEngine } from '../../../src/rules/PlayerActionEngine';
 import { ManualPlayerActionEngine } from '../../../src/rules/ManulPlayerActionEngine';
 import { ManualActionSelectionSimulationComponent } from './manual-action-selection-simulation/manual-action-selection-simulation.component';
+
 
 const cookieConfig: any = {
     "cookie": {
@@ -95,7 +96,7 @@ export class RuleErrorStateMatcher implements ErrorStateMatcher {
 })
 export class AppComponent {
 
-    readonly fortressRewardData = fortressRewardData; 
+    readonly fortressRewardData = fortressRewardData;
     readonly skillTreeVis = {
         rowHeight: 80,
         columnWidth: 120,
@@ -112,21 +113,21 @@ export class AppComponent {
 
         showPlayerRules: false,
         numberSimulationsPerSetting: 10,
-        
+
         simGoal: "single",
         simGoalMultipleParams: {
             simGoalMultiple_filterSkillTreeNodes: "all",
             simGoalMultiple_minRoomLevel: 1,
             simGoalMultiple_maxRoomLevel: 20
         },
-        
+
         runParallel: this.isWebWorkerSupported(),
-        numberParallelWorkers: navigator.hardwareConcurrency -1 , 
+        numberParallelWorkers: navigator.hardwareConcurrency - 1,
         secondsBetweenSimulations: 40,
         simulationLogChannel: "User friendly",
 
         isAdvancedSettingsTabExpanded: false,
-        closeAdvancedSettingsTabOnStartSimulation: false, 
+        closeAdvancedSettingsTabOnStartSimulation: false,
         closeSimParametersTabOnStartSimulation: false,
         closeStartSimulationTabOnStartSimulation: false
     };
@@ -142,7 +143,7 @@ export class AppComponent {
     ruleErrorStateMatcher = new RuleErrorStateMatcher();
 
     // Manual simulation
-    runningSimulation: CombatSimulation | null = null; 
+    runningSimulation: CombatSimulation | null = null;
 
     // For showing results of simulations
     //simulationLog: string = "";
@@ -165,9 +166,9 @@ export class AppComponent {
     };
 
     // Worker pool
-    workerPool: WebWorkerPool; 
+    workerPool: WebWorkerPool;
 
-    constructor(private cdr: ChangeDetectorRef, private zone: NgZone) {
+    constructor(private cdr: ChangeDetectorRef, private zone: NgZone, private _snackBar: MatSnackBar) {
         //let sim = new CombatSimulation(this.simParameters, new Prando(0));
         this.allowedClasses = {
             "auror": "Auror",
@@ -175,6 +176,7 @@ export class AppComponent {
             "professor": "Professor"
         };
 
+        
         let self = this;
 
         if (this.isPersistedInLocalStorage() === false) {
@@ -186,8 +188,8 @@ export class AppComponent {
             this.initFromLocalStorage();
         }
 
-        this.simParameters = this.sanitizeSimParametersOldVersions(this.simParameters); 
-        this.simAdvancedSettings = this.sanitizeSimAdvancedSettingsOldVersions(this.simAdvancedSettings); 
+        this.simParameters = this.sanitizeSimParametersOldVersions(this.simParameters);
+        this.simAdvancedSettings = this.sanitizeSimAdvancedSettingsOldVersions(this.simAdvancedSettings);
 
         console.log("Initial sim parameters: ");
         console.log(this.simParameters);
@@ -229,25 +231,25 @@ export class AppComponent {
     }
 
     sanitizeSimParametersOldVersions(simParameters: CombatSimulationParameters) {
-        return simParameters; 
+        return simParameters;
     }
 
     sanitizeSimAdvancedSettingsOldVersions(simAdvancedSettings: simAdvancedSettingsType) {
-        simAdvancedSettings.simulationVersion = packageJsonVersion; 
-        return simAdvancedSettings; 
+        simAdvancedSettings.simulationVersion = packageJsonVersion;
+        return simAdvancedSettings;
     }
 
     getPlayerRulesForTable(playerIndex: number): MatTableDataSource<ruleType> | ruleType[] {
         if (this.simParameters.ruleContainers === undefined) {// With old versions 
-            this.simParameters.ruleContainers = []; 
+            this.simParameters.ruleContainers = [];
             for (let nameClass of this.simParameters.nameClasses) {
-                this.simParameters.ruleContainers.push(this.getDefaultRuleContainer(nameClass)); 
+                this.simParameters.ruleContainers.push(this.getDefaultRuleContainer(nameClass));
             }
         }
 
         let result = new MatTableDataSource(this.simParameters.ruleContainers[playerIndex].rules);
         //let result = this.simParameters.ruleContainers[playerIndex].rules; 
-        
+
         /*result.sortingDataAccessor = (rule: ruleType, property) => {
             console.log("called with property=" + property);
             switch (property) {
@@ -257,7 +259,7 @@ export class AppComponent {
         };*/
 
         //this.playerRulesTableSort.sortChange.subscribe(v=> console.log(v) )
-        
+
         return result;
     }
 
@@ -267,31 +269,31 @@ export class AppComponent {
         return RulesEngine.actionNameMap;
     }
     getUserFriendlyActionName(playerIndex: number, actionName: actionNameType) {
-        return this.getActionNameMap(playerIndex)[actionName]; 
+        return this.getActionNameMap(playerIndex)[actionName];
     }
     getEventTargetType(playerIndex: number, actionName: actionNameType): string | null {
         let allowedTarget = RulesEngine.getAllowedTargetType(actionName);  // "targetEnemy", "targetWizard" 
         if (allowedTarget === null) {
-            return null; 
+            return null;
         }
-        let ruleEventTargetMap = RulesEngine.eventTargetTypes; 
-        return ruleEventTargetMap[allowedTarget].label; 
+        let ruleEventTargetMap = RulesEngine.eventTargetTypes;
+        return ruleEventTargetMap[allowedTarget].label;
     }
     getAllowedEventTargets(playerIndex: number, actionName: actionNameType) {
-        let allowedTargetType = RulesEngine.getAllowedTargetType(actionName); 
-        if (allowedTargetType === null) return null; 
-        let allowedTargets = RulesEngine.eventTargetTypes[allowedTargetType].allowedTargets; 
+        let allowedTargetType = RulesEngine.getAllowedTargetType(actionName);
+        if (allowedTargetType === null) return null;
+        let allowedTargets = RulesEngine.eventTargetTypes[allowedTargetType].allowedTargets;
         // console.log(allowedTargets); 
-        return allowedTargets; 
+        return allowedTargets;
     }
     getEventTarget(playerIndex: number, rule: ruleType): string {
-        if (rule.event.params === undefined) return; 
+        if (rule.event.params === undefined) return;
         let allowedTargetType = RulesEngine.getAllowedTargetType(rule.event.type); // "targetEnemy", "targetWizard"
-        return rule.event.params[allowedTargetType]; 
+        return rule.event.params[allowedTargetType];
     }
     onChangeSelectEventTarget(playerIndex: number, rule: ruleType, event) {
         if (rule.event.params === undefined) {
-            rule.event.params = {}; 
+            rule.event.params = {};
         }
         let allowedTargetType = RulesEngine.getAllowedTargetType(rule.event.type); // "targetEnemy", "targetWizard" 
         rule.event.params[allowedTargetType] = event.value;  // "self", "lowestHP", ...
@@ -299,58 +301,58 @@ export class AppComponent {
 
 
     onClickButtonIncreaseRulePriority(event, rule: ruleType, playerIndex: number) {
-        let rules = this.simParameters.ruleContainers[playerIndex].rules; 
-        let currentIndex = rules.indexOf(rule); 
+        let rules = this.simParameters.ruleContainers[playerIndex].rules;
+        let currentIndex = rules.indexOf(rule);
         // Check if already at top
         if (currentIndex === 0) {
-            return; 
+            return;
         }
         if (currentIndex === -1) {
-            console.log(rules); 
-            console.log(rule); 
-            throw new Error("Something went wrong"); 
+            console.log(rules);
+            console.log(rule);
+            throw new Error("Something went wrong");
         }
-        
-        // Swap positions with other rule
-        rule.priority++; 
-        let ruleToSwap = rules[currentIndex-1]; 
-        ruleToSwap.priority--; 
 
-        rules[currentIndex-1] = rule; 
+        // Swap positions with other rule
+        rule.priority++;
+        let ruleToSwap = rules[currentIndex - 1];
+        ruleToSwap.priority--;
+
+        rules[currentIndex - 1] = rule;
         rules[currentIndex] = ruleToSwap;
         //console.log(event); 
-        event.stopPropagation(); 
+        event.stopPropagation();
         //console.log(event); 
     }
     onClickButtonDecreaseRulePriority(event, rule: ruleType, playerIndex: number) {
-        let rules = this.simParameters.ruleContainers[playerIndex].rules; 
-        let currentIndex = rules.indexOf(rule); 
+        let rules = this.simParameters.ruleContainers[playerIndex].rules;
+        let currentIndex = rules.indexOf(rule);
         // Check if already at bottom
-        if (currentIndex === rules.length-1) {
-            return; 
+        if (currentIndex === rules.length - 1) {
+            return;
         }
         if (currentIndex === -1) {
-            console.log(rules); 
-            console.log(rule); 
-            throw new Error("Something went wrong"); 
+            console.log(rules);
+            console.log(rule);
+            throw new Error("Something went wrong");
         }
-        
-        // Swap positions with other rule
-        rule.priority--; 
-        let ruleToSwap = rules[currentIndex+1]; 
-        ruleToSwap.priority++; 
 
-        rules[currentIndex+1] = rule; 
+        // Swap positions with other rule
+        rule.priority--;
+        let ruleToSwap = rules[currentIndex + 1];
+        ruleToSwap.priority++;
+
+        rules[currentIndex + 1] = rule;
         rules[currentIndex] = ruleToSwap;
         //console.log(event); 
-        event.stopPropagation(); 
+        event.stopPropagation();
         //console.log(event); 
     }
     onClickButtonCopyRule(event, rule: ruleType, playerIndex: number) {
-        let rules = this.simParameters.ruleContainers[playerIndex].rules; 
-        let currentIndex = rules.indexOf(rule); 
-        rules.splice(currentIndex, 0, JSON.parse(JSON.stringify(rule))); 
-        this.refreshRulesPriority(playerIndex); 
+        let rules = this.simParameters.ruleContainers[playerIndex].rules;
+        let currentIndex = rules.indexOf(rule);
+        rules.splice(currentIndex, 0, JSON.parse(JSON.stringify(rule)));
+        this.refreshRulesPriority(playerIndex);
     }
 
 
@@ -360,7 +362,7 @@ export class AppComponent {
         console.log("Removing ruleIndex=" + ruleIndex + " for playerIndex=" + playerIndex + "...");
         this.simParameters.ruleContainers[playerIndex].rules.splice(ruleIndex, 1);
 
-        this.refreshRulesPriority(playerIndex); 
+        this.refreshRulesPriority(playerIndex);
     }
 
     onClickAddPlayerRule(playerIndex: number) {
@@ -372,15 +374,15 @@ export class AppComponent {
             conditions: {
                 all: []
             }
-        }); 
-        this.refreshRulesPriority(playerIndex); 
+        });
+        this.refreshRulesPriority(playerIndex);
     }
 
     refreshRulesPriority(playerIndex: number) {
         // Example: 17 rules, highest priority is 16
-        let highestPriority = this.simParameters.ruleContainers[playerIndex].rules.length - 1; 
+        let highestPriority = this.simParameters.ruleContainers[playerIndex].rules.length - 1;
         this.simParameters.ruleContainers[playerIndex].rules.forEach((rule, ruleIndex) => {
-            rule.priority = highestPriority - ruleIndex; 
+            rule.priority = highestPriority - ruleIndex;
         });
     }
 
@@ -400,14 +402,14 @@ export class AppComponent {
             JSON.stringify(this.simParameters.ruleContainers[playerIndex], null, 4));
     }
     onClickImportPlayerRules(playerIndex: number) {
-        var self = this; 
-        this.createFileUpload(function(fileContent) {
-        
+        var self = this;
+        this.createFileUpload(function (fileContent) {
+
             console.log("Importing rules file: ");
             console.log(fileContent);
             let importedRuleContainer: ruleContainerType = JSON.parse(fileContent);
-            self.simParameters.ruleContainers[playerIndex] = importedRuleContainer; 
-            
+            self.simParameters.ruleContainers[playerIndex] = importedRuleContainer;
+
         });
     }
 
@@ -464,32 +466,32 @@ export class AppComponent {
             console.log("Changing playerIndex=" + playerIndex + " class to " + event.value);
             this.simParameters.skillTrees[playerIndex] = { nameClass: event.value, nodesStudied: [] }
             this.skillTrees[playerIndex] = new SkillTree(event.value);
-            this.onClickResetPlayerRules(playerIndex); 
+            this.onClickResetPlayerRules(playerIndex);
         }
     }
 
     min(v1: number, v2: number): number {
-        return Math.min(v1, v2); 
+        return Math.min(v1, v2);
     }
 
     //@ViewChild("svgSkillTree", {static: false }) svgSkillTrees: ElementRef[];
     getSkillTreeSVGHeight(): number | string {
         //console.log(this.svgSkillTrees);
-        let svgSkillTrees = document.getElementsByClassName("svgSkillTree"); 
-        let maxHeight = this.skillTreeVis.marginTop + this.skillTreeVis.rowHeight*16; 
+        let svgSkillTrees = document.getElementsByClassName("svgSkillTree");
+        let maxHeight = this.skillTreeVis.marginTop + this.skillTreeVis.rowHeight * 16;
         if (svgSkillTrees.length === 0) {
-            return maxHeight; 
+            return maxHeight;
         }
-        
-        let width = svgSkillTrees[0].clientWidth; 
-         if (width > this.skillTreeVis.marginLeft + this.skillTreeVis.columnWidth*5) {
+
+        let width = svgSkillTrees[0].clientWidth;
+        if (width > this.skillTreeVis.marginLeft + this.skillTreeVis.columnWidth * 5) {
             // If element is wide enough, return constant height for skill tree
-            return maxHeight; 
+            return maxHeight;
         }
-        else {  
+        else {
             // If element is not wide enough, slowly scale down height for skill tree
-            let widthPercent = width / (this.skillTreeVis.marginLeft + this.skillTreeVis.columnWidth*5); 
-            return Math.ceil(widthPercent * maxHeight); 
+            let widthPercent = width / (this.skillTreeVis.marginLeft + this.skillTreeVis.columnWidth * 5);
+            return Math.ceil(widthPercent * maxHeight);
         }
     }
 
@@ -530,21 +532,21 @@ export class AppComponent {
     }
 
     onClickButtonImportSkillTree(playerIndex: number) {
-        var self = this; 
-        this.createFileUpload(function(fileContent) {
-        
+        var self = this;
+        this.createFileUpload(function (fileContent) {
+
             console.log("Importing skill tree from file: ");
             console.log(fileContent);
             let importedSkillTree: PersistedSkillTree = JSON.parse(fileContent);
-            this.simParameters.skillTrees[playerIndex] = importedSkillTree; 
-            this.skillTrees[playerIndex] = SkillTree.fromPersisted(importedSkillTree); 
-            
+            this.simParameters.skillTrees[playerIndex] = importedSkillTree;
+            this.skillTrees[playerIndex] = SkillTree.fromPersisted(importedSkillTree);
+
         });
-       
+
     }
 
     onClickButtonExportSkillTree(playerIndex: number) {
-        let persistedSkillTree = this.simParameters.skillTrees[playerIndex]; 
+        let persistedSkillTree = this.simParameters.skillTrees[playerIndex];
         this.createFileDownload("skillTree.json", JSON.stringify(persistedSkillTree, null, 4));
     }
 
@@ -557,7 +559,7 @@ export class AppComponent {
     }
 
     getSkillTreeFilterLessonsMap() {
-        return SkillTree.skillTreeFilterLessonsMap; 
+        return SkillTree.skillTreeFilterLessonsMap;
     }
 
     getSimParametersCopy(): CombatSimulationParameters {
@@ -570,13 +572,13 @@ export class AppComponent {
     }
 
 
-    @ViewChildren("manualActionSelectionSimulation") manualActionSelectionSimulationComponent: QueryList<ManualActionSelectionSimulationComponent>; 
+    @ViewChildren("manualActionSelectionSimulation") manualActionSelectionSimulationComponent: QueryList<ManualActionSelectionSimulationComponent>;
 
     async onClickButtonStartSingleSimulation() {
         this.resetSimulationResults();
         this.simAdvancedSettings.simGoal = "single";
-        this.runningSimulation = null; 
-        this.simulationSingleResults = null; 
+        this.runningSimulation = null;
+        this.simulationSingleResults = null;
         console.log("Starting single simulation with parameters:");
         console.log(this.simParameters);
 
@@ -584,27 +586,27 @@ export class AppComponent {
         this.runningSimulation = new CombatSimulation(this.getSimParametersCopy(), new Prando(this.simParameters.seed));
         this.runningSimulation.init();
         if (this.isPlayerActionSelectionManual()) {
-            this.manualActionSelectionSimulationComponent.first.init(this.runningSimulation, this); 
+            this.manualActionSelectionSimulationComponent.first.init(this.runningSimulation, this);
         }
         try {
             await this.runningSimulation.simulate();
-            this.manualActionSelectionSimulationComponent.first.finish();  
-            this.simulationSingleResults =  this.runningSimulation.toSimulationResults();
-            this.runningSimulation = null; 
+            this.manualActionSelectionSimulationComponent.first.finish();
+            this.simulationSingleResults = this.runningSimulation.toSimulationResults();
+            this.runningSimulation = null;
             console.log("Results of the simulation are: ");
             console.log(this.simulationSingleResults);
         }
         catch (error) {
-            Logger.callbackFunctionUserFriendly(error.stack); 
-            Logger.callbackFunction(error.stack); 
-            console.log(error); 
+            Logger.callbackFunctionUserFriendly(error.stack);
+            Logger.callbackFunction(error.stack);
+            console.log(error);
         }
     }
 
     isSimulationRunning(): boolean {
         return this.runningSimulation !== null;
     }
-    
+
     async onClickButtonStartMultipleSimulations_compareRoomLevels() {
         await this.onClickButtonStartMultipleSimulations("multiple_compare_roomLevels");
     }
@@ -619,14 +621,14 @@ export class AppComponent {
 
         var self = this;
         let simComparison = new CombatSimulationComparison(this.getSimParametersCopy(), this.simAdvancedSettings);
-        console.log("Running with set of combat params: "); 
-        console.log(simComparison.allSimParams); 
+        console.log("Running with set of combat params: ");
+        console.log(simComparison.allSimParams);
         this.simProgress = {
             nFinished: 0,
             nRemaining: simComparison.getNumberSimulationsTotal(),
             nTotal: simComparison.getNumberSimulationsTotal()
         };
-       
+
         //let lastProgressUpdate = (new Date()).getTime(); // Progress update should only be more than every 250ms because thats how long css animation of progress bar takes. otherwise animation is choppy
         simComparison.setListenerSimProgress((simProgress: simProgressType) => {
             self.simProgress = simProgress;
@@ -652,23 +654,23 @@ export class AppComponent {
             this.simProgress = null;
             this.updateSimulationMultipleResultsGrouped();*/
             if (this.isWebWorkerSupported()) {
-                let workerPool = new WebWorkerPool(this.simAdvancedSettings); 
+                let workerPool = new WebWorkerPool(this.simAdvancedSettings);
                 workerPool.setListenerSimProgress((simProgress: simProgressType) => {
                     self.simProgress = simProgress;
                 });
 
-                let messageContainers: webWorkerMessageContainerType[] = simComparison.allSimParams.map(simParams => { 
+                let messageContainers: webWorkerMessageContainerType[] = simComparison.allSimParams.map(simParams => {
                     return {
-                        messageType: "executeSimulation", 
+                        messageType: "executeSimulation",
                         params: {
                             combatSimulationParameters: simParams
                         }
                     };
-                }); 
-                workerPool.executeJobs(messageContainers, function(results: CombatSimulationResults[]) {
+                });
+                workerPool.executeJobs(messageContainers, function (results: CombatSimulationResults[]) {
                     //console.log("Done parallel of " + results.length + " jobs"); 
-                    self.simulationMultipleResults = results; 
-                    self.onFinishComparingSimulations(); 
+                    self.simulationMultipleResults = results;
+                    self.onFinishComparingSimulations();
                 });
 
                 // Create a new
@@ -677,16 +679,16 @@ export class AppComponent {
                   console.log(`page got message: ${data}`);
                 };
                 worker.postMessage('hello');*/
-              } else {
+            } else {
                 // Web Workers are not supported in this environment.
                 // You should add a fallback so that your program still executes correctly.
-                alert("Your browser does not appear to support web workers for parallel execution. Please disable 'run parallel' under advanced simulation settings."); 
-              }
+                alert("Your browser does not appear to support web workers for parallel execution. Please disable 'run parallel' under advanced simulation settings.");
+            }
         }
     }
 
     isWebWorkerSupported(): boolean {
-        return typeof Worker !== 'undefined'; 
+        return typeof Worker !== 'undefined';
     }
 
     onChangeSelectSimulationLogChannel(event) {
@@ -704,7 +706,7 @@ export class AppComponent {
             }, 0);
         }
         else {
-            this.onFinishComparingSimulations(); 
+            this.onFinishComparingSimulations();
         }
     }
 
@@ -716,10 +718,10 @@ export class AppComponent {
     // Need this because element is in ngIf
     // https://stackoverflow.com/questions/39366981/viewchild-in-ngif
     matTableMultipleSimulationResults: MatTable<simulationResultsGroupedType>;
-    @ViewChild('tableMultipleSimulationResults', { static: false}) set table(matTable) {
-        this.matTableMultipleSimulationResults = matTable; 
+    @ViewChild('tableMultipleSimulationResults', { static: false }) set table(matTable) {
+        this.matTableMultipleSimulationResults = matTable;
     }
-    
+
     updateSimulationMultipleResultsGrouped() {
         let resultsGrouped: simulationResultsGroupedType[] = CombatSimulationComparison.groupResults(this.simulationMultipleResults, this.simAdvancedSettings.secondsBetweenSimulations);
 
@@ -728,33 +730,33 @@ export class AppComponent {
     }
 
     onSortMultipleResults(sort: Sort) {
-        let data = this.simulationMultipleResultsGrouped.data; 
+        let data = this.simulationMultipleResultsGrouped.data;
         if (sort.active && sort.direction !== "") {
             // example: sort.active = "groupByValue" or "averageChallengeXPReward"
             // sort.direction = "" or "asc" or "desc"
             let isAsc = sort.direction === 'asc';
             data.sort((row1, row2) => {
                 // Remove " (base)" from string
-                let v1: any = row1[sort.active]; 
-                let v2: any = row2[sort.active]; 
+                let v1: any = row1[sort.active];
+                let v2: any = row2[sort.active];
                 if (sort.active === "groupByValue") {
-                    let baseString = " (base)"; 
-                    if (v1.indexOf(baseString) > -1) v1 = v1.substr(0, v1.indexOf(baseString)); 
-                    if (v2.indexOf(baseString) > -1) v2 = v2.substr(0, v2.indexOf(baseString)); 
-                }   
+                    let baseString = " (base)";
+                    if (v1.indexOf(baseString) > -1) v1 = v1.substr(0, v1.indexOf(baseString));
+                    if (v2.indexOf(baseString) > -1) v2 = v2.substr(0, v2.indexOf(baseString));
+                }
                 // Convert to number if possible
-                if (isNaN(parseFloat(v1 as string)) === false) v1 = parseFloat(v1); 
-                if (isNaN(parseFloat(v2 as string)) === false) v2 = parseFloat(v2); 
+                if (isNaN(parseFloat(v1 as string)) === false) v1 = parseFloat(v1);
+                if (isNaN(parseFloat(v2 as string)) === false) v2 = parseFloat(v2);
 
-                return this.compare(v1, v2, isAsc); 
-            }); 
+                return this.compare(v1, v2, isAsc);
+            });
         }
         else if (sort.direction === "") {
-            this.onSortMultipleResults({active: "groupByValue", direction: "asc"})
+            this.onSortMultipleResults({ active: "groupByValue", direction: "asc" })
         }
-        this.matTableMultipleSimulationResults.renderRows(); 
+        this.matTableMultipleSimulationResults.renderRows();
     }
-    
+
     // https://medium.com/@AustinRMueller/dynamic-tables-and-sorting-with-angular-material-7dea862cc93c
     private compare(a, b, isAsc) {
         return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
@@ -762,7 +764,7 @@ export class AppComponent {
 
 
     getEnergyReward() {
-        return FortressRoom.getEnergyRewardStatic(this.simParameters.roomLevel, true); 
+        return FortressRoom.getEnergyRewardStatic(this.simParameters.roomLevel, true);
     }
 
 
@@ -772,19 +774,19 @@ export class AppComponent {
     @ViewChild("matPanelStartSimulation", { static: false }) matPanelStartSimulation: MatExpansionPanel;
     @ViewChild("matPanelSimulationResults", { static: false }) matPanelSimulationResults: MatExpansionPanel;
     @ViewChild("matPanelSimulationResults", { static: false, read: ElementRef }) matPanelSimulationResultsElement: ElementRef;
-    
+
     closeSettingsPanels(): void {
         if (this.simAdvancedSettings.closeSimParametersTabOnStartSimulation === true) {
             this.matPanelInputParameters.close();
         }
         if (this.simAdvancedSettings.closeAdvancedSettingsTabOnStartSimulation === true) {
-            this.matPanelAdvancedSimulationSettings.close(); 
+            this.matPanelAdvancedSimulationSettings.close();
         }
         if (this.simAdvancedSettings.closeStartSimulationTabOnStartSimulation === true) {
-            this.matPanelStartSimulation.close(); 
+            this.matPanelStartSimulation.close();
         }
         this.matPanelSimulationResults.open();
-        this.matPanelSimulationResultsElement.nativeElement.scrollIntoView(); 
+        this.matPanelSimulationResultsElement.nativeElement.scrollIntoView();
     }
 
     // Dependencies can look like the following: ["10/2", "9/3"]
@@ -873,11 +875,11 @@ export class AppComponent {
     }
 
     getPlayerActionSelectionModeMap(): playerActionSelectionModeMapType {
-        return PlayerActionEngine.playerActionSelectionModeMap; 
+        return PlayerActionEngine.playerActionSelectionModeMap;
     }
     isPlayerActionSelectionManual(): boolean {
-        return this.simParameters.playerActionSelectionMode === "manual"; 
-    }    
+        return this.simParameters.playerActionSelectionMode === "manual";
+    }
 
     // Todo: Use localstorage
     getInitialSimParameters(): CombatSimulationParameters {
@@ -905,9 +907,9 @@ export class AppComponent {
     getDefaultRuleContainer(nameClass: nameClassType): ruleContainerType {
         let result: ruleContainerType;
         switch (nameClass) {
-            case "auror": result = aurorRules as ruleContainerType; break; 
-            case "magizoologist": result = magizoologistRules as ruleContainerType; break; 
-            case "professor": result = professorRules as ruleContainerType; break; 
+            case "auror": result = aurorRules as ruleContainerType; break;
+            case "magizoologist": result = magizoologistRules as ruleContainerType; break;
+            case "professor": result = professorRules as ruleContainerType; break;
         }
         return JSON.parse(JSON.stringify(result));
     }
@@ -921,7 +923,7 @@ export class AppComponent {
             nWeakInvigorationAvailable: 0,
             nStrongInvigorationAvailable: 0,
             nWitSharpeningAvailable: 0,
-            hasBaruffiosBrainElixir: false, 
+            hasBaruffiosBrainElixir: false,
             hasTonicForTraceDetection: false
         };
     }
@@ -955,7 +957,7 @@ export class AppComponent {
         return hours + "h" + minutes + "m";
     }
     formatMinutesDecimal(secondsParam: number) {
-        let decimalTime = secondsParam; 
+        let decimalTime = secondsParam;
         let hours: number | string = Math.floor((decimalTime / (60 * 60)));
         decimalTime = decimalTime - (hours * 60 * 60);
         let minutes: number | string = Math.floor((decimalTime / 60));
@@ -978,11 +980,11 @@ export class AppComponent {
 
         // For sim advanced settings: Check if we are using a different structure (=different keys) from an older version
         if (Utils.deepCompareObjectSameKeys(this.simAdvancedSettings, data.simAdvancedSettings) === false) {
-            console.log("Older version of sim advanced settings detected in local storage:"); 
-            console.log(data.simAdvancedSettings); 
-            console.log("Using newer (default) version with different structure and overwriting old: "); 
-            console.log(this.simAdvancedSettings); 
-        } 
+            console.log("Older version of sim advanced settings detected in local storage:");
+            console.log(data.simAdvancedSettings);
+            console.log("Using newer (default) version with different structure and overwriting old: ");
+            console.log(this.simAdvancedSettings);
+        }
         else {
             this.simAdvancedSettings = data.simAdvancedSettings;
         }
@@ -1011,6 +1013,7 @@ export class AppComponent {
             simAdvancedSettings: this.simAdvancedSettings,
             simParameters: this.simParameters
         }));
+        this.openSnackBar("Data has been saved.", "Dismiss"); 
     }
 
     resetAllData(): void {
@@ -1024,34 +1027,34 @@ export class AppComponent {
 
     importDataFromFile(): void {
 
-        var self = this; 
-        this.createFileUpload(function(fileContent) {
+        var self = this;
+        this.createFileUpload(function (fileContent) {
             console.log("Importing data from file: ");
             console.log(fileContent);
             let importedData: localStorageDataType = JSON.parse(fileContent);
             if ((importedData as any).logs) {
-                delete importedData["logs"]; 
+                delete importedData["logs"];
             }
 
             if (Utils.deepCompareObjectSameKeys(this.simAdvancedSettings, importedData.simAdvancedSettings) === false) {
-                console.log("Older version of sim advanced settings detected in imported data:"); 
-                console.log(importedData.simAdvancedSettings); 
-                console.log("Using current version with different structure and overwriting old: "); 
-                console.log(this.simAdvancedSettings); 
-                importedData.simAdvancedSettings = this.simAdvancedSettings; 
-            } 
+                console.log("Older version of sim advanced settings detected in imported data:");
+                console.log(importedData.simAdvancedSettings);
+                console.log("Using current version with different structure and overwriting old: ");
+                console.log(this.simAdvancedSettings);
+                importedData.simAdvancedSettings = this.simAdvancedSettings;
+            }
 
             this.applyObserverFunctions.call(self, importedData);
             this.persistToLocalStorage();
 
             // Update UI
-            this.skillTrees = importedData.simParameters.skillTrees.map(persistedSkillTree => SkillTree.fromPersisted(persistedSkillTree)); 
+            this.skillTrees = importedData.simParameters.skillTrees.map(persistedSkillTree => SkillTree.fromPersisted(persistedSkillTree));
         });
     }
 
     exportDataToFile(): void {
         let data: any = this.getDataFromLocalStorage();
-        data.logs = this.simulationLogChannelStore; 
+        data.logs = this.simulationLogChannelStore;
         this.createFileDownload("simulationParameters.json", JSON.stringify(data, null, 4));
     }
 
@@ -1083,7 +1086,7 @@ export class AppComponent {
         // Closure to capture the file information.
         reader.onload = (function (theFile) {
             return function (e) {
-                callbackFunction.call(self, e.target.result); 
+                callbackFunction.call(self, e.target.result);
             };
         })(f);
 
@@ -1105,7 +1108,11 @@ export class AppComponent {
         document.body.removeChild(element);
     }
 
-
+    openSnackBar(message: string, action: string) {
+        this._snackBar.open(message, action, {
+            duration: 1000,
+        });
+    }
 
 
 }

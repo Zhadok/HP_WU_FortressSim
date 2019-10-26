@@ -221,6 +221,7 @@ declare type simulationResultsGroupedType = {
     averageTotalDamage: number, 
     averageDamage: number
     averageChallengeXPReward: number,
+    averageChallengeXPPerEnergy: number, 
 
     // time statistics
     averageTimeSpentDeadMS: number, 
@@ -255,3 +256,7 @@ declare type webWorkerMessageResponseContainerType = {
     }
 };
 declare type webWorkerMessageResponseType = "simulationFinished"; 
+
+
+
+

@@ -24,6 +24,7 @@ import { MatCardModule } from "@angular/material";
 import { ManualActionSelectionSimulationComponent } from './manual-action-selection-simulation/manual-action-selection-simulation.component';
 import { EnemyPortraitComponent } from './enemy-portrait/enemy-portrait.component'; 
 import { MatRadioModule} from "@angular/material";
+import { MatSnackBarModule } from "@angular/material"; 
 
 @NgModule({
         declarations: [
@@ -52,7 +53,8 @@ import { MatRadioModule} from "@angular/material";
             MatPaginatorModule,
             MatIconModule,
             MatCardModule,
-            MatRadioModule
+            MatRadioModule,
+            MatSnackBarModule
         ],
         providers: [],
         bootstrap: [AppComponent]
