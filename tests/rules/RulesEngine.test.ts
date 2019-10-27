@@ -35,6 +35,7 @@ describe("RulesEngine", function() {
         enemy = TestData.buildDefaultEnemy();
         facts = {
             wizard: wizard,
+            lowestHPWizard: wizard, 
             highestPriorityAvailableEnemy: enemy,
             allWizards: [wizard],
             allActiveEnemies: [enemy],

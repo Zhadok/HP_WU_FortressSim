@@ -19,17 +19,22 @@ export class BraveryCharmEvent extends StrategicSpellEvent {
 
     onFinish() {
         super.onFinish(); 
+        let isCast = false; 
         for (let wizard of this.allWizards) {
             if (wizard.braveryCharmValue < this.powerIncreaseAgainstElites) {
                 wizard.hasBraveryCharm = true;
                 wizard.braveryCharmValue = this.powerIncreaseAgainstElites;
+                isCast = true; 
             }
         }
-        this.getCaster().processFocusCostStrategicSpell("braveryCharm");
+
+        if (isCast === true) {
+            this.getCaster().processFocusCostStrategicSpell("braveryCharm");
+        }
     }
 
     getStrategicSpellName(): string {
-        return "Bravery Charm (" + this.powerIncreaseAgainstElites + "% more dmg against elites)"; 
+        return "Bravery Charm (" + (this.powerIncreaseAgainstElites*100).toFixed(0) + "% more dmg against elites)"; 
     }
 
 

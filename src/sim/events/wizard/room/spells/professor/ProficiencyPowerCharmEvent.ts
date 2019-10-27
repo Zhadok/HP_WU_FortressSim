@@ -19,13 +19,19 @@ export class ProficiencyPowerCharmEvemt extends StrategicSpellEvent {
 
     onFinish() {
         super.onFinish(); 
+
+        let isCast = false; 
         for (let wizard of this.allWizards) {
             if (wizard.proficiencyPowerCharmValue < this.proficiencyIncrease) {
                 wizard.hasProficiencyPowerCharm = true;
                 wizard.proficiencyPowerCharmValue = this.proficiencyIncrease;
+                isCast = true; 
             }
         }
-        this.getCaster().processFocusCostStrategicSpell("proficiencyPowerCharm");
+
+        if (isCast === true) {
+            this.getCaster().processFocusCostStrategicSpell("proficiencyPowerCharm");
+        }
     }
 
     getStrategicSpellName(): string {

@@ -28,6 +28,7 @@ import { PlayerActionEngine } from "../rules/PlayerActionEngine";
 import { ManualPlayerActionEngine } from "../rules/ManulPlayerActionEngine";
 import { WizardReviveEvent } from './events/wizard/room/WizardReviveEvent';
 import { WizardDefeatEvent } from './events/wizard/combat/WizardDefeatEvent';
+import { Utils } from "../util/Utils";
 
 
 export class CombatSimulation {
@@ -384,6 +385,7 @@ export class CombatSimulation {
 
         let facts: ruleFactType = {
             wizard: wizard,
+            lowestHPWizard: Utils.getLowestHPCombatant(this.wizards.filter((wizard) => wizard.getIsDefeated() === false)) as Wizard,
             highestPriorityAvailableEnemy: highestPriorityAvailableEnemy,
             allWizards: this.wizards,
             allActiveEnemies: this.fortressRoom.enemiesActive,

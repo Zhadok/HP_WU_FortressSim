@@ -52,7 +52,7 @@
             "event": {
                 "type": "staminaCharm",
                 "params": {
-                    "targetWizard": "lowestHP_notSelf"
+                    "targetWizard": "lowestHP"
                 }
             },
             "priority": 13,
@@ -80,16 +80,19 @@
                         "value": null
                     },
                     {
-                        "fact": "chamber",
-                        "path": ".numberOfWizards",
-                        "operator": "greaterThan",
-                        "value": 1
-                    },
-                    {
                         "fact": "wizard",
                         "path": ".focus",
                         "operator": "greaterThanInclusive",
                         "value": 7
+                    },
+                    {
+                        "fact": "lowestHPWizard",
+                        "path": ".missingStaminaPercent",
+                        "operator": "greaterThan",
+                        "value": {
+                            "fact": "wizard",
+                            "path": ".stats.staminaCharmValue"
+                        }
                     }
                 ]
             }

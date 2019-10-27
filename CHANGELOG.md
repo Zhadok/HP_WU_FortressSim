@@ -1,3 +1,6 @@
+- 0.8.3
+    - Added available fact to rules "Wizard (lowest HP)" to enable conditions based on this fact
+    - Fixed bug where Magizoologists could not self cast stamina charm and updated default rules
 - 0.8.2
     - Manual player action selection in simulation: Added button as to what the player AI would do
 - 0.8.1

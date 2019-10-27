@@ -44,11 +44,15 @@ export class RulesEngine extends PlayerActionEngine {
             "label": "Wizard",
             "allowedPaths": RulesEngine.getAllowedPaths("wizard")
         },
+        "lowestHPWizard": {
+            "label": "Wizard (lowest HP)",
+            "allowedPaths": RulesEngine.getAllowedPaths("wizard")
+        },
         "highestPriorityAvailableEnemy": {
             "label": "Highest priority available enemy",
             "allowedPaths": RulesEngine.getAllowedPaths("highestPriorityAvailableEnemy")
         },
-        chamber: {
+        "chamber": {
             "label": "Chamber",
             "allowedPaths": RulesEngine.getAllowedPaths("chamber")
         }
@@ -206,13 +210,6 @@ export class RulesEngine extends PlayerActionEngine {
         }
     }
 
-    getLowestHPCombatant(combatants: Array<Combatant>): Combatant {
-        let result = combatants.sort(function(v1, v2) {
-            return v2.getCurrentStamina() - v1.getCurrentStamina();
-        })[0];
-        return result; 
-    }
-
     getFirstDefeatedWizard(wizards: Array<Wizard>): Wizard | null {
         for (let wizard of wizards) {
             if (wizard.getIsDefeated()) 
@@ -222,7 +219,6 @@ export class RulesEngine extends PlayerActionEngine {
     }
 
     async runRulesEngine(facts: ruleFactType): Promise<rulesActionContainerType> {
-
         let results = await this.engine.run(facts).catch((error) => {
             console.log("Error processing rules!"); 
             throw error; 
@@ -250,7 +246,7 @@ export class RulesEngine extends PlayerActionEngine {
             else {
                 switch (event.params.targetWizard) {
                     case "lowestHP":
-                        targetWizard = this.getLowestHPCombatant(facts.allWizards) as Wizard; 
+                        targetWizard = facts.lowestHPWizard; 
                         break; 
                     case "self": 
                         targetWizard = wizard; 
@@ -262,13 +258,13 @@ export class RulesEngine extends PlayerActionEngine {
                         let otherWizards = facts.allWizards.filter(function(wizardInAllWizards) {
                             return wizardInAllWizards !== wizard; 
                         }); 
-                        targetWizard = this.getLowestHPCombatant(otherWizards) as Wizard; 
+                        targetWizard = Utils.getLowestHPCombatant(otherWizards) as Wizard; 
                         break; 
                     case "defeatedWizard": 
                         otherWizards = facts.allWizards.filter(function(wizardInAllWizards) {
                             return wizardInAllWizards !== wizard; 
                         }); 
-                        targetWizard = this.getFirstDefeatedWizard(otherWizards); 
+                        targetWizard = this.getFirstDefeatedWizard(otherWizards) as Wizard; 
                         if (targetWizard === null) {
                             throw new Error("Tried to target a defeated wizard but there are none!"); 
                         }
@@ -284,7 +280,7 @@ export class RulesEngine extends PlayerActionEngine {
                     targetEnemy = highestPriorityAvailableEnemy; 
                     break; 
                 case "lowestHP": 
-                    targetEnemy = this.getLowestHPCombatant(facts.allActiveEnemies) as Enemy; 
+                    targetEnemy = Utils.getLowestHPCombatant(facts.allActiveEnemies) as Enemy; 
                     break;
                 default: 
                     targetEnemy = highestPriorityAvailableEnemy; 

@@ -1080,6 +1080,7 @@ export class AppComponent {
                 console.log(this.simAdvancedSettings);
                 importedData.simAdvancedSettings = this.simAdvancedSettings;
             }
+            //importedData.simAdvancedSettings.simulationVersion = this.simAdvancedSettings.simulationVersion; 
 
             this.applyObserverFunctions.call(self, importedData);
             this.persistToLocalStorage();

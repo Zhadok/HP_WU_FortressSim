@@ -15,9 +15,6 @@ export class StaminaCharmEvent extends StrategicSpellEvent {
         if ((caster as Magizoologist).hasStudiedStaminaCharm() === false) {
             throw new Error(caster.toUserFriendlyDescription() + "has not studied stamina charm but tried casting it!");
         }
-        if (caster === targetWizard) {
-            throw new Error(caster.toUserFriendlyDescription() + " tried casting stamina charm on self!");
-        }
     }
 
     onFinish() {
@@ -27,7 +24,7 @@ export class StaminaCharmEvent extends StrategicSpellEvent {
     }
 
     getStrategicSpellName(): string {
-        return "Stamina Charm (+ " + this.staminaRestorePercent + "% hp)"; 
+        return "Stamina Charm (+ " + (this.staminaRestorePercent*100).toFixed(0) + "% hp)"; 
     }
 
 

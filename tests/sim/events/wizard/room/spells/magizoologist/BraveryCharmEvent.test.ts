@@ -8,9 +8,14 @@ import { BraveryCharmEvent } from "../../../../../../../src/sim/events/wizard/ro
 import { CombatSpellCastWizardEvent } from "../../../../../../../src/sim/events/wizard/combat/CombatSpellCastWizardEvent";
 import { ExstimuloPotionEvent } from "../../../../../../../src/sim/events/wizard/potions/ExstimuloPotionEvent";
 import { WitSharpeningPotionEvent } from "../../../../../../../src/sim/events/wizard/potions/WitSharpeningPotionEvent";
+import { Magizoologist } from "../../../../../../../src/model/player/Magizoologist";
 
 describe("BraveryCharmEvent", function() {
 
+    let wizard: Magizoologist; 
+    beforeEach(() => {
+        wizard = TestData.buildDefaultMagizoologist(); 
+    });
 
     it("braveryCharm_apply", function() {
         let wizards = [
@@ -27,8 +32,24 @@ describe("BraveryCharmEvent", function() {
 
         expect(caster.getFocus()).to.equal(caster.stats.maxFocus - focusCostData.braveryCharm);
         for (let wizard of wizards) {
-            expect(wizard.hasBraveryCharm);
+            expect(wizard.hasBraveryCharm).to.be.true;
             expect(wizard.braveryCharmValue).to.equal(1.5);
+        }
+    });
+
+    it("braveryCharm_noFocusRemoved_IfAlreadyApplied", function() {
+        let wizards = [wizard]
+        wizard.addFocus(999);
+        wizard.hasBraveryCharm = true; 
+        wizard.braveryCharmValue = wizard.stats.braveryCharmValue; 
+
+        let event = new BraveryCharmEvent(0, wizard.stats.braveryCharmValue, wizards, wizard);
+        event.onFinish();
+
+        expect(wizard.getFocus()).to.equal(wizard.stats.maxFocus);
+        for (let wizard of wizards) {
+            expect(wizard.hasBraveryCharm).to.be.true;
+            expect(wizard.braveryCharmValue).to.equal(wizard.stats.braveryCharmValue);
         }
     });
 

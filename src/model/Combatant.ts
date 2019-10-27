@@ -5,18 +5,21 @@ export abstract class Combatant {
 
     private currentStamina: number; // How much hp? Start at full
     private currentStaminaPercent: number; // How much hp in % (between 0 and 1)? 
+    private missingStaminaPercent: number; // How much hp in % is missing (between 0 and 1)? 1-currentStaminaPercent
     private readonly maxStamina: number; 
 
 
     constructor(maxStamina: number) {
         this.currentStamina = maxStamina;
         this.currentStaminaPercent = 1; 
+        this.missingStaminaPercent = 0; 
         this.maxStamina = maxStamina;
     }
 
     setStamina(stamina: number) {
         this.currentStamina = stamina; 
         this.currentStaminaPercent = this.getCurrentStaminaPercent(); // Used for rules, which cannot call functions but need a value
+        this.missingStaminaPercent = 1 - this.currentStaminaPercent; 
     }
 
     addStamina(stamina: number) {
@@ -52,6 +55,9 @@ export abstract class Combatant {
     }
     getCurrentStaminaPercent(): number {
         return this.getCurrentStamina() / this.getMaxStamina();
+    }
+    getMissingStaminaPercent(): number { 
+        return this.missingStaminaPercent; 
     }
 
     //abstract getDefenceAfterModifications(): number;

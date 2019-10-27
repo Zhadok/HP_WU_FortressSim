@@ -43,6 +43,7 @@ describe("RulesEngine", function() {
         enemy = TestData.buildDefaultEnemy();
         facts = {
             wizard: wizard,
+            lowestHPWizard: wizard,
             highestPriorityAvailableEnemy: enemy,
             allWizards: [wizard, otherWizard],
             allActiveEnemies: [enemy],
@@ -97,6 +98,19 @@ describe("RulesEngine", function() {
 
     it("magizoologist_shouldCastStaminaCharm", function() {
         wizard.inCombat = false; 
+        facts.lowestHPWizard = wizard; 
+        wizard.removeStamina(wizard.getCurrentStamina() - 1); 
+        wizard.addFocus(999); 
+
+        return rulesEngine.getNextAction(0, facts).then(simEvent => {
+            expect(simEvent instanceof StaminaCharmEvent).to.be.true; 
+            expect((simEvent as StaminaCharmEvent).targetWizard).to.equal(wizard); 
+            expect((simEvent as StaminaCharmEvent).staminaRestorePercent).to.equal(wizard.stats.staminaCharmValue); 
+        }); 
+    });
+    it("magizoologist_shouldCastStaminaCharm_otherWizard", function() {
+        wizard.inCombat = false; 
+        facts.lowestHPWizard = otherWizard; 
         otherWizard.removeStamina(otherWizard.getCurrentStamina() - 1); 
         wizard.addFocus(999); 
 
@@ -106,18 +120,16 @@ describe("RulesEngine", function() {
             expect((simEvent as StaminaCharmEvent).staminaRestorePercent).to.equal(wizard.stats.staminaCharmValue); 
         }); 
     });
-    it("magizoologist_shouldNotCastStaminaCharm_ifAlone", function() {
-        facts.allWizards = [wizard]; 
-        facts.chamber.numberOfWizards = 1; 
+    it("magizoologist_shouldNotCastStaminaCharm_Overhealing", function() {
         wizard.inCombat = false; 
+        facts.lowestHPWizard = wizard; 
+        wizard.removeStamina(wizard.getCurrentStamina() / 10); 
         wizard.addFocus(999); 
-        wizard.removeStamina(wizard.getCurrentStamina() - 1); 
 
         return rulesEngine.getNextAction(0, facts).then(simEvent => {
             expect(simEvent instanceof StaminaCharmEvent).to.be.false; 
         }); 
     });
-
 
 
     it("magizoologist_shouldDrink_strongInvigorationPotion_withDefeatedWizard", function() {

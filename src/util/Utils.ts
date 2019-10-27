@@ -1,3 +1,4 @@
+import { Combatant } from "../model/Combatant";
 
 
 export class Utils {
@@ -79,6 +80,13 @@ export class Utils {
             return t1 === "object" ? Utils.deepCompareObjectSameKeys(v1, v2) : true;
         });
 
+    }
+
+    static getLowestHPCombatant(combatants: Array<Combatant>): Combatant {
+        let result = combatants.sort(function(v1, v2) {
+            return v2.getCurrentStamina() - v1.getCurrentStamina();
+        })[0];
+        return result; 
     }
 
 }

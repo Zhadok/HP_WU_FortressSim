@@ -96,17 +96,7 @@ export class Magizoologist extends Wizard {
         switch (strategicSpellName) {
             case "braveryCharm": return this.hasStudiedBraveryCharm() && this.hasEnoughFocusForStrategicSpell(strategicSpellName); 
             case "mendingCharm": return this.hasStudiedMendingCharm() && this.hasEnoughFocusForStrategicSpell(strategicSpellName) && this.mendingCharmOnCooldown===false; 
-            case "staminaCharm": 
-                if (this.hasStudiedStaminaCharm() === false || this.hasEnoughFocusForStrategicSpell(strategicSpellName) === false) return false; 
-                if (facts.allWizards.length === 1) return false; 
-                if (targetWizardIndex !== undefined) {
-                    let targetWizard = facts.allWizards[targetWizardIndex]; 
-                    if (targetWizard !== undefined) {
-                        if (facts.wizard === targetWizard) return false; 
-                    }
-                }
-                return true; 
-            
+            case "staminaCharm": return this.hasStudiedStaminaCharm() && this.hasEnoughFocusForStrategicSpell(strategicSpellName); 
             case "reviveCharm": 
                 if (this.hasStudiedReviveCharm() === false || this.hasEnoughFocusForStrategicSpell(strategicSpellName) === false) return false; 
                 if (facts.allWizards.length === 1 || facts.chamber.isAnyWizardDefeated === false) return false; 

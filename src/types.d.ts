@@ -81,13 +81,14 @@ declare type manualActionContainerType = {
 // Rule engine
 declare type ruleFactType = {
     wizard: Wizard,
+    lowestHPWizard: Wizard, 
     highestPriorityAvailableEnemy: Enemy | null,
     allWizards: Array<Wizard>,
     allActiveEnemies: Array<Enemy>,
     chamber: ruleFactChamberType; 
 }
 
-declare type ruleFactNameType = "wizard" | "highestPriorityAvailableEnemy" | "chamber"; // Available in frontend
+declare type ruleFactNameType = "wizard" | "lowestHPWizard" | "highestPriorityAvailableEnemy" | "chamber"; // Available in frontend
 declare type ruleFactNameMapType = { [key in ruleFactNameType]: {
     label: string,
     allowedPaths: Array<string | null>
