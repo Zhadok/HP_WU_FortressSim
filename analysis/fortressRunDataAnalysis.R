@@ -1,8 +1,8 @@
+setwd(dirname(rstudioapi::getSourceEditorContext()$path))
 source("fortressRunDataLoad.R")
 
 
 groupedByRun
-
 
 
 
@@ -19,9 +19,10 @@ ggplot(groupedByRun, aes(x=factor(roomLevel, levels=1:20, labels=1:20), y=diffic
 
 
 # Number of enemies per room level
-ggplot(groupedByRun[runestoneLevels==1], aes(x=as.factor(roomLevel), y=nEnemies)) + geom_boxplot()
+ggplot(groupedByRun[runestoneLevels==1], aes(x=as.factor(roomLevel), y=nEnemies)) + geom_boxplot() + xlab("Room level") + ylab("Number of enemies (elites count double)")
 ggplot(groupedByRun[runestoneLevels==1], aes(x=as.factor(roomLevel), y=nEnemies+nElite)) + geom_boxplot()
-ggplot(groupedByRun, aes(x=roomLevel, y=nEnemies+nElite)) + geom_point()
+ggplot(groupedByRun, aes(x=roomLevel, y=nEnemies+nElite)) + geom_point() + xlab("Room level") + 
+  ylab("Number of enemies (elites count double)") + ggtitle(paste0("Number of enemies observed in ", NROW(groupedByRun), " solo runs")) + theme_bw()
 
 
 # Does number of enemies have influence on stuff
