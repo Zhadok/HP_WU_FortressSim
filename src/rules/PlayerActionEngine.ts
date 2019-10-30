@@ -27,7 +27,7 @@ export abstract class PlayerActionEngine {
 
     static playerActionSelectionModeMap: playerActionSelectionModeMapType = {
         "manual": "Website user select player actions (manual input)",
-        "rules": "Player AI selects actions (rule-based)"
+        "rules": "AI selects actions (rule-based)"
     }
 
     static actionNameMap: actionNameMapType = {

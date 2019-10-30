@@ -403,7 +403,7 @@
                         [(ngModel)]="simAdvancedSettings.numberSimulationsPerSetting">
                 </mat-form-field>
                 <mat-form-field class="inputAdvancedSetting">
-                    <mat-label>Seconds between simulations: This field is only used for calculating challenge XP rewards
+                    <mat-label>Seconds between simulations (chamber waiting time, energy gathering): This field is only used for calculating challenge XP rewards
                         per hour. </mat-label>
                     <input matInput type="number" min="1" placeholder="Seconds between simulations"
                         [(ngModel)]="simAdvancedSettings.secondsBetweenSimulations">
@@ -701,7 +701,7 @@
                             <td mat-cell *matCellDef="let row"> {{(row.averageGameTimeMS / 1000).toFixed(0)}}s </td>
                         </ng-container>
                         <ng-container matColumnDef="averageChallengeXPReward">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Reward (Challenge XP) </th>
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Average reward (Challenge XP) </th>
                             <td mat-cell *matCellDef="let row"> {{row.averageChallengeXPReward.toFixed(0)}} CXP </td>
                         </ng-container>
                         <ng-container matColumnDef="averageChallengeXPPerEnergy">

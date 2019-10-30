@@ -1,3 +1,5 @@
+- 0.8.4
+    - Fixed wrong connections between skill tree nodes for Magizoologist
 - 0.8.3
     - Added available fact to rules "Wizard (lowest HP)" to enable conditions based on this fact
     - Fixed bug where Magizoologists could not self cast stamina charm and updated default rules
