@@ -184,6 +184,7 @@ groupedByRoomLevel <- groupedByRun[, list(nRuns=.N
                                           , minNEnemies=min(nEnemies+nElite)
                                           , meanNEnemies=mean(nEnemies+nElite)
                                           , maxNEnemies=max(nEnemies+nElite)
+                                          , sumNEnemies=sum(nEnemies+nElite)
                                           
                                           , minNElite=min(nElite)
                                           , meanNElite=mean(nElite)
