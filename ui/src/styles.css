@@ -418,8 +418,14 @@ table {
 .marginTop5px {
     margin-top: 5px !important; 
 }
+.marginTop10px {
+    margin-top: 10px !important; 
+}
 .marginRight5px {
     margin-right: 5px !important;
+}
+.marginBottom5px {
+    margin-bottom: 5px !important; 
 }
 .padding5px {
     padding: 5px; 

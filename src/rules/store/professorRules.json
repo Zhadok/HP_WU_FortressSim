@@ -1,6 +1,8 @@
 {
     "author": "Zhadok",
     "nameClass": "professor",
+    "strategyName": "Solo",
+    "description": "Strategy for a solo Professor",
     "rules": [
         {
             "event": {

@@ -1,3 +1,5 @@
+- 0.9.0
+    - Added dropdown of possible default AI strategies (rules)
 - 0.8.4
     - Fixed wrong connections between skill tree nodes for Magizoologist
 - 0.8.3

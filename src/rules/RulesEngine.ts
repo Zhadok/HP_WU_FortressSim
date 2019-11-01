@@ -2,10 +2,6 @@ import { Engine, Rule } from "truegin";
 import { Almanac } from "truegin/dist/lib/almanac";
 import { Wizard } from "../model/player/Wizard";
 
-import professorRules from "./store/professorRules.json";
-import aurorRules from "./store/aurorRules.json";
-import magizoologistRules from "./store/magizoologistRules.json";
-
 import { nameClassType, nameClassUserFriendlyType, strategicSpellNameType, ruleFactType, actionNameType, ruleOperatorMapType, ruleContainerType, ruleType, actionNameMapType, ruleFactNameMapType, ruleFactNameType, ruleFactChamberType, ruleEventTargetMapType, ruleEventTargetType, rulesActionContainerType } from "../types";
 import { SimEvent } from "../sim/events/SimEvent";
 import { DefenceCharmEvent } from "../sim/events/wizard/room/spells/professor/DefenceCharmEvent";
@@ -34,6 +30,7 @@ import { StaminaCharmEvent } from "../sim/events/wizard/room/spells/magizoologis
 import { ReviveCharmEvent } from "../sim/events/wizard/room/spells/magizoologist/ReviveCharmEvent";
 import { Combatant } from "../model/Combatant";
 import { PlayerActionEngine } from "./PlayerActionEngine";
+import { RulesStore } from "./store/RulesStore";
 
 
 export class RulesEngine extends PlayerActionEngine {
@@ -108,12 +105,7 @@ export class RulesEngine extends PlayerActionEngine {
     }
 
     static buildFromStandard(nameClass: nameClassType, rng: Prando): RulesEngine {
-        let ruleContainer: ruleContainerType; 
-        switch (nameClass) {
-            case "professor": ruleContainer = professorRules as ruleContainerType; break;
-            case "magizoologist": ruleContainer = magizoologistRules as ruleContainerType; break;
-            case "auror": ruleContainer = aurorRules as ruleContainerType; break;
-        }
+        let ruleContainer: ruleContainerType = RulesStore.getDefaultRuleContainer(nameClass);  
         return new RulesEngine(ruleContainer!, rng)
     }
 

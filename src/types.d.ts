@@ -20,102 +20,104 @@ import { CombatSimulationParameters } from "./sim/CombatSimulationParameters.js"
 import { PotionAvailabilityParameters } from "./sim/PotionAvailabilityParameters.js";
 import { PersistedSkillTree } from "./model/player/SkillTree/PersistedSkillTree.js";
 import { CombatSimulationResults } from "./sim/CombatSimulationResults.js";
-declare type triggerNameType = 
-            // Auror triggers
-            "aurorAdvantage" | "playingDirty" | "dancingWithDummies" | "trickWithDeathEaters" |
-            "firstStrike" | "mundungusAmongUs" | 
-            // Auror spells
-            "weakeningHex" | "batBogeyHex" | "focusCharm" | "confusionHex" |
+declare type triggerNameType =
+    // Auror triggers
+    "aurorAdvantage" | "playingDirty" | "dancingWithDummies" | "trickWithDeathEaters" |
+    "firstStrike" | "mundungusAmongUs" |
+    // Auror spells
+    "weakeningHex" | "batBogeyHex" | "focusCharm" | "confusionHex" |
 
-            // Magizoologist triggers
-            "ministryMagizoologyOrientation" | "forumQuorum" | "becomeTheBeast" |
-            // Magizoologist spells (mending charm is in professor)
-            "staminaCharm" | "reviveCharm" | "braveryCharm" | "spiders" | "birdInHand" | "vileCreatures" |
+    // Magizoologist triggers
+    "ministryMagizoologyOrientation" | "forumQuorum" | "becomeTheBeast" |
+    // Magizoologist spells (mending charm is in professor)
+    "staminaCharm" | "reviveCharm" | "braveryCharm" | "spiders" | "birdInHand" | "vileCreatures" |
 
 
-            // Professor triggers
-            "idealExchange" | "restrictedSection" | "strengthInNumbers" | "sparringSpecifics" | "teamworkMakesTheDreamWork" | "confidence" |
-            "teamTeaching" | "onSabbatical" | "peskyPixies" | "fullMoonHunter" |
-            // Professor spells
-            "deteriorationHex" | "mendingCharm" | "proficiencyPowerCharm" | "defenceCharm";
+    // Professor triggers
+    "idealExchange" | "restrictedSection" | "strengthInNumbers" | "sparringSpecifics" | "teamworkMakesTheDreamWork" | "confidence" |
+    "teamTeaching" | "onSabbatical" | "peskyPixies" | "fullMoonHunter" |
+    // Professor spells
+    "deteriorationHex" | "mendingCharm" | "proficiencyPowerCharm" | "defenceCharm";
 
-declare type triggerMapType = { [key in triggerNameType]: number | null }; 
+declare type triggerMapType = { [key in triggerNameType]: number | null };
 
 
 // Skill tree
 declare type skillTreeCostsType = {
-    costScrolls: number, 
-    costRedBooks: number, 
+    costScrolls: number,
+    costRedBooks: number,
     costRSB: number
-}; 
-declare type skillTreeFilterLessonsType = "all" | "onlyScrolls" | "onlyScrollsAndRed" | "onlyScrollsAndRSB"; 
-declare type skillTreeFilterLessonsMapType = { [key in skillTreeFilterLessonsType]: string }; 
+};
+declare type skillTreeFilterLessonsType = "all" | "onlyScrolls" | "onlyScrollsAndRed" | "onlyScrollsAndRSB";
+declare type skillTreeFilterLessonsMapType = { [key in skillTreeFilterLessonsType]: string };
 
 declare type statNameType = keyof WizardStats;
 
 
 // Player actions
-declare type playerActionSelectionModeType = "manual" | "rules"; 
-declare type playerActionSelectionModeMapType = { [key in playerActionSelectionModeType]: string }; 
+declare type playerActionSelectionModeType = "manual" | "rules";
+declare type playerActionSelectionModeMapType = { [key in playerActionSelectionModeType]: string };
 
-declare type actionNameType = strategicSpellNameType | 
-                              "strongInvigorationPotion" | "weakInvigorationPotion" |
-                              "potentExstimuloPotion" | "strongExstimuloPotion" | "exstimuloPotion" | 
-                              "witSharpeningPotion" | "healthPotion" |
-                              "enterCombat" | 
-                              "enterCombatWithHighestPriorityAvailableEnemy" | 
-                              "exitCombat" | 
-                              "combatSpellCastWizard" | "noAction";
+declare type actionNameType = strategicSpellNameType |
+    "strongInvigorationPotion" | "weakInvigorationPotion" |
+    "potentExstimuloPotion" | "strongExstimuloPotion" | "exstimuloPotion" |
+    "witSharpeningPotion" | "healthPotion" |
+    "enterCombat" |
+    "enterCombatWithHighestPriorityAvailableEnemy" |
+    "exitCombat" |
+    "combatSpellCastWizard" | "noAction";
 declare type actionNameMapType = { [key in actionNameType]: string };
 declare type rulesActionContainerType = {
-    actionName: actionNameType, 
+    actionName: actionNameType,
     targetWizard: Wizard | null,
     targetEnemy: Enemy | null
-}; 
+};
 declare type manualActionContainerType = {
     actionName: actionNameType,
     targetWizardIndex?: number,
     targetEnemyIndex?: number
-}; 
+};
 
 // Rule engine
+declare type ruleStoreType = { [key in nameClassType]: Array<ruleContainerType>}; 
+
 declare type ruleFactType = {
     wizard: Wizard,
-    lowestHPWizard: Wizard, 
+    lowestHPWizard: Wizard,
     highestPriorityAvailableEnemy: Enemy | null,
     allWizards: Array<Wizard>,
     allActiveEnemies: Array<Enemy>,
-    chamber: ruleFactChamberType; 
+    chamber: ruleFactChamberType;
 }
 
 declare type ruleFactNameType = "wizard" | "lowestHPWizard" | "highestPriorityAvailableEnemy" | "chamber"; // Available in frontend
 declare type ruleFactNameMapType = { [key in ruleFactNameType]: {
     label: string,
     allowedPaths: Array<string | null>
-}};
+} };
 declare type ruleFactChamberType = {
-    currentTimeSeconds: number, 
-    remainingTimeSeconds: number, 
-    remainingEnemies: number, 
+    currentTimeSeconds: number,
+    remainingTimeSeconds: number,
+    remainingEnemies: number,
     isAnyWizardDefeated: boolean,
     numberOfWizards: number
-}; 
-declare type ruleEventTargetType = "targetWizard" | "targetEnemy"; 
+};
+declare type ruleEventTargetType = "targetWizard" | "targetEnemy";
 declare type ruleEventTargetMapType = { [key in ruleEventTargetType]: {
     label: string,
     allowedTargets: Array<{
         key: ruleEventAllowedWizardTargets | ruleEventAllowedEnemyTargets,
         label: string
     }>
-}};
+} };
 declare type ruleEventAllowedWizardTargets = "self" | "lowestHP" | "lowestHP_notSelf" | "defeatedWizard";
-declare type ruleEventAllowedEnemyTargets = "lowestHP" | "highestPriorityAvailableEnemy"; 
+declare type ruleEventAllowedEnemyTargets = "lowestHP" | "highestPriorityAvailableEnemy";
 
-                              
+
 declare type ruleOperatorType = "equal" | "notEqual" |
-                                "lessThan" | "lessThanInclusive" | "greaterThan" | "greaterThanInclusive"; 
+    "lessThan" | "lessThanInclusive" | "greaterThan" | "greaterThanInclusive";
 declare type ruleOperatorShortType = "==" | "!=" | "<" | "<=" | ">" | ">=";
-declare type ruleOperatorMapType = { [key in ruleOperatorType]: ruleOperatorShortType }; 
+declare type ruleOperatorMapType = { [key in ruleOperatorType]: ruleOperatorShortType };
 
 
 declare type ruleConditionGroupNameType = "all" | "any";
@@ -124,19 +126,19 @@ declare type ruleConditionType = {
     path: string;
     operator: ruleOperatorType;
     value: ruleValueType;
-}; 
+};
 /*declare type ruleValueType = {
     fact: string,
     path: string
 } | boolean;  */
 
-declare type ruleValueType = any; 
+declare type ruleValueType = any;
 declare type ruleType = {
     event: {
         type: actionNameType;
         params?: any;
-    }, 
-    priority?: number, 
+    },
+    priority?: number,
     conditions: {
         all: Array<ruleConditionType>
     }
@@ -144,7 +146,9 @@ declare type ruleType = {
 
 declare type ruleContainerType = {
     author: string,
-    nameClass: nameClassType, 
+    nameClass: nameClassType,
+    strategyName: string,
+    description: string, 
     rules: Array<ruleType>
 }
 
@@ -154,9 +158,9 @@ declare type ruleContainerType = {
 // FRONTEND //
 //////////////
 declare type wizardSettingsType = {
-    nameClass: nameClassType, 
-    potions: PotionAvailabilityParameters, 
-    runestoneLevel: number, 
+    nameClass: nameClassType,
+    potions: PotionAvailabilityParameters,
+    runestoneLevel: number,
     skillTree: PersistedSkillTree,
     ruleContainer: ruleContainerType
 }
@@ -166,7 +170,7 @@ declare type wizardSettingsType = {
 declare type ruleVisDataContainerType = {
     nameClassUserFriendly: nameClassUserFriendlyType,
     rules: ruleVisDataRowType[]
-}; 
+};
 // One row
 declare type ruleVisDataRowType = {
     priority: number,
@@ -176,20 +180,20 @@ declare type ruleVisDataRowType = {
 
 // Sim modes for frontend
 declare type simGoalType = "single" | "multiple_compare_roomLevels" | "multiple_compare_skillTreeNodes";
-declare type simGoalMapType = { [key in simGoalType]: string }; 
+declare type simGoalMapType = { [key in simGoalType]: string };
 declare type simAdvancedSettingsType = {
     simulationVersion: string,
 
     simGoal: simGoalType,
     simGoalMultipleParams: {
         simGoalMultiple_minRoomLevel: number,
-        simGoalMultiple_maxRoomLevel: number, 
+        simGoalMultiple_maxRoomLevel: number,
         simGoalMultiple_filterSkillTreeNodes: skillTreeFilterLessonsType
     }
 
     numberSimulationsPerSetting: number,
     runParallel: boolean,
-    numberParallelWorkers: number, 
+    numberParallelWorkers: number,
     secondsBetweenSimulations: number,
 
     // Frontend settings
@@ -200,20 +204,20 @@ declare type simAdvancedSettingsType = {
     closeSimParametersTabOnStartSimulation: boolean,
     closeAdvancedSettingsTabOnStartSimulation: boolean
     closeStartSimulationTabOnStartSimulation: boolean
-}; 
+};
 declare type localStorageDataType = {
-    simParameters: CombatSimulationParameters, 
+    simParameters: CombatSimulationParameters,
     simAdvancedSettings: simAdvancedSettingsType
 }
 
 // Single simulation
-declare type simulationLogChannelType = "Debug" | "User friendly"; 
-declare type simulationLogChannelStoreType = { [key in simulationLogChannelType]: string }; 
+declare type simulationLogChannelType = "Debug" | "User friendly";
+declare type simulationLogChannelStoreType = { [key in simulationLogChannelType]: string };
 
 // Multiple simulations
 declare type simProgressType = {
-    nTotal: number, 
-    nFinished: number, 
+    nTotal: number,
+    nFinished: number,
     nRemaining: number
 };
 // Results of multiple simulations (table). One of these types is one row
@@ -222,23 +226,23 @@ declare type simulationResultsGroupedType = {
 
     //roomLevel: number, 
     winPercentage: number,
-    
+
     averageNumberOfCasts: number,
     averageCritPercent: number,
     averageDodgePercent: number,
-    averageTotalDamage: number, 
+    averageTotalDamage: number,
     averageDamage: number
     averageChallengeXPReward: number,
-    averageChallengeXPPerEnergy: number, 
+    averageChallengeXPPerEnergy: number,
 
     // time statistics
-    averageTimeSpentDeadMS: number, 
-    averageGameTimeMS: number; 
-    averageBrewTimeHours: number, 
+    averageTimeSpentDeadMS: number,
+    averageGameTimeMS: number;
+    averageBrewTimeHours: number,
 
     // Per hour statistics
-    averageRunsPerHour: number, 
-    averageChallengeXPRewardPerHour: number; 
+    averageRunsPerHour: number,
+    averageChallengeXPRewardPerHour: number;
     averageEnergyPerHour: number,
 
     numberOfRuns: number
@@ -254,7 +258,7 @@ declare type webWorkerMessageContainerType = {
         runID?: number
     }
 }
-declare type webWorkerMessageType = "executeSimulation"; 
+declare type webWorkerMessageType = "executeSimulation";
 
 
 declare type webWorkerMessageResponseContainerType = {
@@ -263,7 +267,7 @@ declare type webWorkerMessageResponseContainerType = {
         combatSimulationResults?: CombatSimulationResults
     }
 };
-declare type webWorkerMessageResponseType = "simulationFinished"; 
+declare type webWorkerMessageResponseType = "simulationFinished";
 
 
 

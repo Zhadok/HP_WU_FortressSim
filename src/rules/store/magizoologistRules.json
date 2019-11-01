@@ -1,6 +1,8 @@
 {
     "author": "Zhadok",
     "nameClass": "magizoologist",
+    "strategyName": "Solo",
+    "description": "Strategy for a solo Magizoologist",
     "rules": [
         {
             "event": {

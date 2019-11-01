@@ -1,6 +1,8 @@
 {
     "author": "e-n-l",
     "nameClass": "professor",
+    "strategyName": "Deterioration Hex only",
+    "description": "Professor strategy which will cast deterioration hex only and enters combat with that enemy. ",
     "rules": [
         {
             "event": {
@@ -9,7 +11,7 @@
                     "targetEnemy": "highestPriorityAvailableEnemy"
                 }
             },
-            "priority": 4,
+            "priority": 3,
             "conditions": {
                 "all": [
                     {
@@ -49,7 +51,7 @@
                     "targetEnemy": "highestPriorityAvailableEnemy"
                 }
             },
-            "priority": 3,
+            "priority": 2,
             "conditions": {
                 "all": [
                     {
@@ -63,37 +65,6 @@
                         "path": ".inCombat",
                         "operator": "equal",
                         "value": false
-                    }
-                ]
-            }
-        },
-        {
-            "event": {
-                "type": "exitCombat",
-                "params": {
-                    "description": "Professor should exit and check for better enemies available (disabled for now)"
-                }
-            },
-            "priority": 2,
-            "conditions": {
-                "all": [
-                    {
-                        "fact": "wizard",
-                        "path": ".inCombat",
-                        "operator": "equal",
-                        "value": true
-                    },
-                    {
-                        "fact": "wizard",
-                        "path": ".inCombatWith.inCombat",
-                        "operator": "equal",
-                        "value": true
-                    },
-                    {
-                        "fact": "wizard",
-                        "path": ".inCombat",
-                        "operator": "equal",
-                        "value": null
                     }
                 ]
             }

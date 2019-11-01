@@ -212,10 +212,35 @@
                                                 Player AI
                                             </mat-panel-title>
                                             <mat-panel-description>
-                                                Rules that determine each action
+                                                Choose a strategy for an AI (rules)
                                             </mat-panel-description>
                                         </mat-expansion-panel-header>
                                         <div class="divPlayerRulesContainer">
+
+                                            <div class="divPlayerRulesStrategySelection marginBottom5px">
+
+                                                    <b>Note:</b> Selecting a strategy here will overwrite any custom rules you have created. You can export to a file
+                                                    them using the button "Export rules".  
+        
+                                                    <mat-form-field class="inputAdvancedSetting marginTop10px"> <!--[(ngModel)]="simParameters.ruleContainers[playerIndex]"-->
+                                                        <mat-label>Player AI strategy</mat-label>
+                                                        <mat-select placeholder="Player AI Strategy" name="selectPlayerAIStrategy"
+                                                            [compareWith]="compareRuleContainers"
+                                                            [value]="simParameters.ruleContainers[playerIndex]"
+                                                            (selectionChange)="onChangeSelectPlayerAIStrategy(playerIndex, $event)"
+                                                            >
+                                        
+                                                            <mat-option *ngFor="let ruleContainer of getRulesStore(nameClass)" [value]="ruleContainer">
+                                                                {{toUpperCase(ruleContainer.nameClass)}}: {{ruleContainer.strategyName}}
+                                                            </mat-option>
+                                                        </mat-select>
+                                                    </mat-form-field>
+
+                                                    <span><b>Description: </b> {{simParameters.ruleContainers[playerIndex].description}}</span>
+
+                                            </div>
+                                            
+
                                             <table mat-table matSort [dataSource]="getPlayerRulesForTable(playerIndex)"
                                                 class="mat-elevation-z8" multiTemplateDataRows>
 

@@ -107,7 +107,14 @@ ggplot(groupedByRoomLevel, aes(x=roomLevel, y=averageEnemyDifficulty)) + geom_po
 
 # Proficiency percentage, analysis below should be per room level
 ggplot(groupedByRoomLevel, aes(x=as.factor(roomLevel), y=averageProficiency)) + geom_boxplot()
-ggplot(groupedByRoomLevel, aes(x=roomLevel, y=averageProficiency)) + geom_point() + geom_line()
+ggplot(groupedByRoomLevel[runestoneLevels==1], aes(x=roomLevel, y=averageProficiency)) + geom_point() + theme_bw() +
+  ylab("Average proficiency") + xlab("Room level") + ylim(c(0, 1)) + geom_smooth(method="lm") + 
+  geom_text(aes(x=roomLevel, y=averageProficiency, label=paste0(nRuns, " run", ifelse(nRuns > 1, "s", ""))), nudge_y=-0.02) +
+  geom_text(aes(x=roomLevel, y=averageProficiency, label=paste0(sumNEnemies, " foes")), nudge_y=-0.05) + 
+  ggtitle(paste0("Observed average proficiency in ", groupedByRoomLevel[runestoneLevels==1, sum(nRuns)], " solo runs with runestone level 1"))
+
+ggplot(groupedByRun, aes(x=roomLevel, y=averageProficiency)) + geom_point() 
+
 
 ggplot(groupedByRoomLevel, aes(x=difficulty, y=averageProficiency)) + geom_point()
 

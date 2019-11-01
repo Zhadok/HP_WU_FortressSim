@@ -1,6 +1,8 @@
 {
     "author": "Zhadok",
     "nameClass": "auror",
+    "strategyName": "Solo",
+    "description": "Strategy for a solo Auror",
     "rules": [
         {
             "event": {

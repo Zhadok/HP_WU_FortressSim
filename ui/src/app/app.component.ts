@@ -6,7 +6,7 @@ import { TestData } from "../../../tests/TestData";
 import { CombatSimulationParameters } from '../../../src/sim/CombatSimulationParameters';
 import {
     nameClassType, nameClassUserFriendlyType, simGoalType as simGoalType, simAdvancedSettingsType,
-    simProgressType, simulationResultsGroupedType, localStorageDataType, ruleVisDataRowType, ruleVisDataContainerType, simulationLogChannelStoreType, simulationLogChannelType, ruleContainerType, wizardSettingsType, ruleType, actionNameMapType, ruleOperatorType, ruleOperatorMapType, ruleFactNameType, ruleConditionType, simGoalMapType, skillTreeFilterLessonsType, webWorkerMessageContainerType, actionNameType, playerActionSelectionModeMapType, ruleFactType, manualActionContainerType
+    simProgressType, simulationResultsGroupedType, localStorageDataType, ruleVisDataRowType, ruleVisDataContainerType, simulationLogChannelStoreType, simulationLogChannelType, ruleContainerType, wizardSettingsType, ruleType, actionNameMapType, ruleOperatorType, ruleOperatorMapType, ruleFactNameType, ruleConditionType, simGoalMapType, skillTreeFilterLessonsType, webWorkerMessageContainerType, actionNameType, playerActionSelectionModeMapType, ruleFactType, manualActionContainerType, ruleStoreType
 } from '../../../src/types';
 import { PotionAvailabilityParameters } from '../../../src/sim/PotionAvailabilityParameters';
 import { PersistedSkillTree } from '../../../src/model/player/SkillTree/PersistedSkillTree';
@@ -44,6 +44,7 @@ import { PlayerActionEngine } from '../../../src/rules/PlayerActionEngine';
 import { ManualPlayerActionEngine } from '../../../src/rules/ManulPlayerActionEngine';
 import { ManualActionSelectionSimulationComponent } from './manual-action-selection-simulation/manual-action-selection-simulation.component';
 import { URLHashManager } from './URLHashManager';
+import { RulesStore } from '../../../src/rules/store/RulesStore';
 
 
 const cookieConfig: any = {
@@ -112,7 +113,7 @@ export class AppComponent {
     simAdvancedSettings: simAdvancedSettingsType = {
         simulationVersion: packageJsonVersion,
 
-        showPlayerRules: false,
+        showPlayerRules: true,
         numberSimulationsPerSetting: 10,
 
         simGoal: "single",
@@ -260,6 +261,22 @@ export class AppComponent {
     sanitizeSimAdvancedSettingsOldVersions(simAdvancedSettings: simAdvancedSettingsType) {
         simAdvancedSettings.simulationVersion = packageJsonVersion;
         return simAdvancedSettings;
+    }
+
+    getRulesStore(nameClass: nameClassType): Array<ruleContainerType> {
+        //console.log(RulesStore.store[nameClass]); 
+        //return JSON.parse(JSON.stringify(RulesStore.store[nameClass])); 
+        return RulesStore.store[nameClass]; 
+    }
+    toUpperCase(string: string) {
+        return string.substr(0, 1).toUpperCase() + string.substr(1, string.length); 
+    }
+    compareRuleContainers(v1: ruleContainerType, v2: ruleContainerType):boolean {
+        return v1.strategyName === v2.strategyName && v1.nameClass === v2.nameClass && v1.description === v2.description; 
+    }
+    onChangeSelectPlayerAIStrategy(playerIndex: number, event: any) {
+        console.log(event); 
+        this.simParameters.ruleContainers[playerIndex] = JSON.parse(JSON.stringify(event.value)); //  as ruleContainerType
     }
 
     getPlayerRulesForTable(playerIndex: number): MatTableDataSource<ruleType> | ruleType[] {
@@ -928,13 +945,14 @@ export class AppComponent {
         }
     }
     getDefaultRuleContainer(nameClass: nameClassType): ruleContainerType {
-        let result: ruleContainerType;
+        /*let result: ruleContainerType;
         switch (nameClass) {
             case "auror": result = aurorRules as ruleContainerType; break;
             case "magizoologist": result = magizoologistRules as ruleContainerType; break;
             case "professor": result = professorRules as ruleContainerType; break;
         }
-        return JSON.parse(JSON.stringify(result));
+        return JSON.parse(JSON.stringify(result));*/
+        return JSON.parse(JSON.stringify(RulesStore.getDefaultRuleContainer(nameClass))); 
     }
 
     getInitialPotionAvailability(): PotionAvailabilityParameters {

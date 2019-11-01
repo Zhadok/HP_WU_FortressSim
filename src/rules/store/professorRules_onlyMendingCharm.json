@@ -1,46 +1,48 @@
 {
     "author": "Zhadok",
     "nameClass": "professor",
+    "strategyName": "Mending charm only",
+    "description": "Professor strategy which will cast mending charm only.",
     "rules": [
-      {
-        "event": {
-          "type": "mendingCharm",
-          "params": {
-            "targetWizard": "lowestHP"
-          }
-        },
-        "priority": 1,
-        "conditions": {
-          "all": [
-            {
-              "fact": "wizard",
-              "path": ".inCombat",
-              "operator": "equal",
-              "value": false
+        {
+            "event": {
+                "type": "mendingCharm",
+                "params": {
+                    "targetWizard": "lowestHP"
+                }
             },
-            {
-                "fact": "wizard",
-                "path": ".mendingCharmOnCooldown",
-                "operator": "equal",
-                "value": false
-            },
-            {
-              "fact": "wizard",
-              "path": ".triggers.mendingCharm",
-              "operator": "notEqual",
-              "value": null
+            "priority": 1,
+            "conditions": {
+                "all": [
+                    {
+                        "fact": "wizard",
+                        "path": ".inCombat",
+                        "operator": "equal",
+                        "value": false
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".mendingCharmOnCooldown",
+                        "operator": "equal",
+                        "value": false
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".triggers.mendingCharm",
+                        "operator": "notEqual",
+                        "value": null
+                    }
+                ]
             }
-          ]
-        }
-      },
-      {
-        "event": {
-          "type": "noAction"
         },
-        "priority": 0,
-        "conditions": {
-          "all": []
+        {
+            "event": {
+                "type": "noAction"
+            },
+            "priority": 0,
+            "conditions": {
+                "all": []
+            }
         }
-      }
     ]
-  }
+}
