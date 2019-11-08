@@ -85,6 +85,7 @@ If professor is not in combat AND has enough focus:
 
 The implementation can be found [here](https://github.com/Zhadok/HP_WU_FortressSim/blob/master/src/rules/RulesEngine.ts#L48). The rules that a professor player will follow, for example, can be found [here](https://github.com/Zhadok/HP_WU_FortressSim/blob/master/src/rules/store/professorRules.json). 
 
+You also have the option of manually clicking through a simulation, step by step. The action the AI would take is also shown. To activate this feature, see the selection box "Player action selection" under advanced simulation settings. 
 
 ### What happens to my data?
 Simulation data is stored only locally, on your device. 
