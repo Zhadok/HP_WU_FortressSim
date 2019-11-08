@@ -1,0 +1,96 @@
+- 0.10.0 
+    - Added "Changelog" popup when user's data is outdated that will display the contents of this file
+    - Added help links to the documentation for complex simulation parameters ("What is this?")
+- 0.9.0
+    - Added dropdown of possible default AI strategies (rules)
+- 0.8.4
+    - Fixed wrong connections between skill tree nodes for Magizoologist
+- 0.8.3
+    - Added available fact to rules "Wizard (lowest HP)" to enable conditions based on this fact
+    - Fixed bug where Magizoologists could not self cast stamina charm and updated default rules
+    - Fixed bug where casting proficiency power charm / bravery charm when it was already applied would still remove focus
+- 0.8.2
+    - Manual player action selection in simulation: Added button as to what the player AI would do
+- 0.8.1
+    - Added toast popup for when data is saved
+    - Added column for comparing simulations: CXP / energy
+    - Added button for share data as URL
+- 0.8.0
+    - Allow manual selection of next action for players
+- 0.7.1
+    - Responsive design: Make interface elements more readable on mobile devices
+    - Simulations results comparison table: Sortable, better layout, sticky column
+- 0.7.0
+    - Added Magizoologist default rules
+    - Added "copy" button to each rule
+- 0.6.3
+    - Added "import rules" button
+- 0.6.2
+    - Filtered and sorted rule condition paths to be more user friendly
+    - Added "chamber" fact (currentTime, remainingTime, anyWizardDead, enemiesRemaining)
+    - Added "target wizard" and "target enemy" to actions
+- 0.6.1
+    - Added magizoologist skill tree
+- 0.6.0
+    - Added auror rules and actions
+- 0.5.2
+    - Fixed bug with rule table where priority would not get updated after adding/removing a rule
+- 0.5.1
+    - Rules editor: Hide priority complexity from view, add button for position up or down in table. Improved performance
+- 0.5.0 
+    - Implemented parallel execution of simulations (via WebWorkers)
+- 0.4.3
+    - Add button for import/export skill tree data
+    - Fix bug with data import where UI does not get updated
+- 0.4.2
+    - Bug fix: Fixed bug where rules and sim settings would not get correctly loaded with old versions of website data
+    - Added toggle for sponsored fortress rewards (25% more CXP, energy bonus)
+- 0.4.1 
+    - Added statistics "X attacks with Y enhancements/impairments" to single simulation results
+    - Added attacks received statistics to single simulation results
+- 0.4.0 
+    - Added "potions used" to wizard result of simulation
+    - Added "brewing time spent" result to wizard result of simulation (if 2/5 healing potions were used, only 4h of brewing time, not 10h)
+    - Added "average time spend dead" statistic when comparing multiple simulations
+- 0.3.8
+    - Added toggle for barrufio's brain elixir and tonic for trace detection (increases number of enhancements for professors)
+- 0.3.7
+    - Implemented cooldown for mending charm and bat bogey hex
+    - Professor default AI casts mending charm once before entering combat
+- 0.3.6
+    - Restructured advanced simulation settings
+    - Added min/max room level for comparing different room levels
+    - Added null (empty string in dropdown) in selecting fact paths. Example usage: Only enter combat if "Highest priority enemy target != null"
+    - Added "Add rule" button
+    - Advanced sim settings tab will remain open/closed even if website is refreshed
+- 0.3.5
+    - Clarified what data is included in import and export under advanced simulation settings
+    - Added damage from deterioration hex on enemy attack to simulation log
+- 0.3.4
+    - Fixed a bug where enemies would not attack if the player AI chose not to act during combat
+- 0.3.3 
+    - Added scrollbar for multiple simulations result table (for narrow screens)
+    - Added runs per hour and energy per hour to table for multiple simulations and tidied up the table
+    - Fixed restricted section for professors (not static 0.06 defence but conditional buff)
+    - Added a filter under advanced simulation settings for comparing next possible skill tree nodes
+- 0.3.2
+    - Known performance problem caused by player AI rules table. Introduced checkbox (under advanced sim settings) to hide it 
+- 0.3.1
+    - Bug fix: On changing wizard class rules are properly reset to default. 
+- 0.3.0 
+    - Added button to compare next possible skill tree nodes
+- 0.2.1
+    - Added potions brew time under potion input
+    - Slightly changed player AI rules layout
+    - Added analytics
+- 0.2.0
+    - Revised player AI rules under "Player AI" under each player: Rules are visualized and can be edited
+    - Reworked professor default rules for strong/weak invigoration potions to only be drunk "when needed" (this required nested rules)
+    - Added "Reset all data" button under Advanced simulation settings (for simple solution to data version migration problems)
+- 0.1.0
+    - Added more user friendly chamber level name
+    - Changed "triggers" to "conditional buffs" and filtered the list by strategic spells
+    - Added health potions to UI
+    - Added a first version of player AI rules under advanced settings
+    - Added a more user friendly version of the simulation log
+    - Added wizard "time spent defeated" statistic 
