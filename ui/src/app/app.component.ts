@@ -1,4 +1,5 @@
 import { Component, ViewChild, ElementRef, NgZone, ViewChildren, QueryList } from '@angular/core';
+import compareVersions from 'compare-versions';
 
 import { CombatSimulation } from "../../../src/sim/CombatSimulation";
 import Prando from 'prando';
@@ -25,6 +26,8 @@ import { MatTableDataSource } from '@angular/material/table';
 import * as ObservableSlim from "observable-slim";
 import { MatSortModule } from "@angular/material";
 import { MatSort, Sort } from '@angular/material/sort';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+
 
 import fortressRewardData from "../../../src/data/fortressRewards.json";
 import professorRules from "../../../src/rules/store/professorRules.json";
@@ -45,6 +48,7 @@ import { ManualPlayerActionEngine } from '../../../src/rules/ManulPlayerActionEn
 import { ManualActionSelectionSimulationComponent } from './manual-action-selection-simulation/manual-action-selection-simulation.component';
 import { URLHashManager } from './URLHashManager';
 import { RulesStore } from '../../../src/rules/store/RulesStore';
+import { DialogChangelogComponent } from './dialog-changelog/dialog-changelog.component';
 
 
 const cookieConfig: any = {
@@ -159,7 +163,7 @@ export class AppComponent {
     simulationMultipleResultsGrouped: MatTableDataSource<simulationResultsGroupedType>;
     simProgress: simProgressType | null = null;
 
-    shareDataURL: string | null = null; 
+    shareDataURL: string | null = null;
 
     // Multiple sim results comparison
     columnNamesMultipleSimulationsResultsGrouped = [];
@@ -172,7 +176,9 @@ export class AppComponent {
     // Worker pool
     workerPool: WebWorkerPool;
 
-    constructor(private cdr: ChangeDetectorRef, private zone: NgZone, private _snackBar: MatSnackBar) {
+    constructor(private cdr: ChangeDetectorRef, private zone: NgZone,
+        private _snackBar: MatSnackBar,
+        public dialog: MatDialog) {
         //let sim = new CombatSimulation(this.simParameters, new Prando(0));
         this.allowedClasses = {
             "auror": "Auror",
@@ -183,21 +189,21 @@ export class AppComponent {
         let self = this;
 
         // Init: Check if something in local storage and/or hash fragment
-        let dataInLocalStorage = this.isPersistedInLocalStorage(); 
-        let dataInHashFragment = URLHashManager.hasValidDataInHashFragment(); 
+        let dataInLocalStorage = this.isPersistedInLocalStorage();
+        let dataInHashFragment = URLHashManager.hasValidDataInHashFragment();
 
         if (dataInLocalStorage === true && dataInHashFragment === false) {
             this.initFromLocalStorage();
         }
         else if (dataInLocalStorage === false && dataInHashFragment === true) {
-            this.initFromHashFragment(); 
+            this.initFromHashFragment();
         }
         else if (dataInLocalStorage === true && dataInHashFragment === true) {
             // Both detected: Decide which should be kept via dialog (TODO)
-            if (confirm("Detected saved data in local storage as well as in the URL. Do you want to overwrite your local data? " + 
-                        "\n\nNOTE: your previously saved data will be lost. If you wish to first save your previously saved data, " + 
-                        "press cancel and click \"Export data as file\" under Advanced simulation settings to keep a backup.")) {
-                this.initFromHashFragment(); 
+            if (confirm("Detected saved data in local storage as well as in the URL. Do you want to overwrite your local data? " +
+                "\n\nNOTE: your previously saved data will be lost. If you wish to first save your previously saved data, " +
+                "press cancel and click \"Export data as file\" under Advanced simulation settings to keep a backup.")) {
+                this.initFromHashFragment();
             }
             else {
                 this.initFromLocalStorage();
@@ -210,7 +216,7 @@ export class AppComponent {
             this.addWizardSettings(initialWizardSettings);
         }
 
-        
+
 
         this.simParameters = this.sanitizeSimParametersOldVersions(this.simParameters);
         this.simAdvancedSettings = this.sanitizeSimAdvancedSettingsOldVersions(this.simAdvancedSettings);
@@ -259,23 +265,35 @@ export class AppComponent {
     }
 
     sanitizeSimAdvancedSettingsOldVersions(simAdvancedSettings: simAdvancedSettingsType) {
+        if (compareVersions.compare(packageJsonVersion, simAdvancedSettings.simulationVersion, ">")) {
+            console.log("Old version of advanced sim settings detected.");
+
+            const dialogRef = this.dialog.open(DialogChangelogComponent, {
+                width: '80%',
+                data: JSON.parse(JSON.stringify(this.simAdvancedSettings))
+            });
+
+            dialogRef.afterClosed().subscribe(result => {});
+        }
+
         simAdvancedSettings.simulationVersion = packageJsonVersion;
+
         return simAdvancedSettings;
     }
 
     getRulesStore(nameClass: nameClassType): Array<ruleContainerType> {
         //console.log(RulesStore.store[nameClass]); 
         //return JSON.parse(JSON.stringify(RulesStore.store[nameClass])); 
-        return RulesStore.store[nameClass]; 
+        return RulesStore.store[nameClass];
     }
     toUpperCase(string: string) {
-        return string.substr(0, 1).toUpperCase() + string.substr(1, string.length); 
+        return string.substr(0, 1).toUpperCase() + string.substr(1, string.length);
     }
-    compareRuleContainers(v1: ruleContainerType, v2: ruleContainerType):boolean {
-        return v1.strategyName === v2.strategyName && v1.nameClass === v2.nameClass && v1.description === v2.description; 
+    compareRuleContainers(v1: ruleContainerType, v2: ruleContainerType): boolean {
+        return v1.strategyName === v2.strategyName && v1.nameClass === v2.nameClass && v1.description === v2.description;
     }
     onChangeSelectPlayerAIStrategy(playerIndex: number, event: any) {
-        console.log(event); 
+        console.log(event);
         this.simParameters.ruleContainers[playerIndex] = JSON.parse(JSON.stringify(event.value)); //  as ruleContainerType
     }
 
@@ -952,7 +970,7 @@ export class AppComponent {
             case "professor": result = professorRules as ruleContainerType; break;
         }
         return JSON.parse(JSON.stringify(result));*/
-        return JSON.parse(JSON.stringify(RulesStore.getDefaultRuleContainer(nameClass))); 
+        return JSON.parse(JSON.stringify(RulesStore.getDefaultRuleContainer(nameClass)));
     }
 
     getInitialPotionAvailability(): PotionAvailabilityParameters {
@@ -1035,19 +1053,19 @@ export class AppComponent {
     }
 
     initFromLocalStorage(): void {
-        console.log("Initializing from local storage..."); 
+        console.log("Initializing from local storage...");
         let data = this.getDataFromLocalStorage();
-        this.initDataFromOtherSource(data);         
+        this.initDataFromOtherSource(data);
     }
 
     initFromHashFragment(): void {
-        console.log("Initializing from hash fragment..."); 
-        let data = URLHashManager.getDataFromHashFragment(); 
-        this.initDataFromOtherSource(data); 
-        this.persistToLocalStorage(); 
+        console.log("Initializing from hash fragment...");
+        let data = URLHashManager.getDataFromHashFragment();
+        this.initDataFromOtherSource(data);
+        this.persistToLocalStorage();
 
         // Reset hash fragment
-        URLHashManager.resetHashFragment(); 
+        URLHashManager.resetHashFragment();
     }
 
 
@@ -1068,7 +1086,7 @@ export class AppComponent {
             simAdvancedSettings: this.simAdvancedSettings,
             simParameters: this.simParameters
         }));
-        this.openSnackBar("Data has been saved.", "Dismiss"); 
+        this.openSnackBar("Data has been saved.", "Dismiss");
     }
 
     resetAllData(): void {
@@ -1114,26 +1132,26 @@ export class AppComponent {
         this.createFileDownload("simulationParameters.json", JSON.stringify(data, null, 4));
     }
 
-    @ViewChild("inputShareDataURL", {static: false, read: ElementRef}) inputShareDataURL: ElementRef; 
+    @ViewChild("inputShareDataURL", { static: false, read: ElementRef }) inputShareDataURL: ElementRef;
     onClickButtonShareData(): void {
-        
+
         let url = window.location.href.split('#')[0] + "#" + URLHashManager.convertDataToHashFragment({
             simParameters: this.simParameters,
             simAdvancedSettings: this.simAdvancedSettings
-        }); 
+        });
         //console.log(url); 
-        this.shareDataURL = url; 
+        this.shareDataURL = url;
         //console.log(this.inputShareDataURL); 
-        
-        var self = this; 
-        setTimeout(function() {
-            self.inputShareDataURL.nativeElement.focus(); 
-            self.inputShareDataURL.nativeElement.select(); 
-        }, 500); 
 
-        Utils_UI.copyToClipboard(url); 
-        this.openSnackBar("URL copied to clipboard.", "Dismiss"); 
-        
+        var self = this;
+        setTimeout(function () {
+            self.inputShareDataURL.nativeElement.focus();
+            self.inputShareDataURL.nativeElement.select();
+        }, 500);
+
+        Utils_UI.copyToClipboard(url);
+        this.openSnackBar("URL copied to clipboard.", "Dismiss");
+
     }
 
     createFileUpload(callbackFunction) {

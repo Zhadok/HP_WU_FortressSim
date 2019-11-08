@@ -22,41 +22,49 @@ import { MatIconModule } from "@angular/material";
 import { RuleDetailComponentComponent } from './rule-detail-component/rule-detail-component.component';
 import { MatCardModule } from "@angular/material";
 import { ManualActionSelectionSimulationComponent } from './manual-action-selection-simulation/manual-action-selection-simulation.component';
-import { EnemyPortraitComponent } from './enemy-portrait/enemy-portrait.component'; 
-import { MatRadioModule} from "@angular/material";
-import { MatSnackBarModule } from "@angular/material"; 
-
+import { EnemyPortraitComponent } from './enemy-portrait/enemy-portrait.component';
+import { MatRadioModule } from "@angular/material";
+import { MatSnackBarModule } from "@angular/material";
+import { DialogChangelogComponent } from './dialog-changelog/dialog-changelog.component';
+import { MatDialogModule } from "@angular/material";
+import { HttpClientModule } from '@angular/common/http'; 
 @NgModule({
-        declarations: [
-            AppComponent,
-            RuleDetailComponentComponent,
-            ManualActionSelectionSimulationComponent,
-            EnemyPortraitComponent
-        ],
-        imports: [
-            BrowserModule,
-            FormsModule,
-            AppRoutingModule,
-            MatTabsModule,
-            MatSliderModule,
-            MatInputModule,
-            MatSelectModule,
-            MatButtonModule,
-            MatListModule,
-            MatTooltipModule,
-            MatExpansionModule,
-            BrowserAnimationsModule,
-            MatCheckboxModule,
-            MatTableModule,
-            MatProgressBarModule,
-            MatSortModule,
-            MatPaginatorModule,
-            MatIconModule,
-            MatCardModule,
-            MatRadioModule,
-            MatSnackBarModule
-        ],
-        providers: [],
-        bootstrap: [AppComponent]
-    })
+    declarations: [
+        AppComponent,
+        RuleDetailComponentComponent,
+        ManualActionSelectionSimulationComponent,
+        EnemyPortraitComponent,
+        DialogChangelogComponent
+    ],
+    imports: [
+        BrowserModule,
+        FormsModule,
+        AppRoutingModule,
+        MatTabsModule,
+        MatSliderModule,
+        MatInputModule,
+        MatSelectModule,
+        MatButtonModule,
+        MatListModule,
+        MatTooltipModule,
+        MatExpansionModule,
+        BrowserAnimationsModule,
+        MatCheckboxModule,
+        MatTableModule,
+        MatProgressBarModule,
+        MatSortModule,
+        MatPaginatorModule,
+        MatIconModule,
+        MatCardModule,
+        MatRadioModule,
+        MatSnackBarModule,
+        MatDialogModule,
+        HttpClientModule
+    ],
+    providers: [],
+    entryComponents: [
+        DialogChangelogComponent
+    ],
+    bootstrap: [AppComponent]
+})
 export class AppModule { }

@@ -1,3 +1,6 @@
+- 0.10.0 
+    - Added "Changelog" popup when user's data is outdated that will display the contents of this file
+    - Added help links to the documentation for complex simulation parameters ("What is this?")
 - 0.9.0
     - Added dropdown of possible default AI strategies (rules)
 - 0.8.4

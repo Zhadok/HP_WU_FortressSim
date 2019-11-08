@@ -401,13 +401,18 @@
             </mat-expansion-panel-header>
 
             <h2 class="mat-h2">General</h2>
-            <mat-form-field class="inputAdvancedSetting">
-                <mat-label>Seed: This will ensure reproducible results. For multiple simulations, the seed will
-                    increased by 1 for each simulation. </mat-label>
+            <mat-form-field class="floatLeft inputAdvancedSettingWithHelp">
+                <mat-label><span>Seed for reproducibility: In multiple simulations, seed is
+                    increased by 1 per simulation. </span></mat-label>
                 <input matInput type="number" placeholder="Seed" [(ngModel)]="simParameters.seed"
                     [(value)]="simParameters.seed">
             </mat-form-field>
-            <mat-form-field class="inputAdvancedSetting">
+            <div class="floatLeft divContainerHelpButton">
+                <a href="https://github.com/Zhadok/HP_WU_FortressSim/blob/master/README.md#what-is-a-seed-and-why-are-fortress-runs-reproducible" 
+                target="_blank" mat-raised-button mat-icon-button><mat-icon>help</mat-icon></a> 
+            </div>
+
+            <mat-form-field class="floatLeft inputAdvancedSettingWithHelp">
                 <mat-label>Player action selection (manual or automatic)</mat-label>
                 <mat-select placeholder="Player action selection mode" name="selectActionSelectionMode"
                     [(ngModel)]="simParameters.playerActionSelectionMode">
@@ -416,17 +421,30 @@
                         {{item.value}}</mat-option>
                 </mat-select>
             </mat-form-field>
+            <div class="floatLeft divContainerHelpButton">
+                <a href="https://github.com/Zhadok/HP_WU_FortressSim/blob/master/README.md#how-does-the-player-ai-work-how-do-wizards-decide-which-action-to-take" 
+                target="_blank" mat-raised-button mat-icon-button><mat-icon>help</mat-icon></a> 
+            </div>
+
             <mat-checkbox [(ngModel)]="simAdvancedSettings.showPlayerRules">Show player AI rules in wizard settings
             </mat-checkbox><br>
 
+
+            
             <div class="divContainerAdvancedSettingsSection">
                 <h2 class="mat-h2">Comparing multiple simulations</h2>
-                <mat-form-field class="inputAdvancedSetting">
+                <mat-form-field class="floatLeft inputAdvancedSettingWithHelp">
                     <mat-label>Number of simulations: For example, when comparing room level, will run each room level
                         this many times (with different seeds). </mat-label>
                     <input matInput type="number" min="1" placeholder="Number of simulations"
                         [(ngModel)]="simAdvancedSettings.numberSimulationsPerSetting">
                 </mat-form-field>
+                <div class="floatLeft divContainerHelpButton">
+                    <a href="https://github.com/Zhadok/HP_WU_FortressSim/blob/master/README.md#how-are-rng-seeds-used-when-comparing-multiple-simulations" 
+                    target="_blank" mat-raised-button mat-icon-button><mat-icon>help</mat-icon></a> 
+                </div>
+
+
                 <mat-form-field class="inputAdvancedSetting">
                     <mat-label>Seconds between simulations (chamber waiting time, energy gathering): This field is only used for calculating challenge XP rewards
                         per hour. </mat-label>
