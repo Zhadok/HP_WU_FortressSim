@@ -111,7 +111,7 @@ Data on fortresses:
 
 
 ## Changelog
-See [CHANGELOG.md](CHANGELOG.md) 
+See [CHANGELOG.md](ui/src/assets/CHANGELOG.md) 
 
 
 
