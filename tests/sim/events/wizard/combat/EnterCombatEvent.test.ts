@@ -22,8 +22,8 @@ describe("EnterCombatEvent", function() {
     it("potionBuffs_enterCombat_shouldBeAdded", function() {
         // Wizard died and enemy still had exstimulo potion buff
         // Should be readded
-        enemy.exstimuloPotionDamageBuff[0] = 2.25; 
-        enemy.witSharpeningPotionDamageBuff[0] = 0.5; 
+        wizard.applyExstimuloPotion(5, 2.25); 
+        wizard.applyWitSharpeningPotion(3, 0.5); 
         event.onStart(); 
         event.onFinish(); 
 

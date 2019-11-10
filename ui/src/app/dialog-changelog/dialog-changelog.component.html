@@ -3,8 +3,9 @@
         href="https://github.com/Zhadok/HP_WU_FortressSim/blob/master/ui/src/assets/CHANGELOG.md">link</a>)</h1>
 <div mat-dialog-content>
     
-    <b>Hint: </b>Your last recorded data version was from v{{advancedSimSettings.simulationVersion}}. Data structures
-    may have changed since then.
+    <b>Hint: </b>Your last recorded data was saved using simulator version v{{dialogData.advancedSimSettings.simulationVersion}} 
+    (current simulator version: v{{dialogData.currentSimVersion}}).
+    Data structures may have changed since then.
     If the website is showing any errors, please try to back up your skill tree (via "Export skill tree as file")
     and then click "Reset all data" under advanced simulation settings.
 

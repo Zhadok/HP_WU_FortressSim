@@ -296,7 +296,7 @@ describe("RulesEngine", function() {
         wizard.inCombat = true; 
         enemy.inCombatWith = wizard;
         enemy.inCombat = true;
-        enemy.applyExstimuloPotion(wizard, 5, 2.25); 
+        wizard.applyExstimuloPotion(5, 2.25); 
         wizard.getPotions().nPotentExstimuloAvailable = 1; 
         wizard.getPotions().nStrongExstimuloAvailable = 1; 
         wizard.getPotions().nExstimuloAvailable = 1; 
@@ -325,7 +325,7 @@ describe("RulesEngine", function() {
         let eliteEnemy = TestData.buildDefaultEnemyElite(); 
         let event = new WitSharpeningPotionEvent(0, wizard, eliteEnemy, 0.5, 3, TestData.buildDefaultPotionParameters()); 
         event.onFinish(); 
-        expect(eliteEnemy.getWitSharpeningDamageBuff(wizard.playerIndex)).to.equal(0.5); 
+        expect(wizard.getWitSharpeningDamageBuff(eliteEnemy)).to.equal(0.5); 
 
         wizard.inCombatWith = eliteEnemy;
         wizard.inCombat = true; 

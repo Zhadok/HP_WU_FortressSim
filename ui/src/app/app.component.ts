@@ -270,7 +270,10 @@ export class AppComponent {
 
             const dialogRef = this.dialog.open(DialogChangelogComponent, {
                 width: '80%',
-                data: JSON.parse(JSON.stringify(this.simAdvancedSettings))
+                data: JSON.parse(JSON.stringify({
+                    currentSimVersion: packageJsonVersion, 
+                    advancedSimSettings: this.simAdvancedSettings
+                })) 
             });
 
             dialogRef.afterClosed().subscribe(result => {});

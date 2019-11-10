@@ -17,7 +17,6 @@ export class WizardDefeatEvent extends CombatEvent {
     }
 
     onStart() {
-        this.wizard.removePotionBuffs(); 
         this.enemy.inCombat = false;
         this.enemy.inCombatWith = null;
         this.wizard.inCombat = false;

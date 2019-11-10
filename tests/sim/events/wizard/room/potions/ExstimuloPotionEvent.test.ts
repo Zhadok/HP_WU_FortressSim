@@ -23,31 +23,33 @@ describe("ExstimuloPotionEvent", function() {
 
     it("potion_apply", function() {
 
-        let eventPotion = new ExstimuloPotionEvent(0, wizard, enemy, potions, potionData.potentExstimuloPotionDamageBuff, potionData.potentExstimuloPotionUses, "potent");
+        let eventPotion = new ExstimuloPotionEvent(0, wizard, enemy, potions, potionData.potentExstimuloPotionDamageBuff, 
+            potionData.potentExstimuloPotionUses, "potent");
         eventPotion.onFinish();
 
-        expect(enemy.getExstimuloDamageBuff(wizard.playerIndex)).to.equal(2.25);
-        expect(enemy.getExstimuloUsesRemaining(wizard.playerIndex)).to.equal(5);
+        expect(wizard.getExstimuloDamageBuff()).to.equal(2.25);
+        expect(wizard.getExstimuloUsesRemaining()).to.equal(5);
         expect(wizard.getDamageBuffMultiplier(enemy)).to.equal(3.25);
         expect(wizard.exstimuloPotionDamageBuff).to.equal(2.25); 
 
         wizard.performAttackCast(1, false, false, enemy); // 4 remaining
-        expect(enemy.getExstimuloDamageBuff(wizard.playerIndex)).to.equal(2.25);
-        expect(enemy.getExstimuloUsesRemaining(wizard.playerIndex)).to.equal(4);
+        expect(wizard.getExstimuloDamageBuff()).to.equal(2.25);
+        expect(wizard.getExstimuloUsesRemaining()).to.equal(4);
         expect(wizard.getDamageBuffMultiplier(enemy)).to.equal(3.25);
         expect(wizard.exstimuloPotionDamageBuff).to.equal(2.25); 
+
 
         wizard.performAttackCast(1, false, false, enemy); // 3 remaining
         wizard.performAttackCast(1, false, false, enemy); // 2 remaining
         wizard.performAttackCast(1, false, false, enemy); // 1 remaining
-        expect(enemy.getExstimuloDamageBuff(wizard.playerIndex)).to.equal(2.25);
-        expect(enemy.getExstimuloUsesRemaining(wizard.playerIndex)).to.equal(1);
+        expect(wizard.getExstimuloDamageBuff()).to.equal(2.25);
+        expect(wizard.getExstimuloUsesRemaining()).to.equal(1);
         expect(wizard.getDamageBuffMultiplier(enemy)).to.equal(3.25);
         expect(wizard.exstimuloPotionDamageBuff).to.equal(2.25); 
 
         wizard.performAttackCast(1, false, false, enemy); // 0 remaining
-        expect(enemy.getExstimuloDamageBuff(wizard.playerIndex)).to.equal(0);
-        expect(enemy.getExstimuloUsesRemaining(wizard.playerIndex)).to.equal(0);
+        expect(wizard.getExstimuloDamageBuff()).to.equal(0);
+        expect(wizard.getExstimuloUsesRemaining()).to.equal(0);
         expect(wizard.getDamageBuffMultiplier(enemy)).to.equal(1);
         expect(wizard.exstimuloPotionDamageBuff).to.equal(0); 
     });
@@ -92,13 +94,14 @@ describe("ExstimuloPotionEvent", function() {
         let wizard = TestData.buildDefaultMagizoologist();
         let potions = TestData.buildDefaultPotionParameters();
 
+        // Drinks two potions. On the 3rd an error should be thrown because only 2 are available
         let eventPotion = new ExstimuloPotionEvent(0, wizard, enemy, potions, potionData.potentExstimuloPotionDamageBuff, potionData.potentExstimuloPotionUses, "potent");
         eventPotion.onFinish();
-        enemy.resetPotionUsesRemaining(wizard); 
+        wizard.resetPotionUsesRemaining(); 
 
         let eventPotion2 = new ExstimuloPotionEvent(0, wizard, enemy, potions, potionData.potentExstimuloPotionDamageBuff, potionData.potentExstimuloPotionUses, "potent");
         eventPotion2.onFinish();
-        enemy.resetPotionUsesRemaining(wizard); 
+        wizard.resetPotionUsesRemaining(); 
         
         try {
             let eventPotion3 = new ExstimuloPotionEvent(0, wizard, enemy, potions, potionData.potentExstimuloPotionDamageBuff, potionData.potentExstimuloPotionUses, "potent");

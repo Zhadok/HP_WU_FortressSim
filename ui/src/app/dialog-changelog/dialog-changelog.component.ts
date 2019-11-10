@@ -18,7 +18,10 @@ export class DialogChangelogComponent implements OnInit {
     }> = []; 
     
     constructor(public dialogRef: MatDialogRef<DialogChangelogComponent>,
-        @Inject(MAT_DIALOG_DATA) public advancedSimSettings: simAdvancedSettingsType,
+        @Inject(MAT_DIALOG_DATA) public dialogData: {
+            currentSimVersion: string, 
+            advancedSimSettings: simAdvancedSettingsType
+        }, 
         public http: HttpClient) {
 
         this.http.get('assets/CHANGELOG.md', { responseType: 'text' })

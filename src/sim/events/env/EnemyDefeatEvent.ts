@@ -27,7 +27,6 @@ export class EnemyDefeatEvent extends EnvEvent {
         this.enemy.inCombatWith = null;
         this.wizard.inCombat = false;
         this.wizard.inCombatWith = null;
-        this.wizard.removePotionBuffs(); 
 
         let message = this.wizard.toUserFriendlyDescription() + " has defeated " + this.enemy.toUserFriendlyDescription() + "!"; 
         Logger.logTUserFriendly(1, this.timestampEnd, message); 

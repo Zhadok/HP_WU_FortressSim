@@ -54,13 +54,13 @@
                     <img src="assets/img/potions/potentExstimulo.png"
                         *ngIf="wizard.exstimuloPotionDamageBuff === wizard.potionData.potentExstimuloPotionDamageBuff" />
                     <span class="spanPotionUsesRemaining"
-                        *ngIf="wizard.inCombat === true && wizard.inCombatWith.getExstimuloUsesRemaining(wizard.playerIndex) > 0">{{wizard.inCombatWith.getExstimuloUsesRemaining(wizard.playerIndex)}}</span>
+                        *ngIf="wizard.getExstimuloUsesRemaining() > 0">{{wizard.getExstimuloUsesRemaining()}}</span>
                 </div>
                 <div class="divSimulationSingleResultCombatantBuff">
                     <img src="assets/img/potions/witSharpening.png"
                         *ngIf="wizard.witSharpeningPotionDamageBuff === wizard.potionData.witSharpeningPotionDamageBuff" />
                     <span class="spanPotionUsesRemaining"
-                        *ngIf="wizard.inCombat === true && wizard.inCombatWith.getWitSharpeningUsesRemaining(wizard.playerIndex) > 0">{{wizard.inCombatWith.getWitSharpeningUsesRemaining(wizard.playerIndex)}}</span>
+                        *ngIf="wizard.getWitSharpeningUsesRemaining() > 0">{{wizard.getWitSharpeningUsesRemaining()}}</span>
                 </div>
             </div>
         </div>

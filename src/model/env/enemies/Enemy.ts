@@ -37,17 +37,6 @@ export class Enemy extends Combatant {
     hasDeteriorationHex: boolean = false;
     deteriorationHexDamage: number = 0;
 
-    // Potions are applied against an enemy, not of the wizard
-    // Each player can use a potion against an enemy...
-    // Exstimulo potion
-    exstimuloPotionUsesRemaining: number[] = [];
-    exstimuloPotionDamageBuff: number[] = [];
-
-    // Wit sharpening potion
-    witSharpeningPotionUsesRemaining: number[] = [];
-    witSharpeningPotionDamageBuff: number[] = [];
-
-
     constructor(
         name: enemyNameType,
         nameUserFriendly: string,
@@ -75,85 +64,6 @@ export class Enemy extends Combatant {
                (this.hasDeteriorationHex ? 1 : 0);
     }
 
-
-    decreasePotionUsesRemaining(wizard: Wizard): void {
-        // Exstimulo potion
-        if (this.exstimuloPotionUsesRemaining[wizard.playerIndex] > 0) {
-            this.exstimuloPotionUsesRemaining[wizard.playerIndex]--;
-        }
-        if (this.exstimuloPotionUsesRemaining[wizard.playerIndex] === 0) {
-            // Potion used up
-            this.exstimuloPotionDamageBuff[wizard.playerIndex] = 0;
-        }
-        // Wit sharpening potion
-        if (this.witSharpeningPotionUsesRemaining[wizard.playerIndex] > 0) {
-            this.witSharpeningPotionUsesRemaining[wizard.playerIndex]--;
-        }
-        if (this.witSharpeningPotionUsesRemaining[wizard.playerIndex] === 0) {
-            // Potion used up
-            this.witSharpeningPotionDamageBuff[wizard.playerIndex] = 0;
-        }
-
-        this.refreshWizardPotionBuffs(wizard); 
-    }
-
-    resetPotionUsesRemaining(wizard: Wizard): void {
-        this.exstimuloPotionUsesRemaining[wizard.playerIndex] = 0;
-        this.exstimuloPotionDamageBuff[wizard.playerIndex] = 0;
-        this.witSharpeningPotionUsesRemaining[wizard.playerIndex] = 0;
-        this.witSharpeningPotionDamageBuff[wizard.playerIndex] = 0;
-
-        this.refreshWizardPotionBuffs(wizard); 
-    }
-
-    applyExstimuloPotion(wizard: Wizard, potionUses: number, damageBuff: number) {
-        this.exstimuloPotionUsesRemaining[wizard.playerIndex] = potionUses; 
-        this.exstimuloPotionDamageBuff[wizard.playerIndex] = damageBuff; 
-        this.refreshWizardPotionBuffs(wizard); 
-    }
-    applyWitSharpeningPotion(wizard: Wizard, potionUses: number, damageBuff: number) {
-        this.witSharpeningPotionUsesRemaining[wizard.playerIndex] = potionUses; 
-        this.witSharpeningPotionDamageBuff[wizard.playerIndex] = damageBuff; 
-        this.refreshWizardPotionBuffs(wizard); 
-    }
-
-    refreshWizardPotionBuffs(wizard: Wizard): void {
-        wizard.exstimuloPotionDamageBuff = this.exstimuloPotionDamageBuff[wizard.playerIndex] || 0;
-        wizard.witSharpeningPotionDamageBuff = this.witSharpeningPotionDamageBuff[wizard.playerIndex] || 0; 
-    }
-
-    getExstimuloDamageBuff(playerIndex: number): number {
-        if (this.exstimuloPotionDamageBuff[playerIndex] > 0) {
-            return this.exstimuloPotionDamageBuff[playerIndex];
-        }
-        else {
-            return 0; 
-        }
-    }
-    getExstimuloUsesRemaining(playerIndex: number): number {
-        if (this.exstimuloPotionUsesRemaining[playerIndex] > 0) {
-            return this.exstimuloPotionUsesRemaining[playerIndex];
-        }
-        else {
-            return 0; 
-        }
-    }
-    getWitSharpeningDamageBuff(playerIndex: number): number {
-        if (this.witSharpeningPotionDamageBuff[playerIndex] > 0) {
-            return this.witSharpeningPotionDamageBuff[playerIndex];
-        }
-        else {
-            return 0; 
-        }
-    }
-    getWitSharpeningUsesRemaining(playerIndex: number): number {
-        if (this.witSharpeningPotionUsesRemaining[playerIndex] > 0) {
-            return this.witSharpeningPotionUsesRemaining[playerIndex];
-        }
-        else {
-            return 0; 
-        }
-    }
     
     getDefenceAfterModifications(): number {
         return Math.max(0, this.stats.defence - this.confusionHexValue);

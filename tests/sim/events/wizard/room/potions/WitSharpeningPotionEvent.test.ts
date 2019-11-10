@@ -27,19 +27,41 @@ describe("WitSharpeningPotionEvent", function() {
         event = new WitSharpeningPotionEvent(0, wizard, enemy, potionData.witSharpeningPotionDamageBuff, potionData.witSharpeningPotionUses, potions);
         event.onFinish(); 
         
-        expect(enemy.getWitSharpeningDamageBuff(wizard.playerIndex)).to.equal(potionData.witSharpeningPotionDamageBuff); 
-        expect(enemy.getWitSharpeningUsesRemaining(wizard.playerIndex)).to.equal(potionData.witSharpeningPotionUses);
+        expect(wizard.getWitSharpeningDamageBuff(enemy)).to.equal(potionData.witSharpeningPotionDamageBuff); 
+        expect(wizard.getWitSharpeningUsesRemaining()).to.equal(potionData.witSharpeningPotionUses);
         expect(wizard.witSharpeningPotionDamageBuff).to.be.equal(potionData.witSharpeningPotionDamageBuff);  
     });
 
-    it("shouldNotApplyVsNormal", function() {
+    // Changed in v2.6.0: Wit sharpening can be drunk against normal enemies but do not lead to damage buffs. Attack casts will still lead to uses being decreased
+    it("should", function() {
         let normalEnemy = TestData.buildDefaultEnemy(); 
         event = new WitSharpeningPotionEvent(0, wizard, normalEnemy, potionData.witSharpeningPotionDamageBuff, potionData.witSharpeningPotionUses, potions);
         event.onFinish(); 
 
-        expect(normalEnemy.getWitSharpeningDamageBuff(wizard.playerIndex)).to.equal(0); 
-        expect(normalEnemy.getWitSharpeningUsesRemaining(wizard.playerIndex)).to.equal(0);
-        expect(wizard.witSharpeningPotionDamageBuff).to.be.equal(0);  
+        expect(wizard.getWitSharpeningDamageBuff(normalEnemy)).to.equal(0); 
+        expect(wizard.getWitSharpeningUsesRemaining()).to.equal(3);
+        expect(wizard.witSharpeningPotionDamageBuff).to.be.equal(0.5);  
+    });
+
+    it("usesShouldDecrease_onAttack", function() {
+        let normalEnemy = TestData.buildDefaultEnemy(); 
+        
+        event = new WitSharpeningPotionEvent(0, wizard, enemy, potionData.witSharpeningPotionDamageBuff, potionData.witSharpeningPotionUses, potions);
+        event.onFinish(); 
+        
+        wizard.performAttackCast(1, false, false, enemy); // 3 remaining, then 2
+        expect(wizard.getWitSharpeningDamageBuff(enemy)).to.equal(0.5);
+        expect(wizard.getWitSharpeningDamageBuff(normalEnemy)).to.equal(0);
+        expect(wizard.getWitSharpeningUsesRemaining()).to.equal(2); 
+
+        wizard.performAttackCast(1, false, false, enemy); // 2 remaining, then 1
+        expect(wizard.getWitSharpeningDamageBuff(enemy)).to.equal(0.5);
+        expect(wizard.getWitSharpeningDamageBuff(normalEnemy)).to.equal(0);
+        expect(wizard.getWitSharpeningUsesRemaining()).to.equal(1); 
+        wizard.performAttackCast(1, false, false, enemy); // 1 remaining, then 0
+        expect(wizard.getWitSharpeningDamageBuff(enemy)).to.equal(0);
+        expect(wizard.getWitSharpeningDamageBuff(normalEnemy)).to.equal(0);
+        expect(wizard.getWitSharpeningUsesRemaining()).to.equal(0); 
     });
 
     it("decreaseAvailable", function() {

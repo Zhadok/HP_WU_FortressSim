@@ -22,14 +22,14 @@ describe("WizardDefeatEvent", function() {
     it("potionBuffs_wizardDefeat_shouldBeRemoved", function() {
         // Wizard died and enemy still had exstimulo potion buff
         // Should be readded
-        enemy.applyExstimuloPotion(wizard, 5, 2.25); 
-        enemy.applyWitSharpeningPotion(wizard, 3, 0.5); 
+        wizard.applyExstimuloPotion(5, 2.25); 
+        wizard.applyWitSharpeningPotion(3, 0.5); 
 
         event.onStart(); 
         event.onFinish(); 
 
-        expect(wizard.exstimuloPotionDamageBuff).to.equal(0); 
-        expect(wizard.witSharpeningPotionDamageBuff).to.equal(0); 
+        expect(wizard.exstimuloPotionDamageBuff).to.equal(2.25); 
+        expect(wizard.witSharpeningPotionDamageBuff).to.equal(0.5); 
     });
 
 

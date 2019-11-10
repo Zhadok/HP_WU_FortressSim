@@ -9,8 +9,8 @@ import { WitSharpeningPotionEvent } from "../../../../src/sim/events/wizard/poti
 
 describe("EnemyDefeatEvent", function() {
 
-    // Might be relevant if the way exstimulo potions are applied is changed
-    it("shouldResetPotionUsesRemaining", function() {
+    // Changed in v2.6.0: Charges are now carried over to next enemy
+    it("shouldKeepPotionUses", function() {
         let wizard = TestData.buildDefaultProfessor();
         let enemy = TestData.buildDefaultEnemyElite();
 
@@ -20,16 +20,14 @@ describe("EnemyDefeatEvent", function() {
         let potionEvent2 = new WitSharpeningPotionEvent(0, wizard, enemy, 0.5, 3, TestData.buildDefaultPotionParameters()); 
         potionEvent2.onFinish(); 
 
-        expect(enemy.getExstimuloDamageBuff(wizard.playerIndex)).to.equal(2.25); 
-        expect(wizard.exstimuloPotionDamageBuff).to.equal(2.25);
-        expect(enemy.getWitSharpeningDamageBuff)
-        expect(wizard.witSharpeningPotionDamageBuff).to.equal(0.5); 
+        expect(wizard.getExstimuloDamageBuff()).to.equal(2.25); 
+        expect(wizard.getWitSharpeningDamageBuff(enemy)).to.equal(0.5); 
 
         let event = new EnemyDefeatEvent(0, enemy, wizard);
         event.onFinish();
 
-        expect(wizard.exstimuloPotionDamageBuff).to.equal(0);
-        expect(wizard.witSharpeningPotionDamageBuff).to.equal(0);
+        expect(wizard.exstimuloPotionDamageBuff).to.equal(2.25);
+        expect(wizard.witSharpeningPotionDamageBuff).to.equal(0.5);
     });
 
 });

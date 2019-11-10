@@ -8,7 +8,8 @@
         </div>
         <span class="divEnemyLevel">{{ enemy.level }}</span><br>
         <!-- {{ enemy.nameUserFriendly }}<br> -->
-        (ID={{enemy.enemyIndex}})
+        (ID={{enemy.enemyIndex}})<br>
+        +{{enemy.focusReward}} focus
         <!--{{ enemy.isElite === true ? ', elite' : ''}})<br> -->
         <br>
         <span class="spanEnemyDifficultyStar" *ngFor="let difficulty of [].constructor(enemy.difficulty)">★</span>

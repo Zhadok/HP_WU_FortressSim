@@ -63,7 +63,7 @@ describe("Professor", function() {
     it("teamworkMakesTheDreamWork_triggered", function() {
 
         wizard.hasBraveryCharm = true;
-        enemy.applyExstimuloPotion(wizard, 1, 2.25); 
+        wizard.applyExstimuloPotion(1, 2.25); 
         wizard.setTrigger("teamworkMakesTheDreamWork", 12);
 
         expect(wizard.getPowerAfterModifications(enemy)).to.equal(wizard.stats.power + 12);

@@ -31,9 +31,6 @@ export abstract class Wizard extends Combatant {
     private triggers: triggerMapType;
 
     inCombatWith: Enemy | null = null;
-    // Used for rules to check whether exstimulo should be applied
-    exstimuloPotionDamageBuff: number = 0; 
-    witSharpeningPotionDamageBuff: number = 0; 
 
     // Used for calculating time spent defeated
     timestampDefeated: number = -1;  // When was combatant defeated?
@@ -42,6 +39,12 @@ export abstract class Wizard extends Combatant {
     // Potions
     private potionsAtBeginning: PotionAvailabilityParameters | undefined; 
     private potions: PotionAvailabilityParameters | undefined; 
+
+    exstimuloPotionUsesRemaining: number = 0; 
+    exstimuloPotionDamageBuff: number = 0; 
+    
+    witSharpeningPotionUsesRemaining: number = 0; 
+    witSharpeningPotionDamageBuff: number = 0; 
 
     // Buffs
     // Auror
@@ -209,8 +212,8 @@ export abstract class Wizard extends Combatant {
     // Source: https://www.reddit.com/r/harrypotterwu/comments/csgsdd/all_about_combat_damage_what_i_know_or_i_think_i/?st=k0gijz3i&sh=acd204fd
     getDamageBuffMultiplier(enemy: Enemy) {   
         return 1 + 
-               enemy.getExstimuloDamageBuff(this.playerIndex) +
-               enemy.getWitSharpeningDamageBuff(this.playerIndex) + 
+               this.getExstimuloDamageBuff() +
+               this.getWitSharpeningDamageBuff(enemy) + 
                //this.exstimuloPotionDamageBuff + 
                //this.witSharpeningPotionDamageBuff + 
                (enemy.isElite ? this.braveryCharmValue : 0);
@@ -218,7 +221,7 @@ export abstract class Wizard extends Combatant {
     
 
     performAttackCast(damage: number, isCritical: boolean, isDodge: boolean, enemy: Enemy): void {
-        enemy.decreasePotionUsesRemaining(this); 
+        this.decreasePotionUsesRemaining(); 
 
         // Stats
         this.totalDamage += damage; 
@@ -227,6 +230,64 @@ export abstract class Wizard extends Combatant {
         if (isDodge) this.numberDodgedCasts++;
         this.incrementNumberEnhancementsDuringAttacks(this.getNumberOfEnhancements(enemy)); 
         this.incrementNumberImpairmentsDuringAttacks(enemy.getNumberOfImpairments()); 
+    }
+
+    decreasePotionUsesRemaining(): void {
+        // Exstimulo potion
+        if (this.exstimuloPotionUsesRemaining > 0) {
+            this.exstimuloPotionUsesRemaining--;
+        }
+        if (this.exstimuloPotionUsesRemaining === 0) {
+            // Potion used up
+            this.exstimuloPotionDamageBuff = 0;
+        }
+        // Wit sharpening potion
+        if (this.witSharpeningPotionUsesRemaining > 0) {
+            this.witSharpeningPotionUsesRemaining--;
+        }
+        if (this.witSharpeningPotionUsesRemaining === 0) {
+            // Potion used up
+            this.witSharpeningPotionDamageBuff = 0;
+        }
+    }
+
+    resetPotionUsesRemaining(): void {
+        this.exstimuloPotionUsesRemaining = 0;
+        this.exstimuloPotionDamageBuff = 0;
+        this.witSharpeningPotionUsesRemaining = 0;
+        this.witSharpeningPotionDamageBuff = 0;
+    }
+
+    applyExstimuloPotion(potionUses: number, damageBuff: number) {
+        this.exstimuloPotionUsesRemaining = potionUses; 
+        this.exstimuloPotionDamageBuff = damageBuff; 
+    }
+
+    applyWitSharpeningPotion(potionUses: number, damageBuff: number) {
+        this.witSharpeningPotionUsesRemaining = potionUses; 
+        this.witSharpeningPotionDamageBuff = damageBuff; 
+    }
+
+    getExstimuloDamageBuff(): number {
+        return this.exstimuloPotionDamageBuff;
+    }
+    getExstimuloUsesRemaining(): number {
+        return this.exstimuloPotionUsesRemaining; 
+    }
+
+    isWitSharpeningBuffActive(): boolean {
+        return this.getWitSharpeningUsesRemaining() > 0; 
+    }
+    getWitSharpeningDamageBuff(enemy: Enemy): number {
+        if (enemy.isElite === true) {
+            return this.witSharpeningPotionDamageBuff;
+        }
+        else {
+            return 0; 
+        }
+    }
+    getWitSharpeningUsesRemaining(): number {
+        return this.witSharpeningPotionUsesRemaining
     }
 
     receiveAttack(damage: number, enemy: Enemy) {
@@ -262,16 +323,11 @@ export abstract class Wizard extends Combatant {
                (this.hasDefenceCharm ? 1 : 0) + 
                (this.hasProficiencyPowerCharm ? 1 : 0) +
                // Potions count as enhancements. But only exstimulo OR wit sharpening, not both
-               ((enemy.getExstimuloDamageBuff(this.playerIndex) > 0 || enemy.getWitSharpeningDamageBuff(this.playerIndex) > 0) ? 1 : 0) +
+               ((this.getExstimuloDamageBuff() > 0 || this.getWitSharpeningDamageBuff(enemy) > 0) ? 1 : 0) +
                // Potions from outside combat count too
                (this.hasBaruffiosBrainElixir() ? 1 : 0) + 
                (this.hasTonicForTraceDetection() ? 1 : 0)
                ; 
-    }
-
-    removePotionBuffs(): void {
-        this.exstimuloPotionDamageBuff = 0; 
-        this.witSharpeningPotionDamageBuff = 0; 
     }
 
     setPotions(potions: PotionAvailabilityParameters) {
@@ -329,7 +385,7 @@ export abstract class Wizard extends Combatant {
             case "healthPotion": if (this.potions!.nHealingPotionsAvailable === 0) return false; break; 
             case "strongInvigorationPotion": if (this.potions!.nStrongInvigorationAvailable === 0) return false; break; 
             case "weakInvigorationPotion": if (this.potions!.nWeakInvigorationAvailable === 0) return false; break; 
-            case "witSharpeningPotion": if (this.potions!.nWitSharpeningAvailable === 0 || this.inCombat === false || this.inCombatWith!.isElite === false) return false; break; 
+            case "witSharpeningPotion": if (this.potions!.nWitSharpeningAvailable === 0 || this.inCombat === false) return false; break; 
         }
         // Check inCombat
         if (this.inCombat === false) {
