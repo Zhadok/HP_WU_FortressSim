@@ -1,3 +1,6 @@
+- 0.10.1
+    - Implemented potion behaviour change from v2.6.0: Exstimulo and wit sharpening potion uses carry over to next enemy and do not reset upon death and enemy defeat.  
+    - Added "+X focus" focus reward to enemy portraits
 - 0.10.0 
     - Added "Changelog" popup when user's data is outdated that will display the contents of this file
     - Added help links to the documentation for complex simulation parameters ("What is this?")
