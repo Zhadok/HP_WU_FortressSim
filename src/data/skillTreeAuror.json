@@ -345,7 +345,7 @@
             "costScrolls": 10,
             "costRedBooks": 3
         }],
-        "dependencies": ["6/1"]
+        "dependencies": ["6/2"]
     }, {
         "rowIndex": 7,
         "columnIndex": 3,

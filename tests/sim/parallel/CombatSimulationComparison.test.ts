@@ -4,7 +4,9 @@ import { CombatSimulationParameters } from "../../../src/sim/CombatSimulationPar
 import { CombatSimulationComparison } from "../../../src/sim/parallel/CombatSimulationComparison";
 import { expect } from "chai";
 import { SkillTree } from "../../../src/model/player/SkillTree/SkillTree";
-import { simAdvancedSettingsType } from "../../types";
+import { simAdvancedSettingsType, nameClassType, nameClassUserFriendlyType } from "../../types";
+import { CombatSimulationResults } from "../../../src/sim/CombatSimulationResults";
+import { FortressRoom } from "../../../src/model/env/FortressRoom";
 
 
 describe("CombatSimulationComparison", function() {
@@ -17,7 +19,7 @@ describe("CombatSimulationComparison", function() {
         advancedSettings = TestData.buildDefaultSimAdvancedSettings(); 
     });
     
-    it("getSimParameters_defaultRomLevels", function() {
+    it("getSimParameters_defaultRoomLevels", function() {
         advancedSettings.numberSimulationsPerSetting = 5; 
         advancedSettings.simGoal = "multiple_compare_roomLevels"; 
         let comparison = new CombatSimulationComparison(baseParams, advancedSettings);
@@ -53,6 +55,51 @@ describe("CombatSimulationComparison", function() {
         expect(skillTreeWithDifferentNode.nodesStudied[0].levelStudied).to.equal(1); 
 
     });
+
+    it("groupResults_nonSponsoredFortress", function() {
+
+        let simulationMultipleResults: CombatSimulationResults[] = []; 
+        for (let roomLevel=5; roomLevel<=7; roomLevel++) {
+            for (let seed=0; seed<50;seed++) {
+                simulationMultipleResults.push(TestData.buildSimResult(roomLevel, seed, false)); 
+            }
+        }
+        
+        let allGrouped = CombatSimulationComparison.groupResults(simulationMultipleResults, advancedSettings.secondsBetweenSimulations); 
+        expect(allGrouped.length).to.equal(3); 
+        for (let grouped of allGrouped) {
+            let expectedRunsPerHour = 3600 / (advancedSettings.secondsBetweenSimulations + grouped.averageGameTimeMS/1000); 
+            expect(grouped.averageRunsPerHour).to.be.closeTo(expectedRunsPerHour, 1e-5); 
+            let expectedEnergyPerHour = grouped.averageNumberOfCasts * expectedRunsPerHour; 
+            expect(grouped.averageEnergyPerHour).to.be.equal(expectedEnergyPerHour); 
+            expect(grouped.numberOfRuns).to.equal(50); 
+        }
+
+    });
+
+    it("groupResults_sponsoredFortress", function() {
+
+        let simulationMultipleResults: CombatSimulationResults[] = []; 
+        for (let roomLevel=5; roomLevel<=7; roomLevel++) {
+            for (let seed=0; seed<50;seed++) {
+                simulationMultipleResults.push(TestData.buildSimResult(roomLevel, seed, true)); 
+            }
+        }
+        
+        let allGrouped = CombatSimulationComparison.groupResults(simulationMultipleResults, advancedSettings.secondsBetweenSimulations); 
+        expect(allGrouped.length).to.equal(3); 
+        for (let grouped of allGrouped) {
+            let expectedRunsPerHour = 3600 / (advancedSettings.secondsBetweenSimulations + grouped.averageGameTimeMS/1000); 
+            expect(grouped.averageRunsPerHour).to.be.closeTo(expectedRunsPerHour, 1e-5); 
+            
+            let energyReward = FortressRoom.getEnergyRewardStatic(grouped.groupByValue as number, true); // groupByValue is room level
+            let expectedEnergyPerHour = (grouped.averageNumberOfCasts-energyReward) * expectedRunsPerHour; 
+            expect(grouped.averageEnergyPerHour).to.be.closeTo(expectedEnergyPerHour, 1e-5); 
+            expect(grouped.numberOfRuns).to.equal(50); 
+        }
+
+    });
+
 
     it('runSync', function() {
         Logger.verbosity = 0; 

@@ -8,11 +8,12 @@ import Prando from "prando";
 import { Auror } from "../src/model/player/Auror";
 import { Magizoologist } from "./model/player/Magizoologist";
 import { PotionAvailabilityParameters } from "../src/sim/PotionAvailabilityParameters";
-import { enemyNameType, nameClassType, simAdvancedSettingsType } from "../src/types";
+import { enemyNameType, nameClassType, simAdvancedSettingsType, nameClassUserFriendlyType } from "../src/types";
 import { CombatSimulation } from "../src/sim/CombatSimulation";
 import { SkillTree } from "../src/model/player/SkillTree/SkillTree";
 import { PersistedSkillTree } from "../src/model/player/SkillTree/PersistedSkillTree";
 import { Wizard } from "../src/model/player/Wizard";
+import { CombatSimulationResults } from "./sim/CombatSimulationResults";
 
 export class TestRNG_0 extends Prando {
     next(): number {
@@ -252,6 +253,54 @@ export class TestData {
         return Enemy.buildEnemy("acromantula", 0, true, 1, 1, 3);
     }
 
+    static buildSimResult(roomLevel: number, seed: number, useSponsoredFortressRewards: boolean): CombatSimulationResults {
+        let simParameters = TestData.buildDefaultSimParameters(); 
+        simParameters.seed = seed; 
+        simParameters.roomLevel = roomLevel;
+        simParameters.useSponsoredFortressRewards = useSponsoredFortressRewards;
+        simParameters.groupByValue = roomLevel; 
+        return {
+            simParameters: simParameters,
+            durationGameTimeMS: 30*1000,
+            maxGameTimeMS: 60*1000,
+            durationWallTimeMS: 50,
+            energyReward: FortressRoom.getEnergyRewardStatic(roomLevel, useSponsoredFortressRewards),
+            enemies: [],
+            isWin: true,
+            nEvents: 1,
+            wallTimeStart: 1000,
+            wallTimeEnd: 1050,
+            wizardResults: [{
+                averageDamage: 100,
+                braveryCharmValue: 0.5,
+                hasBraveryCharm: true,
+                challengeXPReward: 150,
+                defenceCharmValue: 0.25,
+                hasDefenceCharm: true,
+                proficiencyPowerCharmValue: 0.44,
+                hasProficiencyPowerCharm: true,
+                nameClass: "professor" as nameClassType,
+                nameClassUserFriendly: "Professor" as nameClassUserFriendlyType,
+                numberAttacksReceived: 10,
+                numberEnhancementsDuringAttacks: [],
+                numberEnhancementsDuringAttacksReceived: [],
+                numberImpairmentsDuringAttacks: [],
+                numberImpairmentsDuringAttacksReceived: [],
+                numberOfCasts: 10,
+                numberOfCriticalCasts: 5,
+                numberOfDodgedCasts: 2,
+                playerIndex: 0,
+                potionsAtBeginning: TestData.buildDefaultPotionParameters(),
+                potionsUsed: TestData.buildDefaultPotionParameters_noPotions(),
+                potionsUsedBrewTimeHours: 10,
+                potionsUsedBrewTimeHoursWithMasterNotes: 8.5,
+                runestoneLevel: 1,
+                timeSpentDefeated: 0,
+                totalDamage: 10*100,
+                totalDamageReceived: 100
+            }]
+        }
+    }
 
 }
 

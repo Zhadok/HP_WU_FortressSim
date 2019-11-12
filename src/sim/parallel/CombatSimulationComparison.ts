@@ -213,7 +213,7 @@ export class CombatSimulationComparison extends CombatSimulationManager {
             let averageRunsPerHour = 3600 * 1000 / (averageGameTimeMS + 1000*secondsBetweenSimulations); 
             let averageChallengeXPRewardPerHour = averageChallengeXPReward * averageRunsPerHour; 
             let averageCastsPerHour = averageNumberOfCasts * averageRunsPerHour; 
-            let averageEnergyRewardPerHour = totalEnergyReward * averageRunsPerHour; 
+            let averageEnergyRewardPerHour = (totalEnergyReward/nRuns) * averageRunsPerHour; 
 
             resultsGrouped.push({
                 groupByValue: uniqueGroupByValue,
