@@ -1,3 +1,7 @@
+- 0.11.0
+    - Changed enemy generation for multiple wizards: There will now be at least one enemy per wizard
+    - Errors are now shown in the UI even when multiple simulations are compared 
+    - Added chamber difficulty to "Overall Parameters" title and "Start single simulation" button
 - 0.10.2
     - Fixed a bug where energy per hour would appear negative when comparing multiple simulations
 - 0.10.1
