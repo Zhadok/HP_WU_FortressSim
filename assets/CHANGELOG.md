@@ -1,3 +1,5 @@
+- 0.11.1
+    - Fortress reward data (how much CXP more do we get from playing in a group/with friends) defaults can be changed (for example for community days)
 - 0.11.0
     - Changed enemy generation for multiple wizards: There will now be at least one enemy per wizard
     - Errors are now shown in the UI even when multiple simulations are compared 
