@@ -1,5 +1,5 @@
 import { WizardStats } from "../model/player/WizardStats";
-import { nameClassType, ruleContainerType, playerActionSelectionModeType } from "../types";
+import { nameClassType, ruleContainerType, playerActionSelectionModeType, fortressRewardDataType } from "../types";
 import { PotionAvailabilityParameters } from "./PotionAvailabilityParameters";
 import { PersistedSkillTree } from "../model/player/SkillTree/PersistedSkillTree";
 
@@ -8,6 +8,7 @@ export interface CombatSimulationParameters {
     seed: number, 
     roomLevel: number,
     useSponsoredFortressRewards: boolean, 
+    customFortressRewardData?: fortressRewardDataType,
 
     runestoneLevels: Array<number>,
 

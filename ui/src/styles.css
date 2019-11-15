@@ -225,6 +225,10 @@ https://stackoverflow.com/questions/53497127/how-to-break-word-if-text-inside-an
 /*.divContainerHelpButton {
   button width is 40px  width: 10%; 
 }*/
+.inputGroupBonus { /* 5 input fields (0, 0.25, 0.5, 0.75, 1.0)*/
+    width: calc(20% - 11px); 
+}
+
 
 .divContainerAdvancedSettingsSection {
     margin-top: 10px; 
@@ -428,14 +432,29 @@ table {
 .marginTop10px {
     margin-top: 10px !important; 
 }
+.marginRight1px {
+    margin-right: 1px !important; 
+}
 .marginRight5px {
     margin-right: 5px !important;
+}
+.marginRight10px {
+    margin-right: 10px !important; 
 }
 .marginBottom5px {
     margin-bottom: 5px !important; 
 }
 .padding5px {
     padding: 5px; 
+}
+.wdith15Percent {
+    width: 15%; 
+}
+.width19Percent {
+    width: 19%;
+}
+.width20Percent {
+    width: 20%; 
 }
 .width45Percent {
     width: 45%; 

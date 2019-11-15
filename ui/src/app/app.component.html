@@ -431,10 +431,37 @@
 
             <mat-checkbox [(ngModel)]="simAdvancedSettings.showPlayerRules">Show player AI rules in wizard settings
             </mat-checkbox><br>
-
+            
+            <div class="clearBoth floatLeft">
+                <span class="floatLeft">Challenge XP reward: Group bonus. Defaults are 
+                        {{fortressRewardData.data.groupBonus[0]}}, {{fortressRewardData.data.groupBonus[1]}}, 
+                        {{fortressRewardData.data.groupBonus[2]}}, {{fortressRewardData.data.groupBonus[3]}}, 
+                        {{fortressRewardData.data.groupBonus[4]}}
+                </span>
+                <mat-form-field class="clearBoth floatLeft inputGroupBonus marginRight10px">
+                    <mat-label>1 player</mat-label>
+                    <input min="0" matInput type="number" [(ngModel)]="simParameters.customFortressRewardData.data.groupBonus[0]">
+                </mat-form-field>
+                <mat-form-field class="floatLeft inputGroupBonus marginRight10px">
+                    <mat-label>2 players</mat-label>
+                    <input min="0" matInput type="number" [(ngModel)]="simParameters.customFortressRewardData.data.groupBonus[1]">
+                </mat-form-field>
+                <mat-form-field class="floatLeft inputGroupBonus marginRight10px">
+                    <mat-label>3 players</mat-label>
+                    <input min="0" matInput type="number" [(ngModel)]="simParameters.customFortressRewardData.data.groupBonus[2]">
+                </mat-form-field>
+                <mat-form-field class="floatLeft inputGroupBonus marginRight10px">
+                    <mat-label>4 players</mat-label>
+                    <input min="0" matInput type="number" [(ngModel)]="simParameters.customFortressRewardData.data.groupBonus[3]">
+                </mat-form-field>
+                <mat-form-field class="floatLeft inputGroupBonus">
+                    <mat-label>5 players</mat-label>
+                    <input min="0" matInput type="number" [(ngModel)]="simParameters.customFortressRewardData.data.groupBonus[4]">
+                </mat-form-field>
+            </div>
 
             
-            <div class="divContainerAdvancedSettingsSection">
+            <div class="floatLeft clearBoth divContainerAdvancedSettingsSection">
                 <h2 class="mat-h2">Comparing multiple simulations</h2>
                 <mat-form-field class="floatLeft inputAdvancedSettingWithHelp">
                     <mat-label>Number of simulations: For example, when comparing room level, will run each room level
@@ -484,7 +511,7 @@
                 </mat-form-field>
             </div>
 
-            <div class="divContainerAdvancedSettingsSection">
+            <div class="floatLeft clearBoth divContainerAdvancedSettingsSection">
                 <h2 class="mat-h2">Usability</h2>
                 <mat-checkbox class="inputAdvancedSetting floatLeft clearBoth"
                     [(ngModel)]="simAdvancedSettings.closeSimParametersTabOnStartSimulation">
@@ -500,7 +527,7 @@
                 </mat-checkbox>
             </div>
 
-            <div class="divContainerAdvancedSettingsSection">
+            <div class="floatLeft clearBothdivContainerAdvancedSettingsSection">
                 <h2 class="mat-h2">Data on this website (v{{simAdvancedSettings.simulationVersion}})</h2>
                 <p>
                     Data imports and exports include skill trees, customized player AI rules and advanced simulation

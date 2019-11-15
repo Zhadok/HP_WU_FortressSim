@@ -1,7 +1,7 @@
 import {Enemy} from "./enemies/Enemy";
 import fortressDifficultyData from "../../data/fortressDifficulties.json";
 import fortressRewardData from "../../data/fortressRewards.json"; 
-import { enemyNameType, nameClassType } from "../../types";
+import { enemyNameType, nameClassType, fortressRewardDataType } from "../../types";
 import { EnemyGenerator } from "./enemies/EnemyGenerator";
 import Prando from "prando";
 import { CombatSimulationParameters } from "../../sim/CombatSimulationParameters";
@@ -204,17 +204,23 @@ export class FortressRoom {
         return 1000 * (30+(roomLevel-1)*2);
     }
 
-    computeChallengeXPRewards(isWin: boolean, isSponsoredFortress?: boolean): number[] {
-        return FortressRoom.computeChallengeXPRewardsStatic(this.roomLevel, this.runestoneLevels, isWin, isSponsoredFortress); 
+    computeChallengeXPRewards(isWin: boolean, isSponsoredFortress?: boolean, customFortressRewardData?: fortressRewardDataType): number[] {
+        return FortressRoom.computeChallengeXPRewardsStatic(this.roomLevel, this.runestoneLevels, isWin, isSponsoredFortress, customFortressRewardData); 
     }    
 
     // https://i.redd.it/wz2vwfh5u4k31.jpg
-    static computeChallengeXPRewardsStatic(roomLevel: number, runestoneLevels: number[], isWin: boolean, isSponsoredFortress?: boolean): number[] {
-        let baseXP = fortressRewardData.data.baseXP[roomLevel-1]; 
+    static computeChallengeXPRewardsStatic(roomLevel: number, runestoneLevels: number[], isWin: boolean, 
+        isSponsoredFortress?: boolean,
+        customFortressRewardData?: fortressRewardDataType): number[] {
+        
+        let fortressRewards = (customFortressRewardData) ? customFortressRewardData : fortressRewardData; 
+
+
+        let baseXP = fortressRewards.data.baseXP[roomLevel-1]; 
         let rewards: number[] = []; 
         let nWizards = runestoneLevels.length;
-        let friendBonus = fortressRewardData.data.friendsBonus[nWizards-1]; 
-        let groupBonus = fortressRewardData.data.groupBonus[nWizards-1];  
+        let friendBonus = fortressRewards.data.friendsBonus[nWizards-1]; 
+        let groupBonus = fortressRewards.data.groupBonus[nWizards-1];  
         // Assumes all wizards in group are friends
         for (let runestoneLevel of runestoneLevels) {
             let xp = (baseXP * runestoneLevel) + baseXP * (friendBonus + groupBonus); 
@@ -222,7 +228,7 @@ export class FortressRoom {
                 xp *= 0.1; 
             }
             if (isSponsoredFortress === true) {
-                xp *= 1 + fortressRewardData.sponsoredFortressRewardsChallengeXPIncrease; 
+                xp *= 1 + fortressRewards.sponsoredFortressRewardsChallengeXPIncrease; 
             }
             rewards.push(Math.round(xp)); 
         }

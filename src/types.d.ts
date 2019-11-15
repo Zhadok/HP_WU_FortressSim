@@ -53,6 +53,17 @@ declare type skillTreeFilterLessonsMapType = { [key in skillTreeFilterLessonsTyp
 
 declare type statNameType = keyof WizardStats;
 
+// Fortress reward data
+declare type fortressRewardDataType = {
+    dataSource?: string,
+    data: {
+        friendsBonus: Array<number>,
+        groupBonus: Array<number>
+        baseXP: Array<number>
+    },
+    sponsoredFortressRewardsChallengeXPIncrease: number
+}
+
 
 // Player actions
 declare type playerActionSelectionModeType = "manual" | "rules";

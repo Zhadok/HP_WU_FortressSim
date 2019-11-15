@@ -261,6 +261,9 @@ export class AppComponent {
     }
 
     sanitizeSimParametersOldVersions(simParameters: CombatSimulationParameters) {
+        if (simParameters.customFortressRewardData === undefined) { // v0.11.0 -> 0.11.1 allow fortress reward data to be set from outside
+            simParameters.customFortressRewardData = JSON.parse(JSON.stringify(fortressRewardData)); 
+        }
         return simParameters;
     }
 

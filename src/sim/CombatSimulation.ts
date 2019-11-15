@@ -452,7 +452,7 @@ export class CombatSimulation {
             throw new Error("Simulation not finished yet!");
         }
 
-        let challengeXPRewards = this.fortressRoom.computeChallengeXPRewards(this.isWin!, this.params.useSponsoredFortressRewards);
+        let challengeXPRewards = this.fortressRoom.computeChallengeXPRewards(this.isWin!, this.params.useSponsoredFortressRewards, this.params.customFortressRewardData);
         let wizardResults: Array<CombatSimulationResultsWizard> = this.wizards.map(wizard => {
             return {
                 playerIndex: wizard.playerIndex,
