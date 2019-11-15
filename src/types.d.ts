@@ -264,10 +264,12 @@ declare type webWorkerMessageType = "executeSimulation";
 declare type webWorkerMessageResponseContainerType = {
     messageType: webWorkerMessageResponseType,
     params: {
-        combatSimulationResults?: CombatSimulationResults
+        combatSimulationParameters?: CombatSimulationParameters,
+        combatSimulationResults?: CombatSimulationResults,
+        error?: any
     }
 };
-declare type webWorkerMessageResponseType = "simulationFinished";
+declare type webWorkerMessageResponseType = "simulationFinished" | "simulationError";
 
 
 

@@ -14,9 +14,13 @@ import { CombatSimulationParameters } from "../../../sim/CombatSimulationParamet
 describe("EnemyGenerator", function() {
 
     let enemyGenerator: EnemyGenerator;
+    let enemyGenerator_rng0: EnemyGenerator; 
+    let enemyGenerator_rng1: EnemyGenerator; 
     let simParams: CombatSimulationParameters;
     beforeEach(() => {
         enemyGenerator = EnemyGenerator.buildEnemyGeneratorWithRng(new Prando(0));
+        enemyGenerator_rng0 = EnemyGenerator.buildEnemyGeneratorWithRng(TestData.buildNewRNG_0());
+        enemyGenerator_rng1 = EnemyGenerator.buildEnemyGeneratorWithRng(TestData.buildNewRNG_1());
         simParams = TestData.buildDefaultSimParameters();
     });
 
@@ -63,6 +67,23 @@ describe("EnemyGenerator", function() {
             expect(seen5).to.be.true;
             expect(seen6).to.be.true;
         }
+    });
+    
+    it("generateRealisticEnemies_nEnemies_multiplePlayers", function() {
+        for (let roomLevel=1; roomLevel<=20; roomLevel++) {
+            for (let playerCount=1; playerCount<=5; playerCount++) {
+                for (let runestoneLevel=1; runestoneLevel<=5; runestoneLevel++) {
+                    let difficulty = FortressRoom.computeOverallDifficultyStatic(roomLevel, runestoneLevel, playerCount); 
+                    let nEnemies = enemyGenerator_rng0.getNumberEnemies(difficulty, roomLevel, playerCount); 
+
+                    // console.log("roomLevel=" + roomLevel + ", playerCount=" + playerCount + ", difficulty=" + difficulty + ", nEnemies=" + nEnemies); 
+                    if (nEnemies < playerCount) {
+                        fail("nEnemies (" + nEnemies + ") should be greater or equal playerCount=" + playerCount + " for roomLevel=" + roomLevel + ", runestoneLevel=" + runestoneLevel); 
+                    }
+                    expect(nEnemies).to.be.gte(playerCount); 
+                }
+            }
+        }   
     });
 
     it("generateRealisticEnemies_enemyLevel", function() {

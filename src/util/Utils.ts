@@ -83,10 +83,10 @@ export class Utils {
     }
 
     static getLowestHPCombatant(combatants: Array<Combatant>): Combatant {
-        let result = combatants.sort(function(v1, v2) {
+        let result = combatants.sort(function (v1, v2) {
             return v2.getCurrentStamina() - v1.getCurrentStamina();
         })[0];
-        return result; 
+        return result;
     }
 
 }

@@ -4,6 +4,7 @@ import { enemyNameType, nameClassType } from "../../../types";
 import { firstBy } from "thenby";
 import Prando from "prando";
 import { Logger } from "../../../util/Logger";
+import { Utils } from '../../../util/Utils';
 
 export class EnemyGenerator {
 
@@ -41,17 +42,22 @@ export class EnemyGenerator {
         return (this.rng.next() - 0.5) * magnitude; 
     }
 
-    getNEnemies(overallDifficulty: number, roomLevel: number, playerCount: number): number {
-        const averageNEnemies = 1.72132702158096 + 0.0661370810873348 * Math.sqrt(overallDifficulty);  // sqrt of overallDifficulty 
+    getNumberEnemies(overallDifficulty: number, roomLevel: number, playerCount: number): number {
+        const averageNumberEnemiesSinglePlayer = 1.72132702158096 + 0.0661370810873348 * Math.sqrt(overallDifficulty / playerCount);  // sqrt of overallDifficulty 
         //console.log("averageNEnemies for roomLevel=" + roomLevel + ": " + averageNEnemies);
         // Concrete nEnemies for this room (can vary by +-1)
         // Example: Tower V has been seen with 4, 5 and 6 enemies for 1 player
         // Average is 4.999, so jitter by 2 (==> +-1)
-        let nEnemies = Math.round(averageNEnemies + this.jitterByAmount(2)); 
+        let numberEnemiesSinglePlayer = Math.round(averageNumberEnemiesSinglePlayer + this.jitterByAmount(2)); 
+        let numberEnemies; 
         if (roomLevel === 1) {
-            nEnemies = 2 * playerCount;  // Always use 2 enemies per player for ruins I
+            numberEnemies = 2 * playerCount;  // Always use 2 enemies per player for ruins I
         }
-        return nEnemies;
+        else {
+            numberEnemies = numberEnemiesSinglePlayer * playerCount; 
+        }
+
+        return numberEnemies;
     }
 
     getAverageEnemyLevel(roomLevel: number, averageRunestoneLevel: number): number {
@@ -104,7 +110,7 @@ export class EnemyGenerator {
     generateEnemies(overallDifficulty: number, focusBudget: number, playerCount: number, 
         roomLevel: number, runestoneLevels: Array<number>, nameClasses: Array<nameClassType>): Array<Enemy> {
         let result: Array<Enemy> = [];
-        let nEnemiesRemaining = this.getNEnemies(overallDifficulty, roomLevel, playerCount);
+        let nEnemiesRemaining = this.getNumberEnemies(overallDifficulty, roomLevel, playerCount);
         const normalizedDifficultyBudgetPerEnemy = this.getNormalizedDifficultyBudgetPerEnemy(overallDifficulty, roomLevel, nEnemiesRemaining);
         
         // Unknown if average runestone level should be used here
@@ -161,6 +167,19 @@ export class EnemyGenerator {
             result.push(enemy);
         }
 
+        if (playerCount > result.length) {
+            console.log("Enemies generated: "); 
+            console.log(result); 
+            let errorMessage = "Something went wrong during enemy generation: More players (" + playerCount + ") than enemies (" + result.length + ") generated! Arguments: ";
+            errorMessage += "overallDifficulty=" + overallDifficulty + "; "; 
+            errorMessage += "focusBudget=" + focusBudget + "; "; 
+            errorMessage += "playerCount=" + playerCount + "; "; 
+            errorMessage += "roomLevel=" + roomLevel + "; "; 
+            errorMessage += "runestoneLevels=" + runestoneLevels.join() + "; "; 
+            errorMessage += "nameClasses=" + nameClasses.join();  
+
+            throw new Error(errorMessage); 
+        }   
        
 
         //result.push(Enemy.buildEnemy("acromantula", 0, false, 2, 150, 3));

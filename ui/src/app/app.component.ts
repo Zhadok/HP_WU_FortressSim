@@ -732,6 +732,9 @@ export class AppComponent {
                     //console.log("Done parallel of " + results.length + " jobs"); 
                     self.simulationMultipleResults = results;
                     self.onFinishComparingSimulations();
+                }, function(error: Error) {
+                    Logger.callbackFunction(error.stack); 
+                    Logger.callbackFunctionUserFriendly(error.stack); 
                 });
 
                 // Create a new
@@ -935,6 +938,10 @@ export class AppComponent {
         return roomType + " " + chamberLevel;
     }
 
+    getDifficulty(): number {
+        return FortressRoom.computeOverallDifficultyStatic(this.simParameters.roomLevel, this.simParameters.runestoneLevels[0], this.simParameters.nameClasses.length); 
+    }
+
     getPlayerActionSelectionModeMap(): playerActionSelectionModeMapType {
         return PlayerActionEngine.playerActionSelectionModeMap;
     }
@@ -1098,7 +1105,6 @@ export class AppComponent {
             localStorage.removeItem("savedData");
             location.reload();
         }
-
     }
 
     importDataFromFile(): void {

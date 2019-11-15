@@ -9,7 +9,6 @@ import {
     simProgressType, simulationResultsGroupedType, localStorageDataType, ruleVisDataRowType, ruleVisDataContainerType, simulationLogChannelStoreType, simulationLogChannelType, ruleContainerType, wizardSettingsType, ruleType, actionNameMapType, ruleOperatorType, ruleOperatorMapType, ruleFactNameType, ruleConditionType, simGoalMapType, skillTreeFilterLessonsType, webWorkerMessageContainerType, webWorkerMessageResponseContainerType
 } from '../../../src/types';
 
-
 addEventListener('message', async ({ data }) => {
     let messageContainer = data as webWorkerMessageContainerType; 
 
@@ -20,12 +19,19 @@ addEventListener('message', async ({ data }) => {
     switch (messageContainer.messageType) {
         case "executeSimulation": 
             Logger.verbosity = 0; // todo: redirect this console.log to postMessage 
-            let combatSimulation = new CombatSimulation(messageContainer.params.combatSimulationParameters, new Prando(messageContainer.params.combatSimulationParameters.seed)); 
-            combatSimulation.init();
-            await combatSimulation.simulate(); 
-            let results = combatSimulation.toSimulationResults(); 
-            results.runID = messageContainer.params.runID; 
-            postFinishedSimulation(results); 
+            //console.log("Simulating..."); 
+            try {
+                let combatSimulation = new CombatSimulation(messageContainer.params.combatSimulationParameters, new Prando(messageContainer.params.combatSimulationParameters.seed)); 
+                combatSimulation.init();
+                await combatSimulation.simulate(); 
+                let results = combatSimulation.toSimulationResults(); 
+                results.runID = messageContainer.params.runID; 
+                postSimulationFinished(results); 
+            }
+            catch (error) {
+                console.log("Error during simulation!"); 
+                postSimulationError(error, messageContainer.params.combatSimulationParameters);
+            }
             break;
         default: 
             postMessage("Worker received unknown message: "); 
@@ -35,11 +41,24 @@ addEventListener('message', async ({ data }) => {
 });
 
 
-function postFinishedSimulation(simulationResults: CombatSimulationResults) {
+function postSimulationFinished(simulationResults: CombatSimulationResults) {
     let response: webWorkerMessageResponseContainerType = {
         messageType: "simulationFinished", 
         params: {
             combatSimulationResults: simulationResults
+        }
+    };
+    postMessage(response);     
+}
+
+function postSimulationError(error, combatSimulationParameters: CombatSimulationParameters) {
+    console.log("Error in WebWorker: "); 
+    console.log(error); 
+    let response: webWorkerMessageResponseContainerType = {
+        messageType: "simulationError", 
+        params: {
+            error: error,
+            combatSimulationParameters: combatSimulationParameters
         }
     };
     postMessage(response);     

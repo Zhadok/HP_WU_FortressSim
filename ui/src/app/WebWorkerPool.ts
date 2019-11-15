@@ -16,10 +16,12 @@ export class WebWorkerPool extends CombatSimulationManager{
     // During simulations
     nextJobID: number; 
     currentJobs: Array<webWorkerMessageContainerType>; 
-   
-    simulationResults: CombatSimulationResults[]; 
-    onFinishSimulationsCallback; 
+    simulationError: any = null; 
 
+    simulationResults: CombatSimulationResults[]; 
+    onSimulationsFinishCallback; 
+    onSimulationsErrorCallback; 
+    errorCallbackCalled: boolean = false; 
 
     constructor(simAdvancedSettings: simAdvancedSettingsType) {
         super(); 
@@ -44,12 +46,15 @@ export class WebWorkerPool extends CombatSimulationManager{
         return this.currentJobs.length; 
     }
 
-    executeJobs(messageContainers: Array<webWorkerMessageContainerType>, callbackFunction): void {
+    executeJobs(messageContainers: Array<webWorkerMessageContainerType>, onSimulationsFinishCallback, onSimulationsErrorCallback): void {
         this.currentRunID = 0; 
         this.nextJobID = 0; 
         this.currentJobs = []; 
         this.simulationResults = []; 
-        this.onFinishSimulationsCallback = callbackFunction; 
+        this.simulationError = null; 
+        this.onSimulationsFinishCallback = onSimulationsFinishCallback; 
+        this.onSimulationsErrorCallback = onSimulationsErrorCallback; 
+        this.errorCallbackCalled = false; 
 
         for (let runID=0;runID<messageContainers.length;runID++) { //simParams.length
             let messageContainer = messageContainers[runID]; 
@@ -114,19 +119,35 @@ export class WebWorkerPool extends CombatSimulationManager{
                 this.simulationResults.push(workerResponse.params.combatSimulationResults); 
                 this.currentRunID++;
                 break; 
+            case "simulationError": 
+                this.simulationError = workerResponse.params.error; 
+                console.log("Simulation error in web worker!"); 
+                console.log(this.simulationError); 
+                console.log(workerResponse.params.combatSimulationParameters); 
+                break; 
         }
-        this.workerContainers[workerIndex].busy = false; 
-        this.updateSimProgress(); 
-        this.triggerIdleWorkers(); 
+
+        if (this.hasAnySimulationErrored() === false) {
+            this.workerContainers[workerIndex].busy = false; 
+            this.updateSimProgress(); 
+            this.triggerIdleWorkers(); 
+        }
         this.checkForJobsCompletion(); 
     }
 
+    hasAnySimulationErrored(): boolean {
+        return this.simulationError !== null; 
+    }
+    
     checkForJobsCompletion() {
-        if (this.currentRunID === this.getNumberSimulationsTotal()) {
+        if (this.hasAnySimulationErrored() === true && this.errorCallbackCalled === false) {
+            this.errorCallbackCalled = true; 
+            this.onSimulationsErrorCallback(this.simulationError); 
+        }
+        else if (this.currentRunID === this.getNumberSimulationsTotal()) {
             // Finished
-
             this.simulationResults.sort((a, b) => { return a.runID! - b.runID!; }); 
-            this.onFinishSimulationsCallback(this.simulationResults);
+            this.onSimulationsFinishCallback(this.simulationResults);
         }
     }
     

@@ -19,12 +19,15 @@
             </mat-expansion-panel-header>
 
             <div id="divSettingsRoomLevel">
-                <h2 class="mat-h2">Overall parameters: </h2>
+                <h2 class="mat-h2">Overall parameters (difficulty: {{getDifficulty()}})</h2>
                 <mat-form-field class="inputRoomLevel floatLeft" appearance="outline">
                     <mat-label>Room level: {{getChamberName(simParameters.roomLevel)}}</mat-label>
                     <input type="number" min="1" max="20" matInput placeholder="Room level" name="roomLevel"
                         [(ngModel)]="simParameters.roomLevel">
                 </mat-form-field>
+                <div class="clearBoth floatLeft">
+                    Chamber
+                </div>
                 <mat-checkbox class="floatLeft clearBoth" [(ngModel)]="simParameters.useSponsoredFortressRewards">
                     <span class="spanMultipleLines">Sponsored fortress rewards
                         ({{(fortressRewardData.sponsoredFortressRewardsChallengeXPIncrease*100).toFixed(0)}}% more
@@ -531,7 +534,7 @@
             <div id="divStartSimulationContainer">
                 <button (click)="onClickButtonStartSingleSimulation()"
                     class="buttonStartSimulation buttonSkillTreeControl" mat-raised-button large color="primary">
-                    Start single simulation
+                    Start single simulation (difficulty: {{getDifficulty()}})
                 </button>
                 <button (click)="onClickButtonStartMultipleSimulations_compareRoomLevels()"
                     class="buttonStartSimulation buttonSkillTreeControl" mat-raised-button large color="primary"

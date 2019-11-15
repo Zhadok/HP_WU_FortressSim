@@ -77,7 +77,13 @@ export class FortressRoom {
                 return enemy;
             }
         }
-        throw new Error("Tried getting active enemy but all enemies either already active or already defeated")
+
+        let errorMessage = "Tried getting active enemy but all enemies either already active or already defeated";
+        if (skip !== 0) {
+            errorMessage += " (skip=" + skip + ", areAllEnemiesDefeated()=" + this.areAllEnemiesDefeated() + ", enemiesAll.length=" + this.enemiesAll.length + ", enemiesActive.length=" + this.enemiesActive.length + ")"; 
+        } 
+        throw new Error(errorMessage);
+        
     }
     areAllEnemiesDefeated(): boolean {
         for (let enemy of this.enemiesAll) {
