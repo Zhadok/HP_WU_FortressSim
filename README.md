@@ -8,7 +8,7 @@
   * [How are RNG "seeds" used when comparing multiple simulations?](#how-are-rng-seeds-used-when-comparing-multiple-simulations)
   * [How does the player AI work? How do wizards decide which action to take?](#how-does-the-player-ai-work-how-do-wizards-decide-which-action-to-take)
   * [What happens to my data?](#what-happens-to-my-data)
-  * [I have an idea! How can I reach you?]()
+  * [I have an idea! How can I reach you?](#i-have-an-idea-how-can-i-reach-you)
 - [Sources for equations and data](#sources-for-equations-and-data)
 - [Changelog](#changelog)
 - [Rules](#rules)
