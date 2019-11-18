@@ -31,7 +31,7 @@ export class DeteriorationHexEvent extends StrategicSpellEvent {
     }
 
     getStrategicSpellName(): string {
-        return "Deterioration Hex (" + this.deteriorationHexDamage + " damage)"; 
+        return "Deterioration Hex (" + this.deteriorationHexDamage + " damage) on " + this.targetEnemy.toUserFriendlyDescription(); 
     }
 
 

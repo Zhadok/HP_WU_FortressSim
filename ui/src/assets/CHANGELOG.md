@@ -1,3 +1,6 @@
+- 0.11.2
+    - Smaller UI improvements: Partially learning a lesson tree now shows a color (previously only a fully learned lesson was colored). Added "Are you sure?" dialogs for resetting/removing rules, wizards and the skill tree. Added a min (1) and max (5) value to the runestone level. 
+    - The combat log now shows the enemy that Deterioration Hex is cast on.  
 - 0.11.1
     - Fortress reward data (how much CXP more do we get from playing in a group/with friends) defaults can be changed (for example for community days)
 - 0.11.0

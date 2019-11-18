@@ -451,12 +451,19 @@ export class AppComponent {
     }
 
     onClickResetPlayerRules(playerIndex: number) {
+        if (confirm("Are you sure you want to reset player rules for player " + (playerIndex+1) + "?")) {
+            this.resetPlayerRules(playerIndex); 
+        }
+    }
+    resetPlayerRules(playerIndex: number) {
         console.log("Resetting player rules to default for playerIndex=" + playerIndex + " and class=" + this.simParameters.nameClasses[playerIndex] + "...");
         this.simParameters.ruleContainers[playerIndex] = this.getDefaultRuleContainer(this.simParameters.nameClasses[playerIndex]);
     }
     onClickRemovePlayerRules(playerIndex: number) {
-        console.log("Removing all player rules for playerIndex=" + playerIndex + "...");
-        this.simParameters.ruleContainers[playerIndex].rules = [];
+        if (confirm("Are you sure you want to remove all rules for player " + (playerIndex+1) + "?")) {
+            console.log("Removing all player rules for playerIndex=" + playerIndex + "...");
+            this.simParameters.ruleContainers[playerIndex].rules = [];
+        }
     }
     onClickExportPlayerRules(playerIndex: number) {
         console.log("Exporting player rules to JSON for playerIndex=" + playerIndex + "...");
@@ -512,13 +519,15 @@ export class AppComponent {
     }
 
     onClickRemoveWizard(playerIndex: number) {
-        console.log("Removing wizard with playerIndex=" + playerIndex);
-        this.simParameters.nameClasses.splice(playerIndex, 1);
-        this.simParameters.potions.splice(playerIndex, 1);
-        this.simParameters.runestoneLevels.splice(playerIndex, 1);
-        this.simParameters.skillTrees.splice(playerIndex, 1);
-        this.simParameters.ruleContainers.splice(playerIndex, 1);
-        this.skillTrees.splice(playerIndex, 1);
+        if (confirm("Are you sure you want remove player " + (playerIndex+1) + "?")) {
+            console.log("Removing wizard with playerIndex=" + playerIndex);
+            this.simParameters.nameClasses.splice(playerIndex, 1);
+            this.simParameters.potions.splice(playerIndex, 1);
+            this.simParameters.runestoneLevels.splice(playerIndex, 1);
+            this.simParameters.skillTrees.splice(playerIndex, 1);
+            this.simParameters.ruleContainers.splice(playerIndex, 1);
+            this.skillTrees.splice(playerIndex, 1);
+        }
     }
 
     onChangeSelectWizardClass(event, playerIndex: number): void {
@@ -527,10 +536,16 @@ export class AppComponent {
             return;
         }
         else {
+            //if (confirm("Are you sure you want to change the class of player " + (playerIndex+1) + 
+            //            " from " + this.skillTrees[playerIndex].nameClass + " to " + event.value + 
+            //            "? This will reset the skill tree and any rule changes you have made.")) {
             console.log("Changing playerIndex=" + playerIndex + " class to " + event.value);
+            //this.simParameters.nameClasses[playerIndex] = event.value; 
             this.simParameters.skillTrees[playerIndex] = { nameClass: event.value, nodesStudied: [] }
             this.skillTrees[playerIndex] = new SkillTree(event.value);
-            this.onClickResetPlayerRules(playerIndex);
+            this.resetPlayerRules(playerIndex); 
+            //}
+            
         }
     }
 
@@ -584,11 +599,12 @@ export class AppComponent {
         this.persistSkillTree(skillTree, playerIndex);
     }
     onClickButtonResetSkillTree(playerIndex): void {
-        console.log("Resetting skill tree for playerIndex=" + playerIndex);
-        let skillTree = this.skillTrees[playerIndex];
-        skillTree.resetSkillTree();
-
-        this.persistSkillTree(skillTree, playerIndex);
+        if (confirm("Are you sure you want to reset the skill tree for player " + (playerIndex+1) + "?")) {
+            console.log("Resetting skill tree for playerIndex=" + playerIndex);
+            let skillTree = this.skillTrees[playerIndex];
+            skillTree.resetSkillTree();
+            this.persistSkillTree(skillTree, playerIndex);
+        }
     }
 
     persistSkillTree(skillTree: SkillTree, playerIndex: number) {

@@ -88,7 +88,8 @@
                                                 [attr.cx]="node.key.columnIndex * skillTreeVis.columnWidth + skillTreeVis.marginLeft*2"
                                                 [attr.cy]="node.key.rowIndex * skillTreeVis.rowHeight + skillTreeVis.marginTop"
                                                 [attr.r]="skillTreeVis.nodeCircleRadius" stroke="black"
-                                                [attr.fill]="node.value===node.key.levels.length ? 'yellowgreen' : 'gray'"
+                                                [attr.fill]="(node.value===node.key.levels.length) ? 'yellowgreen' : 
+                                                             (node.value>0 ? 'yellow' : 'gray')"
                                                 (click)="onClickSkillTreeNode(node.key, playerIndex)"
                                                 matTooltip="{{getSkillTreeNodeTooltip(node.key)}}"
                                                 [matTooltipClass]="'myMatTooltip'"></circle>
@@ -202,7 +203,7 @@
                                     <p>Runestone level:</p>
                                     <mat-form-field class="inputPotion">
                                         <input type="number" matInput placeholder="Runestone level"
-                                            name="runestoneLevel"
+                                            name="runestoneLevel" min="1" max="5"
                                             [(ngModel)]="simParameters.runestoneLevels[playerIndex]">
                                     </mat-form-field>
                                 </div>
@@ -527,7 +528,7 @@
                 </mat-checkbox>
             </div>
 
-            <div class="floatLeft clearBothdivContainerAdvancedSettingsSection">
+            <div class="floatLeft clearBoth divContainerAdvancedSettingsSection">
                 <h2 class="mat-h2">Data on this website (v{{simAdvancedSettings.simulationVersion}})</h2>
                 <p>
                     Data imports and exports include skill trees, customized player AI rules and advanced simulation
