@@ -1,3 +1,8 @@
+- 0.12.0
+    - Added Bravery Charm to the default rules of Magizoologists. NOTE: To receive the new rules, first export any custom rules you have created for Magizoologists and then click "Reset rules to default"
+    - Smaller UI improvements: Partially learning a lesson tree now shows a color (previously only a fully learned lesson was colored). Added "Are you sure?" dialogs for resetting/removing rules, wizards and the skill tree. Added a min (1) and max (5) value to the runestone level. 
+    - The combat log now shows the enemy that Deterioration Hex is cast on.  
+    - Corrected the parent of the Confusion Hex Mastery node in the Auror skill tree 
 - 0.11.1
     - Fortress reward data (how much CXP more do we get from playing in a group/with friends) defaults can be changed (for example for community days)
 - 0.11.0
