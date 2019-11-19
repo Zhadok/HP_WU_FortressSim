@@ -866,7 +866,7 @@
             "costScrolls": 38,
             "costRSB": 4
         }],
-        "dependencies": ["13/0"]
+        "dependencies": ["13/1"]
     }, {
         "rowIndex": 14,
         "columnIndex": 4,
