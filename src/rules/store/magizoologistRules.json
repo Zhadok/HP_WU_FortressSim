@@ -11,7 +11,7 @@
                     "targetWizard": "defeatedWizard"
                 }
             },
-            "priority": 14,
+            "priority": 15,
             "conditions": {
                 "all": [
                     {
@@ -44,6 +44,46 @@
                     {
                         "fact": "wizard",
                         "path": ".inCombat",
+                        "operator": "equal",
+                        "value": false
+                    }
+                ]
+            }
+        },
+        {
+            "event": {
+                "type": "braveryCharm"
+            },
+            "priority": 14,
+            "conditions": {
+                "all": [
+                    {
+                        "fact": "wizard",
+                        "path": ".focus",
+                        "operator": "greaterThanInclusive",
+                        "value": 12
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".triggers.braveryCharm",
+                        "operator": "notEqual",
+                        "value": null
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".inCombat",
+                        "operator": "equal",
+                        "value": false
+                    },
+                    {
+                        "fact": "chamber",
+                        "path": ".isAnyActiveEnemyElite",
+                        "operator": "equal",
+                        "value": true
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".hasBraveryCharm",
                         "operator": "equal",
                         "value": false
                     }
@@ -130,11 +170,110 @@
                     {
                         "any": [
                             {
-                                "fact": "chamber",
-                                "path": ".isAnyWizardDefeated",
-                                "operator": "equal",
-                                "value": true
+                                "all": [
+                                    {
+                                        "fact": "wizard",
+                                        "path": ".triggers.becomeTheBeast",
+                                        "operator": "notEqual",
+                                        "value": null
+                                    },
+                                    {
+                                        "fact": "wizard",
+                                        "path": ".focus",
+                                        "operator": "lessThan",
+                                        "value": 5
+                                    }
+                                ]
                             },
+                            {
+                                "all": [
+                                    {
+                                        "fact": "wizard",
+                                        "path": ".triggers.birdInHand",
+                                        "operator": "notEqual",
+                                        "value": null
+                                    },
+                                    {
+                                        "fact": "wizard",
+                                        "path": ".focus",
+                                        "operator": "lessThan",
+                                        "value": 5
+                                    }
+                                ]
+                            },
+                            {
+                                "all": [
+                                    {
+                                        "fact": "chamber",
+                                        "path": ".isAnyWizardDefeated",
+                                        "operator": "equal",
+                                        "value": true
+                                    },
+                                    {
+                                        "fact": "wizard",
+                                        "path": ".triggers.reviveCharm",
+                                        "operator": "notEqual",
+                                        "value": null
+                                    }
+                                ]
+                            },
+                            {
+                                "all": [
+                                    {
+                                        "fact": "wizard",
+                                        "path": ".hasBraveryCharm",
+                                        "operator": "equal",
+                                        "value": false
+                                    },
+                                    {
+                                        "fact": "wizard",
+                                        "path": ".triggers.braveryCharm",
+                                        "operator": "notEqual",
+                                        "value": null
+                                    },
+                                    {
+                                        "fact": "chamber",
+                                        "path": ".isAnyActiveEnemyElite",
+                                        "operator": "equal",
+                                        "value": true
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "event": {
+                "type": "weakInvigorationPotion"
+            },
+            "priority": 11,
+            "conditions": {
+                "all": [
+                    {
+                        "fact": "wizard",
+                        "path": ".inCombat",
+                        "operator": "equal",
+                        "value": false
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".focus",
+                        "operator": "lessThan",
+                        "value": {
+                            "fact": "wizard",
+                            "path": ".stats.maxFocus"
+                        }
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".potions.nWeakInvigorationAvailable",
+                        "operator": "greaterThan",
+                        "value": 0
+                    },
+                    {
+                        "any": [
                             {
                                 "all": [
                                     {
@@ -166,6 +305,44 @@
                                         "value": 5
                                     }
                                 ]
+                            },
+                            {
+                                "all": [
+                                    {
+                                        "fact": "chamber",
+                                        "path": ".isAnyWizardDefeated",
+                                        "operator": "equal",
+                                        "value": true
+                                    },
+                                    {
+                                        "fact": "wizard",
+                                        "path": ".triggers.reviveCharm",
+                                        "operator": "notEqual",
+                                        "value": null
+                                    }
+                                ]
+                            },
+                            {
+                                "all": [
+                                    {
+                                        "fact": "wizard",
+                                        "path": ".hasBraveryCharm",
+                                        "operator": "equal",
+                                        "value": false
+                                    },
+                                    {
+                                        "fact": "wizard",
+                                        "path": ".triggers.braveryCharm",
+                                        "operator": "notEqual",
+                                        "value": null
+                                    },
+                                    {
+                                        "fact": "chamber",
+                                        "path": ".isAnyActiveEnemyElite",
+                                        "operator": "equal",
+                                        "value": true
+                                    }
+                                ]
                             }
                         ]
                     }
@@ -180,7 +357,7 @@
                     "description": "Magizoologist should cast mending charm once before entering combat"
                 }
             },
-            "priority": 11,
+            "priority": 10,
             "conditions": {
                 "all": [
                     {
@@ -209,79 +386,6 @@
                         "path": ".mendingCharmOnCooldown",
                         "operator": "equal",
                         "value": false
-                    }
-                ]
-            }
-        },
-        {
-            "event": {
-                "type": "weakInvigorationPotion"
-            },
-            "priority": 10,
-            "conditions": {
-                "all": [
-                    {
-                        "fact": "wizard",
-                        "path": ".inCombat",
-                        "operator": "equal",
-                        "value": false
-                    },
-                    {
-                        "fact": "wizard",
-                        "path": ".focus",
-                        "operator": "lessThan",
-                        "value": {
-                            "fact": "wizard",
-                            "path": ".stats.maxFocus"
-                        }
-                    },
-                    {
-                        "fact": "wizard",
-                        "path": ".potions.nWeakInvigorationAvailable",
-                        "operator": "greaterThan",
-                        "value": 0
-                    },
-                    {
-                        "any": [
-                            {
-                                "fact": "chamber",
-                                "path": ".isAnyWizardDefeated",
-                                "operator": "equal",
-                                "value": true
-                            },
-                            {
-                                "all": [
-                                    {
-                                        "fact": "wizard",
-                                        "path": ".triggers.becomeTheBeast",
-                                        "operator": "notEqual",
-                                        "value": null
-                                    },
-                                    {
-                                        "fact": "wizard",
-                                        "path": ".focus",
-                                        "operator": "lessThan",
-                                        "value": 5
-                                    }
-                                ]
-                            },
-                            {
-                                "all": [
-                                    {
-                                        "fact": "wizard",
-                                        "path": ".triggers.birdInHand",
-                                        "operator": "notEqual",
-                                        "value": null
-                                    },
-                                    {
-                                        "fact": "wizard",
-                                        "path": ".focus",
-                                        "operator": "lessThan",
-                                        "value": 5
-                                    }
-                                ]
-                            }
-                        ]
                     }
                 ]
             }

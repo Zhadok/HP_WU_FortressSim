@@ -519,7 +519,7 @@ export class AppComponent {
     }
 
     onClickRemoveWizard(playerIndex: number) {
-        if (confirm("Are you sure you want remove player " + (playerIndex+1) + "?")) {
+        if (confirm("Are you sure you want remove player " + (playerIndex+1) + " (" + this.simParameters.nameClasses[playerIndex] + ")?")) {
             console.log("Removing wizard with playerIndex=" + playerIndex);
             this.simParameters.nameClasses.splice(playerIndex, 1);
             this.simParameters.potions.splice(playerIndex, 1);

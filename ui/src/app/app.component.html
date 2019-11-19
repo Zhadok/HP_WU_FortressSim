@@ -659,7 +659,10 @@
                                         [matTooltipClass]="'myMatTooltip'" />
                                 </div>
                                 <div class="divSimulationSingleResultCombatantBuff">
-                                    <img src="assets/img/braveryCharm.png" *ngIf="wizardResult.hasBraveryCharm" />
+                                    <img src="assets/img/braveryCharm.png" 
+                                        *ngIf="wizardResult.hasBraveryCharm" 
+                                        matTooltip="Bravery charm: +{{(wizardResult.braveryCharmValue*100).toFixed(0)}}% more damage against elites"
+                                        [matTooltipClass]="'myMatTooltip'"/>
                                 </div>
                             </div>
 

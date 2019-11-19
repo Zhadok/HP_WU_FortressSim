@@ -21,6 +21,7 @@ import { ConfusionHexEvent } from "../../src/sim/events/wizard/room/spells/auror
 import { ReviveCharmEvent } from "../../src/sim/events/wizard/room/spells/magizoologist/ReviveCharmEvent";
 import { ExitCombatEvent } from "../../src/sim/events/wizard/combat/ExitCombatEvent";
 import { StaminaCharmEvent } from "../../src/sim/events/wizard/room/spells/magizoologist/StaminaCharmEvent";
+import { BraveryCharmEvent } from "../../src/sim/events/wizard/room/spells/magizoologist/BraveryCharmEvent";
 
 // https://github.com/domenic/chai-as-promised/issues/192
 before(() => {
@@ -97,6 +98,51 @@ describe("RulesEngine", function() {
         }); 
     });
 
+    it("magizoologist_shouldCastBraveryCharm", function() {
+        wizard.inCombat = false; 
+        wizard.stats.braveryCharmValue = 1.5; 
+        facts.chamber.isAnyActiveEnemyElite = true; 
+        wizard.stats.maxFocus = 15; 
+        wizard.addFocus(999); 
+
+        return rulesEngine.getNextAction(0, facts).then(simEvent => {
+            expect(simEvent).to.be.instanceOf(BraveryCharmEvent); 
+            expect((simEvent as BraveryCharmEvent).powerIncreaseAgainstElites).to.be.equal(1.5); 
+        }); 
+    }); 
+    it("magizoologist_shouldNotCastBraveryCharm_noElites", function() {
+        wizard.inCombat = false; 
+        wizard.setTrigger("braveryCharm", 1.5); 
+        facts.chamber.isAnyActiveEnemyElite = false; 
+        wizard.addFocus(999); 
+
+        return rulesEngine.getNextAction(0, facts).then(simEvent => {
+            expect(simEvent).to.not.be.instanceOf(BraveryCharmEvent); 
+        }); 
+    }); 
+    it("magizoologist_shouldNotCastBraveryCharm_notEnoughFocus", function() {
+        wizard.inCombat = false; 
+        wizard.setTrigger("braveryCharm", 1.5); 
+        facts.chamber.isAnyActiveEnemyElite = true; 
+        wizard.setFocus(0); 
+
+        return rulesEngine.getNextAction(0, facts).then(simEvent => {
+            expect(simEvent).to.not.be.instanceOf(BraveryCharmEvent); 
+        }); 
+    }); 
+    it("magizoologist_shouldNotCastBraveryCharm_alreadyHasBraveryCharm", function() {
+        wizard.inCombat = false; 
+        wizard.setTrigger("braveryCharm", 1.5); 
+        facts.chamber.isAnyActiveEnemyElite = false; 
+        wizard.addFocus(999); 
+        wizard.hasBraveryCharm = true; 
+
+        return rulesEngine.getNextAction(0, facts).then(simEvent => {
+            expect(simEvent).to.not.be.instanceOf(BraveryCharmEvent); 
+        }); 
+    }); 
+
+
     it("magizoologist_shouldCastStaminaCharm", function() {
         wizard.inCombat = false; 
         facts.lowestHPWizard = wizard; 
@@ -166,17 +212,35 @@ describe("RulesEngine", function() {
             expect((simEvent as InvigorationPotionEvent).focusReward).to.equal(3); 
         }); 
     });
-    it("magizoologist_shouldNotDrink_strongInvigorationPotion_ifNotNeeded", function() {
+    it("magizoologist_shouldDrink_strongInvigorationPotion_missingBraveryCharm", function() {
+        facts.chamber.isAnyActiveEnemyElite = true;
+        wizard.setTrigger("braveryCharm", 1.5);  
         wizard.inCombat = false;
+        wizard.hasBraveryCharm = false; 
         wizard.setFocus(4); 
         wizard.getPotions().nStrongInvigorationAvailable = 1; 
+
+        return rulesEngine.getNextAction(0, facts).then(simEvent => {
+            expect(simEvent instanceof InvigorationPotionEvent).to.be.true; 
+            expect((simEvent as InvigorationPotionEvent).focusReward).to.equal(3); 
+        }); 
+    });
+
+    it("magizoologist_shouldNotDrink_strongInvigorationPotion_ifNotNeeded", function() {
+        wizard.inCombat = false;
+        wizard.hasBraveryCharm = true;
+        wizard.setFocus(4);  // Focus should not be the issue
+        wizard.getPotions().nStrongInvigorationAvailable = 1;  // Should have enough potions
         wizard.setTrigger("birdInHand", null); 
         wizard.setTrigger("becomeTheBeast", null); 
 
         return rulesEngine.getNextAction(0, facts).then(simEvent => {
-            expect(simEvent instanceof InvigorationPotionEvent).to.be.false; 
+            expect(simEvent).to.not.be.instanceOf(InvigorationPotionEvent); 
+            //expect(simEvent instanceof InvigorationPotionEvent).to.be.false; 
         }); 
     }); 
+
+
 
     it("magizoologist_shouldDrink_weakInvigorationPotion_withDefeatedWizard", function() {
         facts.chamber.isAnyWizardDefeated = true; 
@@ -211,15 +275,29 @@ describe("RulesEngine", function() {
             expect((simEvent as InvigorationPotionEvent).focusReward).to.equal(1); 
         }); 
     });
+    it("magizoologist_shouldDrink_weakInvigorationPotion_missingBraveryCharm", function() {
+        facts.chamber.isAnyActiveEnemyElite = true;
+        wizard.setTrigger("braveryCharm", 1.5);  
+        wizard.inCombat = false;
+        wizard.hasBraveryCharm = false; 
+        wizard.setFocus(4); 
+        wizard.getPotions().nWeakInvigorationAvailable = 1; 
+
+        return rulesEngine.getNextAction(0, facts).then(simEvent => {
+            expect(simEvent instanceof InvigorationPotionEvent).to.be.true; 
+            expect((simEvent as InvigorationPotionEvent).focusReward).to.equal(1); 
+        }); 
+    });
     it("magizoologist_shouldNotDrink_weakInvigorationPotion_ifNotNeeded", function() {
         wizard.inCombat = false;
+        wizard.hasBraveryCharm = true;
         wizard.setFocus(4); 
         wizard.getPotions().nWeakInvigorationAvailable = 1; 
         wizard.setTrigger("birdInHand", null); 
         wizard.setTrigger("becomeTheBeast", null); 
 
         return rulesEngine.getNextAction(0, facts).then(simEvent => {
-            expect(simEvent instanceof InvigorationPotionEvent).to.be.false; 
+            expect(simEvent).to.not.be.instanceOf(InvigorationPotionEvent);
         }); 
     }); 
 
