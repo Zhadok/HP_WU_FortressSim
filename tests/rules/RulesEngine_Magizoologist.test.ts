@@ -52,7 +52,8 @@ describe("RulesEngine", function() {
                 remainingTimeSeconds: 600,
                 remainingEnemies: 10,
                 isAnyWizardDefeated: false,
-                numberOfWizards: 2
+                numberOfWizards: 2,
+                isAnyActiveEnemyElite: false
             }
         };
         rulesEngine = RulesEngine.buildFromStandard(wizard.nameClass, rng);

@@ -125,7 +125,8 @@ export class RulesEngine extends PlayerActionEngine {
                     remainingTimeSeconds: 600,
                     remainingEnemies: 10,
                     isAnyWizardDefeated: false,
-                    numberOfWizards: 1
+                    numberOfWizards: 1,
+                    isAnyActiveEnemyElite: false
                 }; 
                 paths = Utils.getAllFieldNames(tempChamber, "", []);
                 break;  

@@ -111,6 +111,7 @@ declare type ruleFactChamberType = {
     remainingTimeSeconds: number,
     remainingEnemies: number,
     isAnyWizardDefeated: boolean,
+    isAnyActiveEnemyElite: boolean, 
     numberOfWizards: number
 };
 declare type ruleEventTargetType = "targetWizard" | "targetEnemy";

@@ -424,4 +424,27 @@ describe("CombatSimulation", function() {
         expect(sim.getWizardDefeatedTimerMS(wizard)).to.equal(defeatEvent!.timestampEnd - sim.currentTime); 
     });
 
+    it("getCurrentFacts_chamber_isAnyWizardDefeated", function() {
+        sim.init(); 
+        let facts = sim.getCurrentFacts(sim.wizards[0], sim.fortressRoom.enemiesActive[0]); 
+        expect(facts.chamber.isAnyWizardDefeated).to.be.false; 
+
+        sim.wizards[0].removeStamina(999); 
+        facts = sim.getCurrentFacts(sim.wizards[0], sim.fortressRoom.enemiesActive[0]); 
+        expect(facts.chamber.isAnyWizardDefeated).to.be.true; 
+    }); 
+
+    it("getCurrentFacts_chamber_isAnyActiveEnemyElite", function() {
+        sim.init(); 
+        sim.fortressRoom.enemiesActive.splice(0, sim.fortressRoom.enemiesActive.length); 
+        sim.fortressRoom.enemiesActive.push(TestData.buildDefaultPixie()); 
+        let facts = sim.getCurrentFacts(sim.wizards[0], sim.fortressRoom.enemiesActive[0]); 
+        expect(facts.chamber.isAnyActiveEnemyElite).to.be.false; 
+
+        sim.fortressRoom.enemiesActive.push(TestData.buildDefaultEnemyElite()); 
+        facts = sim.getCurrentFacts(sim.wizards[0], sim.fortressRoom.enemiesActive[0]); 
+        expect(facts.chamber.isAnyActiveEnemyElite).to.be.true; 
+
+    });
+
 });

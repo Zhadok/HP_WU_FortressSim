@@ -383,20 +383,7 @@ export class CombatSimulation {
             highestPriorityAvailableEnemy = null;
         }
 
-        let facts: ruleFactType = {
-            wizard: wizard,
-            lowestHPWizard: Utils.getLowestHPCombatant(this.wizards.filter((wizard) => wizard.getIsDefeated() === false)) as Wizard,
-            highestPriorityAvailableEnemy: highestPriorityAvailableEnemy,
-            allWizards: this.wizards,
-            allActiveEnemies: this.fortressRoom.enemiesActive,
-            chamber: {
-                currentTimeSeconds: this.currentTime / 1000,
-                remainingTimeSeconds: (this.maxTime - this.currentTime) / 1000,
-                isAnyWizardDefeated: this.isAnyWizardDefeated(),
-                remainingEnemies: this.fortressRoom.getRemainingEnemiesCount(),
-                numberOfWizards: this.wizards.length
-            }
-        }
+        let facts: ruleFactType = this.getCurrentFacts(wizard, highestPriorityAvailableEnemy); 
         let nextEvent = await this.getPlayerActionEngine(wizard.playerIndex).getNextAction(timestampBegin, facts);
         if (nextEvent !== null) {
             // event can be null, for example, if professor has not studied mending charm and no enemies available
@@ -408,6 +395,24 @@ export class CombatSimulation {
                 // Enemy should attack if player did not chose an action
                 let enemyAttackEvent = new CombatSpellCastEnemyEvent(timestampBegin, wizard.inCombatWith!, wizard, this.rng, true);
                 this.addEvent(enemyAttackEvent);
+            }
+        }
+    }
+
+    getCurrentFacts(wizard: Wizard, highestPriorityAvailableEnemy: Enemy | null): ruleFactType {
+        return {
+            wizard: wizard,
+            lowestHPWizard: Utils.getLowestHPCombatant(this.wizards.filter((wizard) => wizard.getIsDefeated() === false)) as Wizard,
+            highestPriorityAvailableEnemy: highestPriorityAvailableEnemy,
+            allWizards: this.wizards,
+            allActiveEnemies: this.fortressRoom.enemiesActive,
+            chamber: {
+                currentTimeSeconds: this.currentTime / 1000,
+                remainingTimeSeconds: (this.maxTime - this.currentTime) / 1000,
+                isAnyWizardDefeated: this.isAnyWizardDefeated(),
+                isAnyActiveEnemyElite: this.fortressRoom.enemiesActive.some(enemy => enemy.isElite), 
+                remainingEnemies: this.fortressRoom.getRemainingEnemiesCount(),
+                numberOfWizards: this.wizards.length
             }
         }
     }
