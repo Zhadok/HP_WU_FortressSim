@@ -1,3 +1,5 @@
+- 0.12.1
+    - Added average number of enemies and average number of enemies defeated to table comparing multiple simulations
 - 0.12.0
     - Added Bravery Charm to the default rules of Magizoologists. NOTE: To receive the new rules, first export any custom rules you have created for Magizoologists and then click "Reset rules to default"
     - Smaller UI improvements: Partially learning a lesson tree now shows a color (previously only a fully learned lesson was colored). Added "Are you sure?" dialogs for resetting/removing rules, wizards and the skill tree. Added a min (1) and max (5) value to the runestone level. 
