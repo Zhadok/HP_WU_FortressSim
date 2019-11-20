@@ -184,6 +184,8 @@ export class CombatSimulationComparison extends CombatSimulationManager {
             let totalCritPercent = 0;
             let totalDodgePercent = 0;
             let nWizards = resultsFiltered[0].wizardResults.length;
+            let totalNumberEnemies = 0;
+            let totalNumberEnemiesDefeated = 0; 
             let totalChallengeXPReward = 0;
             let totalTimeSpentDeadMS = 0; 
             let totalGameTimeMSPassed = resultsFiltered.map(r => r.durationGameTimeMS).reduce((a, b) => a += b);
@@ -191,7 +193,10 @@ export class CombatSimulationComparison extends CombatSimulationManager {
             let totalEnergyReward = 0; 
             for (let combatSimulationResults of resultsFiltered) {
                 totalEnergyReward += combatSimulationResults.energyReward;
-
+                totalNumberEnemies += combatSimulationResults.enemies.length; 
+                // Need "" property here because functions are lost during serialization
+                totalNumberEnemiesDefeated += combatSimulationResults.enemies.filter(e => e["isDefeated"] === true).length;
+                
                 // Results for X wizards of 1 concrete simulation
                 for (let wizardResult of combatSimulationResults.wizardResults) {
                     // Result for 1 wizard of 1 concrete simulation
@@ -225,6 +230,10 @@ export class CombatSimulationComparison extends CombatSimulationManager {
                 averageCritPercent: totalCritPercent / (nRuns * nWizards),
                 averageDodgePercent: totalDodgePercent / (nRuns * nWizards),
                 averageTotalDamage: totalDamage / (nRuns * nWizards),
+
+                averageNumberEnemiesDefeated: totalNumberEnemiesDefeated / nRuns,
+                averageNumberEnemies: totalNumberEnemies / nRuns,
+                
                 averageChallengeXPReward: averageChallengeXPReward,
                 averageChallengeXPPerEnergy: averageChallengeXPReward / averageNumberOfCasts, 
                 averageTimeSpentDeadMS: totalTimeSpentDeadMS / (nRuns * nWizards), 

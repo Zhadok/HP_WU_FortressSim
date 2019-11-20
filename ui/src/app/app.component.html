@@ -777,6 +777,14 @@
                             <th mat-header-cell *matHeaderCellDef mat-sort-header> Average chamber time </th>
                             <td mat-cell *matCellDef="let row"> {{(row.averageGameTimeMS / 1000).toFixed(0)}}s </td>
                         </ng-container>
+                        <ng-container matColumnDef="averageNumberEnemiesDefeated">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Average number enemies defeated </th>
+                            <td mat-cell *matCellDef="let row"> {{row.averageNumberEnemiesDefeated.toFixed(1)}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="averageNumberEnemies">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Average number enemies </th>
+                            <td mat-cell *matCellDef="let row"> {{row.averageNumberEnemies.toFixed(1)}} </td>
+                        </ng-container>
                         <ng-container matColumnDef="averageChallengeXPReward">
                             <th mat-header-cell *matHeaderCellDef mat-sort-header> Average reward (Challenge XP) </th>
                             <td mat-cell *matCellDef="let row"> {{row.averageChallengeXPReward.toFixed(0)}} CXP </td>

@@ -239,6 +239,7 @@ declare type simulationResultsGroupedType = {
     //roomLevel: number, 
     winPercentage: number,
 
+    // room statistics
     averageNumberOfCasts: number,
     averageCritPercent: number,
     averageDodgePercent: number,
@@ -246,6 +247,9 @@ declare type simulationResultsGroupedType = {
     averageDamage: number
     averageChallengeXPReward: number,
     averageChallengeXPPerEnergy: number,
+    averageNumberEnemiesDefeated: number,
+    averageNumberEnemies: number,
+
 
     // time statistics
     averageTimeSpentDeadMS: number,
