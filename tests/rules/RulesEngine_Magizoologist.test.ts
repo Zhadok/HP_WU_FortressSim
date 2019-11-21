@@ -29,7 +29,7 @@ before(() => {
     chai.use(chaiAsPromised);
 });
 
-describe("RulesEngine", function() {
+describe("RulesEngine_Magizoologist", function() {
 
     let wizard: Magizoologist;
     let otherWizard: Auror; 
@@ -42,21 +42,9 @@ describe("RulesEngine", function() {
         wizard.setPotions(TestData.buildDefaultPotionParameters_noPotions()); 
         otherWizard = TestData.buildDefaultAuror(); 
         enemy = TestData.buildDefaultEnemy();
-        facts = {
-            wizard: wizard,
-            lowestHPWizard: wizard,
-            highestPriorityAvailableEnemy: enemy,
-            allWizards: [wizard, otherWizard],
-            allActiveEnemies: [enemy],
-            chamber: {
-                currentTimeSeconds: 0,
-                remainingTimeSeconds: 600,
-                remainingEnemies: 10,
-                isAnyWizardDefeated: false,
-                numberOfWizards: 2,
-                isAnyActiveEnemyElite: false
-            }
-        };
+        facts = TestData.buildDefaultRuleFacts(wizard, enemy); 
+        facts.allWizards = [wizard, otherWizard]; 
+        facts.chamber.numberOfWizards = 2; 
         rulesEngine = RulesEngine.buildFromStandard(wizard.nameClass, rng);
 
     });
@@ -67,7 +55,7 @@ describe("RulesEngine", function() {
         wizard.addFocus(1); 
 
         return rulesEngine.getNextAction(0, facts).then(simEvent => {
-            expect(simEvent instanceof ReviveCharmEvent).to.be.true; 
+            expect(simEvent).to.be.instanceOf(ReviveCharmEvent); 
             expect((simEvent as ReviveCharmEvent).targetWizard).to.equal(otherWizard); 
             expect((simEvent as ReviveCharmEvent).reviveCharmValue).to.equal(wizard.stats.reviveCharmValue); 
         }); 

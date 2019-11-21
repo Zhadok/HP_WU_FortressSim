@@ -126,7 +126,11 @@ export class RulesEngine extends PlayerActionEngine {
                     remainingEnemies: 10,
                     isAnyWizardDefeated: false,
                     numberOfWizards: 1,
-                    isAnyActiveEnemyElite: false
+                    numberOfAurors: 0,
+                    numberOfMagizoologists: 0,
+                    numberOfProfessors: 1,
+                    isAnyActiveEnemyElite: false,
+                    isDefenceCharmOnAllWizards: false
                 }; 
                 paths = Utils.getAllFieldNames(tempChamber, "", []);
                 break;  

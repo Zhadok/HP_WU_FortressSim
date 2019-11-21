@@ -8,7 +8,7 @@ import Prando from "prando";
 import { Auror } from "../src/model/player/Auror";
 import { Magizoologist } from "./model/player/Magizoologist";
 import { PotionAvailabilityParameters } from "../src/sim/PotionAvailabilityParameters";
-import { enemyNameType, nameClassType, simAdvancedSettingsType, nameClassUserFriendlyType } from "../src/types";
+import { enemyNameType, nameClassType, simAdvancedSettingsType, nameClassUserFriendlyType, ruleFactType } from "../src/types";
 import { CombatSimulation } from "../src/sim/CombatSimulation";
 import { SkillTree } from "../src/model/player/SkillTree/SkillTree";
 import { PersistedSkillTree } from "../src/model/player/SkillTree/PersistedSkillTree";
@@ -251,6 +251,30 @@ export class TestData {
     }
     static buildDefaultEnemyElite(): Enemy {
         return Enemy.buildEnemy("acromantula", 0, true, 1, 1, 3);
+    }
+
+    static buildDefaultRuleFacts(wizard: Wizard, enemy: Enemy): ruleFactType {
+        return {
+            wizard: wizard,
+            lowestHPWizard: wizard,
+            highestPriorityAvailableEnemy: enemy,
+            allWizards: [wizard],
+            allActiveEnemies: [enemy],
+            chamber: {
+                currentTimeSeconds: 0,
+                remainingTimeSeconds: 600,
+                remainingEnemies: 10,
+                isAnyWizardDefeated: false,
+                isAnyActiveEnemyElite: false,
+
+                numberOfWizards: 1,
+                numberOfAurors: 0,
+                numberOfMagizoologists: 0,
+                numberOfProfessors: 1, 
+
+                isDefenceCharmOnAllWizards: false
+            }
+        };
     }
 
     static buildSimResult(roomLevel: number, seed: number, useSponsoredFortressRewards: boolean): CombatSimulationResults {

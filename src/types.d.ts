@@ -95,7 +95,13 @@ declare type manualActionContainerType = {
 declare type sortCriteriaTargetEnemyType = "proficiency" | "focusReward" | "stamina" | "staminaPercent"; 
 declare type sortCriteriaTargetEnemyMapType = { [key in sortCriteriaTargetEnemyType]: string}; 
 
+declare type sortCriteriaTargetEnemyContainerType = {
+    sortCriteria: Array<sortCriteriaTargetEnemyType>,
+    rules: Array<ruleType>
+}
+
 declare type sortCriteriaTargetWizardType = nameClassType; 
+
 
 
 
@@ -122,7 +128,13 @@ declare type ruleFactChamberType = {
     remainingEnemies: number,
     isAnyWizardDefeated: boolean,
     isAnyActiveEnemyElite: boolean, 
-    numberOfWizards: number
+
+    numberOfWizards: number,
+    numberOfAurors: number, 
+    numberOfMagizoologists: number, 
+    numberOfProfessors: number,
+
+    isDefenceCharmOnAllWizards: boolean
 };
 declare type ruleEventTargetType = "targetWizard" | "targetEnemy";
 declare type ruleEventTargetMapType = { [key in ruleEventTargetType]: {

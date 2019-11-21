@@ -412,7 +412,13 @@ export class CombatSimulation {
                 isAnyWizardDefeated: this.isAnyWizardDefeated(),
                 isAnyActiveEnemyElite: this.fortressRoom.enemiesActive.some(enemy => enemy.isElite), 
                 remainingEnemies: this.fortressRoom.getRemainingEnemiesCount(),
-                numberOfWizards: this.wizards.length
+
+                numberOfWizards: this.wizards.length,
+                numberOfAurors: this.wizards.filter(w => w.nameClass==="auror").length,
+                numberOfMagizoologists: this.wizards.filter(w => w.nameClass==="magizoologist").length,
+                numberOfProfessors: this.wizards.filter(w => w.nameClass==="professor").length,
+
+                isDefenceCharmOnAllWizards: this.wizards.every(w => w.hasDefenceCharm)
             }
         }
     }

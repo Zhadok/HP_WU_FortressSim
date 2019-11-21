@@ -22,7 +22,7 @@ before(() => {
     chai.use(chaiAsPromised);
 });
 
-describe("RulesEngine", function() {
+describe("RulesEngine_Professor", function() {
 
     let wizard: Professor;
     let enemy: Enemy; 
@@ -33,21 +33,7 @@ describe("RulesEngine", function() {
         wizard = TestData.buildDefaultProfessor();
         wizard.setPotions(TestData.buildDefaultPotionParameters_noPotions()); 
         enemy = TestData.buildDefaultEnemy();
-        facts = {
-            wizard: wizard,
-            lowestHPWizard: wizard,
-            highestPriorityAvailableEnemy: enemy,
-            allWizards: [wizard],
-            allActiveEnemies: [enemy],
-            chamber: {
-                currentTimeSeconds: 0,
-                remainingTimeSeconds: 600,
-                remainingEnemies: 10,
-                isAnyWizardDefeated: false,
-                numberOfWizards: 1,
-                isAnyActiveEnemyElite: false
-            }
-        };
+        facts = TestData.buildDefaultRuleFacts(wizard, enemy); 
         rulesEngine = RulesEngine.buildFromStandard(wizard.nameClass, rng);
 
     });

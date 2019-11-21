@@ -447,4 +447,15 @@ describe("CombatSimulation", function() {
 
     });
 
+    it("getCurrentFacts_chamber_isDefenceCharmOnAllWizards", function() {
+        sim.init(); 
+
+        let facts = sim.getCurrentFacts(sim.wizards[0], sim.fortressRoom.enemiesActive[0]); 
+        expect(facts.chamber.isDefenceCharmOnAllWizards).to.be.false;
+        
+        sim.wizards[0].hasDefenceCharm = true; 
+        facts = sim.getCurrentFacts(sim.wizards[0], sim.fortressRoom.enemiesActive[0]); 
+        expect(facts.chamber.isDefenceCharmOnAllWizards).to.be.true;
+    });
+
 });
