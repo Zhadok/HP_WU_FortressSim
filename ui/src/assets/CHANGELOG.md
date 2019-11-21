@@ -1,3 +1,5 @@
+- 0.12.2
+    - Added an "Attack" action to the strategy "Professor (only Deterioration Hex)"
 - 0.12.1
     - Added average number of enemies and average number of enemies defeated to table comparing multiple simulations
 - 0.12.0

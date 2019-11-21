@@ -89,6 +89,16 @@ declare type manualActionContainerType = {
     targetEnemyIndex?: number
 };
 
+
+// Enemy and player target sorting: What should enemies be sorted by?
+// Example: Default sorting for choosing next enemy to enter combat with would be proficiency > focusReward > stamina
+declare type sortCriteriaTargetEnemyType = "proficiency" | "focusReward" | "stamina" | "staminaPercent"; 
+declare type sortCriteriaTargetEnemyMapType = { [key in sortCriteriaTargetEnemyType]: string}; 
+
+declare type sortCriteriaTargetWizardType = nameClassType; 
+
+
+
 // Rule engine
 declare type ruleStoreType = { [key in nameClassType]: Array<ruleContainerType>}; 
 

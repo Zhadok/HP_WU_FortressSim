@@ -11,7 +11,7 @@
                     "targetEnemy": "highestPriorityAvailableEnemy"
                 }
             },
-            "priority": 3,
+            "priority": 4,
             "conditions": {
                 "all": [
                     {
@@ -51,7 +51,7 @@
                     "targetEnemy": "highestPriorityAvailableEnemy"
                 }
             },
-            "priority": 2,
+            "priority": 3,
             "conditions": {
                 "all": [
                     {
@@ -63,6 +63,37 @@
                     {
                         "fact": "highestPriorityAvailableEnemy",
                         "path": ".inCombat",
+                        "operator": "equal",
+                        "value": false
+                    }
+                ]
+            }
+        },
+        {
+            "event": {
+                "type": "combatSpellCastWizard"
+            },
+            "priority": 2,
+            "conditions": {
+                "all": [
+                    {
+                        "fact": "wizard",
+                        "path": ".inCombat",
+                        "operator": "equal",
+                        "value": true
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".focus",
+                        "operator": "lessThan",
+                        "value": {
+                            "fact": "wizard",
+                            "path": ".focusCostData.deteriorationHex"
+                        }
+                    },
+                    {
+                        "fact": "wizard",
+                        "path": ".inCombatWith.hasDeteriorationHex",
                         "operator": "equal",
                         "value": false
                     }
