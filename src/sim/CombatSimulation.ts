@@ -16,7 +16,7 @@ import { EnvEvent } from "./events/env/EnvEvent";
 import { EnemyDefeatEvent } from "./events/env/EnemyDefeatEvent";
 import { SecondEnemySpawnEvent } from "./events/env/SecondEnemySpawnEvent";
 import { SkillTree } from "../model/player/SkillTree/SkillTree";
-import { RulesEngine } from "../rules/RulesEngine";
+import { RulesEngine } from "../rules/action/RulesEngine";
 import { nameClassType, ruleFactType } from "../types.js";
 import { CombatSimulationResults } from "./CombatSimulationResults";
 import { WizardsOutOfTimeEvent } from "./events/env/WizardsOutOfTimeEvent";
@@ -24,11 +24,12 @@ import { FortressRoom } from "../model/env/FortressRoom";
 import { CombatSpellCastEnemyEvent } from "./events/wizard/combat/CombatSpellCastEnemyEvent";
 import { CooldownFinishedEvent } from "./events/wizard/room/spells/CooldownFinishedEvent";
 import { CombatSimulationResultsWizard } from "./CombatSimulationResultsWizard";
-import { PlayerActionEngine } from "../rules/PlayerActionEngine";
-import { ManualPlayerActionEngine } from "../rules/ManulPlayerActionEngine";
+import { PlayerActionEngine } from "../rules/action/PlayerActionEngine";
+import { ManualPlayerActionEngine } from "../rules/action/ManulPlayerActionEngine";
 import { WizardReviveEvent } from './events/wizard/room/WizardReviveEvent';
 import { WizardDefeatEvent } from './events/wizard/combat/WizardDefeatEvent';
 import { Utils } from "../util/Utils";
+import { TargetSelectionEngine } from "../rules/target/TargetSelectionEngine";
 
 
 export class CombatSimulation {
@@ -40,6 +41,8 @@ export class CombatSimulation {
 
     readonly playerActionEngines: Array<PlayerActionEngine>; // 1 ruleEngine per player (it might be that 2 professors in team but that they should follow different strategy)
     readonly defaultPlayerActionEngines: Array<RulesEngine>; // Default: Rules based. Used in frontend to compare what the player can choose with that the AI would do
+
+    readonly targetSelectionEngines: Array<TargetSelectionEngine>; 
 
     currentTime: number;
     readonly maxTime: number;
@@ -80,6 +83,7 @@ export class CombatSimulation {
             this.wizards.push(wizard);
         }
 
+        this.targetSelectionEngines = []; 
         this.playerActionEngines = [];
         this.defaultPlayerActionEngines = [];
         this.initPlayerActionEngines();

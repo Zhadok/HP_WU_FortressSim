@@ -1,9 +1,9 @@
 import { PlayerActionEngine } from "./PlayerActionEngine";
 import Prando from "prando";
-import { ruleFactType, actionNameType, nameClassType, manualActionContainerType } from "../types";
-import { SimEvent } from "../sim/events/SimEvent";
-import { Wizard } from "../model/player/Wizard";
-import { Enemy } from "../model/env/enemies/Enemy";
+import { ruleFactType, actionNameType, nameClassType, manualActionContainerType } from "../../types";
+import { SimEvent } from "../../sim/events/SimEvent";
+import { Wizard } from "../../model/player/Wizard";
+import { Enemy } from "../../model/env/enemies/Enemy";
 
 
 export class ManualPlayerActionEngine extends PlayerActionEngine {

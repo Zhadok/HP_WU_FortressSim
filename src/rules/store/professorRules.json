@@ -549,5 +549,24 @@
                 "all": []
             }
         }
-    ]
+    ],
+    "sortCriteriaContainers": [{
+        "sortCriteriaReason": "highestPriorityAvailableEnemy",
+        "sortCriteria": [{
+            "sortCriteriaDirection": "desc",
+            "sortCriteriaTarget": "proficiency"
+        }, {
+            "sortCriteriaDirection": "asc",
+            "sortCriteriaTarget": "focusReward"
+        }], 
+        "rule": {
+            "event": {
+                "type": "noAction"
+            },
+            "priority": 2,
+            "conditions": {
+                "all": []
+            }
+        }
+    }]
 }

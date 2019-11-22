@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ruleConditionGroupNameType, actionNameMapType, ruleFactNameType, ruleConditionType, ruleOperatorMapType, ruleType } from '../../types';
-import { RulesEngine } from '../../../../src/rules/RulesEngine';
+import { RulesEngine } from '../../../../src/rules/action/RulesEngine';
 import { Utils_UI } from 'app/utils_ui';
 import { FormControl, FormGroupDirective, NgForm } from '@angular/forms';
 

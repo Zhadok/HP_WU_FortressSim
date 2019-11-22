@@ -90,17 +90,31 @@ declare type manualActionContainerType = {
 };
 
 
-// Enemy and player target sorting: What should enemies be sorted by?
-// Example: Default sorting for choosing next enemy to enter combat with would be proficiency > focusReward > stamina
-declare type sortCriteriaTargetEnemyType = "proficiency" | "focusReward" | "stamina" | "staminaPercent"; 
-declare type sortCriteriaTargetEnemyMapType = { [key in sortCriteriaTargetEnemyType]: string}; 
+// Target sorting
+// What do we want to sort enemy/wizards for?
+declare type sortCriteriaReasonType = "highestPriorityAvailableEnemy" | "focusCharm" | "confusionHex" | "weakeningHex" | "defenceCharm";
+declare type sortCriteriaResonMapType = { [key in sortCriteriaReasonType]: string}; 
 
-declare type sortCriteriaTargetEnemyContainerType = {
-    sortCriteria: Array<sortCriteriaTargetEnemyType>,
-    rules: Array<ruleType>
+declare type sortCriteriaDirectionType = "asc" | "desc"; 
+declare type sortCriteriaDirectionMapType = { [key in sortCriteriaDirectionType]: string}; 
+// Example: Default sorting for choosing next enemy to enter combat with would be proficiency > focusReward > stamina
+declare type sortCriteriaTargetEnemyType = "proficiency" | "focusReward" | "stamina" | "staminaPercent" | 
+    "hasConfusionHex" | "hasWeakeningHex" | "hasDeteriorationHex" | "isElite"; 
+declare type sortCriteriaTargetEnemyMapType = { [key in sortCriteriaTargetEnemyType]: string}; 
+declare type sortCriteriaTargetWizardType = nameClassType; 
+
+declare type sortCriteriaType = {
+    sortCriteriaDirection: sortCriteriaDirectionType,
+    sortCriteriaTarget: sortCriteriaTargetEnemyType | sortCriteriaTargetWizardType
+}; 
+
+declare type sortCriteriaContainerType = {
+    sortCriteriaReason: sortCriteriaReasonType,
+    sortCriteria: Array<sortCriteriaType>,
+    rule: ruleType
 }
 
-declare type sortCriteriaTargetWizardType = nameClassType; 
+
 
 
 
@@ -178,12 +192,14 @@ declare type ruleType = {
     }
 };
 
+// A ruleContainer is one complete description of one player AI
 declare type ruleContainerType = {
     author: string,
     nameClass: nameClassType,
     strategyName: string,
     description: string, 
-    rules: Array<ruleType>
+    rules: Array<ruleType>,
+    sortCriteriaContainers: Array<sortCriteriaContainerType>
 }
 
 

@@ -1,8 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { actionNameType, ruleFactType, manualActionContainerType, actionNameMapType, rulesActionContainerType } from '../../types';
 import { CombatSimulation } from '../../../src/sim/CombatSimulation';
-import { ManualPlayerActionEngine } from '../../../src/rules/ManulPlayerActionEngine';
-import { RulesEngine } from '../../../../src/rules/RulesEngine';
+import { ManualPlayerActionEngine } from '../../../src/rules/action/ManulPlayerActionEngine';
+import { RulesEngine } from '../../../../src/rules/action/RulesEngine';
 import { AppComponent } from 'app/app.component';
 import { Enemy } from '../../../src/model/env/enemies/Enemy';
 import { Wizard } from '../../../src/model/player/Wizard';

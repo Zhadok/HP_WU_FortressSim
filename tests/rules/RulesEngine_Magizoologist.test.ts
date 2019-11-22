@@ -1,4 +1,4 @@
-import { RulesEngine } from "../../src/rules/RulesEngine";
+import { RulesEngine } from "../../src/rules/action/RulesEngine";
 import { TestData } from "../TestData";
 import { expect } from "chai";
 import * as chai from "chai";
