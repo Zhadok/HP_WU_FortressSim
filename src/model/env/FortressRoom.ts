@@ -209,6 +209,7 @@ export class FortressRoom {
     }    
 
     // https://i.redd.it/wz2vwfh5u4k31.jpg
+    // New data: https://docs.google.com/spreadsheets/d/1rAb3wOa5asc82J2pN-dTPWs1XcQoSA9wnKOvH807wzU/edit#gid=802313645 (after 2020-02-13)
     static computeChallengeXPRewardsStatic(roomLevel: number, runestoneLevels: number[], isWin: boolean, 
         isSponsoredFortress?: boolean,
         customFortressRewardData?: fortressRewardDataType): number[] {

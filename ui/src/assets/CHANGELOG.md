@@ -1,3 +1,6 @@
+- 0.12.3 
+    - Updated base CXP values after changes from 2020-02-13
+    - Note: This simulation still uses a flat 25% CXP increase for sponsored fortresses, this may no longer be correct
 - 0.12.2
     - Added an "Attack" action to the strategy "Professor (only Deterioration Hex)"
 - 0.12.1

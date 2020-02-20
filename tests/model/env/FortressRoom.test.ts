@@ -98,23 +98,24 @@ describe("FortressRoom", function() {
 
     it("computeChallengeXP", function() {
         // data: https://i.redd.it/wz2vwfh5u4k31.jpg
+        // New data: https://docs.google.com/spreadsheets/d/1rAb3wOa5asc82J2pN-dTPWs1XcQoSA9wnKOvH807wzU/edit#gid=802313645
 
         // Single wizard
         expect(FortressRoom.computeChallengeXPRewardsStatic(1, [1], true)).to.deep.equal([10]); 
         expect(FortressRoom.computeChallengeXPRewardsStatic(6, [1], true)).to.deep.equal([30]); 
-        expect(FortressRoom.computeChallengeXPRewardsStatic(10, [2], true)).to.deep.equal([104]); 
+        expect(FortressRoom.computeChallengeXPRewardsStatic(10, [2], true)).to.deep.equal([120]); 
         
         // 2 wizards
-        expect(FortressRoom.computeChallengeXPRewardsStatic(11, [2, 4], true)).to.deep.equal([139, 257]); 
+        expect(FortressRoom.computeChallengeXPRewardsStatic(11, [2, 4], true)).to.deep.equal([165, 305]); 
         
         // 3 wizards
-        expect(FortressRoom.computeChallengeXPRewardsStatic(13, [5, 3, 4], true)).to.deep.equal([428, 278, 353]); 
+        expect(FortressRoom.computeChallengeXPRewardsStatic(13, [5, 3, 4], true)).to.deep.equal([627, 407, 517]); 
 
         // 4 wizards
-        expect(FortressRoom.computeChallengeXPRewardsStatic(16, [1, 5, 3, 4], true)).to.deep.equal([213, 629, 421, 525]); 
+        expect(FortressRoom.computeChallengeXPRewardsStatic(16, [1, 5, 3, 4], true)).to.deep.equal([390, 1150, 770, 960]); 
 
         // 5 wizards
-        expect(FortressRoom.computeChallengeXPRewardsStatic(20, [1, 2, 3, 4, 5], true)).to.deep.equal([374, 530, 686, 842, 998]); 
+        expect(FortressRoom.computeChallengeXPRewardsStatic(20, [1, 2, 3, 4, 5], true)).to.deep.equal([1080, 1530, 1980, 2430, 2880]); 
         
     });
 
